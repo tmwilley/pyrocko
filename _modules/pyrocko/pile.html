@@ -1,0 +1,1065 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pyrocko.pile &mdash; Pyrocko v1.0 documentation</title>
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="Pyrocko v1.0 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">Pyrocko v1.0 documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body">
+            
+  <h1>Source code for pyrocko.pile</h1><div class="highlight"><pre>
+<span class="sd">&#39;&#39;&#39;A pile contains subpiles which contain tracesfiles which contain traces.&#39;&#39;&#39;</span>
+
+<span class="kn">import</span> <span class="nn">trace</span><span class="o">,</span> <span class="nn">io</span><span class="o">,</span> <span class="nn">util</span><span class="o">,</span> <span class="nn">config</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">num</span>
+<span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">pickle</span><span class="o">,</span> <span class="nn">logging</span><span class="o">,</span> <span class="nn">time</span><span class="o">,</span> <span class="nn">weakref</span><span class="o">,</span> <span class="nn">copy</span><span class="o">,</span> <span class="nn">re</span><span class="o">,</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">cPickle</span> <span class="kn">as</span> <span class="nn">pickle</span>
+<span class="n">pjoin</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s">&#39;pyrocko.pile&#39;</span><span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">util</span> <span class="kn">import</span> <span class="n">reuse</span>
+<span class="kn">from</span> <span class="nn">trace</span> <span class="kn">import</span> <span class="n">degapper</span>
+
+
+<span class="n">progressbar</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">progressbar_module</span><span class="p">()</span>
+
+<div class="viewcode-block" id="TracesFileCache"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.TracesFileCache">[docs]</a><span class="k">class</span> <span class="nc">TracesFileCache</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Manages trace metainformation cache.</span>
+<span class="sd">    </span>
+<span class="sd">    For each directory with files containing traces, one cache file is </span>
+<span class="sd">    maintained to hold the trace metainformation of all files which are </span>
+<span class="sd">    contained in the directory.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="n">caches</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cachedir</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Create new cache.</span>
+<span class="sd">        </span>
+<span class="sd">        :param cachedir: directory to hold the cache files.</span>
+<span class="sd">          </span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">cachedir</span> <span class="o">=</span> <span class="n">cachedir</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dircaches</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">modified</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="n">util</span><span class="o">.</span><span class="n">ensuredir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cachedir</span><span class="p">)</span>
+        
+<div class="viewcode-block" id="TracesFileCache.get"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.TracesFileCache.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">abspath</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Try to get an item from the cache.</span>
+<span class="sd">        </span>
+<span class="sd">        :param abspath: absolute path of the object to retrieve</span>
+<span class="sd">          </span>
+<span class="sd">        :returns: a stored object is returned or None if nothing could be found.</span>
+<span class="sd">          </span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        
+        <span class="n">dircache</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_dircache_for</span><span class="p">(</span><span class="n">abspath</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">abspath</span> <span class="ow">in</span> <span class="n">dircache</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">dircache</span><span class="p">[</span><span class="n">abspath</span><span class="p">]</span>
+        <span class="k">return</span> <span class="bp">None</span>
+</div>
+<div class="viewcode-block" id="TracesFileCache.put"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.TracesFileCache.put">[docs]</a>    <span class="k">def</span> <span class="nf">put</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">abspath</span><span class="p">,</span> <span class="n">tfile</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Put an item into the cache.</span>
+<span class="sd">        </span>
+<span class="sd">        :param abspath: absolute path of the object to be stored</span>
+<span class="sd">        :param tfile: object to be stored</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        
+        <span class="n">cachepath</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dircachepath</span><span class="p">(</span><span class="n">abspath</span><span class="p">)</span>
+        <span class="c"># get lock on cachepath here</span>
+        <span class="n">dircache</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_dircache</span><span class="p">(</span><span class="n">cachepath</span><span class="p">)</span>
+        <span class="n">dircache</span><span class="p">[</span><span class="n">abspath</span><span class="p">]</span> <span class="o">=</span> <span class="n">tfile</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">modified</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">cachepath</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="TracesFileCache.dump_modified"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.TracesFileCache.dump_modified">[docs]</a>    <span class="k">def</span> <span class="nf">dump_modified</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Save any modifications to disk.&#39;&#39;&#39;</span>
+
+        <span class="k">for</span> <span class="n">cachepath</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">modified</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_dump_dircache</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dircaches</span><span class="p">[</span><span class="n">cachepath</span><span class="p">],</span> <span class="n">cachepath</span><span class="p">)</span>
+            <span class="c"># unlock </span>
+            
+        <span class="bp">self</span><span class="o">.</span><span class="n">modified</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="TracesFileCache.clean"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.TracesFileCache.clean">[docs]</a>    <span class="k">def</span> <span class="nf">clean</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Weed out missing files from the disk caches.&#39;&#39;&#39;</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">dump_modified</span><span class="p">()</span>
+        
+        <span class="k">for</span> <span class="n">fn</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cachedir</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">i</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span> <span class="c"># valid filenames are integers</span>
+                <span class="n">cache</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_load_dircache</span><span class="p">(</span><span class="n">pjoin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cachedir</span><span class="p">,</span> <span class="n">fn</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_dump_dircache</span><span class="p">(</span><span class="n">cache</span><span class="p">,</span> <span class="n">pjoin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cachedir</span><span class="p">,</span> <span class="n">fn</span><span class="p">))</span>
+                
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="k">pass</span>
+</div>
+    <span class="k">def</span> <span class="nf">_get_dircache_for</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">abspath</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_dircache</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dircachepath</span><span class="p">(</span><span class="n">abspath</span><span class="p">))</span>
+    
+    <span class="k">def</span> <span class="nf">_get_dircache</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cachepath</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">cachepath</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">dircaches</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">cachepath</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">dircaches</span><span class="p">[</span><span class="n">cachepath</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_load_dircache</span><span class="p">(</span><span class="n">cachepath</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">dircaches</span><span class="p">[</span><span class="n">cachepath</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+                
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">dircaches</span><span class="p">[</span><span class="n">cachepath</span><span class="p">]</span>
+       
+    <span class="k">def</span> <span class="nf">_dircachepath</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">abspath</span><span class="p">):</span>
+        <span class="n">cachefn</span> <span class="o">=</span> <span class="s">&quot;</span><span class="si">%i</span><span class="s">&quot;</span> <span class="o">%</span> <span class="nb">abs</span><span class="p">(</span><span class="nb">hash</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">abspath</span><span class="p">)))</span>
+        <span class="k">return</span>  <span class="n">pjoin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cachedir</span><span class="p">,</span> <span class="n">cachefn</span><span class="p">)</span>
+            
+    <span class="k">def</span> <span class="nf">_load_dircache</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cachefilename</span><span class="p">):</span>
+        
+        <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">cachefilename</span><span class="p">,</span><span class="s">&#39;r&#39;</span><span class="p">)</span>
+        <span class="n">cache</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        
+        <span class="c"># weed out files which no longer exist</span>
+        <span class="k">for</span> <span class="n">fn</span> <span class="ow">in</span> <span class="n">cache</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
+                <span class="k">del</span> <span class="n">cache</span><span class="p">[</span><span class="n">fn</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">cache</span>
+        
+    <span class="k">def</span> <span class="nf">_dump_dircache</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cache</span><span class="p">,</span> <span class="n">cachefilename</span><span class="p">):</span>
+        
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">cache</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">cachefilename</span><span class="p">):</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">cachefilename</span><span class="p">)</span>
+            <span class="k">return</span>
+        
+        <span class="c"># make a copy without the parents</span>
+        <span class="n">cache_copy</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">fn</span> <span class="ow">in</span> <span class="n">cache</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="n">cache_copy</span><span class="p">[</span><span class="n">fn</span><span class="p">]</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">cache</span><span class="p">[</span><span class="n">fn</span><span class="p">])</span>
+            <span class="n">cache_copy</span><span class="p">[</span><span class="n">fn</span><span class="p">]</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="bp">None</span>
+        
+        <span class="n">tmpfn</span> <span class="o">=</span> <span class="n">cachefilename</span><span class="o">+</span><span class="s">&#39;.</span><span class="si">%i</span><span class="s">.tmp&#39;</span> <span class="o">%</span> <span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">()</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">tmpfn</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">)</span>
+        <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">cache_copy</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">tmpfn</span><span class="p">,</span> <span class="n">cachefilename</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="get_cache"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.get_cache">[docs]</a><span class="k">def</span> <span class="nf">get_cache</span><span class="p">(</span><span class="n">cachedir</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Get global TracesFileCache object for given directory.&#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="n">cachedir</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">TracesFileCache</span><span class="o">.</span><span class="n">caches</span><span class="p">:</span>
+        <span class="n">TracesFileCache</span><span class="o">.</span><span class="n">caches</span><span class="p">[</span><span class="n">cachedir</span><span class="p">]</span> <span class="o">=</span> <span class="n">TracesFileCache</span><span class="p">(</span><span class="n">cachedir</span><span class="p">)</span>
+        
+    <span class="k">return</span> <span class="n">TracesFileCache</span><span class="o">.</span><span class="n">caches</span><span class="p">[</span><span class="n">cachedir</span><span class="p">]</span>
+    </div>
+<div class="viewcode-block" id="loader"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.loader">[docs]</a><span class="k">def</span> <span class="nf">loader</span><span class="p">(</span><span class="n">filenames</span><span class="p">,</span> <span class="n">fileformat</span><span class="p">,</span> <span class="n">cache</span><span class="p">,</span> <span class="n">filename_attributes</span><span class="p">,</span> <span class="n">show_progress</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">filenames</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&#39;No files to load from&#39;</span><span class="p">)</span>
+        <span class="k">return</span>
+    
+    <span class="n">pbar</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="k">if</span> <span class="n">show_progress</span> <span class="ow">and</span> <span class="n">progressbar</span> <span class="ow">and</span> <span class="n">config</span><span class="o">.</span><span class="n">show_progress</span><span class="p">:</span>
+        <span class="n">widgets</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;Scanning files&#39;</span><span class="p">,</span> <span class="s">&#39; &#39;</span><span class="p">,</span>
+                <span class="n">progressbar</span><span class="o">.</span><span class="n">Bar</span><span class="p">(</span><span class="n">marker</span><span class="o">=</span><span class="s">&#39;-&#39;</span><span class="p">,</span><span class="n">left</span><span class="o">=</span><span class="s">&#39;[&#39;</span><span class="p">,</span><span class="n">right</span><span class="o">=</span><span class="s">&#39;]&#39;</span><span class="p">),</span> <span class="s">&#39; &#39;</span><span class="p">,</span>
+                <span class="n">progressbar</span><span class="o">.</span><span class="n">Percentage</span><span class="p">(),</span> <span class="s">&#39; &#39;</span><span class="p">,]</span>
+        
+        <span class="n">pbar</span> <span class="o">=</span> <span class="n">progressbar</span><span class="o">.</span><span class="n">ProgressBar</span><span class="p">(</span><span class="n">widgets</span><span class="o">=</span><span class="n">widgets</span><span class="p">,</span> <span class="n">maxval</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">filenames</span><span class="p">))</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+    
+    <span class="n">regex</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="k">if</span> <span class="n">filename_attributes</span><span class="p">:</span>
+        <span class="n">regex</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">filename_attributes</span><span class="p">)</span>
+    
+    <span class="n">failures</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">ifile</span><span class="p">,</span> <span class="n">filename</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">filenames</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">abspath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+            
+            <span class="n">substitutions</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="k">if</span> <span class="n">regex</span><span class="p">:</span>
+                <span class="n">m</span> <span class="o">=</span> <span class="n">regex</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">m</span><span class="p">:</span> <span class="k">raise</span> <span class="n">FilenameAttributeError</span><span class="p">(</span>
+                    <span class="s">&quot;Cannot get attributes with pattern &#39;</span><span class="si">%s</span><span class="s">&#39; from path &#39;</span><span class="si">%s</span><span class="s">&#39;&quot;</span> 
+                        <span class="o">%</span> <span class="p">(</span><span class="n">filename_attributes</span><span class="p">,</span> <span class="n">filename</span><span class="p">))</span>
+                <span class="n">substitutions</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">groupdict</span><span class="p">():</span>
+                    <span class="k">if</span> <span class="n">k</span>  <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;network&#39;</span><span class="p">,</span> <span class="s">&#39;station&#39;</span><span class="p">,</span> <span class="s">&#39;location&#39;</span><span class="p">,</span> <span class="s">&#39;channel&#39;</span><span class="p">):</span>
+                        <span class="n">substitutions</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">groupdict</span><span class="p">()[</span><span class="n">k</span><span class="p">]</span>
+                
+            
+            <span class="n">mtime</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">stat</span><span class="p">(</span><span class="n">filename</span><span class="p">)[</span><span class="mi">8</span><span class="p">]</span>
+            <span class="n">tfile</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="k">if</span> <span class="n">cache</span><span class="p">:</span>
+                <span class="n">tfile</span> <span class="o">=</span> <span class="n">cache</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">abspath</span><span class="p">)</span>
+            
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">tfile</span> <span class="ow">or</span> <span class="n">tfile</span><span class="o">.</span><span class="n">mtime</span> <span class="o">!=</span> <span class="n">mtime</span> <span class="ow">or</span> <span class="n">substitutions</span><span class="p">:</span>
+                <span class="n">tfile</span> <span class="o">=</span> <span class="n">TracesFile</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="n">abspath</span><span class="p">,</span> <span class="n">fileformat</span><span class="p">,</span> <span class="n">substitutions</span><span class="o">=</span><span class="n">substitutions</span><span class="p">,</span> <span class="n">mtime</span><span class="o">=</span><span class="n">mtime</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">cache</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">substitutions</span><span class="p">:</span>
+                    <span class="n">cache</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">abspath</span><span class="p">,</span> <span class="n">tfile</span><span class="p">)</span>
+                
+        <span class="k">except</span> <span class="p">(</span><span class="n">io</span><span class="o">.</span><span class="n">FileLoadError</span><span class="p">,</span> <span class="ne">OSError</span><span class="p">,</span> <span class="n">FilenameAttributeError</span><span class="p">),</span> <span class="n">xerror</span><span class="p">:</span>
+            <span class="n">failures</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">abspath</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">xerror</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="n">tfile</span>
+        
+        <span class="k">if</span> <span class="n">pbar</span><span class="p">:</span> <span class="n">pbar</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">ifile</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="n">pbar</span><span class="p">:</span> <span class="n">pbar</span><span class="o">.</span><span class="n">finish</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">failures</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&#39;The following file</span><span class="si">%s</span><span class="s"> caused problems and will be ignored:</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">util</span><span class="o">.</span><span class="n">plural_s</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">failures</span><span class="p">))</span> <span class="o">+</span> <span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">failures</span><span class="p">))</span>
+    
+    <span class="k">if</span> <span class="n">cache</span><span class="p">:</span>
+        <span class="n">cache</span><span class="o">.</span><span class="n">dump_modified</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="TracesGroup"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.TracesGroup">[docs]</a><span class="k">class</span> <span class="nc">TracesGroup</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    
+    <span class="sd">&#39;&#39;&#39;Trace container base class.</span>
+<span class="sd">    </span>
+<span class="sd">    Base class for Pile, SubPile, and TracesFile, i.e. anything containing </span>
+<span class="sd">    a collection of several traces. A TracesGroup object maintains lookup sets</span>
+<span class="sd">    of some of the traces meta-information, as well as a combined time-range</span>
+<span class="sd">    of its contents.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="n">parent</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">empty</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nupdates</span> <span class="o">=</span> <span class="mi">0</span>
+    
+<div class="viewcode-block" id="TracesGroup.set_parent"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.TracesGroup.set_parent">[docs]</a>    <span class="k">def</span> <span class="nf">set_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="n">parent</span>
+    </div>
+<div class="viewcode-block" id="TracesGroup.get_parent"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.TracesGroup.get_parent">[docs]</a>    <span class="k">def</span> <span class="nf">get_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span>
+    </div>
+<div class="viewcode-block" id="TracesGroup.empty"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.TracesGroup.empty">[docs]</a>    <span class="k">def</span> <span class="nf">empty</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">networks</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">stations</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">locations</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">channels</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nslc_ids</span> <span class="o">=</span> <span class="p">[</span> <span class="nb">set</span><span class="p">()</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span> <span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tmin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tmax</span> <span class="o">=</span> <span class="bp">None</span><span class="p">,</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">have_tuples</span> <span class="o">=</span> <span class="bp">False</span>
+    </div>
+<div class="viewcode-block" id="TracesGroup.update"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.TracesGroup.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">content</span><span class="p">,</span> <span class="n">empty</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">empty</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">empty</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">have_tuples</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_convert_tuples_to_sets</span><span class="p">()</span>
+            
+        <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">content</span><span class="p">:</span>
+        
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">TracesGroup</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">networks</span><span class="o">.</span><span class="n">update</span><span class="p">(</span> <span class="n">c</span><span class="o">.</span><span class="n">networks</span> <span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">stations</span><span class="o">.</span><span class="n">update</span><span class="p">(</span> <span class="n">c</span><span class="o">.</span><span class="n">stations</span> <span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">locations</span><span class="o">.</span><span class="n">update</span><span class="p">(</span> <span class="n">c</span><span class="o">.</span><span class="n">locations</span> <span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">channels</span><span class="o">.</span><span class="n">update</span><span class="p">(</span> <span class="n">c</span><span class="o">.</span><span class="n">channels</span> <span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">nslc_ids</span><span class="o">.</span><span class="n">update</span><span class="p">(</span> <span class="n">c</span><span class="o">.</span><span class="n">nslc_ids</span> <span class="p">)</span>
+                
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">trace</span><span class="o">.</span><span class="n">Trace</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">networks</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">network</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">stations</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">station</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">locations</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">location</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">channels</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">channel</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">nslc_ids</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">nslc_id</span><span class="p">)</span>
+            
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tmin</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">tmin</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">tmin</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">tmin</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tmin</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">tmin</span><span class="p">)</span>
+                
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tmax</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">tmax</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">tmax</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">tmax</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tmax</span><span class="p">,</span> <span class="n">c</span><span class="o">.</span><span class="n">tmax</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">empty</span><span class="p">:</span>    
+            <span class="bp">self</span><span class="o">.</span><span class="n">_convert_small_sets_to_tuples</span><span class="p">()</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">nupdates</span> <span class="o">+=</span> <span class="mi">1</span>
+    </div>
+<div class="viewcode-block" id="TracesGroup.notify_listeners"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.TracesGroup.notify_listeners">[docs]</a>    <span class="k">def</span> <span class="nf">notify_listeners</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">what</span><span class="p">):</span>
+        <span class="k">pass</span>
+    </div>
+<div class="viewcode-block" id="TracesGroup.recursive_grow_update"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.TracesGroup.recursive_grow_update">[docs]</a>    <span class="k">def</span> <span class="nf">recursive_grow_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">content</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        
+        <span class="k">if</span> <span class="n">content</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">content</span><span class="p">,</span> <span class="n">empty</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">recursive_grow_update</span><span class="p">((</span><span class="bp">self</span><span class="p">,))</span>
+            
+        <span class="bp">self</span><span class="o">.</span><span class="n">notify_listeners</span><span class="p">(</span><span class="s">&#39;update&#39;</span><span class="p">)</span>
+    </div>
+<div class="viewcode-block" id="TracesGroup.recursive_full_update"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.TracesGroup.recursive_full_update">[docs]</a>    <span class="k">def</span> <span class="nf">recursive_full_update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">assert</span> <span class="bp">False</span><span class="p">,</span> <span class="s">&#39;should be implemented in derived class&#39;</span>
+        </div>
+<div class="viewcode-block" id="TracesGroup.get_update_count"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.TracesGroup.get_update_count">[docs]</a>    <span class="k">def</span> <span class="nf">get_update_count</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">nupdates</span>
+    </div>
+<div class="viewcode-block" id="TracesGroup.overlaps"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.TracesGroup.overlaps">[docs]</a>    <span class="k">def</span> <span class="nf">overlaps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tmin</span><span class="p">,</span><span class="n">tmax</span><span class="p">):</span>
+        <span class="c">#return not (tmax &lt; self.tmin or self.tmax &lt; tmin)</span>
+        <span class="k">return</span> <span class="n">tmax</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tmin</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">tmax</span> <span class="o">&gt;=</span> <span class="n">tmin</span>
+    </div>
+<div class="viewcode-block" id="TracesGroup.is_relevant"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.TracesGroup.is_relevant">[docs]</a>    <span class="k">def</span> <span class="nf">is_relevant</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tmin</span><span class="p">,</span> <span class="n">tmax</span><span class="p">,</span> <span class="n">group_selector</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="c">#return  not (tmax &lt;= self.tmin or self.tmax &lt; tmin) and (selector is None or selector(self))</span>
+        <span class="k">return</span>  <span class="n">tmax</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tmin</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">tmax</span> <span class="o">&gt;=</span> <span class="n">tmin</span> <span class="ow">and</span> <span class="p">(</span><span class="n">group_selector</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="n">group_selector</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+</div>
+    <span class="k">def</span> <span class="nf">_convert_tuples_to_sets</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">networks</span><span class="p">,</span> <span class="nb">set</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">networks</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">networks</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stations</span><span class="p">,</span> <span class="nb">set</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">stations</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stations</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">locations</span><span class="p">,</span> <span class="nb">set</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">locations</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">locations</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">channels</span><span class="p">,</span> <span class="nb">set</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">channels</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">channels</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nslc_ids</span><span class="p">,</span> <span class="nb">set</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">nslc_ids</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nslc_ids</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">have_tuples</span> <span class="o">=</span> <span class="bp">False</span>
+
+    <span class="k">def</span> <span class="nf">_convert_small_sets_to_tuples</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">networks</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">32</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">networks</span> <span class="o">=</span> <span class="n">reuse</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">networks</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">have_tuples</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stations</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">32</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">stations</span> <span class="o">=</span> <span class="n">reuse</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stations</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">have_tuples</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">locations</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">32</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">locations</span> <span class="o">=</span> <span class="n">reuse</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">locations</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">have_tuples</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">channels</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">32</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">channels</span> <span class="o">=</span> <span class="n">reuse</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">channels</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">have_tuples</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nslc_ids</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">32</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">nslc_ids</span> <span class="o">=</span> <span class="n">reuse</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nslc_ids</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">have_tuples</span> <span class="o">=</span> <span class="bp">True</span>
+            </div>
+<div class="viewcode-block" id="MemTracesFile"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.MemTracesFile">[docs]</a><span class="k">class</span> <span class="nc">MemTracesFile</span><span class="p">(</span><span class="n">TracesGroup</span><span class="p">):</span>
+    
+    <span class="sd">&#39;&#39;&#39;This is needed to make traces without an actual disc file to be inserted</span>
+<span class="sd">    into a Pile.&#39;&#39;&#39;</span>
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">traces</span><span class="p">):</span>
+        <span class="n">TracesGroup</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">traces</span> <span class="o">=</span> <span class="n">traces</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">traces</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mtime</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        
+<div class="viewcode-block" id="MemTracesFile.load_headers"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.MemTracesFile.load_headers">[docs]</a>    <span class="k">def</span> <span class="nf">load_headers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mtime</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="k">pass</span>
+        </div>
+<div class="viewcode-block" id="MemTracesFile.load_data"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.MemTracesFile.load_data">[docs]</a>    <span class="k">def</span> <span class="nf">load_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+        </div>
+<div class="viewcode-block" id="MemTracesFile.use_data"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.MemTracesFile.use_data">[docs]</a>    <span class="k">def</span> <span class="nf">use_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+        </div>
+<div class="viewcode-block" id="MemTracesFile.drop_data"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.MemTracesFile.drop_data">[docs]</a>    <span class="k">def</span> <span class="nf">drop_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+        </div>
+<div class="viewcode-block" id="MemTracesFile.reload_if_modified"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.MemTracesFile.reload_if_modified">[docs]</a>    <span class="k">def</span> <span class="nf">reload_if_modified</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+        </div>
+<div class="viewcode-block" id="MemTracesFile.recursive_full_update"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.MemTracesFile.recursive_full_update">[docs]</a>    <span class="k">def</span> <span class="nf">recursive_full_update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">traces</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">recursive_full_update</span><span class="p">()</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">notify_listeners</span><span class="p">(</span><span class="s">&#39;fullupdate&#39;</span><span class="p">)</span>
+            </div>
+<div class="viewcode-block" id="MemTracesFile.get_newest_mtime"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.MemTracesFile.get_newest_mtime">[docs]</a>    <span class="k">def</span> <span class="nf">get_newest_mtime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tmin</span><span class="p">,</span> <span class="n">tmax</span><span class="p">,</span> <span class="n">trace_selector</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="n">mtime</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">for</span> <span class="n">tr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">traces</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">trace_selector</span> <span class="ow">or</span> <span class="n">trace_selector</span><span class="p">(</span><span class="n">tr</span><span class="p">):</span>
+                <span class="n">mtime</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">mtime</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mtime</span><span class="p">)</span>
+                
+        <span class="k">return</span> <span class="n">mtime</span>
+        </div>
+<div class="viewcode-block" id="MemTracesFile.chop"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.MemTracesFile.chop">[docs]</a>    <span class="k">def</span> <span class="nf">chop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">tmin</span><span class="p">,</span><span class="n">tmax</span><span class="p">,</span><span class="n">trace_selector</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">snap</span><span class="o">=</span><span class="p">(</span><span class="nb">round</span><span class="p">,</span><span class="nb">round</span><span class="p">)):</span>
+        <span class="n">chopped</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">used</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="n">needed</span> <span class="o">=</span> <span class="p">[</span> <span class="n">tr</span> <span class="k">for</span> <span class="n">tr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">traces</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">trace_selector</span> <span class="ow">or</span> <span class="n">trace_selector</span><span class="p">(</span><span class="n">tr</span><span class="p">)</span> <span class="p">]</span>
+                
+        <span class="k">if</span> <span class="n">needed</span><span class="p">:</span>
+            <span class="n">used</span> <span class="o">=</span> <span class="bp">True</span>
+            <span class="k">for</span> <span class="n">tr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">traces</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">trace_selector</span> <span class="ow">or</span> <span class="n">trace_selector</span><span class="p">(</span><span class="n">tr</span><span class="p">):</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">chopped</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tr</span><span class="o">.</span><span class="n">chop</span><span class="p">(</span><span class="n">tmin</span><span class="p">,</span><span class="n">tmax</span><span class="p">,</span><span class="n">inplace</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span><span class="n">snap</span><span class="o">=</span><span class="n">snap</span><span class="p">))</span>
+                    <span class="k">except</span> <span class="n">trace</span><span class="o">.</span><span class="n">NoData</span><span class="p">:</span>
+                        <span class="k">pass</span>
+            
+        <span class="k">return</span> <span class="n">chopped</span><span class="p">,</span> <span class="n">used</span>
+        </div>
+<div class="viewcode-block" id="MemTracesFile.get_deltats"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.MemTracesFile.get_deltats">[docs]</a>    <span class="k">def</span> <span class="nf">get_deltats</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">deltats</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">trace</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">traces</span><span class="p">:</span>
+            <span class="n">deltats</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">trace</span><span class="o">.</span><span class="n">deltat</span><span class="p">)</span>
+            
+        <span class="k">return</span> <span class="n">deltats</span>
+    </div>
+<div class="viewcode-block" id="MemTracesFile.iter_traces"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.MemTracesFile.iter_traces">[docs]</a>    <span class="k">def</span> <span class="nf">iter_traces</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">trace</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">traces</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="n">trace</span>
+    </div>
+<div class="viewcode-block" id="MemTracesFile.get_traces"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.MemTracesFile.get_traces">[docs]</a>    <span class="k">def</span> <span class="nf">get_traces</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">traces</span>
+    </div>
+<div class="viewcode-block" id="MemTracesFile.gather_keys"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.MemTracesFile.gather_keys">[docs]</a>    <span class="k">def</span> <span class="nf">gather_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gather</span><span class="p">,</span> <span class="n">selector</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="n">keys</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">trace</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">traces</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">selector</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="n">selector</span><span class="p">(</span><span class="n">trace</span><span class="p">):</span>
+                <span class="n">keys</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">gather</span><span class="p">(</span><span class="n">trace</span><span class="p">))</span>
+            
+        <span class="k">return</span> <span class="n">keys</span>
+    </div>
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">sl</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+            <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">s</span><span class="p">))</span>
+        
+        <span class="n">s</span> <span class="o">=</span> <span class="s">&#39;MemTracesFile</span><span class="se">\n</span><span class="s">&#39;</span>
+        <span class="n">s</span> <span class="o">+=</span> <span class="s">&#39;abspath: </span><span class="si">%s</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">abspath</span>
+        <span class="n">s</span> <span class="o">+=</span> <span class="s">&#39;file mtime: </span><span class="si">%s</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">util</span><span class="o">.</span><span class="n">gmctime</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mtime</span><span class="p">)</span>
+        <span class="n">s</span> <span class="o">+=</span> <span class="s">&#39;number of traces: </span><span class="si">%i</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">traces</span><span class="p">)</span>
+        <span class="n">s</span> <span class="o">+=</span> <span class="s">&#39;timerange: </span><span class="si">%s</span><span class="s"> - </span><span class="si">%s</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">util</span><span class="o">.</span><span class="n">gmctime</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tmin</span><span class="p">),</span> <span class="n">util</span><span class="o">.</span><span class="n">gmctime</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tmax</span><span class="p">))</span>
+        <span class="n">s</span> <span class="o">+=</span> <span class="s">&#39;networks: </span><span class="si">%s</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="s">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sl</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">networks</span><span class="p">))</span>
+        <span class="n">s</span> <span class="o">+=</span> <span class="s">&#39;stations: </span><span class="si">%s</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="s">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sl</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stations</span><span class="p">))</span>
+        <span class="n">s</span> <span class="o">+=</span> <span class="s">&#39;locations: </span><span class="si">%s</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="s">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sl</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">locations</span><span class="p">))</span>
+        <span class="n">s</span> <span class="o">+=</span> <span class="s">&#39;channels: </span><span class="si">%s</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="s">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sl</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">channels</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">s</span>
+</div>
+<div class="viewcode-block" id="TracesFile"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.TracesFile">[docs]</a><span class="k">class</span> <span class="nc">TracesFile</span><span class="p">(</span><span class="n">TracesGroup</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">abspath</span><span class="p">,</span> <span class="n">format</span><span class="p">,</span> <span class="n">substitutions</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">mtime</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="n">TracesGroup</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">abspath</span> <span class="o">=</span> <span class="n">abspath</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">format</span> <span class="o">=</span> <span class="n">format</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">traces</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_loaded</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_use_count</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">substitutions</span> <span class="o">=</span> <span class="n">substitutions</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">load_headers</span><span class="p">(</span><span class="n">mtime</span><span class="o">=</span><span class="n">mtime</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">traces</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mtime</span> <span class="o">=</span> <span class="n">mtime</span>
+        
+<div class="viewcode-block" id="TracesFile.recursive_full_update"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.TracesFile.recursive_full_update">[docs]</a>    <span class="k">def</span> <span class="nf">recursive_full_update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">traces</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">recursive_full_update</span><span class="p">()</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">notify_listeners</span><span class="p">(</span><span class="s">&#39;fullupdate&#39;</span><span class="p">)</span>
+        </div>
+<div class="viewcode-block" id="TracesFile.load_headers"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.TracesFile.load_headers">[docs]</a>    <span class="k">def</span> <span class="nf">load_headers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mtime</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;loading headers from file: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">abspath</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">mtime</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mtime</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">stat</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">abspath</span><span class="p">)[</span><span class="mi">8</span><span class="p">]</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">traces</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">tr</span> <span class="ow">in</span> <span class="n">io</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">abspath</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">format</span><span class="p">,</span> <span class="n">getdata</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">substitutions</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">substitutions</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">traces</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tr</span><span class="p">)</span>
+            
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_loaded</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_use_count</span> <span class="o">=</span> <span class="mi">0</span>
+        </div>
+<div class="viewcode-block" id="TracesFile.load_data"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.TracesFile.load_data">[docs]</a>    <span class="k">def</span> <span class="nf">load_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_loaded</span> <span class="ow">or</span> <span class="n">force</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;loading data from file: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">abspath</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">traces</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">tr</span> <span class="ow">in</span> <span class="n">io</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">abspath</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">format</span><span class="p">,</span> <span class="n">getdata</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">substitutions</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">substitutions</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">traces</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tr</span><span class="p">)</span>
+                
+            <span class="bp">self</span><span class="o">.</span><span class="n">data_loaded</span> <span class="o">=</span> <span class="bp">True</span>
+    </div>
+<div class="viewcode-block" id="TracesFile.use_data"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.TracesFile.use_data">[docs]</a>    <span class="k">def</span> <span class="nf">use_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_loaded</span><span class="p">:</span> <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&#39;Data not loaded&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_use_count</span> <span class="o">+=</span> <span class="mi">1</span>
+        </div>
+<div class="viewcode-block" id="TracesFile.drop_data"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.TracesFile.drop_data">[docs]</a>    <span class="k">def</span> <span class="nf">drop_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_loaded</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_use_count</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;forgetting data of file: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">abspath</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">tr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">traces</span><span class="p">:</span>
+                    <span class="n">tr</span><span class="o">.</span><span class="n">drop_data</span><span class="p">()</span>
+                    
+                <span class="bp">self</span><span class="o">.</span><span class="n">data_loaded</span> <span class="o">=</span> <span class="bp">False</span>
+                    
+            <span class="bp">self</span><span class="o">.</span><span class="n">data_use_count</span> <span class="o">-=</span> <span class="mi">1</span>    
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">data_use_count</span> <span class="o">=</span> <span class="mi">0</span>
+            </div>
+<div class="viewcode-block" id="TracesFile.reload_if_modified"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.TracesFile.reload_if_modified">[docs]</a>    <span class="k">def</span> <span class="nf">reload_if_modified</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">mtime</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">stat</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">abspath</span><span class="p">)[</span><span class="mi">8</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">mtime</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mtime</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;mtime=</span><span class="si">%i</span><span class="s">, reloading file: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">mtime</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">abspath</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mtime</span> <span class="o">=</span> <span class="n">mtime</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_loaded</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">load_data</span><span class="p">(</span><span class="n">force</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">load_headers</span><span class="p">()</span>
+            
+            <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">traces</span><span class="p">)</span>
+            
+            <span class="k">return</span> <span class="bp">True</span>
+            
+        <span class="k">return</span> <span class="bp">False</span>
+       </div>
+<div class="viewcode-block" id="TracesFile.get_newest_mtime"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.TracesFile.get_newest_mtime">[docs]</a>    <span class="k">def</span> <span class="nf">get_newest_mtime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tmin</span><span class="p">,</span> <span class="n">tmax</span><span class="p">,</span> <span class="n">trace_selector</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="n">mtime</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">for</span> <span class="n">tr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">traces</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">trace_selector</span> <span class="ow">or</span> <span class="n">trace_selector</span><span class="p">(</span><span class="n">tr</span><span class="p">):</span>
+                <span class="n">mtime</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">mtime</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mtime</span><span class="p">)</span>
+                
+        <span class="k">return</span> <span class="n">mtime</span>
+</div>
+<div class="viewcode-block" id="TracesFile.chop"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.TracesFile.chop">[docs]</a>    <span class="k">def</span> <span class="nf">chop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">tmin</span><span class="p">,</span><span class="n">tmax</span><span class="p">,</span><span class="n">trace_selector</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">snap</span><span class="o">=</span><span class="p">(</span><span class="nb">round</span><span class="p">,</span><span class="nb">round</span><span class="p">)):</span>
+        <span class="n">chopped</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">used</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="n">needed</span> <span class="o">=</span> <span class="p">[</span> <span class="n">tr</span> <span class="k">for</span> <span class="n">tr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">traces</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">trace_selector</span> <span class="ow">or</span> <span class="n">trace_selector</span><span class="p">(</span><span class="n">tr</span><span class="p">)</span> <span class="p">]</span>
+                
+        <span class="k">if</span> <span class="n">needed</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">load_data</span><span class="p">()</span>
+            <span class="n">used</span> <span class="o">=</span> <span class="bp">True</span>
+            <span class="k">for</span> <span class="n">tr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">traces</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">trace_selector</span> <span class="ow">or</span> <span class="n">trace_selector</span><span class="p">(</span><span class="n">tr</span><span class="p">):</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">chopped</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tr</span><span class="o">.</span><span class="n">chop</span><span class="p">(</span><span class="n">tmin</span><span class="p">,</span><span class="n">tmax</span><span class="p">,</span><span class="n">inplace</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span><span class="n">snap</span><span class="o">=</span><span class="n">snap</span><span class="p">))</span>
+                    <span class="k">except</span> <span class="n">trace</span><span class="o">.</span><span class="n">NoData</span><span class="p">:</span>
+                        <span class="k">pass</span>
+            
+        <span class="k">return</span> <span class="n">chopped</span><span class="p">,</span> <span class="n">used</span>
+        </div>
+<div class="viewcode-block" id="TracesFile.get_deltats"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.TracesFile.get_deltats">[docs]</a>    <span class="k">def</span> <span class="nf">get_deltats</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">deltats</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">trace</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">traces</span><span class="p">:</span>
+            <span class="n">deltats</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">trace</span><span class="o">.</span><span class="n">deltat</span><span class="p">)</span>
+            
+        <span class="k">return</span> <span class="n">deltats</span>
+    </div>
+<div class="viewcode-block" id="TracesFile.iter_traces"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.TracesFile.iter_traces">[docs]</a>    <span class="k">def</span> <span class="nf">iter_traces</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">trace</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">traces</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="n">trace</span>
+    </div>
+<div class="viewcode-block" id="TracesFile.gather_keys"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.TracesFile.gather_keys">[docs]</a>    <span class="k">def</span> <span class="nf">gather_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gather</span><span class="p">,</span> <span class="n">selector</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="n">keys</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">trace</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">traces</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">selector</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="n">selector</span><span class="p">(</span><span class="n">trace</span><span class="p">):</span>
+                <span class="n">keys</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">gather</span><span class="p">(</span><span class="n">trace</span><span class="p">))</span>
+            
+        <span class="k">return</span> <span class="n">keys</span>
+    </div>
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        
+        <span class="k">def</span> <span class="nf">sl</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+            <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">s</span><span class="p">))</span>
+        
+        <span class="n">s</span> <span class="o">=</span> <span class="s">&#39;TracesFile</span><span class="se">\n</span><span class="s">&#39;</span>
+        <span class="n">s</span> <span class="o">+=</span> <span class="s">&#39;abspath: </span><span class="si">%s</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">abspath</span>
+        <span class="n">s</span> <span class="o">+=</span> <span class="s">&#39;file mtime: </span><span class="si">%s</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">util</span><span class="o">.</span><span class="n">gmctime</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mtime</span><span class="p">)</span>
+        <span class="n">s</span> <span class="o">+=</span> <span class="s">&#39;number of traces: </span><span class="si">%i</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">traces</span><span class="p">)</span>
+        <span class="n">s</span> <span class="o">+=</span> <span class="s">&#39;timerange: </span><span class="si">%s</span><span class="s"> - </span><span class="si">%s</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">util</span><span class="o">.</span><span class="n">gmctime</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tmin</span><span class="p">),</span> <span class="n">util</span><span class="o">.</span><span class="n">gmctime</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tmax</span><span class="p">))</span>
+        <span class="n">s</span> <span class="o">+=</span> <span class="s">&#39;networks: </span><span class="si">%s</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="s">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sl</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">networks</span><span class="p">))</span>
+        <span class="n">s</span> <span class="o">+=</span> <span class="s">&#39;stations: </span><span class="si">%s</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="s">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sl</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stations</span><span class="p">))</span>
+        <span class="n">s</span> <span class="o">+=</span> <span class="s">&#39;locations: </span><span class="si">%s</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="s">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sl</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">locations</span><span class="p">))</span>
+        <span class="n">s</span> <span class="o">+=</span> <span class="s">&#39;channels: </span><span class="si">%s</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="s">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sl</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">channels</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">s</span>
+
+
+    </div>
+<div class="viewcode-block" id="FilenameAttributeError"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.FilenameAttributeError">[docs]</a><span class="k">class</span> <span class="nc">FilenameAttributeError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="k">pass</span>
+</div>
+<div class="viewcode-block" id="SubPile"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.SubPile">[docs]</a><span class="k">class</span> <span class="nc">SubPile</span><span class="p">(</span><span class="n">TracesGroup</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">):</span>
+        <span class="n">TracesGroup</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">files</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">empty</span><span class="p">()</span>
+        
+<div class="viewcode-block" id="SubPile.recursive_full_update"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.SubPile.recursive_full_update">[docs]</a>    <span class="k">def</span> <span class="nf">recursive_full_update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">files</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">recursive_full_update</span><span class="p">()</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">notify_listeners</span><span class="p">(</span><span class="s">&#39;fullupdate&#39;</span><span class="p">)</span>
+    </div>
+<div class="viewcode-block" id="SubPile.add_file"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.SubPile.add_file">[docs]</a>    <span class="k">def</span> <span class="nf">add_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">file</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">file</span><span class="p">)</span>
+        <span class="nb">file</span><span class="o">.</span><span class="n">set_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">((</span><span class="nb">file</span><span class="p">,),</span> <span class="n">empty</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+        </div>
+<div class="viewcode-block" id="SubPile.remove_file"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.SubPile.remove_file">[docs]</a>    <span class="k">def</span> <span class="nf">remove_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">file</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">files</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="nb">file</span><span class="p">)</span>
+        <span class="nb">file</span><span class="o">.</span><span class="n">set_parent</span><span class="p">(</span><span class="bp">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">files</span><span class="p">)</span>
+    </div>
+<div class="viewcode-block" id="SubPile.remove_files"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.SubPile.remove_files">[docs]</a>    <span class="k">def</span> <span class="nf">remove_files</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">files</span><span class="p">):</span>
+        <span class="k">for</span> <span class="nb">file</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">files</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="nb">file</span><span class="p">)</span>
+            <span class="nb">file</span><span class="o">.</span><span class="n">set_parent</span><span class="p">(</span><span class="bp">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">files</span><span class="p">)</span>
+    </div>
+<div class="viewcode-block" id="SubPile.get_newest_mtime"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.SubPile.get_newest_mtime">[docs]</a>    <span class="k">def</span> <span class="nf">get_newest_mtime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tmin</span><span class="p">,</span> <span class="n">tmax</span><span class="p">,</span> <span class="n">group_selector</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">trace_selector</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="n">mtime</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">for</span> <span class="nb">file</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">files</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">file</span><span class="o">.</span><span class="n">is_relevant</span><span class="p">(</span><span class="n">tmin</span><span class="p">,</span> <span class="n">tmax</span><span class="p">,</span> <span class="n">group_selector</span><span class="p">):</span>
+                <span class="n">mtime</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">mtime</span><span class="p">,</span> <span class="nb">file</span><span class="o">.</span><span class="n">get_newest_mtime</span><span class="p">(</span><span class="n">tmin</span><span class="p">,</span> <span class="n">tmax</span><span class="p">,</span> <span class="n">trace_selector</span><span class="p">))</span>
+                
+        <span class="k">return</span> <span class="n">mtime</span>
+    </div>
+<div class="viewcode-block" id="SubPile.chop"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.SubPile.chop">[docs]</a>    <span class="k">def</span> <span class="nf">chop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tmin</span><span class="p">,</span> <span class="n">tmax</span><span class="p">,</span> <span class="n">group_selector</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">trace_selector</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">snap</span><span class="o">=</span><span class="p">(</span><span class="nb">round</span><span class="p">,</span><span class="nb">round</span><span class="p">)):</span>
+        <span class="n">used_files</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="n">chopped</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="nb">file</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">files</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">file</span><span class="o">.</span><span class="n">is_relevant</span><span class="p">(</span><span class="n">tmin</span><span class="p">,</span> <span class="n">tmax</span><span class="p">,</span> <span class="n">group_selector</span><span class="p">):</span>
+                <span class="n">chopped_</span><span class="p">,</span> <span class="n">used</span> <span class="o">=</span> <span class="nb">file</span><span class="o">.</span><span class="n">chop</span><span class="p">(</span><span class="n">tmin</span><span class="p">,</span> <span class="n">tmax</span><span class="p">,</span> <span class="n">trace_selector</span><span class="p">,</span> <span class="n">snap</span><span class="o">=</span><span class="n">snap</span><span class="p">)</span>
+                <span class="n">chopped</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span> <span class="n">chopped_</span> <span class="p">)</span>
+                <span class="k">if</span> <span class="n">used</span><span class="p">:</span>
+                    <span class="n">used_files</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="nb">file</span><span class="p">)</span>
+                
+        <span class="k">return</span> <span class="n">chopped</span><span class="p">,</span> <span class="n">used_files</span>
+        </div>
+<div class="viewcode-block" id="SubPile.gather_keys"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.SubPile.gather_keys">[docs]</a>    <span class="k">def</span> <span class="nf">gather_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gather</span><span class="p">,</span> <span class="n">selector</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="n">keys</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="k">for</span> <span class="nb">file</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">files</span><span class="p">:</span>
+            <span class="n">keys</span> <span class="o">|=</span> <span class="nb">file</span><span class="o">.</span><span class="n">gather_keys</span><span class="p">(</span><span class="n">gather</span><span class="p">,</span> <span class="n">selector</span><span class="p">)</span>
+            
+        <span class="k">return</span> <span class="n">keys</span>
+</div>
+<div class="viewcode-block" id="SubPile.get_deltats"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.SubPile.get_deltats">[docs]</a>    <span class="k">def</span> <span class="nf">get_deltats</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">deltats</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="k">for</span> <span class="nb">file</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">files</span><span class="p">:</span>
+            <span class="n">deltats</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="nb">file</span><span class="o">.</span><span class="n">get_deltats</span><span class="p">())</span>
+            
+        <span class="k">return</span> <span class="n">deltats</span>
+</div>
+<div class="viewcode-block" id="SubPile.iter_traces"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.SubPile.iter_traces">[docs]</a>    <span class="k">def</span> <span class="nf">iter_traces</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">load_data</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">return_abspath</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">group_selector</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">trace_selector</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="k">for</span> <span class="nb">file</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">files</span><span class="p">:</span>
+            
+            <span class="k">if</span> <span class="n">group_selector</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">group_selector</span><span class="p">(</span><span class="nb">file</span><span class="p">):</span>
+                <span class="k">continue</span>
+            
+            <span class="n">must_drop</span> <span class="o">=</span> <span class="bp">False</span>
+            <span class="k">if</span> <span class="n">load_data</span><span class="p">:</span>
+                <span class="nb">file</span><span class="o">.</span><span class="n">load_data</span><span class="p">()</span>
+                <span class="nb">file</span><span class="o">.</span><span class="n">use_data</span><span class="p">()</span>
+                <span class="n">must_drop</span> <span class="o">=</span> <span class="bp">True</span>
+            
+            <span class="k">for</span> <span class="n">trace</span> <span class="ow">in</span> <span class="nb">file</span><span class="o">.</span><span class="n">iter_traces</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">trace_selector</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">trace_selector</span><span class="p">(</span><span class="n">trace</span><span class="p">):</span>
+                    <span class="k">continue</span>
+                
+                <span class="k">if</span> <span class="n">return_abspath</span><span class="p">:</span>
+                    <span class="k">yield</span> <span class="nb">file</span><span class="o">.</span><span class="n">abspath</span><span class="p">,</span> <span class="n">trace</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">yield</span> <span class="n">trace</span>
+            
+            <span class="k">if</span> <span class="n">must_drop</span><span class="p">:</span>
+                <span class="nb">file</span><span class="o">.</span><span class="n">drop_data</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="SubPile.iter_files"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.SubPile.iter_files">[docs]</a>    <span class="k">def</span> <span class="nf">iter_files</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="nb">file</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">files</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="nb">file</span>
+            </div>
+<div class="viewcode-block" id="SubPile.reload_modified"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.SubPile.reload_modified">[docs]</a>    <span class="k">def</span> <span class="nf">reload_modified</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">modified</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="k">for</span> <span class="nb">file</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">files</span><span class="p">:</span>
+            <span class="n">modified</span> <span class="o">|=</span> <span class="nb">file</span><span class="o">.</span><span class="n">reload_if_modified</span><span class="p">()</span>
+        
+        <span class="k">if</span> <span class="n">modified</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">files</span><span class="p">)</span>
+            
+        <span class="k">return</span> <span class="n">modified</span>
+        </div>
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    
+        <span class="k">def</span> <span class="nf">sl</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+            <span class="k">return</span> <span class="nb">sorted</span><span class="p">([</span> <span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">s</span> <span class="p">])</span>
+
+        <span class="n">s</span> <span class="o">=</span> <span class="s">&#39;SubPile</span><span class="se">\n</span><span class="s">&#39;</span>
+        <span class="n">s</span> <span class="o">+=</span> <span class="s">&#39;number of files: </span><span class="si">%i</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">files</span><span class="p">)</span>
+        <span class="n">s</span> <span class="o">+=</span> <span class="s">&#39;timerange: </span><span class="si">%s</span><span class="s"> - </span><span class="si">%s</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">util</span><span class="o">.</span><span class="n">gmctime</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tmin</span><span class="p">),</span> <span class="n">util</span><span class="o">.</span><span class="n">gmctime</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tmax</span><span class="p">))</span>
+        <span class="n">s</span> <span class="o">+=</span> <span class="s">&#39;networks: </span><span class="si">%s</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="s">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sl</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">networks</span><span class="p">))</span>
+        <span class="n">s</span> <span class="o">+=</span> <span class="s">&#39;stations: </span><span class="si">%s</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="s">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sl</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stations</span><span class="p">))</span>
+        <span class="n">s</span> <span class="o">+=</span> <span class="s">&#39;locations: </span><span class="si">%s</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="s">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sl</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">locations</span><span class="p">))</span>
+        <span class="n">s</span> <span class="o">+=</span> <span class="s">&#39;channels: </span><span class="si">%s</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="s">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sl</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">channels</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">s</span>
+
+             </div>
+<div class="viewcode-block" id="Pile"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.Pile">[docs]</a><span class="k">class</span> <span class="nc">Pile</span><span class="p">(</span><span class="n">TracesGroup</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">TracesGroup</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">subpiles</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">subpiles</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">open_files</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">listeners</span> <span class="o">=</span> <span class="p">[]</span>
+        
+<div class="viewcode-block" id="Pile.recursive_full_update"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.Pile.recursive_full_update">[docs]</a>    <span class="k">def</span> <span class="nf">recursive_full_update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">subpiles</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">notify_listeners</span><span class="p">(</span><span class="s">&#39;fullupdate&#39;</span><span class="p">)</span>
+    </div>
+<div class="viewcode-block" id="Pile.add_listener"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.Pile.add_listener">[docs]</a>    <span class="k">def</span> <span class="nf">add_listener</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">listeners</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">weakref</span><span class="o">.</span><span class="n">ref</span><span class="p">(</span><span class="n">obj</span><span class="p">))</span>
+    </div>
+<div class="viewcode-block" id="Pile.notify_listeners"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.Pile.notify_listeners">[docs]</a>    <span class="k">def</span> <span class="nf">notify_listeners</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">what</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">ref</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">listeners</span><span class="p">:</span>
+            <span class="n">obj</span> <span class="o">=</span> <span class="n">ref</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">obj</span><span class="p">:</span>
+                <span class="n">obj</span><span class="o">.</span><span class="n">pile_changed</span><span class="p">(</span><span class="n">what</span><span class="p">)</span>
+    </div>
+<div class="viewcode-block" id="Pile.load_files"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.Pile.load_files">[docs]</a>    <span class="k">def</span> <span class="nf">load_files</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filenames</span><span class="p">,</span> <span class="n">filename_attributes</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">fileformat</span><span class="o">=</span><span class="s">&#39;mseed&#39;</span><span class="p">,</span> <span class="n">cache</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">show_progress</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="n">l</span> <span class="o">=</span> <span class="n">loader</span><span class="p">(</span><span class="n">filenames</span><span class="p">,</span> <span class="n">fileformat</span><span class="p">,</span> <span class="n">cache</span><span class="p">,</span> <span class="n">filename_attributes</span><span class="p">,</span> <span class="n">show_progress</span><span class="o">=</span><span class="n">show_progress</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_files</span><span class="p">(</span><span class="n">l</span><span class="p">)</span>
+        </div>
+<div class="viewcode-block" id="Pile.add_files"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.Pile.add_files">[docs]</a>    <span class="k">def</span> <span class="nf">add_files</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">files</span><span class="p">):</span>
+        <span class="n">modified_subpiles</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="k">for</span> <span class="nb">file</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+            <span class="n">subpile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span><span class="nb">file</span><span class="p">)</span>
+            <span class="n">subpile</span><span class="o">.</span><span class="n">add_file</span><span class="p">(</span><span class="nb">file</span><span class="p">)</span>
+            <span class="n">modified_subpiles</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">subpile</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">modified_subpiles</span><span class="p">,</span> <span class="n">empty</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">notify_listeners</span><span class="p">(</span><span class="s">&#39;add&#39;</span><span class="p">)</span>
+        </div>
+<div class="viewcode-block" id="Pile.add_file"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.Pile.add_file">[docs]</a>    <span class="k">def</span> <span class="nf">add_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">file</span><span class="p">):</span>
+        <span class="n">subpile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dispatch</span><span class="p">(</span><span class="nb">file</span><span class="p">)</span>
+        <span class="n">subpile</span><span class="o">.</span><span class="n">add_file</span><span class="p">(</span><span class="nb">file</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">((</span><span class="nb">file</span><span class="p">,),</span> <span class="n">empty</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">notify_listeners</span><span class="p">(</span><span class="s">&#39;add&#39;</span><span class="p">)</span>
+    </div>
+<div class="viewcode-block" id="Pile.remove_file"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.Pile.remove_file">[docs]</a>    <span class="k">def</span> <span class="nf">remove_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">file</span><span class="p">):</span>
+        <span class="n">subpile</span> <span class="o">=</span> <span class="nb">file</span><span class="o">.</span><span class="n">get_parent</span><span class="p">()</span>
+        <span class="n">subpile</span><span class="o">.</span><span class="n">remove_file</span><span class="p">(</span><span class="nb">file</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">subpiles</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">notify_listeners</span><span class="p">(</span><span class="s">&#39;remove&#39;</span><span class="p">)</span>
+        </div>
+<div class="viewcode-block" id="Pile.remove_files"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.Pile.remove_files">[docs]</a>    <span class="k">def</span> <span class="nf">remove_files</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">files</span><span class="p">):</span>
+        <span class="n">subpile_files</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="nb">file</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+            <span class="n">subpile</span> <span class="o">=</span> <span class="nb">file</span><span class="o">.</span><span class="n">get_parent</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">subpile</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">subpile_files</span><span class="p">:</span>
+                <span class="n">subpile_files</span><span class="p">[</span><span class="n">subpile</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+            
+            <span class="n">subpile_files</span><span class="p">[</span><span class="n">subpile</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">file</span><span class="p">)</span>
+       
+        <span class="k">for</span> <span class="n">subpile</span><span class="p">,</span> <span class="n">files</span> <span class="ow">in</span> <span class="n">subpile_files</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+            <span class="n">subpile</span><span class="o">.</span><span class="n">remove_files</span><span class="p">(</span><span class="n">files</span><span class="p">)</span>
+            
+        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">subpiles</span><span class="o">.</span><span class="n">values</span><span class="p">())</span> 
+        <span class="bp">self</span><span class="o">.</span><span class="n">notify_listeners</span><span class="p">(</span><span class="s">&#39;remove&#39;</span><span class="p">)</span>
+
+        </div>
+<div class="viewcode-block" id="Pile.dispatch_key"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.Pile.dispatch_key">[docs]</a>    <span class="k">def</span> <span class="nf">dispatch_key</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">file</span><span class="p">):</span>
+       
+        
+        <span class="n">tt</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">gmtime</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="nb">file</span><span class="o">.</span><span class="n">tmin</span><span class="p">))</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">tt</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">tt</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    </div>
+<div class="viewcode-block" id="Pile.dispatch"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.Pile.dispatch">[docs]</a>    <span class="k">def</span> <span class="nf">dispatch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">file</span><span class="p">):</span>
+        <span class="n">k</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dispatch_key</span><span class="p">(</span><span class="nb">file</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">subpiles</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">subpiles</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">SubPile</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+            
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">subpiles</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+        </div>
+<div class="viewcode-block" id="Pile.get_newest_mtime"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.Pile.get_newest_mtime">[docs]</a>    <span class="k">def</span> <span class="nf">get_newest_mtime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tmin</span><span class="p">,</span> <span class="n">tmax</span><span class="p">,</span> <span class="n">group_selector</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">trace_selector</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="n">mtime</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">for</span> <span class="n">subpile</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">subpiles</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">subpile</span><span class="o">.</span><span class="n">is_relevant</span><span class="p">(</span><span class="n">tmin</span><span class="p">,</span><span class="n">tmax</span><span class="p">,</span> <span class="n">group_selector</span><span class="p">):</span>
+                <span class="n">mtime</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">mtime</span><span class="p">,</span> <span class="n">subpile</span><span class="o">.</span><span class="n">get_newest_mtime</span><span class="p">(</span><span class="n">tmin</span><span class="p">,</span> <span class="n">tmax</span><span class="p">,</span> <span class="n">group_selector</span><span class="p">,</span> <span class="n">trace_selector</span><span class="p">))</span>
+                
+        <span class="k">return</span> <span class="n">mtime</span>
+        </div>
+<div class="viewcode-block" id="Pile.chop"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.Pile.chop">[docs]</a>    <span class="k">def</span> <span class="nf">chop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tmin</span><span class="p">,</span> <span class="n">tmax</span><span class="p">,</span> <span class="n">group_selector</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">trace_selector</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">snap</span><span class="o">=</span><span class="p">(</span><span class="nb">round</span><span class="p">,</span><span class="nb">round</span><span class="p">)):</span>
+        <span class="n">chopped</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">used_files</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">subpile</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">subpiles</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">subpile</span><span class="o">.</span><span class="n">is_relevant</span><span class="p">(</span><span class="n">tmin</span><span class="p">,</span><span class="n">tmax</span><span class="p">,</span> <span class="n">group_selector</span><span class="p">):</span>
+                <span class="n">_chopped</span><span class="p">,</span> <span class="n">_used_files</span> <span class="o">=</span>  <span class="n">subpile</span><span class="o">.</span><span class="n">chop</span><span class="p">(</span><span class="n">tmin</span><span class="p">,</span> <span class="n">tmax</span><span class="p">,</span> <span class="n">group_selector</span><span class="p">,</span> <span class="n">trace_selector</span><span class="p">,</span> <span class="n">snap</span><span class="o">=</span><span class="n">snap</span><span class="p">)</span>
+                <span class="n">chopped</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">_chopped</span><span class="p">)</span>
+                <span class="n">used_files</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">_used_files</span><span class="p">)</span>
+                
+        <span class="k">return</span> <span class="n">chopped</span><span class="p">,</span> <span class="n">used_files</span>
+</div>
+    <span class="k">def</span> <span class="nf">_process_chopped</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chopped</span><span class="p">,</span> <span class="n">degap</span><span class="p">,</span> <span class="n">want_incomplete</span><span class="p">,</span> <span class="n">wmax</span><span class="p">,</span> <span class="n">wmin</span><span class="p">,</span> <span class="n">tpad</span><span class="p">):</span>
+        <span class="n">chopped</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="k">lambda</span> <span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">:</span> <span class="nb">cmp</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">full_id</span><span class="p">,</span> <span class="n">b</span><span class="o">.</span><span class="n">full_id</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">degap</span><span class="p">:</span>
+            <span class="n">chopped</span> <span class="o">=</span> <span class="n">degapper</span><span class="p">(</span><span class="n">chopped</span><span class="p">)</span>
+            
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">want_incomplete</span><span class="p">:</span>
+            <span class="n">wlen</span> <span class="o">=</span> <span class="p">(</span><span class="n">wmax</span><span class="o">+</span><span class="n">tpad</span><span class="p">)</span><span class="o">-</span><span class="p">(</span><span class="n">wmin</span><span class="o">-</span><span class="n">tpad</span><span class="p">)</span>
+            <span class="n">chopped_weeded</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">tr</span> <span class="ow">in</span> <span class="n">chopped</span><span class="p">:</span>
+                <span class="n">emin</span> <span class="o">=</span> <span class="n">tr</span><span class="o">.</span><span class="n">tmin</span> <span class="o">-</span> <span class="p">(</span><span class="n">wmin</span><span class="o">-</span><span class="n">tpad</span><span class="p">)</span>
+                <span class="n">emax</span> <span class="o">=</span> <span class="n">tr</span><span class="o">.</span><span class="n">tmax</span> <span class="o">+</span> <span class="n">tr</span><span class="o">.</span><span class="n">deltat</span> <span class="o">-</span> <span class="p">(</span><span class="n">wmax</span><span class="o">+</span><span class="n">tpad</span><span class="p">)</span>
+                <span class="k">if</span> <span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">emin</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">tr</span><span class="o">.</span><span class="n">deltat</span> <span class="ow">and</span> 
+                    <span class="nb">abs</span><span class="p">(</span><span class="n">emax</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mf">0.5</span><span class="o">*</span><span class="n">tr</span><span class="o">.</span><span class="n">deltat</span><span class="p">):</span>
+                    <span class="n">chopped_weeded</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tr</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">degap</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="mf">0.</span> <span class="o">&lt;</span> <span class="n">emin</span> <span class="o">&lt;=</span> <span class="mf">5.</span> <span class="o">*</span> <span class="n">tr</span><span class="o">.</span><span class="n">deltat</span> <span class="ow">and</span> 
+                            <span class="o">-</span><span class="mf">5.</span> <span class="o">*</span> <span class="n">tr</span><span class="o">.</span><span class="n">deltat</span> <span class="o">&lt;=</span> <span class="n">emax</span> <span class="o">&lt;</span> <span class="mf">0.</span><span class="p">):</span>
+                        <span class="n">tr</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">wmin</span><span class="o">-</span><span class="n">tpad</span><span class="p">,</span> <span class="n">wmax</span><span class="o">+</span><span class="n">tpad</span><span class="o">-</span><span class="n">tr</span><span class="o">.</span><span class="n">deltat</span><span class="p">,</span> <span class="n">fillmethod</span><span class="o">=</span><span class="s">&#39;repeat&#39;</span><span class="p">)</span>
+                        <span class="n">chopped_weeded</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tr</span><span class="p">)</span>
+
+            <span class="n">chopped</span> <span class="o">=</span> <span class="n">chopped_weeded</span>
+        
+        <span class="k">for</span> <span class="n">tr</span> <span class="ow">in</span> <span class="n">chopped</span><span class="p">:</span>
+            <span class="n">tr</span><span class="o">.</span><span class="n">wmin</span> <span class="o">=</span> <span class="n">wmin</span>
+            <span class="n">tr</span><span class="o">.</span><span class="n">wmax</span> <span class="o">=</span> <span class="n">wmax</span>
+        
+        <span class="k">return</span> <span class="n">chopped</span>
+            
+<div class="viewcode-block" id="Pile.chopper"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.Pile.chopper">[docs]</a>    <span class="k">def</span> <span class="nf">chopper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tmin</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">tmax</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">tinc</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">tpad</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">group_selector</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">trace_selector</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                      <span class="n">want_incomplete</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">degap</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">keep_current_files_open</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">accessor_id</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">snap</span><span class="o">=</span><span class="p">(</span><span class="nb">round</span><span class="p">,</span><span class="nb">round</span><span class="p">)):</span>
+        
+        <span class="k">if</span> <span class="n">tmin</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">tmin</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tmin</span><span class="o">+</span><span class="n">tpad</span>
+                
+        <span class="k">if</span> <span class="n">tmax</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">tmax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tmax</span><span class="o">-</span><span class="n">tpad</span>
+            
+        <span class="k">if</span> <span class="n">tinc</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">tinc</span> <span class="o">=</span> <span class="n">tmax</span><span class="o">-</span><span class="n">tmin</span>
+        
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_relevant</span><span class="p">(</span><span class="n">tmin</span><span class="o">-</span><span class="n">tpad</span><span class="p">,</span><span class="n">tmax</span><span class="o">+</span><span class="n">tpad</span><span class="p">,</span><span class="n">group_selector</span><span class="p">):</span> <span class="k">return</span>
+                
+        <span class="k">if</span> <span class="n">accessor_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">open_files</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">open_files</span><span class="p">[</span><span class="n">accessor_id</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+                
+        <span class="n">open_files</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">open_files</span><span class="p">[</span><span class="n">accessor_id</span><span class="p">]</span>
+        
+        <span class="n">iwin</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+            <span class="n">chopped</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">wmin</span><span class="p">,</span> <span class="n">wmax</span> <span class="o">=</span> <span class="n">tmin</span><span class="o">+</span><span class="n">iwin</span><span class="o">*</span><span class="n">tinc</span><span class="p">,</span> <span class="n">tmin</span><span class="o">+</span><span class="p">(</span><span class="n">iwin</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">tinc</span>
+            <span class="n">eps</span> <span class="o">=</span> <span class="n">tinc</span><span class="o">*</span><span class="mf">1e-6</span>
+            <span class="k">if</span> <span class="n">wmin</span> <span class="o">&gt;=</span> <span class="n">tmax</span><span class="o">-</span><span class="n">eps</span><span class="p">:</span> <span class="k">break</span>
+            <span class="n">chopped</span><span class="p">,</span> <span class="n">used_files</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">chop</span><span class="p">(</span><span class="n">wmin</span><span class="o">-</span><span class="n">tpad</span><span class="p">,</span> <span class="n">wmax</span><span class="o">+</span><span class="n">tpad</span><span class="p">,</span> <span class="n">group_selector</span><span class="p">,</span> <span class="n">trace_selector</span><span class="p">,</span> <span class="n">snap</span><span class="o">=</span><span class="n">snap</span><span class="p">)</span> 
+            <span class="k">for</span> <span class="nb">file</span> <span class="ow">in</span> <span class="n">used_files</span> <span class="o">-</span> <span class="n">open_files</span><span class="p">:</span>
+                <span class="c"># increment datause counter on newly opened files</span>
+                <span class="nb">file</span><span class="o">.</span><span class="n">use_data</span><span class="p">()</span>
+                
+            <span class="n">open_files</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">used_files</span><span class="p">)</span>
+            
+            <span class="n">processed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_process_chopped</span><span class="p">(</span><span class="n">chopped</span><span class="p">,</span> <span class="n">degap</span><span class="p">,</span> <span class="n">want_incomplete</span><span class="p">,</span> <span class="n">wmax</span><span class="p">,</span> <span class="n">wmin</span><span class="p">,</span> <span class="n">tpad</span><span class="p">)</span>
+            <span class="k">yield</span> <span class="n">processed</span>
+                        
+            <span class="n">unused_files</span> <span class="o">=</span> <span class="n">open_files</span> <span class="o">-</span> <span class="n">used_files</span>
+            
+            <span class="k">while</span> <span class="n">unused_files</span><span class="p">:</span>
+                <span class="nb">file</span> <span class="o">=</span> <span class="n">unused_files</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+                <span class="nb">file</span><span class="o">.</span><span class="n">drop_data</span><span class="p">()</span>
+                <span class="n">open_files</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="nb">file</span><span class="p">)</span>
+                
+            <span class="n">iwin</span> <span class="o">+=</span> <span class="mi">1</span>
+        
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">keep_current_files_open</span><span class="p">:</span>
+            <span class="k">while</span> <span class="n">open_files</span><span class="p">:</span>
+                <span class="nb">file</span> <span class="o">=</span> <span class="n">open_files</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+                <span class="nb">file</span><span class="o">.</span><span class="n">drop_data</span><span class="p">()</span>
+        
+        </div>
+<div class="viewcode-block" id="Pile.all"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.Pile.all">[docs]</a>    <span class="k">def</span> <span class="nf">all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">alltraces</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">traces</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">chopper</span><span class="p">(</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span> <span class="p">):</span>
+            <span class="n">alltraces</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span> <span class="n">traces</span> <span class="p">)</span>
+            
+        <span class="k">return</span> <span class="n">alltraces</span>
+        </div>
+<div class="viewcode-block" id="Pile.iter_all"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.Pile.iter_all">[docs]</a>    <span class="k">def</span> <span class="nf">iter_all</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">traces</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">chopper</span><span class="p">(</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">trace</span> <span class="ow">in</span> <span class="n">traces</span><span class="p">:</span>
+                <span class="k">yield</span> <span class="n">trace</span>
+    </div>
+<div class="viewcode-block" id="Pile.chopper_grouped"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.Pile.chopper_grouped">[docs]</a>    <span class="k">def</span> <span class="nf">chopper_grouped</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gather</span><span class="p">,</span> <span class="n">progress</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">keys</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gather_keys</span><span class="p">(</span><span class="n">gather</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">keys</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span> <span class="k">return</span>
+        <span class="n">outer_group_selector</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">if</span> <span class="s">&#39;group_selector&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="n">outer_group_selector</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;group_selector&#39;</span><span class="p">]</span>
+            
+        <span class="n">outer_trace_selector</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">if</span> <span class="s">&#39;trace_selector&#39;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="n">outer_trace_selector</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;trace_selector&#39;</span><span class="p">]</span>
+        
+        <span class="c"># the use of this gather-cache makes it impossible to modify the pile</span>
+        <span class="c"># during chopping</span>
+        <span class="n">gather_cache</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">pbar</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="n">progressbar</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">progressbar_module</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">progress</span> <span class="ow">and</span> <span class="n">progressbar</span> <span class="ow">and</span> <span class="n">config</span><span class="o">.</span><span class="n">show_progress</span><span class="p">:</span>
+            <span class="n">widgets</span> <span class="o">=</span> <span class="p">[</span><span class="n">progress</span><span class="p">,</span> <span class="s">&#39; &#39;</span><span class="p">,</span>
+                        <span class="n">progressbar</span><span class="o">.</span><span class="n">Bar</span><span class="p">(</span><span class="n">marker</span><span class="o">=</span><span class="s">&#39;-&#39;</span><span class="p">,</span><span class="n">left</span><span class="o">=</span><span class="s">&#39;[&#39;</span><span class="p">,</span><span class="n">right</span><span class="o">=</span><span class="s">&#39;]&#39;</span><span class="p">),</span> <span class="s">&#39; &#39;</span><span class="p">,</span>
+                        <span class="n">progressbar</span><span class="o">.</span><span class="n">Percentage</span><span class="p">(),</span> <span class="s">&#39; &#39;</span><span class="p">,]</span>
+                
+            <span class="n">pbar</span> <span class="o">=</span> <span class="n">progressbar</span><span class="o">.</span><span class="n">ProgressBar</span><span class="p">(</span><span class="n">widgets</span><span class="o">=</span><span class="n">widgets</span><span class="p">,</span> <span class="n">maxval</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">keys</span><span class="p">))</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+        
+        <span class="k">for</span> <span class="n">ikey</span><span class="p">,</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">keys</span><span class="p">):</span>
+            <span class="k">def</span> <span class="nf">tsel</span><span class="p">(</span><span class="n">tr</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">gather</span><span class="p">(</span><span class="n">tr</span><span class="p">)</span> <span class="o">==</span> <span class="n">key</span> <span class="ow">and</span> <span class="p">(</span><span class="n">outer_trace_selector</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> 
+                                              <span class="n">outer_trace_selector</span><span class="p">(</span><span class="n">tr</span><span class="p">))</span>
+                    
+            <span class="k">def</span> <span class="nf">gsel</span><span class="p">(</span><span class="n">gr</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">gr</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">gather_cache</span><span class="p">:</span>
+                    <span class="n">gather_cache</span><span class="p">[</span><span class="n">gr</span><span class="p">]</span> <span class="o">=</span> <span class="n">gr</span><span class="o">.</span><span class="n">gather_keys</span><span class="p">(</span><span class="n">gather</span><span class="p">)</span>
+                        
+                <span class="k">return</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">gather_cache</span><span class="p">[</span><span class="n">gr</span><span class="p">]</span> <span class="ow">and</span> <span class="p">(</span><span class="n">outer_group_selector</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span>
+                                                    <span class="n">outer_group_selector</span><span class="p">(</span><span class="n">gr</span><span class="p">))</span>
+            
+            <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;trace_selector&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">tsel</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;group_selector&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">gsel</span>
+            
+            <span class="k">for</span> <span class="n">traces</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">chopper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+                <span class="k">yield</span> <span class="n">traces</span>
+                
+            <span class="k">if</span> <span class="n">pbar</span><span class="p">:</span> <span class="n">pbar</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">ikey</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">pbar</span><span class="p">:</span> <span class="n">pbar</span><span class="o">.</span><span class="n">finish</span><span class="p">()</span>
+        </div>
+<div class="viewcode-block" id="Pile.gather_keys"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.Pile.gather_keys">[docs]</a>    <span class="k">def</span> <span class="nf">gather_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gather</span><span class="p">,</span> <span class="n">selector</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="n">keys</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">subpile</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">subpiles</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="n">keys</span> <span class="o">|=</span> <span class="n">subpile</span><span class="o">.</span><span class="n">gather_keys</span><span class="p">(</span><span class="n">gather</span><span class="p">,</span> <span class="n">selector</span><span class="p">)</span>
+            
+        <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">keys</span><span class="p">)</span>
+    </div>
+<div class="viewcode-block" id="Pile.get_deltats"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.Pile.get_deltats">[docs]</a>    <span class="k">def</span> <span class="nf">get_deltats</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">deltats</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">subpile</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">subpiles</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="n">deltats</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">subpile</span><span class="o">.</span><span class="n">get_deltats</span><span class="p">())</span>
+            
+        <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">deltats</span><span class="p">))</span>
+    </div>
+<div class="viewcode-block" id="Pile.iter_traces"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.Pile.iter_traces">[docs]</a>    <span class="k">def</span> <span class="nf">iter_traces</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">load_data</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">return_abspath</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">group_selector</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">trace_selector</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">subpile</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">subpiles</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">group_selector</span> <span class="ow">or</span> <span class="n">group_selector</span><span class="p">(</span><span class="n">subpile</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">tr</span> <span class="ow">in</span> <span class="n">subpile</span><span class="o">.</span><span class="n">iter_traces</span><span class="p">(</span><span class="n">load_data</span><span class="p">,</span> <span class="n">return_abspath</span><span class="p">,</span> <span class="n">group_selector</span><span class="p">,</span> <span class="n">trace_selector</span><span class="p">):</span>
+                    <span class="k">yield</span> <span class="n">tr</span>
+    </div>
+<div class="viewcode-block" id="Pile.iter_files"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.Pile.iter_files">[docs]</a>    <span class="k">def</span> <span class="nf">iter_files</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">subpile</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">subpiles</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="k">for</span> <span class="nb">file</span> <span class="ow">in</span> <span class="n">subpile</span><span class="o">.</span><span class="n">iter_files</span><span class="p">():</span>
+                <span class="k">yield</span> <span class="nb">file</span>
+   </div>
+<div class="viewcode-block" id="Pile.reload_modified"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.Pile.reload_modified">[docs]</a>    <span class="k">def</span> <span class="nf">reload_modified</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">modified</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="k">for</span> <span class="n">subpile</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">subpiles</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="n">modified</span> <span class="o">|=</span> <span class="n">subpile</span><span class="o">.</span><span class="n">reload_modified</span><span class="p">()</span>
+        
+        <span class="k">if</span> <span class="n">modified</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">subpiles</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">notify_listeners</span><span class="p">(</span><span class="s">&#39;modified&#39;</span><span class="p">)</span>
+            
+        <span class="k">return</span> <span class="n">modified</span>
+    </div>
+<div class="viewcode-block" id="Pile.get_tmin"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.Pile.get_tmin">[docs]</a>    <span class="k">def</span> <span class="nf">get_tmin</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tmin</span>
+        </div>
+<div class="viewcode-block" id="Pile.get_tmax"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.Pile.get_tmax">[docs]</a>    <span class="k">def</span> <span class="nf">get_tmax</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tmax</span>
+    </div>
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        
+        <span class="k">def</span> <span class="nf">sl</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+            <span class="k">return</span> <span class="nb">sorted</span><span class="p">([</span> <span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">s</span> <span class="p">])</span>
+        
+        <span class="n">s</span> <span class="o">=</span> <span class="s">&#39;Pile</span><span class="se">\n</span><span class="s">&#39;</span>
+        <span class="n">s</span> <span class="o">+=</span> <span class="s">&#39;number of subpiles: </span><span class="si">%i</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">subpiles</span><span class="p">)</span>
+        <span class="n">s</span> <span class="o">+=</span> <span class="s">&#39;timerange: </span><span class="si">%s</span><span class="s"> - </span><span class="si">%s</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">util</span><span class="o">.</span><span class="n">gmctime</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tmin</span><span class="p">),</span> <span class="n">util</span><span class="o">.</span><span class="n">gmctime</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tmax</span><span class="p">))</span>
+        <span class="n">s</span> <span class="o">+=</span> <span class="s">&#39;networks: </span><span class="si">%s</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="s">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sl</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">networks</span><span class="p">))</span>
+        <span class="n">s</span> <span class="o">+=</span> <span class="s">&#39;stations: </span><span class="si">%s</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="s">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sl</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stations</span><span class="p">))</span>
+        <span class="n">s</span> <span class="o">+=</span> <span class="s">&#39;locations: </span><span class="si">%s</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="s">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sl</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">locations</span><span class="p">))</span>
+        <span class="n">s</span> <span class="o">+=</span> <span class="s">&#39;channels: </span><span class="si">%s</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="s">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sl</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">channels</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">s</span>
+
+</div>
+<div class="viewcode-block" id="make_pile"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.make_pile">[docs]</a><span class="k">def</span> <span class="nf">make_pile</span><span class="p">(</span> <span class="n">paths</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">selector</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">regex</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+        <span class="n">fileformat</span> <span class="o">=</span> <span class="s">&#39;mseed&#39;</span><span class="p">,</span>
+        <span class="n">cachedirname</span><span class="o">=</span><span class="s">&#39;/tmp/pyrocko_cache_</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s">&#39;USER&#39;</span><span class="p">],</span> <span class="n">show_progress</span><span class="o">=</span><span class="bp">True</span> <span class="p">):</span>
+    
+    <span class="sd">&#39;&#39;&#39;Create pile from given file and directory names.</span>
+<span class="sd">    </span>
+<span class="sd">    :param paths: filenames and/or directories to look for traces. If paths is </span>
+<span class="sd">        ``None`` ``sys.argv[1:]`` is used.</span>
+<span class="sd">    :param selector: lambda expression taking group dict of regex match object as</span>
+<span class="sd">        a single argument and which returns true or false to keep or reject</span>
+<span class="sd">        a file</span>
+<span class="sd">    :param regex: regular expression which filenames have to match</span>
+<span class="sd">    :param fileformat: format of the files (&#39;mseed&#39;, &#39;sac&#39;, &#39;kan&#39;, </span>
+<span class="sd">        &#39;from_extension&#39;, &#39;try&#39;)</span>
+<span class="sd">    :param cachedirname: loader cache is stored under this directory. It is</span>
+<span class="sd">        created as neccessary.</span>
+<span class="sd">    :param show_progress: show progress bar and other progress information</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">paths</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">paths</span> <span class="o">=</span> <span class="p">[</span> <span class="n">paths</span> <span class="p">]</span>
+        
+    <span class="k">if</span> <span class="n">paths</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">paths</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+    
+    <span class="n">fns</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">select_files</span><span class="p">(</span><span class="n">paths</span><span class="p">,</span> <span class="n">selector</span><span class="p">,</span> <span class="n">regex</span><span class="p">,</span> <span class="n">show_progress</span><span class="o">=</span><span class="n">show_progress</span><span class="p">)</span>
+
+    <span class="n">cache</span> <span class="o">=</span> <span class="n">get_cache</span><span class="p">(</span><span class="n">cachedirname</span><span class="p">)</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">Pile</span><span class="p">()</span>
+    <span class="n">p</span><span class="o">.</span><span class="n">load_files</span><span class="p">(</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">fns</span><span class="p">),</span> <span class="n">cache</span><span class="o">=</span><span class="n">cache</span><span class="p">,</span> <span class="n">fileformat</span><span class="o">=</span><span class="n">fileformat</span><span class="p">,</span> <span class="n">show_progress</span><span class="o">=</span><span class="n">show_progress</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">p</span>
+</pre></div></div>
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">Pyrocko v1.0 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Sebastian Heimann.
+    </div>
+  </body>
+</html>

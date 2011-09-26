@@ -1,0 +1,570 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>The snuffling Module &mdash; Pyrocko v1.0 documentation</title>
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Pyrocko v1.0 documentation" href="index.html" />
+    <link rel="next" title="The pile_viewer Module" href="pile_viewer.html" />
+    <link rel="prev" title="The rdseed Module" href="rdseed.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="pile_viewer.html" title="The pile_viewer Module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="rdseed.html" title="The rdseed Module"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Pyrocko v1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body">
+            
+  <div class="section" id="module-pyrocko.snuffling">
+<span id="the-snuffling-module"></span><h1>The <tt class="xref py py-mod docutils literal"><span class="pre">snuffling</span></tt> Module<a class="headerlink" href="#module-pyrocko.snuffling" title="Permalink to this headline">¶</a></h1>
+<p>Snuffling infrastructure</p>
+<p>This module provides the base class <a class="reference internal" href="#pyrocko.snuffling.Snuffling" title="pyrocko.snuffling.Snuffling"><tt class="xref py py-class docutils literal"><span class="pre">Snuffling</span></tt></a> for user-defined snufflings and 
+some utilities for their handling.</p>
+<dl class="function">
+<dt id="pyrocko.snuffling.str_traceback">
+<tt class="descname">str_traceback</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#str_traceback"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.str_traceback" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="pyrocko.snuffling.Param">
+<em class="property">class </em><tt class="descname">Param</tt><big>(</big><em>name</em>, <em>ident</em>, <em>default</em>, <em>minimum</em>, <em>maximum</em>, <em>low_is_none=None</em>, <em>high_is_none=None</em><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#Param"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.Param" title="Permalink to this definition">¶</a></dt>
+<dd><p>Definition of an adjustable parameter for the snuffling. The snuffling
+may display controls for user input for such parameters.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="pyrocko.snuffling.Switch">
+<em class="property">class </em><tt class="descname">Switch</tt><big>(</big><em>name</em>, <em>ident</em>, <em>default</em><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#Switch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.Switch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Definition of a switch for the snuffling. The snuffling may display a
+checkbox for such a switch.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="pyrocko.snuffling.Choice">
+<em class="property">class </em><tt class="descname">Choice</tt><big>(</big><em>name</em>, <em>ident</em>, <em>default</em>, <em>choices</em><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#Choice"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.Choice" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="pyrocko.snuffling.MyScrollArea">
+<em class="property">class </em><tt class="descname">MyScrollArea</tt><a class="reference internal" href="_modules/pyrocko/snuffling.html#MyScrollArea"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.MyScrollArea" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="pyrocko.snuffling.MyScrollArea.sizeHint">
+<tt class="descname">sizeHint</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#MyScrollArea.sizeHint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.MyScrollArea.sizeHint" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pyrocko.snuffling.SwitchControl">
+<em class="property">class </em><tt class="descname">SwitchControl</tt><big>(</big><em>ident</em>, <em>default</em>, <em>*args</em><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#SwitchControl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.SwitchControl" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="pyrocko.snuffling.SwitchControl.sw_toggled">
+<tt class="descname">sw_toggled</tt><big>(</big><em>state</em><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#SwitchControl.sw_toggled"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.SwitchControl.sw_toggled" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.snuffling.SwitchControl.set_value">
+<tt class="descname">set_value</tt><big>(</big><em>state</em><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#SwitchControl.set_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.SwitchControl.set_value" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pyrocko.snuffling.ChoiceControl">
+<em class="property">class </em><tt class="descname">ChoiceControl</tt><big>(</big><em>ident</em>, <em>default</em>, <em>choices</em>, <em>name</em>, <em>*args</em><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#ChoiceControl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.ChoiceControl" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="pyrocko.snuffling.ChoiceControl.choosen">
+<tt class="descname">choosen</tt><big>(</big><em>i</em><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#ChoiceControl.choosen"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.ChoiceControl.choosen" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.snuffling.ChoiceControl.set_value">
+<tt class="descname">set_value</tt><big>(</big><em>v</em><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#ChoiceControl.set_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.ChoiceControl.set_value" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="exception">
+<dt id="pyrocko.snuffling.BrokenSnufflingModule">
+<em class="property">exception </em><tt class="descname">BrokenSnufflingModule</tt><a class="reference internal" href="_modules/pyrocko/snuffling.html#BrokenSnufflingModule"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.BrokenSnufflingModule" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="pyrocko.snuffling.SnufflingModule">
+<em class="property">class </em><tt class="descname">SnufflingModule</tt><big>(</big><em>path</em>, <em>name</em>, <em>handler</em><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#SnufflingModule"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.SnufflingModule" title="Permalink to this definition">¶</a></dt>
+<dd><p>Utility class to load/reload snufflings from a file.</p>
+<p>The snufflings are created by a user module which has a special function
+<tt class="xref py py-func docutils literal"><span class="pre">__snufflings__()</span></tt> which return the snuffling instances to be exported. The
+snuffling module is attached to a handler class, which makes use of the
+snufflings (e.g. <tt class="xref py py-class docutils literal"><span class="pre">pyrocko.pile_viewer.PileOverwiew</span></tt> from <tt class="docutils literal"><span class="pre">pile_viewer.py</span></tt>). The handler class must
+implement the methods <tt class="docutils literal"><span class="pre">add_snuffling()</span></tt> and <tt class="docutils literal"><span class="pre">remove_snuffling()</span></tt> which are used
+as callbacks. The callbacks are utilized from the methods <a class="reference internal" href="#pyrocko.snuffling.SnufflingModule.load_if_needed" title="pyrocko.snuffling.SnufflingModule.load_if_needed"><tt class="xref py py-meth docutils literal"><span class="pre">load_if_needed()</span></tt></a>
+and <a class="reference internal" href="#pyrocko.snuffling.SnufflingModule.remove_snufflings" title="pyrocko.snuffling.SnufflingModule.remove_snufflings"><tt class="xref py py-meth docutils literal"><span class="pre">remove_snufflings()</span></tt></a> which may be called from the handler class, when
+needed.</p>
+<dl class="method">
+<dt id="pyrocko.snuffling.SnufflingModule.load_if_needed">
+<tt class="descname">load_if_needed</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#SnufflingModule.load_if_needed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.SnufflingModule.load_if_needed" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.snuffling.SnufflingModule.add_snuffling">
+<tt class="descname">add_snuffling</tt><big>(</big><em>snuffling</em>, <em>reloaded=False</em><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#SnufflingModule.add_snuffling"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.SnufflingModule.add_snuffling" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.snuffling.SnufflingModule.remove_snufflings">
+<tt class="descname">remove_snufflings</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#SnufflingModule.remove_snufflings"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.SnufflingModule.remove_snufflings" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="exception">
+<dt id="pyrocko.snuffling.NoViewerSet">
+<em class="property">exception </em><tt class="descname">NoViewerSet</tt><a class="reference internal" href="_modules/pyrocko/snuffling.html#NoViewerSet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.NoViewerSet" title="Permalink to this definition">¶</a></dt>
+<dd><p>This exception is raised, when no viewer has been set on a Snuffling.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="pyrocko.snuffling.NoTracesSelected">
+<em class="property">exception </em><tt class="descname">NoTracesSelected</tt><a class="reference internal" href="_modules/pyrocko/snuffling.html#NoTracesSelected"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.NoTracesSelected" title="Permalink to this definition">¶</a></dt>
+<dd><p>This exception is raised, when no traces have been selected in the viewer 
+and we cannot fallback to using the current view.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="pyrocko.snuffling.UserCancelled">
+<em class="property">exception </em><tt class="descname">UserCancelled</tt><a class="reference internal" href="_modules/pyrocko/snuffling.html#UserCancelled"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.UserCancelled" title="Permalink to this definition">¶</a></dt>
+<dd><p>This exception is raised, when the user has cancelled a snuffling dialog.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="pyrocko.snuffling.SnufflingCallFailed">
+<em class="property">exception </em><tt class="descname">SnufflingCallFailed</tt><a class="reference internal" href="_modules/pyrocko/snuffling.html#SnufflingCallFailed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.SnufflingCallFailed" title="Permalink to this definition">¶</a></dt>
+<dd><p>This exception is raised, when <a class="reference internal" href="#pyrocko.snuffling.Snuffling.fail" title="pyrocko.snuffling.Snuffling.fail"><tt class="xref py py-meth docutils literal"><span class="pre">Snuffling.fail()</span></tt></a> is called from <a class="reference internal" href="#pyrocko.snuffling.Snuffling.call" title="pyrocko.snuffling.Snuffling.call"><tt class="xref py py-meth docutils literal"><span class="pre">Snuffling.call()</span></tt></a>.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="pyrocko.snuffling.Snuffling">
+<em class="property">class </em><tt class="descname">Snuffling</tt><a class="reference internal" href="_modules/pyrocko/snuffling.html#Snuffling"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.Snuffling" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base class for user snufflings.</p>
+<p>Snufflings are plugins for snuffler (and other applications using the
+<a class="reference internal" href="pile_viewer.html#pyrocko.pile_viewer.PileOverview" title="pyrocko.pile_viewer.PileOverview"><tt class="xref py py-class docutils literal"><span class="pre">pyrocko.pile_viewer.PileOverview</span></tt></a> class defined in
+<tt class="docutils literal"><span class="pre">pile_viewer.py</span></tt>). They can be added, removed and reloaded at runtime and
+should provide a simple way of extending the functionality of snuffler.</p>
+<p>A snuffling has access to all data available in a pile viewer, can process 
+this data and can create and add new traces and markers to the viewer.</p>
+<dl class="method">
+<dt id="pyrocko.snuffling.Snuffling.setup">
+<tt class="descname">setup</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#Snuffling.setup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.Snuffling.setup" title="Permalink to this definition">¶</a></dt>
+<dd><p>Setup the snuffling.</p>
+<p>This method should be implemented in subclass and contain e.g. calls to 
+<a class="reference internal" href="#pyrocko.snuffling.Snuffling.set_name" title="pyrocko.snuffling.Snuffling.set_name"><tt class="xref py py-meth docutils literal"><span class="pre">set_name()</span></tt></a> and <a class="reference internal" href="#pyrocko.snuffling.Snuffling.add_parameter" title="pyrocko.snuffling.Snuffling.add_parameter"><tt class="xref py py-meth docutils literal"><span class="pre">add_parameter()</span></tt></a>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.snuffling.Snuffling.init_gui">
+<tt class="descname">init_gui</tt><big>(</big><em>viewer</em>, <em>panel_parent</em>, <em>menu_parent</em>, <em>reloaded=False</em><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#Snuffling.init_gui"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.Snuffling.init_gui" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set parent viewer and hooks to add panel and menu entry.</p>
+<p>This method is called from the
+<a class="reference internal" href="pile_viewer.html#pyrocko.pile_viewer.PileOverview" title="pyrocko.pile_viewer.PileOverview"><tt class="xref py py-class docutils literal"><span class="pre">pyrocko.pile_viewer.PileOverview</span></tt></a> object. Calls
+<a class="reference internal" href="#pyrocko.snuffling.Snuffling.setup_gui" title="pyrocko.snuffling.Snuffling.setup_gui"><tt class="xref py py-meth docutils literal"><span class="pre">setup_gui()</span></tt></a>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.snuffling.Snuffling.setup_gui">
+<tt class="descname">setup_gui</tt><big>(</big><em>reloaded=False</em><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#Snuffling.setup_gui"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.Snuffling.setup_gui" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create and add gui elements to the viewer.</p>
+<p>This method is initially called from <a class="reference internal" href="#pyrocko.snuffling.Snuffling.init_gui" title="pyrocko.snuffling.Snuffling.init_gui"><tt class="xref py py-meth docutils literal"><span class="pre">init_gui()</span></tt></a>. It is also called,
+e.g. when new parameters have been added or if the name of the snuffling 
+has been changed.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.snuffling.Snuffling.delete_gui">
+<tt class="descname">delete_gui</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#Snuffling.delete_gui"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.Snuffling.delete_gui" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove the gui elements of the snuffling.</p>
+<p>This removes the panel and menu entry of the widget from the viewer and
+also removes all traces and markers added with the <a class="reference internal" href="#pyrocko.snuffling.Snuffling.add_traces" title="pyrocko.snuffling.Snuffling.add_traces"><tt class="xref py py-meth docutils literal"><span class="pre">add_traces()</span></tt></a> 
+and <a class="reference internal" href="#pyrocko.snuffling.Snuffling.add_markers" title="pyrocko.snuffling.Snuffling.add_markers"><tt class="xref py py-meth docutils literal"><span class="pre">add_markers()</span></tt></a> methods.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.snuffling.Snuffling.set_name">
+<tt class="descname">set_name</tt><big>(</big><em>name</em><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#Snuffling.set_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.Snuffling.set_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the snuffling&#8217;s name.</p>
+<p>The snuffling&#8217;s name is shown as a menu entry and in the panel header.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.snuffling.Snuffling.get_name">
+<tt class="descname">get_name</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#Snuffling.get_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.Snuffling.get_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the snuffling&#8217;s name.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.snuffling.Snuffling.error">
+<tt class="descname">error</tt><big>(</big><em>reason</em><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#Snuffling.error"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.Snuffling.error" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.snuffling.Snuffling.fail">
+<tt class="descname">fail</tt><big>(</big><em>reason</em><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#Snuffling.fail"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.Snuffling.fail" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.snuffling.Snuffling.tempdir">
+<tt class="descname">tempdir</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#Snuffling.tempdir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.Snuffling.tempdir" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.snuffling.Snuffling.set_live_update">
+<tt class="descname">set_live_update</tt><big>(</big><em>live_update</em><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#Snuffling.set_live_update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.Snuffling.set_live_update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Enable/disable live updating.</p>
+<p>When live updates are enabled, the <a class="reference internal" href="#pyrocko.snuffling.Snuffling.call" title="pyrocko.snuffling.Snuffling.call"><tt class="xref py py-meth docutils literal"><span class="pre">call()</span></tt></a> method is called whenever
+the user changes a parameter. If it is disabled, the user has to 
+initiate such a call manually by triggering the snuffling&#8217;s menu item
+or pressing the call button.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.snuffling.Snuffling.add_parameter">
+<tt class="descname">add_parameter</tt><big>(</big><em>param</em><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#Snuffling.add_parameter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.Snuffling.add_parameter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add an adjustable parameter to the snuffling.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>param</strong> &#8211; object of type <a class="reference internal" href="#pyrocko.snuffling.Param" title="pyrocko.snuffling.Param"><tt class="xref py py-class docutils literal"><span class="pre">Param</span></tt></a></td>
+</tr>
+</tbody>
+</table>
+<p>For each parameter added, controls are added to the snuffling&#8217;s panel,
+so that the parameter can be adjusted from the gui.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.snuffling.Snuffling.get_parameters">
+<tt class="descname">get_parameters</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#Snuffling.get_parameters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.Snuffling.get_parameters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the snufflings adjustable parameter definitions.</p>
+<p>Returns a list of objects of type Param.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.snuffling.Snuffling.set_parameter">
+<tt class="descname">set_parameter</tt><big>(</big><em>ident</em>, <em>value</em><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#Snuffling.set_parameter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.Snuffling.set_parameter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set one of the snuffling&#8217;s adjustable parameters.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>ident</strong> &#8211; identifier of the parameter</li>
+<li><strong>value</strong> &#8211; new value of the parameter</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>This is usually called when the parameter has been set via the gui 
+controls.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.snuffling.Snuffling.get_parameter">
+<tt class="descname">get_parameter</tt><big>(</big><em>ident</em><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#Snuffling.get_parameter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.Snuffling.get_parameter" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.snuffling.Snuffling.get_settings">
+<tt class="descname">get_settings</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#Snuffling.get_settings"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.Snuffling.get_settings" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.snuffling.Snuffling.set_settings">
+<tt class="descname">set_settings</tt><big>(</big><em>settings</em><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#Snuffling.set_settings"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.Snuffling.set_settings" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.snuffling.Snuffling.get_viewer">
+<tt class="descname">get_viewer</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#Snuffling.get_viewer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.Snuffling.get_viewer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the parent viewer.</p>
+<p>Returns a reference to an object of type <tt class="xref py py-class docutils literal"><span class="pre">PileOverview</span></tt>, which is the
+main viewer widget.</p>
+<p>If no gui has been initialized for the snuffling, a <a class="reference internal" href="#pyrocko.snuffling.NoViewerSet" title="pyrocko.snuffling.NoViewerSet"><tt class="xref py py-exc docutils literal"><span class="pre">NoViewerSet</span></tt></a> 
+exception is raised.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.snuffling.Snuffling.get_pile">
+<tt class="descname">get_pile</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#Snuffling.get_pile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.Snuffling.get_pile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the pile.</p>
+<p>If a gui has been initialized, a reference to the viewer&#8217;s internal pile
+is returned. If not, the <a class="reference internal" href="#pyrocko.snuffling.Snuffling.make_pile" title="pyrocko.snuffling.Snuffling.make_pile"><tt class="xref py py-meth docutils literal"><span class="pre">make_pile()</span></tt></a> method (which may be overloaded in
+subclass) is called to create a pile. This can be utilized to make 
+hybrid snufflings, which may work also in a standalone mode.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.snuffling.Snuffling.chopper_selected_traces">
+<tt class="descname">chopper_selected_traces</tt><big>(</big><em>fallback=False</em>, <em>marker_selector=None</em>, <em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#Snuffling.chopper_selected_traces"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.Snuffling.chopper_selected_traces" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterate over selected traces.</p>
+<p>This is a shortcut to get all trace data contained in the selected 
+markers in the running snuffler. For each selected marker, 
+<a class="reference internal" href="pile.html#pyrocko.pile.Pile.chopper" title="pyrocko.pile.Pile.chopper"><tt class="xref py py-meth docutils literal"><span class="pre">pyrocko.pile.Pile.chopper()</span></tt></a> is called with the arguments <em>tmin</em>, <em>tmax</em>, and 
+<em>trace_selector</em> set to values according to the marker. Additional
+arguments to the chopper are handed over from <em>*args</em> and <em>**kwargs</em>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>fallback</strong> &#8211; if <tt class="xref docutils literal"><span class="pre">True</span></tt>, if no selection has been marked, use the content
+currently visible in the viewer.</li>
+<li><strong>marker_selector</strong> &#8211; if not <tt class="xref docutils literal"><span class="pre">None</span></tt> a callback to filter markers.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.snuffling.Snuffling.get_selected_time_range">
+<tt class="descname">get_selected_time_range</tt><big>(</big><em>fallback=False</em><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#Snuffling.get_selected_time_range"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.Snuffling.get_selected_time_range" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the time range spanning all selected markers.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.snuffling.Snuffling.make_pile">
+<tt class="descname">make_pile</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#Snuffling.make_pile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.Snuffling.make_pile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a pile.</p>
+<p>To be overloaded in subclass. The default implementation just calls
+<a class="reference internal" href="pile.html#pyrocko.pile.make_pile" title="pyrocko.pile.make_pile"><tt class="xref py py-func docutils literal"><span class="pre">pyrocko.pile.make_pile()</span></tt></a> to create a pile from command line arguments.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.snuffling.Snuffling.make_panel">
+<tt class="descname">make_panel</tt><big>(</big><em>parent</em><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#Snuffling.make_panel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.Snuffling.make_panel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a widget for the snuffling&#8217;s control panel.</p>
+<p>Normally called from the <a class="reference internal" href="#pyrocko.snuffling.Snuffling.setup_gui" title="pyrocko.snuffling.Snuffling.setup_gui"><tt class="xref py py-meth docutils literal"><span class="pre">setup_gui()</span></tt></a> method. Returns <tt class="xref docutils literal"><span class="pre">None</span></tt> if no panel
+is needed (e.g. if the snuffling has no adjustable parameters).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.snuffling.Snuffling.make_menuitem">
+<tt class="descname">make_menuitem</tt><big>(</big><em>parent</em><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#Snuffling.make_menuitem"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.Snuffling.make_menuitem" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create the menu item for the snuffling.</p>
+<p>This method may be overloaded in subclass and return <tt class="xref docutils literal"><span class="pre">None</span></tt>, if no menu 
+entry is wanted.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.snuffling.Snuffling.output_filename">
+<tt class="descname">output_filename</tt><big>(</big><em>caption='Save File'</em>, <em>dir=''</em>, <em>filter=''</em>, <em>selected_filter=None</em><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#Snuffling.output_filename"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.Snuffling.output_filename" title="Permalink to this definition">¶</a></dt>
+<dd><p>Query user for an output filename.</p>
+<p>This is currently just a wrapper to <tt class="xref py py-func docutils literal"><span class="pre">QFileDialog.getSaveFileName()</span></tt>.
+A <a class="reference internal" href="#pyrocko.snuffling.UserCancelled" title="pyrocko.snuffling.UserCancelled"><tt class="xref py py-exc docutils literal"><span class="pre">UserCancelled</span></tt></a> exception is raised if the user cancels the dialog.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.snuffling.Snuffling.input_filename">
+<tt class="descname">input_filename</tt><big>(</big><em>caption='Open File'</em>, <em>dir=''</em>, <em>filter=''</em>, <em>selected_filter=None</em><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#Snuffling.input_filename"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.Snuffling.input_filename" title="Permalink to this definition">¶</a></dt>
+<dd><p>Query user for an input filename.</p>
+<p>This is currently just a wrapper to <tt class="xref py py-func docutils literal"><span class="pre">QFileDialog.getOpenFileName()</span></tt>.
+A <a class="reference internal" href="#pyrocko.snuffling.UserCancelled" title="pyrocko.snuffling.UserCancelled"><tt class="xref py py-exc docutils literal"><span class="pre">UserCancelled</span></tt></a> exception is raised if the user cancels the dialog.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.snuffling.Snuffling.modified_snuffling_panel">
+<tt class="descname">modified_snuffling_panel</tt><big>(</big><em>value</em>, <em>iparam</em><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#Snuffling.modified_snuffling_panel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.Snuffling.modified_snuffling_panel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Called when the user has played with an adjustable parameter.</p>
+<p>The default implementation sets the parameter, calls the snuffling&#8217;s 
+<a class="reference internal" href="#pyrocko.snuffling.Snuffling.call" title="pyrocko.snuffling.Snuffling.call"><tt class="xref py py-meth docutils literal"><span class="pre">call()</span></tt></a> method and finally triggers an update on the viewer widget.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.snuffling.Snuffling.switch_on_snuffling_panel">
+<tt class="descname">switch_on_snuffling_panel</tt><big>(</big><em>ident</em>, <em>state</em><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#Snuffling.switch_on_snuffling_panel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.Snuffling.switch_on_snuffling_panel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Called when the user has toggled a switchable parameter.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.snuffling.Snuffling.choose_on_snuffling_panel">
+<tt class="descname">choose_on_snuffling_panel</tt><big>(</big><em>ident</em>, <em>state</em><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#Snuffling.choose_on_snuffling_panel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.Snuffling.choose_on_snuffling_panel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Called when the user has made a choice about a choosable parameter.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.snuffling.Snuffling.menuitem_triggered">
+<tt class="descname">menuitem_triggered</tt><big>(</big><em>arg</em><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#Snuffling.menuitem_triggered"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.Snuffling.menuitem_triggered" title="Permalink to this definition">¶</a></dt>
+<dd><p>Called when the user has triggered the snuffling&#8217;s menu.</p>
+<p>The default implementation calls the snuffling&#8217;s <a class="reference internal" href="#pyrocko.snuffling.Snuffling.call" title="pyrocko.snuffling.Snuffling.call"><tt class="xref py py-meth docutils literal"><span class="pre">call()</span></tt></a> method and triggers
+an update on the viewer widget.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.snuffling.Snuffling.call_button_triggered">
+<tt class="descname">call_button_triggered</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#Snuffling.call_button_triggered"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.Snuffling.call_button_triggered" title="Permalink to this definition">¶</a></dt>
+<dd><p>Called when the user has clicked the snuffling&#8217;s call button.</p>
+<p>The default implementation calls the snuffling&#8217;s <a class="reference internal" href="#pyrocko.snuffling.Snuffling.call" title="pyrocko.snuffling.Snuffling.call"><tt class="xref py py-meth docutils literal"><span class="pre">call()</span></tt></a> method and triggers
+an update on the viewer widget.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.snuffling.Snuffling.clear_button_triggered">
+<tt class="descname">clear_button_triggered</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#Snuffling.clear_button_triggered"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.Snuffling.clear_button_triggered" title="Permalink to this definition">¶</a></dt>
+<dd><p>Called when the user has clicked the snuffling&#8217;s clear button.</p>
+<p>This calls the <a class="reference internal" href="#pyrocko.snuffling.Snuffling.cleanup" title="pyrocko.snuffling.Snuffling.cleanup"><tt class="xref py py-meth docutils literal"><span class="pre">cleanup()</span></tt></a> method and triggers an update on the viewer 
+widget.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.snuffling.Snuffling.live_update_toggled">
+<tt class="descname">live_update_toggled</tt><big>(</big><em>on</em><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#Snuffling.live_update_toggled"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.Snuffling.live_update_toggled" title="Permalink to this definition">¶</a></dt>
+<dd><p>Called when the checkbox for live-updates has been toggled.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.snuffling.Snuffling.add_traces">
+<tt class="descname">add_traces</tt><big>(</big><em>traces</em><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#Snuffling.add_traces"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.Snuffling.add_traces" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add traces to the viewer.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>traces</strong> &#8211; list of objects of type <a class="reference internal" href="trace.html#pyrocko.trace.Trace" title="pyrocko.trace.Trace"><tt class="xref py py-class docutils literal"><span class="pre">pyrocko.trace.Trace</span></tt></a></td>
+</tr>
+</tbody>
+</table>
+<p>The traces are put into a <a class="reference internal" href="pile.html#pyrocko.pile.MemTracesFile" title="pyrocko.pile.MemTracesFile"><tt class="xref py py-class docutils literal"><span class="pre">pyrocko.pile.MemTracesFile</span></tt></a> and added to the viewer&#8217;s 
+internal pile for display. Note, that unlike with the traces from the 
+files given on the command line, these traces are kept in memory and so
+may quickly occupy a lot of ram if a lot of traces are added.</p>
+<p>This method should be preferred over modifying the viewer&#8217;s internal 
+pile directly, because this way, the snuffling has a chance to
+automatically remove its private traces again (see <a class="reference internal" href="#pyrocko.snuffling.Snuffling.cleanup" title="pyrocko.snuffling.Snuffling.cleanup"><tt class="xref py py-meth docutils literal"><span class="pre">cleanup()</span></tt></a> method).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.snuffling.Snuffling.add_trace">
+<tt class="descname">add_trace</tt><big>(</big><em>tr</em><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#Snuffling.add_trace"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.Snuffling.add_trace" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.snuffling.Snuffling.add_markers">
+<tt class="descname">add_markers</tt><big>(</big><em>markers</em><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#Snuffling.add_markers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.Snuffling.add_markers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add some markers to the display.</p>
+<p>Takes a list of objects of type <a class="reference internal" href="pile_viewer.html#pyrocko.pile_viewer.Marker" title="pyrocko.pile_viewer.Marker"><tt class="xref py py-class docutils literal"><span class="pre">pyrocko.pile_viewer.Marker</span></tt></a> and adds
+these to the viewer.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.snuffling.Snuffling.add_marker">
+<tt class="descname">add_marker</tt><big>(</big><em>marker</em><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#Snuffling.add_marker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.Snuffling.add_marker" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.snuffling.Snuffling.cleanup">
+<tt class="descname">cleanup</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#Snuffling.cleanup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.Snuffling.cleanup" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove all traces and markers which have been added so far by the snuffling.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.snuffling.Snuffling.check_call">
+<tt class="descname">check_call</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#Snuffling.check_call"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.Snuffling.check_call" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.snuffling.Snuffling.call">
+<tt class="descname">call</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#Snuffling.call"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.Snuffling.call" title="Permalink to this definition">¶</a></dt>
+<dd><p>Main work routine of the snuffling.</p>
+<p>This method is called when the snuffling&#8217;s menu item has been triggered
+or when the user has played with the panel controls. To be overloaded in
+subclass. The default implementation does nothing useful.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="pyrocko.snuffling.bin">
+<tt class="descname">bin</tt><big>(</big><big>)</big><a class="headerlink" href="#pyrocko.snuffling.bin" title="Permalink to this definition">¶</a></dt>
+<dd><p>bin(QTextStream) -&gt; QTextStream</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyrocko.snuffling.hex">
+<tt class="descname">hex</tt><big>(</big><big>)</big><a class="headerlink" href="#pyrocko.snuffling.hex" title="Permalink to this definition">¶</a></dt>
+<dd><p>hex(QTextStream) -&gt; QTextStream</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyrocko.snuffling.oct">
+<tt class="descname">oct</tt><big>(</big><big>)</big><a class="headerlink" href="#pyrocko.snuffling.oct" title="Permalink to this definition">¶</a></dt>
+<dd><p>oct(QTextStream) -&gt; QTextStream</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="pile_viewer.html" title="The pile_viewer Module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="rdseed.html" title="The rdseed Module"
+             >previous</a> |</li>
+        <li><a href="index.html">Pyrocko v1.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Sebastian Heimann.
+    </div>
+  </body>
+</html>

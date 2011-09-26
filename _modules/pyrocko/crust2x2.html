@@ -1,0 +1,428 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pyrocko.crust2x2 &mdash; Pyrocko v1.0 documentation</title>
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="Pyrocko v1.0 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">Pyrocko v1.0 documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body">
+            
+  <h1>Source code for pyrocko.crust2x2</h1><div class="highlight"><pre>
+<span class="sd">&#39;&#39;&#39;Interface to use CRUST2.0 model by Laske, Masters and Reif.</span>
+
+<span class="sd">All functions defined in this module return SI units (m, m/s, kg/m^3).</span>
+
+<span class="sd">.. note:: </span>
+<span class="sd">  Please refer to the REM web site if you use this model: </span>
+
+<span class="sd">    http://igppweb.ucsd.edu/~gabi/rem.html</span>
+
+<span class="sd">  or</span>
+
+<span class="sd">    Bassin, C., Laske, G. and Masters, G., The Current Limits of Resolution for</span>
+<span class="sd">    Surface Wave Tomography in North America, EOS Trans AGU, 81, F897, 2000. A </span>
+<span class="sd">    description of CRUST 5.1 can be found in: Mooney, Laske and Masters, Crust 5.1:</span>
+<span class="sd">    a global crustal model at 5x5 degrees, JGR, 103, 727-747, 1998.</span>
+
+<span class="sd">Usage</span>
+<span class="sd">-----</span>
+
+<span class="sd">::</span>
+
+<span class="sd">    &gt;&gt;&gt; from pyrocko import crust2x2</span>
+<span class="sd">    &gt;&gt;&gt; p = crust2x2.get_profile(10., 20.)</span>
+<span class="sd">    &gt;&gt;&gt; print p</span>
+<span class="sd">    type, name:              G2, Archean 0.5 km seds.</span>
+<span class="sd">    elevation:                           529</span>
+<span class="sd">    crustal thickness:                 38500</span>
+<span class="sd">    average vp, vs, rho:              6460.7          3665.1          2867.5</span>
+<span class="sd">    mantle ave. vp, vs, rho:            8200            4700            3400</span>
+<span class="sd">     </span>
+<span class="sd">                  0            3810            1940             920   ice</span>
+<span class="sd">                  0            1500               0            1020   water</span>
+<span class="sd">                500            2500            1200            2100   soft sed.</span>
+<span class="sd">                  0            4000            2100            2400   hard sed.</span>
+<span class="sd">              12500            6200            3600            2800   upper crust</span>
+<span class="sd">              13000            6400            3600            2850   middle crust</span>
+<span class="sd">              13000            6800            3800            2950   lower crust</span>
+<span class="sd">    &gt;&gt;&gt; print p.get_weeded()</span>
+<span class="sd">    [[     0.    500.    500.  13000.  13000.  26000.  26000.  39000.  39000.]</span>
+<span class="sd">     [  2500.   2500.   6200.   6200.   6400.   6400.   6800.   6800.   8200.]</span>
+<span class="sd">     [  1200.   1200.   3600.   3600.   3600.   3600.   3800.   3800.   4700.]</span>
+<span class="sd">     [  2100.   2100.   2800.   2800.   2850.   2850.   2950.   2950.   3400.]]</span>
+
+
+<span class="sd">Constants</span>
+<span class="sd">---------</span>
+
+<span class="sd">============== ==============</span>
+<span class="sd">Layer id       Layer name</span>
+<span class="sd">============== ==============</span>
+<span class="sd">LICE           ice</span>
+<span class="sd">LWATER         water</span>
+<span class="sd">LSOFTSED       soft sediments</span>
+<span class="sd">LHARDSED       hard sediments</span>
+<span class="sd">LUPPERCRUST    upper crust</span>
+<span class="sd">LMIDDLECRUST   middle crust</span>
+<span class="sd">LLOWERCRUST    lower crust</span>
+<span class="sd">LBELOWCRUST    below crust</span>
+<span class="sd">============== ==============</span>
+
+<span class="sd">Contents</span>
+<span class="sd">--------</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">num</span>
+<span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">from</span> <span class="nn">StringIO</span> <span class="kn">import</span> <span class="n">StringIO</span>
+
+<span class="n">LICE</span><span class="p">,</span> <span class="n">LWATER</span><span class="p">,</span> <span class="n">LSOFTSED</span><span class="p">,</span> <span class="n">LHARDSED</span><span class="p">,</span> <span class="n">LUPPERCRUST</span><span class="p">,</span> <span class="n">LMIDDLECRUST</span><span class="p">,</span> <span class="n">LLOWERCRUST</span><span class="p">,</span> <span class="n">LBELOWCRUST</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Crust2Profile"><a class="viewcode-back" href="../../crust2x2.html#pyrocko.crust2x2.Crust2Profile">[docs]</a><span class="k">class</span> <span class="nc">Crust2Profile</span><span class="p">:</span>
+    <span class="sd">&#39;&#39;&#39;Representation of a CRUST2.0 key profile.&#39;&#39;&#39;</span>
+    
+    <span class="n">layer_names</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;ice&#39;</span><span class="p">,</span> <span class="s">&#39;water&#39;</span><span class="p">,</span> <span class="s">&#39;soft sed.&#39;</span><span class="p">,</span> <span class="s">&#39;hard sed.&#39;</span><span class="p">,</span> <span class="s">&#39;upper crust&#39;</span><span class="p">,</span> <span class="s">&#39;middle crust&#39;</span><span class="p">,</span> <span class="s">&#39;lower crust&#39;</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ident</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">vp</span><span class="p">,</span> <span class="n">vs</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">thickness</span><span class="p">,</span> <span class="n">elevation</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ident</span> <span class="o">=</span> <span class="n">ident</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_vp</span> <span class="o">=</span> <span class="n">vp</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_vs</span> <span class="o">=</span> <span class="n">vs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rho</span> <span class="o">=</span> <span class="n">rho</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_thickness</span> <span class="o">=</span> <span class="n">thickness</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_crustal_thickness</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_elevation</span> <span class="o">=</span> <span class="n">elevation</span>
+    
+<div class="viewcode-block" id="Crust2Profile.get_weeded"><a class="viewcode-back" href="../../crust2x2.html#pyrocko.crust2x2.Crust2Profile.get_weeded">[docs]</a>    <span class="k">def</span> <span class="nf">get_weeded</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">include_waterlayer</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Get layers used in the profile.</span>
+<span class="sd">        </span>
+<span class="sd">        :param include_waterlayer: include water layer if `True`. Default is `False`</span>
+<span class="sd">        </span>
+<span class="sd">        :returns: NumPy array with rows `depth`, `vp`, `vs`, `density`</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">depth</span> <span class="o">=</span> <span class="mf">0.</span>
+        <span class="n">layers</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">ilayer</span><span class="p">,</span> <span class="n">thickness</span><span class="p">,</span> <span class="n">vp</span><span class="p">,</span> <span class="n">vs</span><span class="p">,</span> <span class="n">rho</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">8</span><span class="p">),</span> 
+            <span class="bp">self</span><span class="o">.</span><span class="n">_thickness</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vp</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vs</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rho</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]):</span>
+            <span class="k">if</span> <span class="n">thickness</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">:</span>
+                <span class="k">continue</span>
+            
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">include_waterlayer</span> <span class="ow">and</span> <span class="n">ilayer</span><span class="o">==</span><span class="n">LWATER</span><span class="p">:</span>
+                <span class="k">continue</span>
+            
+            <span class="n">layers</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">depth</span><span class="p">,</span> <span class="n">vp</span><span class="p">,</span><span class="n">vs</span><span class="p">,</span> <span class="n">rho</span><span class="p">])</span>
+            <span class="n">layers</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">depth</span><span class="o">+</span><span class="n">thickness</span><span class="p">,</span> <span class="n">vp</span><span class="p">,</span><span class="n">vs</span><span class="p">,</span> <span class="n">rho</span><span class="p">])</span>
+            <span class="n">depth</span> <span class="o">+=</span> <span class="n">thickness</span>
+            
+        <span class="n">layers</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">depth</span><span class="p">,</span> 
+            <span class="bp">self</span><span class="o">.</span><span class="n">_vp</span><span class="p">[</span><span class="n">LBELOWCRUST</span><span class="p">],</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_vs</span><span class="p">[</span><span class="n">LBELOWCRUST</span><span class="p">],</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_rho</span><span class="p">[</span><span class="n">LBELOWCRUST</span><span class="p">]])</span>
+        
+        <span class="k">return</span> <span class="n">num</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">layers</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
+</div>
+<div class="viewcode-block" id="Crust2Profile.get_layer"><a class="viewcode-back" href="../../crust2x2.html#pyrocko.crust2x2.Crust2Profile.get_layer">[docs]</a>    <span class="k">def</span> <span class="nf">get_layer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ilayer</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Get parameters for a layer.</span>
+<span class="sd">        </span>
+<span class="sd">        :param ilayer: id of layer</span>
+<span class="sd">        :returns: thickness, vp, vs, density</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        
+        <span class="k">if</span> <span class="n">ilayer</span> <span class="o">==</span> <span class="n">LBELOWCRUST</span><span class="p">:</span>
+            <span class="n">thickness</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">Inf</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">thickness</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_thickness</span><span class="p">[</span><span class="n">ilayer</span><span class="p">]</span>
+            
+        <span class="k">return</span> <span class="n">thickness</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vp</span><span class="p">[</span><span class="n">ilayer</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vs</span><span class="p">[</span><span class="n">ilayer</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rho</span><span class="p">[</span><span class="n">ilayer</span><span class="p">]</span>
+            </div>
+<div class="viewcode-block" id="Crust2Profile.set_elevation"><a class="viewcode-back" href="../../crust2x2.html#pyrocko.crust2x2.Crust2Profile.set_elevation">[docs]</a>    <span class="k">def</span> <span class="nf">set_elevation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elevation</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_elevation</span> <span class="o">=</span> <span class="n">elevation</span>
+        </div>
+<div class="viewcode-block" id="Crust2Profile.set_layer_thickness"><a class="viewcode-back" href="../../crust2x2.html#pyrocko.crust2x2.Crust2Profile.set_layer_thickness">[docs]</a>    <span class="k">def</span> <span class="nf">set_layer_thickness</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ilayer</span><span class="p">,</span> <span class="n">thickness</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_thickness</span><span class="p">[</span><span class="n">ilayer</span><span class="p">]</span> <span class="o">=</span> <span class="n">thickness</span>
+        </div>
+<div class="viewcode-block" id="Crust2Profile.elevation"><a class="viewcode-back" href="../../crust2x2.html#pyrocko.crust2x2.Crust2Profile.elevation">[docs]</a>    <span class="k">def</span> <span class="nf">elevation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elevation</span>
+    </div>
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        
+        <span class="n">vvp</span><span class="p">,</span> <span class="n">vvs</span><span class="p">,</span> <span class="n">vrho</span><span class="p">,</span> <span class="n">vthi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">averages</span><span class="p">()</span>
+        
+        <span class="k">return</span> <span class="s">&#39;&#39;&#39;type, name:              </span><span class="si">%s</span><span class="s">, </span><span class="si">%s</span><span class="s"></span>
+<span class="s">elevation:               </span><span class="si">%15.5g</span><span class="s"></span>
+<span class="s">crustal thickness:       </span><span class="si">%15.5g</span><span class="s"></span>
+<span class="s">average vp, vs, rho:     </span><span class="si">%15.5g</span><span class="s"> </span><span class="si">%15.5g</span><span class="s"> </span><span class="si">%15.5g</span><span class="s"></span>
+<span class="s">mantle ave. vp, vs, rho: </span><span class="si">%15.5g</span><span class="s"> </span><span class="si">%15.5g</span><span class="s"> </span><span class="si">%15.5g</span><span class="s"></span>
+
+<span class="si">%s</span><span class="s">&#39;&#39;&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ident</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elevation</span><span class="p">,</span> <span class="n">vthi</span><span class="p">,</span> <span class="n">vvp</span><span class="p">,</span> <span class="n">vvs</span><span class="p">,</span> <span class="n">vrho</span><span class="p">,</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">_vp</span><span class="p">[</span><span class="n">LBELOWCRUST</span><span class="p">],</span><span class="bp">self</span><span class="o">.</span><span class="n">_vs</span><span class="p">[</span><span class="n">LBELOWCRUST</span><span class="p">],</span><span class="bp">self</span><span class="o">.</span><span class="n">_rho</span><span class="p">[</span><span class="n">LBELOWCRUST</span><span class="p">],</span>
+    <span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span> <span class="p">[</span> <span class="s">&#39;</span><span class="si">%15.5g</span><span class="s"> </span><span class="si">%15.5g</span><span class="s"> </span><span class="si">%15.5g</span><span class="s"> </span><span class="si">%15.5g</span><span class="s">   </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_thickness</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vp</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vs</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rho</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+        <span class="n">Crust2Profile</span><span class="o">.</span><span class="n">layer_names</span> <span class="p">)</span> <span class="p">])</span>
+      <span class="p">)</span>
+   
+<div class="viewcode-block" id="Crust2Profile.crustal_thickness"><a class="viewcode-back" href="../../crust2x2.html#pyrocko.crust2x2.Crust2Profile.crustal_thickness">[docs]</a>    <span class="k">def</span> <span class="nf">crustal_thickness</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Get total crustal thickness</span>
+<span class="sd">        </span>
+<span class="sd">        Takes into account ice layer.</span>
+<span class="sd">        Does not take into account water layer.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        
+        <span class="k">return</span> <span class="n">num</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_thickness</span><span class="p">[</span><span class="mi">3</span><span class="p">:])</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_thickness</span><span class="p">[</span><span class="n">LICE</span><span class="p">]</span>
+</div>
+<div class="viewcode-block" id="Crust2Profile.averages"><a class="viewcode-back" href="../../crust2x2.html#pyrocko.crust2x2.Crust2Profile.averages">[docs]</a>    <span class="k">def</span> <span class="nf">averages</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Get crustal averages for vp, vs and density and total crustal thickness,</span>
+<span class="sd">      </span>
+<span class="sd">        Takes into account ice layer.</span>
+<span class="sd">        Does not take into account water layer.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        
+        <span class="n">vthi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">crustal_thickness</span><span class="p">()</span>
+        <span class="n">vvp</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_thickness</span><span class="p">[</span><span class="mi">3</span><span class="p">:]</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vp</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_thickness</span><span class="p">[</span><span class="n">LICE</span><span class="p">]</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vp</span><span class="p">[</span><span class="n">LICE</span><span class="p">]</span>
+        <span class="n">vvs</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_thickness</span><span class="p">[</span><span class="mi">3</span><span class="p">:]</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vs</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_thickness</span><span class="p">[</span><span class="n">LICE</span><span class="p">]</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vs</span><span class="p">[</span><span class="n">LICE</span><span class="p">]</span>
+        <span class="n">vrho</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_thickness</span><span class="p">[</span><span class="mi">3</span><span class="p">:]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rho</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_thickness</span><span class="p">[</span><span class="n">LICE</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rho</span><span class="p">[</span><span class="n">LICE</span><span class="p">]</span>
+            
+        <span class="n">vvp</span> <span class="o">=</span> <span class="n">vthi</span> <span class="o">/</span> <span class="n">vvp</span>
+        <span class="n">vvs</span> <span class="o">=</span> <span class="n">vthi</span> <span class="o">/</span> <span class="n">vvs</span>
+        <span class="n">vrho</span> <span class="o">=</span> <span class="n">vrho</span> <span class="o">/</span> <span class="n">vthi</span>
+    
+        <span class="k">return</span> <span class="n">vvp</span><span class="p">,</span> <span class="n">vvs</span><span class="p">,</span> <span class="n">vrho</span><span class="p">,</span> <span class="n">vthi</span>
+        </div></div>
+<span class="k">def</span> <span class="nf">_sa2arr</span><span class="p">(</span><span class="n">sa</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">num</span><span class="o">.</span><span class="n">array</span><span class="p">([</span> <span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">sa</span> <span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">num</span><span class="o">.</span><span class="n">float</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">_wrap</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mi</span><span class="p">,</span> <span class="n">ma</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">mi</span> <span class="o">&lt;=</span> <span class="n">x</span> <span class="ow">and</span> <span class="n">x</span> <span class="o">&lt;=</span> <span class="n">ma</span><span class="p">:</span> <span class="k">return</span> <span class="n">x</span>
+    <span class="k">return</span> <span class="n">x</span> <span class="o">-</span> <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">((</span><span class="n">x</span><span class="o">-</span><span class="n">mi</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">ma</span><span class="o">-</span><span class="n">mi</span><span class="p">))</span> <span class="o">*</span> <span class="p">(</span><span class="n">ma</span><span class="o">-</span><span class="n">mi</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">_clip</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mi</span><span class="p">,</span> <span class="n">ma</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">min</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">mi</span><span class="p">,</span><span class="n">x</span><span class="p">),</span><span class="n">ma</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Crust2"><a class="viewcode-back" href="../../crust2x2.html#pyrocko.crust2x2.Crust2">[docs]</a><span class="k">class</span> <span class="nc">Crust2</span><span class="p">:</span>
+    <span class="sd">&#39;&#39;&#39;Access CRUST2.0 model.</span>
+<span class="sd">        </span>
+<span class="sd">        :param directory: Directory with the data files which contain the </span>
+<span class="sd">            CRUST2.0 model data. If this is set to `None`, builtin CRUST2.0 files </span>
+<span class="sd">            are used.&#39;&#39;&#39;</span> 
+            
+    <span class="n">fn_keys</span>      <span class="o">=</span> <span class="s">&#39;CNtype2_key.txt&#39;</span>
+    <span class="n">fn_elevation</span> <span class="o">=</span> <span class="s">&#39;CNelevatio2.txt&#39;</span>
+    <span class="n">fn_map</span>       <span class="o">=</span> <span class="s">&#39;CNtype2.txt&#39;</span>
+    
+    <span class="n">nlo</span> <span class="o">=</span> <span class="mi">180</span>
+    <span class="n">nla</span> <span class="o">=</span> <span class="mi">90</span>
+    
+    <span class="n">_instance</span> <span class="o">=</span> <span class="bp">None</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">directory</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    
+        <span class="bp">self</span><span class="o">.</span><span class="n">_directory</span> <span class="o">=</span> <span class="n">directory</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_typemap</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_load_crustal_model</span><span class="p">()</span>
+        
+<div class="viewcode-block" id="Crust2.get_profile"><a class="viewcode-back" href="../../crust2x2.html#pyrocko.crust2x2.Crust2.get_profile">[docs]</a>    <span class="k">def</span> <span class="nf">get_profile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Get crustal profile at a specific location.</span>
+<span class="sd">        </span>
+<span class="sd">        :param lat: latitude</span>
+<span class="sd">        :param lon: longitude</span>
+<span class="sd">        :rtype: instance of :py:class:`Crust2Profile`</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_typemap</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_indices</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">lat</span><span class="p">),</span><span class="nb">float</span><span class="p">(</span><span class="n">lon</span><span class="p">))]</span>
+        </div>
+    <span class="k">def</span> <span class="nf">_indices</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span><span class="n">lon</span><span class="p">):</span>
+        <span class="n">lat</span> <span class="o">=</span> <span class="n">_clip</span><span class="p">(</span><span class="n">lat</span><span class="p">,</span> <span class="o">-</span><span class="mf">90.</span><span class="p">,</span> <span class="mf">90.</span><span class="p">)</span>
+        <span class="n">lon</span> <span class="o">=</span> <span class="n">_wrap</span><span class="p">(</span><span class="n">lon</span><span class="p">,</span> <span class="o">-</span><span class="mf">180.</span><span class="p">,</span> <span class="mf">180.</span><span class="p">)</span>
+        <span class="n">dlo</span> <span class="o">=</span> <span class="mf">360.</span><span class="o">/</span><span class="n">Crust2</span><span class="o">.</span><span class="n">nlo</span>
+        <span class="n">dla</span> <span class="o">=</span> <span class="mf">180.</span><span class="o">/</span><span class="n">Crust2</span><span class="o">.</span><span class="n">nla</span>
+        <span class="n">cola</span> <span class="o">=</span> <span class="mf">90.</span><span class="o">-</span><span class="n">lat</span>
+        <span class="n">ilat</span> <span class="o">=</span> <span class="n">_clip</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">cola</span><span class="o">/</span><span class="n">dla</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="n">Crust2</span><span class="o">.</span><span class="n">nla</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">ilon</span> <span class="o">=</span> <span class="nb">int</span><span class="p">((</span><span class="n">lon</span><span class="o">+</span><span class="mf">180.</span><span class="p">)</span><span class="o">/</span><span class="n">dlo</span><span class="p">)</span><span class="o">%</span><span class="n">Crust2</span><span class="o">.</span><span class="n">nlo</span>
+        <span class="k">return</span> <span class="n">ilat</span><span class="p">,</span> <span class="n">ilon</span>
+        
+    <span class="k">def</span> <span class="nf">_load_crustal_model</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_directory</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">path_keys</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_directory</span><span class="p">,</span> <span class="n">Crust2</span><span class="o">.</span><span class="n">fn_keys</span><span class="p">)</span>
+            <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">path_keys</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">crust2x2_data</span> <span class="kn">import</span> <span class="n">decode</span><span class="p">,</span> <span class="n">type2_key</span><span class="p">,</span> <span class="n">type2</span><span class="p">,</span> <span class="n">elevation</span>
+            <span class="n">f</span> <span class="o">=</span> <span class="n">StringIO</span><span class="p">(</span><span class="n">decode</span><span class="p">(</span><span class="n">type2_key</span><span class="p">))</span>
+
+        <span class="c"># skip header</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+                    
+        <span class="n">profiles</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="p">:</span>
+                <span class="k">break</span>
+            <span class="n">ident</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+            <span class="n">vp</span> <span class="o">=</span> <span class="n">_sa2arr</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">())</span> <span class="o">*</span> <span class="mf">1000.</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+            <span class="n">vs</span> <span class="o">=</span> <span class="n">_sa2arr</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">())</span> <span class="o">*</span> <span class="mf">1000.</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+            <span class="n">rho</span> <span class="o">=</span> <span class="n">_sa2arr</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">())</span> <span class="o">*</span> <span class="mf">1000.</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+            <span class="n">toks</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+            <span class="n">thickness</span> <span class="o">=</span> <span class="n">_sa2arr</span><span class="p">(</span><span class="n">toks</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span> <span class="o">*</span> <span class="mf">1000.</span>
+            
+            <span class="n">profiles</span><span class="p">[</span><span class="n">ident</span><span class="p">]</span> <span class="o">=</span> <span class="n">Crust2Profile</span><span class="p">(</span><span class="n">ident</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span> <span class="n">name</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span> <span class="n">vp</span><span class="p">,</span> <span class="n">vs</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">thickness</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+            
+        <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_directory</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">path_map</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_directory</span><span class="p">,</span> <span class="n">Crust2</span><span class="o">.</span><span class="n">fn_map</span><span class="p">)</span>
+            <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">path_map</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">f</span> <span class="o">=</span> <span class="n">StringIO</span><span class="p">(</span><span class="n">decode</span><span class="p">(</span><span class="n">type2</span><span class="p">))</span>
+
+        <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span> <span class="c"># header</span>
+            
+        <span class="n">amap</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">ila</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+            <span class="n">keys</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">1</span><span class="p">:]</span>
+            <span class="k">for</span> <span class="n">ilo</span><span class="p">,</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">keys</span><span class="p">):</span>
+                <span class="n">amap</span><span class="p">[</span><span class="n">ila</span><span class="p">,</span><span class="n">ilo</span><span class="p">]</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">profiles</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+            
+        <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_directory</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">path_elevation</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_directory</span><span class="p">,</span> <span class="n">Crust2</span><span class="o">.</span><span class="n">fn_elevation</span><span class="p">)</span>
+            <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">path_elevation</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">)</span>
+    
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">f</span> <span class="o">=</span> <span class="n">StringIO</span><span class="p">(</span><span class="n">decode</span><span class="p">(</span><span class="n">elevation</span><span class="p">))</span>
+           
+        <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">ila</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">ilo</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">1</span><span class="p">:]):</span>
+                <span class="n">p</span> <span class="o">=</span> <span class="n">amap</span><span class="p">[</span><span class="n">ila</span><span class="p">,</span><span class="n">ilo</span><span class="p">]</span>
+                <span class="n">p</span><span class="o">.</span><span class="n">set_elevation</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">s</span><span class="p">))</span>
+                <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">elevation</span><span class="p">()</span> <span class="o">&lt;</span> <span class="mf">0.</span><span class="p">:</span>
+                    <span class="n">p</span><span class="o">.</span><span class="n">set_layer_thickness</span><span class="p">(</span><span class="n">LWATER</span><span class="p">,</span> <span class="o">-</span><span class="n">p</span><span class="o">.</span><span class="n">elevation</span><span class="p">())</span>
+        
+        <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">_typemap</span> <span class="o">=</span> <span class="n">amap</span>
+
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="Crust2.instance"><a class="viewcode-back" href="../../crust2x2.html#pyrocko.crust2x2.Crust2.instance">[docs]</a>    <span class="k">def</span> <span class="nf">instance</span><span class="p">():</span>
+        <span class="sd">&#39;&#39;&#39;Get the global default Crust2 instance.&#39;&#39;&#39;</span>
+
+        <span class="k">if</span> <span class="n">Crust2</span><span class="o">.</span><span class="n">_instance</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">Crust2</span><span class="o">.</span><span class="n">_instance</span> <span class="o">=</span> <span class="n">Crust2</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">Crust2</span><span class="o">.</span><span class="n">_instance</span>
+</div></div>
+<div class="viewcode-block" id="get_profile"><a class="viewcode-back" href="../../crust2x2.html#pyrocko.crust2x2.get_profile">[docs]</a><span class="k">def</span> <span class="nf">get_profile</span><span class="p">(</span><span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Get Crust2x2 profile for given location.&#39;&#39;&#39;</span>
+    
+    <span class="n">crust2</span> <span class="o">=</span> <span class="n">Crust2</span><span class="o">.</span><span class="n">instance</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">crust2</span><span class="o">.</span><span class="n">get_profile</span><span class="p">(</span><span class="n">lat</span><span class="p">,</span><span class="n">lon</span><span class="p">)</span>
+
+        </div>
+<div class="viewcode-block" id="plot_crustal_thickness"><a class="viewcode-back" href="../../crust2x2.html#pyrocko.crust2x2.plot_crustal_thickness">[docs]</a><span class="k">def</span> <span class="nf">plot_crustal_thickness</span><span class="p">(</span><span class="n">crust2</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s">&#39;crustal_thickness.pdf&#39;</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Create a quick and dirty plot of the crustal thicknesses defined in CRUST2.0.&#39;&#39;&#39;</span>
+
+    <span class="k">if</span> <span class="n">crust2</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">crust2</span> <span class="o">=</span> <span class="n">Crust2</span><span class="o">.</span><span class="n">instance</span><span class="p">()</span>
+   
+    <span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="n">lat</span><span class="p">,</span><span class="n">lon</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">crust2</span><span class="o">.</span><span class="n">get_profile</span><span class="p">(</span><span class="n">lat</span><span class="p">,</span><span class="n">lon</span><span class="p">)</span><span class="o">.</span><span class="n">crustal_thickness</span><span class="p">(),</span> 
+    
+    <span class="n">plot</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">zscaled_unit</span><span class="o">=</span><span class="s">&#39;km&#39;</span><span class="p">,</span> <span class="n">zscaled_unit_factor</span><span class="o">=</span><span class="mf">0.001</span><span class="p">)</span>
+    </div>
+<div class="viewcode-block" id="plot_vp_belowcrust"><a class="viewcode-back" href="../../crust2x2.html#pyrocko.crust2x2.plot_vp_belowcrust">[docs]</a><span class="k">def</span> <span class="nf">plot_vp_belowcrust</span><span class="p">(</span><span class="n">crust2</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s">&#39;vp_below_crust.pdf&#39;</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Create a quick and dirty plot of vp below the crust, as defined in CRUST2.0.&#39;&#39;&#39;</span>
+
+    <span class="k">if</span> <span class="n">crust2</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">crust2</span> <span class="o">=</span> <span class="n">Crust2</span><span class="o">.</span><span class="n">instance</span><span class="p">()</span>
+        
+    <span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="n">lat</span><span class="p">,</span><span class="n">lon</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">crust2</span><span class="o">.</span><span class="n">get_profile</span><span class="p">(</span><span class="n">lat</span><span class="p">,</span><span class="n">lon</span><span class="p">)</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="n">LBELOWCRUST</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+    
+    <span class="n">plot</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">zscaled_unit</span><span class="o">=</span><span class="s">&#39;km/s&#39;</span><span class="p">,</span> <span class="n">zscaled_unit_factor</span><span class="o">=</span><span class="mf">0.001</span><span class="p">)</span>
+    
+    </div>
+<div class="viewcode-block" id="plot"><a class="viewcode-back" href="../../crust2x2.html#pyrocko.crust2x2.plot">[docs]</a><span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="n">nlats</span><span class="p">,</span> <span class="n">nlons</span> <span class="o">=</span> <span class="mi">91</span><span class="p">,</span> <span class="mi">181</span>
+    <span class="n">lats</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mf">90.</span><span class="p">,</span> <span class="mf">90.</span><span class="p">,</span> <span class="n">nlats</span><span class="p">)</span>
+    <span class="n">lons</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mf">180.</span><span class="p">,</span><span class="mf">180.</span><span class="p">,</span> <span class="n">nlons</span><span class="p">)</span>
+        
+    <span class="n">vecfunc</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span> <span class="n">func</span><span class="p">,</span> <span class="p">[</span> <span class="n">num</span><span class="o">.</span><span class="n">float</span> <span class="p">]</span> <span class="p">)</span>
+    <span class="n">latss</span><span class="p">,</span> <span class="n">lonss</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">lats</span><span class="p">,</span> <span class="n">lons</span><span class="p">)</span>         
+    <span class="n">thickness</span> <span class="o">=</span> <span class="n">vecfunc</span><span class="p">(</span><span class="n">latss</span><span class="p">,</span> <span class="n">lonss</span><span class="p">)</span>
+    
+    <span class="kn">import</span> <span class="nn">gmtpy</span>
+    <span class="n">cm</span> <span class="o">=</span> <span class="n">gmtpy</span><span class="o">.</span><span class="n">cm</span>
+    <span class="n">marg</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.5</span><span class="o">*</span><span class="n">cm</span><span class="p">,</span> <span class="mf">2.5</span><span class="o">*</span><span class="n">cm</span><span class="p">,</span> <span class="mf">1.5</span><span class="o">*</span><span class="n">cm</span><span class="p">,</span> <span class="mf">1.5</span><span class="o">*</span><span class="n">cm</span><span class="p">)</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">gmtpy</span><span class="o">.</span><span class="n">Simple</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">20</span><span class="o">*</span><span class="n">cm</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">10</span><span class="o">*</span><span class="n">cm</span><span class="p">,</span> <span class="n">margins</span><span class="o">=</span><span class="n">marg</span><span class="p">,</span> 
+        <span class="n">with_palette</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    
+    <span class="n">p</span><span class="o">.</span><span class="n">density_plot</span><span class="p">(</span><span class="n">gmtpy</span><span class="o">.</span><span class="n">tabledata</span><span class="p">(</span><span class="n">lons</span><span class="p">,</span><span class="n">lats</span><span class="p">,</span> <span class="n">thickness</span><span class="o">.</span><span class="n">T</span><span class="p">))</span>
+    <span class="n">p</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+</pre></div></div>
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">Pyrocko v1.0 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Sebastian Heimann.
+    </div>
+  </body>
+</html>

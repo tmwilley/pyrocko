@@ -1,0 +1,834 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pyrocko.snuffling &mdash; Pyrocko v1.0 documentation</title>
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="Pyrocko v1.0 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">Pyrocko v1.0 documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body">
+            
+  <h1>Source code for pyrocko.snuffling</h1><div class="highlight"><pre>
+<span class="sd">&#39;&#39;&#39;Snuffling infrastructure</span>
+
+<span class="sd">This module provides the base class :py:class:`Snuffling` for user-defined snufflings and </span>
+<span class="sd">some utilities for their handling.</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+
+<span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">logging</span><span class="o">,</span> <span class="nn">traceback</span><span class="o">,</span> <span class="nn">tempfile</span>
+
+<span class="kn">from</span> <span class="nn">PyQt4.QtCore</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">PyQt4.QtGui</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="kn">import</span> <span class="nn">pile</span>
+
+<span class="kn">from</span> <span class="nn">gui_util</span> <span class="kn">import</span> <span class="n">ValControl</span><span class="p">,</span> <span class="n">LinValControl</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s">&#39;pyrocko.snufflings&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="str_traceback"><a class="viewcode-back" href="../../snuffling.html#pyrocko.snuffling.str_traceback">[docs]</a><span class="k">def</span> <span class="nf">str_traceback</span><span class="p">():</span>
+    <span class="k">return</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">exc_info</span><span class="p">()[</span><span class="mi">2</span><span class="p">]))</span>
+</div>
+<div class="viewcode-block" id="Param"><a class="viewcode-back" href="../../snuffling.html#pyrocko.snuffling.Param">[docs]</a><span class="k">class</span> <span class="nc">Param</span><span class="p">:</span>
+    <span class="sd">&#39;&#39;&#39;Definition of an adjustable parameter for the snuffling. The snuffling</span>
+<span class="sd">    may display controls for user input for such parameters.&#39;&#39;&#39;</span>
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">ident</span><span class="p">,</span> <span class="n">default</span><span class="p">,</span> <span class="n">minimum</span><span class="p">,</span> <span class="n">maximum</span><span class="p">,</span> <span class="n">low_is_none</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">high_is_none</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ident</span> <span class="o">=</span> <span class="n">ident</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">default</span> <span class="o">=</span> <span class="n">default</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">minimum</span> <span class="o">=</span> <span class="n">minimum</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">maximum</span> <span class="o">=</span> <span class="n">maximum</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">low_is_none</span> <span class="o">=</span> <span class="n">low_is_none</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">high_is_none</span> <span class="o">=</span> <span class="n">high_is_none</span>
+</div>
+<div class="viewcode-block" id="Switch"><a class="viewcode-back" href="../../snuffling.html#pyrocko.snuffling.Switch">[docs]</a><span class="k">class</span> <span class="nc">Switch</span><span class="p">:</span>
+    <span class="sd">&#39;&#39;&#39;Definition of a switch for the snuffling. The snuffling may display a</span>
+<span class="sd">    checkbox for such a switch.&#39;&#39;&#39;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">ident</span><span class="p">,</span> <span class="n">default</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ident</span> <span class="o">=</span> <span class="n">ident</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">default</span> <span class="o">=</span> <span class="n">default</span>
+</div>
+<div class="viewcode-block" id="Choice"><a class="viewcode-back" href="../../snuffling.html#pyrocko.snuffling.Choice">[docs]</a><span class="k">class</span> <span class="nc">Choice</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">ident</span><span class="p">,</span> <span class="n">default</span><span class="p">,</span> <span class="n">choices</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ident</span> <span class="o">=</span> <span class="n">ident</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">default</span> <span class="o">=</span> <span class="n">default</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">choices</span> <span class="o">=</span> <span class="n">choices</span>
+</div>
+<div class="viewcode-block" id="MyScrollArea"><a class="viewcode-back" href="../../snuffling.html#pyrocko.snuffling.MyScrollArea">[docs]</a><span class="k">class</span> <span class="nc">MyScrollArea</span><span class="p">(</span><span class="n">QScrollArea</span><span class="p">):</span>
+
+<div class="viewcode-block" id="MyScrollArea.sizeHint"><a class="viewcode-back" href="../../snuffling.html#pyrocko.snuffling.MyScrollArea.sizeHint">[docs]</a>    <span class="k">def</span> <span class="nf">sizeHint</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">QSize</span><span class="p">()</span>
+        <span class="n">s</span><span class="o">.</span><span class="n">setWidth</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">widget</span><span class="p">()</span><span class="o">.</span><span class="n">sizeHint</span><span class="p">()</span><span class="o">.</span><span class="n">width</span><span class="p">())</span>
+        <span class="n">s</span><span class="o">.</span><span class="n">setHeight</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">s</span>
+</div></div>
+<div class="viewcode-block" id="SwitchControl"><a class="viewcode-back" href="../../snuffling.html#pyrocko.snuffling.SwitchControl">[docs]</a><span class="k">class</span> <span class="nc">SwitchControl</span><span class="p">(</span><span class="n">QCheckBox</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ident</span><span class="p">,</span> <span class="n">default</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="n">QCheckBox</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ident</span> <span class="o">=</span> <span class="n">ident</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setChecked</span><span class="p">(</span><span class="n">default</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">SIGNAL</span><span class="p">(</span><span class="s">&#39;toggled(bool)&#39;</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">sw_toggled</span><span class="p">)</span>
+
+<div class="viewcode-block" id="SwitchControl.sw_toggled"><a class="viewcode-back" href="../../snuffling.html#pyrocko.snuffling.SwitchControl.sw_toggled">[docs]</a>    <span class="k">def</span> <span class="nf">sw_toggled</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">SIGNAL</span><span class="p">(</span><span class="s">&#39;sw_toggled(PyQt_PyObject,bool)&#39;</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">ident</span><span class="p">,</span> <span class="n">state</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="SwitchControl.set_value"><a class="viewcode-back" href="../../snuffling.html#pyrocko.snuffling.SwitchControl.set_value">[docs]</a>    <span class="k">def</span> <span class="nf">set_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">blockSignals</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setChecked</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">blockSignals</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
+</div></div>
+<div class="viewcode-block" id="ChoiceControl"><a class="viewcode-back" href="../../snuffling.html#pyrocko.snuffling.ChoiceControl">[docs]</a><span class="k">class</span> <span class="nc">ChoiceControl</span><span class="p">(</span><span class="n">QFrame</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ident</span><span class="p">,</span> <span class="n">default</span><span class="p">,</span> <span class="n">choices</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="n">QFrame</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">label</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="o">.</span><span class="n">setMinimumWidth</span><span class="p">(</span><span class="mi">120</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cbox</span> <span class="o">=</span> <span class="n">QComboBox</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layout</span> <span class="o">=</span> <span class="n">QHBoxLayout</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cbox</span><span class="p">)</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">ident</span> <span class="o">=</span> <span class="n">ident</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">choices</span> <span class="o">=</span> <span class="n">choices</span>
+        <span class="k">for</span> <span class="n">ichoice</span><span class="p">,</span> <span class="n">choice</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">choices</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cbox</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="n">QString</span><span class="p">(</span><span class="n">choice</span><span class="p">))</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_value</span><span class="p">(</span><span class="n">default</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cbox</span><span class="p">,</span> <span class="n">SIGNAL</span><span class="p">(</span><span class="s">&#39;activated(int)&#39;</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">choosen</span><span class="p">)</span>
+        
+<div class="viewcode-block" id="ChoiceControl.choosen"><a class="viewcode-back" href="../../snuffling.html#pyrocko.snuffling.ChoiceControl.choosen">[docs]</a>    <span class="k">def</span> <span class="nf">choosen</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">SIGNAL</span><span class="p">(</span><span class="s">&#39;choosen(PyQt_PyObject,PyQt_PyObject)&#39;</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">ident</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">choices</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+</div>
+<div class="viewcode-block" id="ChoiceControl.set_value"><a class="viewcode-back" href="../../snuffling.html#pyrocko.snuffling.ChoiceControl.set_value">[docs]</a>    <span class="k">def</span> <span class="nf">set_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cbox</span><span class="o">.</span><span class="n">blockSignals</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">choice</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">choices</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">choice</span> <span class="o">==</span> <span class="n">v</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">cbox</span><span class="o">.</span><span class="n">setCurrentIndex</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cbox</span><span class="o">.</span><span class="n">blockSignals</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
+</div></div>
+<div class="viewcode-block" id="BrokenSnufflingModule"><a class="viewcode-back" href="../../snuffling.html#pyrocko.snuffling.BrokenSnufflingModule">[docs]</a><span class="k">class</span> <span class="nc">BrokenSnufflingModule</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="k">pass</span>
+</div>
+<div class="viewcode-block" id="SnufflingModule"><a class="viewcode-back" href="../../snuffling.html#pyrocko.snuffling.SnufflingModule">[docs]</a><span class="k">class</span> <span class="nc">SnufflingModule</span><span class="p">:</span>
+    <span class="sd">&#39;&#39;&#39;Utility class to load/reload snufflings from a file.</span>
+<span class="sd">    </span>
+<span class="sd">    The snufflings are created by a user module which has a special function</span>
+<span class="sd">    :py:func:`__snufflings__` which return the snuffling instances to be exported. The</span>
+<span class="sd">    snuffling module is attached to a handler class, which makes use of the</span>
+<span class="sd">    snufflings (e.g. :py:class:`pyrocko.pile_viewer.PileOverwiew` from ``pile_viewer.py``). The handler class must</span>
+<span class="sd">    implement the methods ``add_snuffling()`` and ``remove_snuffling()`` which are used</span>
+<span class="sd">    as callbacks. The callbacks are utilized from the methods :py:meth:`load_if_needed`</span>
+<span class="sd">    and :py:meth:`remove_snufflings` which may be called from the handler class, when</span>
+<span class="sd">    needed.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    
+    <span class="n">mtimes</span> <span class="o">=</span> <span class="p">{}</span>
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">handler</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_path</span> <span class="o">=</span> <span class="n">path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mtime</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_module</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_snufflings</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_handler</span> <span class="o">=</span> <span class="n">handler</span>
+        
+<div class="viewcode-block" id="SnufflingModule.load_if_needed"><a class="viewcode-back" href="../../snuffling.html#pyrocko.snuffling.SnufflingModule.load_if_needed">[docs]</a>    <span class="k">def</span> <span class="nf">load_if_needed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="o">+</span><span class="s">&#39;.py&#39;</span><span class="p">)</span>
+        <span class="n">mtime</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">stat</span><span class="p">(</span><span class="n">filename</span><span class="p">)[</span><span class="mi">8</span><span class="p">]</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span> <span class="bp">self</span><span class="o">.</span><span class="n">_path</span> <span class="p">]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_module</span> <span class="o">==</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_module</span> <span class="o">=</span> <span class="nb">__import__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">snuffling</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_module</span><span class="o">.</span><span class="n">__snufflings__</span><span class="p">():</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">add_snuffling</span><span class="p">(</span><span class="n">snuffling</span><span class="p">)</span>
+                    
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">str_traceback</span><span class="p">())</span>
+                <span class="k">raise</span> <span class="n">BrokenSnufflingModule</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">)</span>
+                            
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mtime</span> <span class="o">!=</span> <span class="n">mtime</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&#39;reloading snuffling module </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">)</span>
+            <span class="n">settings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">remove_snufflings</span><span class="p">()</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="nb">reload</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_module</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">snuffling</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_module</span><span class="o">.</span><span class="n">__snufflings__</span><span class="p">():</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">add_snuffling</span><span class="p">(</span><span class="n">snuffling</span><span class="p">,</span> <span class="n">reloaded</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+                
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_snufflings</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">settings</span><span class="p">):</span>
+                    <span class="k">for</span> <span class="n">sett</span><span class="p">,</span> <span class="n">snuf</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">settings</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_snufflings</span><span class="p">):</span>
+                        <span class="n">snuf</span><span class="o">.</span><span class="n">set_settings</span><span class="p">(</span><span class="n">sett</span><span class="p">)</span>
+
+
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">str_traceback</span><span class="p">())</span>
+                <span class="k">raise</span> <span class="n">BrokenSnufflingModule</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">)</span>            
+            
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mtime</span> <span class="o">=</span> <span class="n">mtime</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    </div>
+<div class="viewcode-block" id="SnufflingModule.add_snuffling"><a class="viewcode-back" href="../../snuffling.html#pyrocko.snuffling.SnufflingModule.add_snuffling">[docs]</a>    <span class="k">def</span> <span class="nf">add_snuffling</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">snuffling</span><span class="p">,</span> <span class="n">reloaded</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="n">snuffling</span><span class="o">.</span><span class="n">_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_path</span> 
+        <span class="n">snuffling</span><span class="o">.</span><span class="n">setup</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_snufflings</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">snuffling</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_handler</span><span class="o">.</span><span class="n">add_snuffling</span><span class="p">(</span><span class="n">snuffling</span><span class="p">,</span> <span class="n">reloaded</span><span class="o">=</span><span class="n">reloaded</span><span class="p">)</span>
+    </div>
+<div class="viewcode-block" id="SnufflingModule.remove_snufflings"><a class="viewcode-back" href="../../snuffling.html#pyrocko.snuffling.SnufflingModule.remove_snufflings">[docs]</a>    <span class="k">def</span> <span class="nf">remove_snufflings</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">settings</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">snuffling</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_snufflings</span><span class="p">:</span>
+            <span class="n">settings</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">snuffling</span><span class="o">.</span><span class="n">get_settings</span><span class="p">())</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_handler</span><span class="o">.</span><span class="n">remove_snuffling</span><span class="p">(</span><span class="n">snuffling</span><span class="p">)</span>
+            
+        <span class="bp">self</span><span class="o">.</span><span class="n">_snufflings</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">return</span> <span class="n">settings</span>
+    </div></div>
+<div class="viewcode-block" id="NoViewerSet"><a class="viewcode-back" href="../../snuffling.html#pyrocko.snuffling.NoViewerSet">[docs]</a><span class="k">class</span> <span class="nc">NoViewerSet</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;This exception is raised, when no viewer has been set on a Snuffling.&#39;&#39;&#39;</span>
+    <span class="k">pass</span>
+</div>
+<div class="viewcode-block" id="NoTracesSelected"><a class="viewcode-back" href="../../snuffling.html#pyrocko.snuffling.NoTracesSelected">[docs]</a><span class="k">class</span> <span class="nc">NoTracesSelected</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;This exception is raised, when no traces have been selected in the viewer </span>
+<span class="sd">    and we cannot fallback to using the current view.&#39;&#39;&#39;</span>
+    <span class="k">pass</span>
+</div>
+<div class="viewcode-block" id="UserCancelled"><a class="viewcode-back" href="../../snuffling.html#pyrocko.snuffling.UserCancelled">[docs]</a><span class="k">class</span> <span class="nc">UserCancelled</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;This exception is raised, when the user has cancelled a snuffling dialog.&#39;&#39;&#39;</span>
+    <span class="k">pass</span>
+</div>
+<div class="viewcode-block" id="SnufflingCallFailed"><a class="viewcode-back" href="../../snuffling.html#pyrocko.snuffling.SnufflingCallFailed">[docs]</a><span class="k">class</span> <span class="nc">SnufflingCallFailed</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;This exception is raised, when :py:meth:`Snuffling.fail` is called from :py:meth:`Snuffling.call`.&#39;&#39;&#39;</span>
+</div>
+<div class="viewcode-block" id="Snuffling"><a class="viewcode-back" href="../../snuffling.html#pyrocko.snuffling.Snuffling">[docs]</a><span class="k">class</span> <span class="nc">Snuffling</span><span class="p">:</span>
+    <span class="sd">&#39;&#39;&#39;Base class for user snufflings.</span>
+<span class="sd">    </span>
+<span class="sd">    Snufflings are plugins for snuffler (and other applications using the</span>
+<span class="sd">    :py:class:`pyrocko.pile_viewer.PileOverview` class defined in</span>
+<span class="sd">    ``pile_viewer.py``). They can be added, removed and reloaded at runtime and</span>
+<span class="sd">    should provide a simple way of extending the functionality of snuffler.</span>
+<span class="sd">    </span>
+<span class="sd">    A snuffling has access to all data available in a pile viewer, can process </span>
+<span class="sd">    this data and can create and add new traces and markers to the viewer.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_path</span> <span class="o">=</span> <span class="bp">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="s">&#39;Untitled Snuffling&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_viewer</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tickets</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_markers</span> <span class="o">=</span> <span class="p">[]</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">_delete_panel</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_delete_menuitem</span> <span class="o">=</span> <span class="bp">None</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">_panel_parent</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_menu_parent</span> <span class="o">=</span> <span class="bp">None</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">_panel</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_menuitem</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_parameters</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_param_controls</span> <span class="o">=</span> <span class="p">{}</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">_live_update</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_previous_output_filename</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_previous_input_filename</span> <span class="o">=</span> <span class="bp">None</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tempdir</span> <span class="o">=</span> <span class="bp">None</span>
+        
+<div class="viewcode-block" id="Snuffling.setup"><a class="viewcode-back" href="../../snuffling.html#pyrocko.snuffling.Snuffling.setup">[docs]</a>    <span class="k">def</span> <span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Setup the snuffling.</span>
+<span class="sd">        </span>
+<span class="sd">        This method should be implemented in subclass and contain e.g. calls to </span>
+<span class="sd">        :py:meth:`set_name` and :py:meth:`add_parameter`.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        
+        <span class="k">pass</span>
+    </div>
+<div class="viewcode-block" id="Snuffling.init_gui"><a class="viewcode-back" href="../../snuffling.html#pyrocko.snuffling.Snuffling.init_gui">[docs]</a>    <span class="k">def</span> <span class="nf">init_gui</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">viewer</span><span class="p">,</span> <span class="n">panel_parent</span><span class="p">,</span> <span class="n">menu_parent</span><span class="p">,</span> <span class="n">reloaded</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Set parent viewer and hooks to add panel and menu entry.</span>
+<span class="sd">        </span>
+<span class="sd">        This method is called from the</span>
+<span class="sd">        :py:class:`pyrocko.pile_viewer.PileOverview` object. Calls</span>
+<span class="sd">        :py:meth:`setup_gui`.  &#39;&#39;&#39;</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">_viewer</span> <span class="o">=</span> <span class="n">viewer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_panel_parent</span> <span class="o">=</span> <span class="n">panel_parent</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_menu_parent</span> <span class="o">=</span> <span class="n">menu_parent</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">setup_gui</span><span class="p">(</span><span class="n">reloaded</span><span class="o">=</span><span class="n">reloaded</span><span class="p">)</span>
+        </div>
+<div class="viewcode-block" id="Snuffling.setup_gui"><a class="viewcode-back" href="../../snuffling.html#pyrocko.snuffling.Snuffling.setup_gui">[docs]</a>    <span class="k">def</span> <span class="nf">setup_gui</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reloaded</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Create and add gui elements to the viewer.</span>
+<span class="sd">        </span>
+<span class="sd">        This method is initially called from :py:meth:`init_gui`. It is also called,</span>
+<span class="sd">        e.g. when new parameters have been added or if the name of the snuffling </span>
+<span class="sd">        has been changed.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_panel_parent</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_panel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">make_panel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_panel_parent</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_panel</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_panel_parent</span><span class="o">.</span><span class="n">add_panel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_name</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_panel</span><span class="p">,</span> <span class="n">reloaded</span><span class="p">)</span>
+       
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_menu_parent</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_menuitem</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">make_menuitem</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_menu_parent</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_menuitem</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_menu_parent</span><span class="o">.</span><span class="n">add_snuffling_menuitem</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_menuitem</span><span class="p">)</span>
+        </div>
+<div class="viewcode-block" id="Snuffling.delete_gui"><a class="viewcode-back" href="../../snuffling.html#pyrocko.snuffling.Snuffling.delete_gui">[docs]</a>    <span class="k">def</span> <span class="nf">delete_gui</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Remove the gui elements of the snuffling.</span>
+<span class="sd">        </span>
+<span class="sd">        This removes the panel and menu entry of the widget from the viewer and</span>
+<span class="sd">        also removes all traces and markers added with the :py:meth:`add_traces` </span>
+<span class="sd">        and :py:meth:`add_markers` methods.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_panel</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_panel_parent</span><span class="o">.</span><span class="n">remove_panel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_panel</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_panel</span> <span class="o">=</span> <span class="bp">None</span>
+            
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_menuitem</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_menu_parent</span><span class="o">.</span><span class="n">remove_snuffling_menuitem</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_menuitem</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_menuitem</span> <span class="o">=</span> <span class="bp">None</span>
+            </div>
+<div class="viewcode-block" id="Snuffling.set_name"><a class="viewcode-back" href="../../snuffling.html#pyrocko.snuffling.Snuffling.set_name">[docs]</a>    <span class="k">def</span> <span class="nf">set_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Set the snuffling&#39;s name.</span>
+<span class="sd">        </span>
+<span class="sd">        The snuffling&#39;s name is shown as a menu entry and in the panel header.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_panel</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_menuitem</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">delete_gui</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">setup_gui</span><span class="p">()</span>
+    </div>
+<div class="viewcode-block" id="Snuffling.get_name"><a class="viewcode-back" href="../../snuffling.html#pyrocko.snuffling.Snuffling.get_name">[docs]</a>    <span class="k">def</span> <span class="nf">get_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Get the snuffling&#39;s name.&#39;&#39;&#39;</span>
+        
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span>
+    </div>
+<div class="viewcode-block" id="Snuffling.error"><a class="viewcode-back" href="../../snuffling.html#pyrocko.snuffling.Snuffling.error">[docs]</a>    <span class="k">def</span> <span class="nf">error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reason</span><span class="p">):</span>
+        <span class="n">box</span> <span class="o">=</span> <span class="n">QMessageBox</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_viewer</span><span class="p">())</span>
+        <span class="n">box</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="n">reason</span><span class="p">)</span>
+        <span class="n">box</span><span class="o">.</span><span class="n">exec_</span><span class="p">()</span>
+    </div>
+<div class="viewcode-block" id="Snuffling.fail"><a class="viewcode-back" href="../../snuffling.html#pyrocko.snuffling.Snuffling.fail">[docs]</a>    <span class="k">def</span> <span class="nf">fail</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reason</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">reason</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">SnufflingCallFailed</span><span class="p">(</span><span class="n">reason</span><span class="p">)</span> 
+   </div>
+<div class="viewcode-block" id="Snuffling.tempdir"><a class="viewcode-back" href="../../snuffling.html#pyrocko.snuffling.Snuffling.tempdir">[docs]</a>    <span class="k">def</span> <span class="nf">tempdir</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tempdir</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tempdir</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">mkdtemp</span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="s">&#39;snuffling-tmp-&#39;</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tempdir</span>
+</div>
+<div class="viewcode-block" id="Snuffling.set_live_update"><a class="viewcode-back" href="../../snuffling.html#pyrocko.snuffling.Snuffling.set_live_update">[docs]</a>    <span class="k">def</span> <span class="nf">set_live_update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">live_update</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Enable/disable live updating.</span>
+<span class="sd">        </span>
+<span class="sd">        When live updates are enabled, the :py:meth:`call` method is called whenever</span>
+<span class="sd">        the user changes a parameter. If it is disabled, the user has to </span>
+<span class="sd">        initiate such a call manually by triggering the snuffling&#39;s menu item</span>
+<span class="sd">        or pressing the call button.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_live_update</span> <span class="o">=</span> <span class="n">live_update</span>
+    </div>
+<div class="viewcode-block" id="Snuffling.add_parameter"><a class="viewcode-back" href="../../snuffling.html#pyrocko.snuffling.Snuffling.add_parameter">[docs]</a>    <span class="k">def</span> <span class="nf">add_parameter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">param</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Add an adjustable parameter to the snuffling.</span>
+<span class="sd">        </span>
+<span class="sd">        :param param: object of type :py:class:`Param`</span>
+<span class="sd">        </span>
+<span class="sd">        For each parameter added, controls are added to the snuffling&#39;s panel,</span>
+<span class="sd">        so that the parameter can be adjusted from the gui.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">_parameters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">param</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_parameter</span><span class="p">(</span><span class="n">param</span><span class="o">.</span><span class="n">ident</span><span class="p">,</span> <span class="n">param</span><span class="o">.</span><span class="n">default</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_panel</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">delete_gui</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">setup_gui</span><span class="p">()</span>
+    </div>
+<div class="viewcode-block" id="Snuffling.get_parameters"><a class="viewcode-back" href="../../snuffling.html#pyrocko.snuffling.Snuffling.get_parameters">[docs]</a>    <span class="k">def</span> <span class="nf">get_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Get the snufflings adjustable parameter definitions.</span>
+<span class="sd">        </span>
+<span class="sd">        </span>
+<span class="sd">        Returns a list of objects of type Param.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parameters</span>
+    </div>
+<div class="viewcode-block" id="Snuffling.set_parameter"><a class="viewcode-back" href="../../snuffling.html#pyrocko.snuffling.Snuffling.set_parameter">[docs]</a>    <span class="k">def</span> <span class="nf">set_parameter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ident</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Set one of the snuffling&#39;s adjustable parameters.</span>
+<span class="sd">        </span>
+<span class="sd">        :param ident: identifier of the parameter</span>
+<span class="sd">        :param value: new value of the parameter</span>
+<span class="sd">            </span>
+<span class="sd">        This is usually called when the parameter has been set via the gui </span>
+<span class="sd">        controls.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        
+        <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ident</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+        </div>
+<div class="viewcode-block" id="Snuffling.get_parameter"><a class="viewcode-back" href="../../snuffling.html#pyrocko.snuffling.Snuffling.get_parameter">[docs]</a>    <span class="k">def</span> <span class="nf">get_parameter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ident</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ident</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Snuffling.get_settings"><a class="viewcode-back" href="../../snuffling.html#pyrocko.snuffling.Snuffling.get_settings">[docs]</a>    <span class="k">def</span> <span class="nf">get_settings</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_parameters</span><span class="p">()</span>
+        <span class="n">settings</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">params</span><span class="p">:</span>
+            <span class="n">settings</span><span class="p">[</span><span class="n">param</span><span class="o">.</span><span class="n">ident</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_parameter</span><span class="p">(</span><span class="n">param</span><span class="o">.</span><span class="n">ident</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">settings</span>
+</div>
+<div class="viewcode-block" id="Snuffling.set_settings"><a class="viewcode-back" href="../../snuffling.html#pyrocko.snuffling.Snuffling.set_settings">[docs]</a>    <span class="k">def</span> <span class="nf">set_settings</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">settings</span><span class="p">):</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_parameters</span><span class="p">()</span>
+        <span class="n">dparams</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span> <span class="p">[</span> <span class="p">(</span><span class="n">param</span><span class="o">.</span><span class="n">ident</span><span class="p">,</span> <span class="n">param</span><span class="p">)</span> <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">params</span> <span class="p">]</span> <span class="p">)</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="n">settings</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">dparams</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">set_parameter</span><span class="p">(</span><span class="n">k</span><span class="p">,</span><span class="n">v</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_param_controls</span><span class="p">:</span>
+                    <span class="n">control</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_param_controls</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+                    <span class="n">control</span><span class="o">.</span><span class="n">set_value</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Snuffling.get_viewer"><a class="viewcode-back" href="../../snuffling.html#pyrocko.snuffling.Snuffling.get_viewer">[docs]</a>    <span class="k">def</span> <span class="nf">get_viewer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Get the parent viewer.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns a reference to an object of type :py:class:`PileOverview`, which is the</span>
+<span class="sd">        main viewer widget.</span>
+<span class="sd">        </span>
+<span class="sd">        If no gui has been initialized for the snuffling, a :py:exc:`NoViewerSet` </span>
+<span class="sd">        exception is raised.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_viewer</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">NoViewerSet</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_viewer</span>
+    </div>
+<div class="viewcode-block" id="Snuffling.get_pile"><a class="viewcode-back" href="../../snuffling.html#pyrocko.snuffling.Snuffling.get_pile">[docs]</a>    <span class="k">def</span> <span class="nf">get_pile</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Get the pile.</span>
+<span class="sd">        </span>
+<span class="sd">        If a gui has been initialized, a reference to the viewer&#39;s internal pile</span>
+<span class="sd">        is returned. If not, the :py:meth:`make_pile` method (which may be overloaded in</span>
+<span class="sd">        subclass) is called to create a pile. This can be utilized to make </span>
+<span class="sd">        hybrid snufflings, which may work also in a standalone mode.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">p</span> <span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_viewer</span><span class="p">()</span><span class="o">.</span><span class="n">get_pile</span><span class="p">()</span>
+        <span class="k">except</span> <span class="n">NoViewerSet</span><span class="p">:</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">make_pile</span><span class="p">()</span>
+            
+        <span class="k">return</span> <span class="n">p</span>
+        </div>
+<div class="viewcode-block" id="Snuffling.chopper_selected_traces"><a class="viewcode-back" href="../../snuffling.html#pyrocko.snuffling.Snuffling.chopper_selected_traces">[docs]</a>    <span class="k">def</span> <span class="nf">chopper_selected_traces</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fallback</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">marker_selector</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span> <span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Iterate over selected traces.</span>
+<span class="sd">        </span>
+<span class="sd">        This is a shortcut to get all trace data contained in the selected </span>
+<span class="sd">        markers in the running snuffler. For each selected marker, </span>
+<span class="sd">        :py:meth:`pyrocko.pile.Pile.chopper` is called with the arguments *tmin*, *tmax*, and </span>
+<span class="sd">        *trace_selector* set to values according to the marker. Additional</span>
+<span class="sd">        arguments to the chopper are handed over from *\*args* and *\*\*kwargs*.</span>
+<span class="sd">        </span>
+<span class="sd">        :param fallback: if ``True``, if no selection has been marked, use the content</span>
+<span class="sd">               currently visible in the viewer.</span>
+<span class="sd">        :param marker_selector: if not ``None`` a callback to filter markers.</span>
+<span class="sd">               </span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        
+        <span class="n">viewer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_viewer</span><span class="p">()</span>
+        <span class="n">markers</span> <span class="o">=</span> <span class="n">viewer</span><span class="o">.</span><span class="n">selected_markers</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">marker_selector</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">markers</span> <span class="o">=</span> <span class="p">[</span>  <span class="n">marker</span> <span class="k">for</span> <span class="n">marker</span> <span class="ow">in</span> <span class="n">markers</span> <span class="k">if</span> <span class="n">marker_selector</span><span class="p">(</span><span class="n">marker</span><span class="p">)</span> <span class="p">]</span> 
+        <span class="n">pile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_pile</span><span class="p">()</span>
+        
+        <span class="k">if</span> <span class="n">markers</span><span class="p">:</span>
+            
+            <span class="k">for</span> <span class="n">marker</span> <span class="ow">in</span> <span class="n">markers</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">marker</span><span class="o">.</span><span class="n">nslc_ids</span><span class="p">:</span>
+                    <span class="n">trace_selector</span> <span class="o">=</span> <span class="bp">None</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">trace_selector</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">tr</span><span class="p">:</span> <span class="n">tr</span><span class="o">.</span><span class="n">nslc_id</span> <span class="ow">in</span> <span class="n">marker</span><span class="o">.</span><span class="n">nslc_ids</span>
+                
+                <span class="k">for</span> <span class="n">traces</span> <span class="ow">in</span> <span class="n">pile</span><span class="o">.</span><span class="n">chopper</span><span class="p">(</span>
+                        <span class="n">tmin</span> <span class="o">=</span> <span class="n">marker</span><span class="o">.</span><span class="n">tmin</span><span class="p">,</span>
+                        <span class="n">tmax</span> <span class="o">=</span> <span class="n">marker</span><span class="o">.</span><span class="n">tmax</span><span class="p">,</span>
+                        <span class="n">trace_selector</span> <span class="o">=</span> <span class="n">trace_selector</span><span class="p">,</span>
+                        <span class="o">*</span><span class="n">args</span><span class="p">,</span>
+                        <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+                    
+                    <span class="k">yield</span> <span class="n">traces</span>
+                    
+        <span class="k">elif</span> <span class="n">fallback</span><span class="p">:</span>
+            
+            <span class="n">tmin</span><span class="p">,</span> <span class="n">tmax</span> <span class="o">=</span> <span class="n">viewer</span><span class="o">.</span><span class="n">get_time_range</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">traces</span> <span class="ow">in</span> <span class="n">pile</span><span class="o">.</span><span class="n">chopper</span><span class="p">(</span>
+                    <span class="n">tmin</span> <span class="o">=</span> <span class="n">tmin</span><span class="p">,</span>
+                    <span class="n">tmax</span> <span class="o">=</span> <span class="n">tmax</span><span class="p">,</span>
+                    <span class="o">*</span><span class="n">args</span><span class="p">,</span>
+                    <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+                
+                <span class="k">yield</span> <span class="n">traces</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">NoTracesSelected</span><span class="p">()</span>
+                    </div>
+<div class="viewcode-block" id="Snuffling.get_selected_time_range"><a class="viewcode-back" href="../../snuffling.html#pyrocko.snuffling.Snuffling.get_selected_time_range">[docs]</a>    <span class="k">def</span> <span class="nf">get_selected_time_range</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fallback</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Get the time range spanning all selected markers.&#39;&#39;&#39;</span>
+        
+        <span class="n">viewer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_viewer</span><span class="p">()</span>
+        <span class="n">markers</span> <span class="o">=</span> <span class="n">viewer</span><span class="o">.</span><span class="n">selected_markers</span><span class="p">()</span>
+        <span class="n">mins</span> <span class="o">=</span> <span class="p">[</span> <span class="n">marker</span><span class="o">.</span><span class="n">tmin</span> <span class="k">for</span> <span class="n">marker</span> <span class="ow">in</span> <span class="n">markers</span> <span class="p">]</span>
+        <span class="n">maxs</span> <span class="o">=</span> <span class="p">[</span> <span class="n">marker</span><span class="o">.</span><span class="n">tmax</span> <span class="k">for</span> <span class="n">marker</span> <span class="ow">in</span> <span class="n">markers</span> <span class="p">]</span>
+        
+        <span class="k">if</span> <span class="n">mins</span> <span class="ow">and</span> <span class="n">maxs</span><span class="p">:</span>
+            <span class="n">tmin</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">mins</span><span class="p">)</span>
+            <span class="n">tmax</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">maxs</span><span class="p">)</span>
+            
+        <span class="k">elif</span> <span class="n">fallback</span><span class="p">:</span>
+            <span class="n">tmin</span><span class="p">,</span> <span class="n">tmax</span>  <span class="o">=</span> <span class="n">viewer</span><span class="o">.</span><span class="n">get_time_range</span><span class="p">()</span>
+            
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">NoTracesSelected</span><span class="p">()</span>
+            
+        <span class="k">return</span> <span class="n">tmin</span><span class="p">,</span> <span class="n">tmax</span>
+</div>
+<div class="viewcode-block" id="Snuffling.make_pile"><a class="viewcode-back" href="../../snuffling.html#pyrocko.snuffling.Snuffling.make_pile">[docs]</a>    <span class="k">def</span> <span class="nf">make_pile</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Create a pile.</span>
+<span class="sd">        </span>
+<span class="sd">        To be overloaded in subclass. The default implementation just calls</span>
+<span class="sd">        :py:func:`pyrocko.pile.make_pile` to create a pile from command line arguments.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        
+        <span class="n">cachedirname</span> <span class="o">=</span> <span class="s">&#39;/tmp/snuffle_cache_</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s">&#39;USER&#39;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">pile</span><span class="o">.</span><span class="n">make_pile</span><span class="p">(</span><span class="n">cachedirname</span><span class="o">=</span><span class="n">cachedirname</span><span class="p">)</span>
+        </div>
+<div class="viewcode-block" id="Snuffling.make_panel"><a class="viewcode-back" href="../../snuffling.html#pyrocko.snuffling.Snuffling.make_panel">[docs]</a>    <span class="k">def</span> <span class="nf">make_panel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Create a widget for the snuffling&#39;s control panel.</span>
+<span class="sd">        </span>
+<span class="sd">        Normally called from the :py:meth:`setup_gui` method. Returns ``None`` if no panel</span>
+<span class="sd">        is needed (e.g. if the snuffling has no adjustable parameters).&#39;&#39;&#39;</span>
+    
+        <span class="n">params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_parameters</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_param_controls</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="n">params</span><span class="p">:</span>
+            <span class="n">sarea</span> <span class="o">=</span> <span class="n">MyScrollArea</span><span class="p">(</span><span class="n">parent</span><span class="o">.</span><span class="n">get_panel_parent_widget</span><span class="p">())</span>
+            <span class="n">frame</span> <span class="o">=</span> <span class="n">QFrame</span><span class="p">(</span><span class="n">sarea</span><span class="p">)</span>
+            <span class="n">sarea</span><span class="o">.</span><span class="n">setWidget</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+            <span class="n">sarea</span><span class="o">.</span><span class="n">setWidgetResizable</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
+            <span class="n">layout</span> <span class="o">=</span> <span class="n">QGridLayout</span><span class="p">()</span>
+            <span class="n">frame</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span> <span class="n">layout</span> <span class="p">)</span>
+            
+            <span class="n">irow</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">have_switches</span> <span class="o">=</span> <span class="bp">False</span>
+            <span class="k">for</span> <span class="n">iparam</span><span class="p">,</span> <span class="n">param</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">params</span><span class="p">):</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="n">Param</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">param</span><span class="o">.</span><span class="n">minimum</span> <span class="o">&lt;=</span> <span class="mf">0.0</span><span class="p">:</span>
+                        <span class="n">param_widget</span> <span class="o">=</span> <span class="n">LinValControl</span><span class="p">(</span><span class="n">high_is_none</span><span class="o">=</span><span class="n">param</span><span class="o">.</span><span class="n">high_is_none</span><span class="p">,</span> <span class="n">low_is_none</span><span class="o">=</span><span class="n">param</span><span class="o">.</span><span class="n">low_is_none</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">param_widget</span> <span class="o">=</span> <span class="n">ValControl</span><span class="p">(</span><span class="n">high_is_none</span><span class="o">=</span><span class="n">param</span><span class="o">.</span><span class="n">high_is_none</span><span class="p">,</span> <span class="n">low_is_none</span><span class="o">=</span><span class="n">param</span><span class="o">.</span><span class="n">low_is_none</span><span class="p">)</span>
+                    <span class="n">param_widget</span><span class="o">.</span><span class="n">setup</span><span class="p">(</span><span class="n">param</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">param</span><span class="o">.</span><span class="n">minimum</span><span class="p">,</span> <span class="n">param</span><span class="o">.</span><span class="n">maximum</span><span class="p">,</span> <span class="n">param</span><span class="o">.</span><span class="n">default</span><span class="p">,</span> <span class="n">iparam</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">get_viewer</span><span class="p">()</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span> <span class="n">param_widget</span><span class="p">,</span> <span class="n">SIGNAL</span><span class="p">(</span><span class="s">&quot;valchange(PyQt_PyObject,int)&quot;</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">modified_snuffling_panel</span> <span class="p">)</span>
+
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_param_controls</span><span class="p">[</span><span class="n">param</span><span class="o">.</span><span class="n">ident</span><span class="p">]</span> <span class="o">=</span> <span class="n">param_widget</span>
+                    <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span> <span class="n">param_widget</span><span class="p">,</span> <span class="n">irow</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span> <span class="p">)</span>
+                    <span class="n">irow</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="n">Choice</span><span class="p">):</span>
+                    <span class="n">param_widget</span> <span class="o">=</span> <span class="n">ChoiceControl</span><span class="p">(</span><span class="n">param</span><span class="o">.</span><span class="n">ident</span><span class="p">,</span> <span class="n">param</span><span class="o">.</span><span class="n">default</span><span class="p">,</span> <span class="n">param</span><span class="o">.</span><span class="n">choices</span><span class="p">,</span> <span class="n">param</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">get_viewer</span><span class="p">()</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span> <span class="n">param_widget</span><span class="p">,</span> <span class="n">SIGNAL</span><span class="p">(</span><span class="s">&#39;choosen(PyQt_PyObject,PyQt_PyObject)&#39;</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">choose_on_snuffling_panel</span> <span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_param_controls</span><span class="p">[</span><span class="n">param</span><span class="o">.</span><span class="n">ident</span><span class="p">]</span> <span class="o">=</span> <span class="n">param_widget</span>
+                    <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span> <span class="n">param_widget</span><span class="p">,</span> <span class="n">irow</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span> <span class="p">)</span>
+                    <span class="n">irow</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="n">Switch</span><span class="p">):</span>
+                    <span class="n">have_switches</span> <span class="o">=</span> <span class="bp">True</span>
+
+            <span class="k">if</span> <span class="n">have_switches</span><span class="p">:</span>
+
+                <span class="n">swframe</span> <span class="o">=</span> <span class="n">QFrame</span><span class="p">(</span><span class="n">sarea</span><span class="p">)</span>
+                <span class="n">swlayout</span> <span class="o">=</span> <span class="n">QGridLayout</span><span class="p">()</span>
+                <span class="n">swframe</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span> <span class="n">swlayout</span> <span class="p">)</span>
+                <span class="n">isw</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="k">for</span> <span class="n">iparam</span><span class="p">,</span> <span class="n">param</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">params</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">param</span><span class="p">,</span> <span class="n">Switch</span><span class="p">):</span>
+                        <span class="n">param_widget</span> <span class="o">=</span> <span class="n">SwitchControl</span><span class="p">(</span><span class="n">param</span><span class="o">.</span><span class="n">ident</span><span class="p">,</span> <span class="n">param</span><span class="o">.</span><span class="n">default</span><span class="p">,</span> <span class="n">param</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">get_viewer</span><span class="p">()</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span> <span class="n">param_widget</span><span class="p">,</span> <span class="n">SIGNAL</span><span class="p">(</span><span class="s">&#39;sw_toggled(PyQt_PyObject,bool)&#39;</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">switch_on_snuffling_panel</span> <span class="p">)</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_param_controls</span><span class="p">[</span><span class="n">param</span><span class="o">.</span><span class="n">ident</span><span class="p">]</span> <span class="o">=</span> <span class="n">param_widget</span>
+                        <span class="n">swlayout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span> <span class="n">param_widget</span><span class="p">,</span> <span class="n">isw</span><span class="o">/</span><span class="mi">10</span><span class="p">,</span> <span class="n">isw</span><span class="o">%</span><span class="mi">10</span> <span class="p">)</span>
+                        <span class="n">isw</span> <span class="o">+=</span> <span class="mi">1</span>
+                
+                <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span> <span class="n">swframe</span><span class="p">,</span> <span class="n">irow</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span> <span class="p">)</span>
+                <span class="n">irow</span> <span class="o">+=</span> <span class="mi">1</span>
+
+            <span class="n">live_update_checkbox</span> <span class="o">=</span> <span class="n">QCheckBox</span><span class="p">(</span><span class="s">&#39;Auto-Run&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_live_update</span><span class="p">:</span>
+                <span class="n">live_update_checkbox</span><span class="o">.</span><span class="n">setCheckState</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">Checked</span><span class="p">)</span>
+            <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span> <span class="n">live_update_checkbox</span><span class="p">,</span> <span class="n">irow</span><span class="p">,</span> <span class="mi">0</span> <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">get_viewer</span><span class="p">()</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span> <span class="n">live_update_checkbox</span><span class="p">,</span> <span class="n">SIGNAL</span><span class="p">(</span><span class="s">&quot;toggled(bool)&quot;</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">live_update_toggled</span> <span class="p">)</span>
+        
+            <span class="n">clear_button</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s">&#39;Clear&#39;</span><span class="p">)</span>
+            <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span> <span class="n">clear_button</span><span class="p">,</span> <span class="n">irow</span><span class="p">,</span> <span class="mi">1</span> <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">get_viewer</span><span class="p">()</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span> <span class="n">clear_button</span><span class="p">,</span> <span class="n">SIGNAL</span><span class="p">(</span><span class="s">&quot;clicked()&quot;</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">clear_button_triggered</span> <span class="p">)</span>
+        
+            <span class="n">call_button</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="s">&#39;Run&#39;</span><span class="p">)</span>
+            <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span> <span class="n">call_button</span><span class="p">,</span> <span class="n">irow</span><span class="p">,</span> <span class="mi">2</span> <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">get_viewer</span><span class="p">()</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span> <span class="n">call_button</span><span class="p">,</span> <span class="n">SIGNAL</span><span class="p">(</span><span class="s">&quot;clicked()&quot;</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">call_button_triggered</span> <span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">sarea</span> 
+            
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">None</span>
+    </div>
+<div class="viewcode-block" id="Snuffling.make_menuitem"><a class="viewcode-back" href="../../snuffling.html#pyrocko.snuffling.Snuffling.make_menuitem">[docs]</a>    <span class="k">def</span> <span class="nf">make_menuitem</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Create the menu item for the snuffling.</span>
+<span class="sd">        </span>
+<span class="sd">        This method may be overloaded in subclass and return ``None``, if no menu </span>
+<span class="sd">        entry is wanted.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        
+        <span class="n">item</span> <span class="o">=</span> <span class="n">QAction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_name</span><span class="p">(),</span> <span class="bp">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">get_viewer</span><span class="p">()</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span> <span class="n">item</span><span class="p">,</span> <span class="n">SIGNAL</span><span class="p">(</span><span class="s">&quot;triggered(bool)&quot;</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">menuitem_triggered</span> <span class="p">)</span>
+        <span class="k">return</span> <span class="n">item</span>
+    </div>
+<div class="viewcode-block" id="Snuffling.output_filename"><a class="viewcode-back" href="../../snuffling.html#pyrocko.snuffling.Snuffling.output_filename">[docs]</a>    <span class="k">def</span> <span class="nf">output_filename</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">caption</span><span class="o">=</span><span class="s">&#39;Save File&#39;</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">selected_filter</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        
+        <span class="sd">&#39;&#39;&#39;Query user for an output filename.</span>
+<span class="sd">        </span>
+<span class="sd">        This is currently just a wrapper to :py:func:`QFileDialog.getSaveFileName`.</span>
+<span class="sd">        A :py:exc:`UserCancelled` exception is raised if the user cancels the dialog.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">dir</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_previous_output_filename</span><span class="p">:</span>
+            <span class="nb">dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_previous_output_filename</span>
+            
+        <span class="n">fn</span> <span class="o">=</span> <span class="n">QFileDialog</span><span class="o">.</span><span class="n">getSaveFileName</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">get_viewer</span><span class="p">(),</span>
+            <span class="n">caption</span><span class="p">,</span>
+            <span class="nb">dir</span><span class="p">,</span>
+            <span class="nb">filter</span><span class="p">,</span>
+            <span class="n">selected_filter</span><span class="p">)</span>
+            
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">fn</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">UserCancelled</span><span class="p">()</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">_previous_output_filename</span> <span class="o">=</span> <span class="n">fn</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
+    </div>
+<div class="viewcode-block" id="Snuffling.input_filename"><a class="viewcode-back" href="../../snuffling.html#pyrocko.snuffling.Snuffling.input_filename">[docs]</a>    <span class="k">def</span> <span class="nf">input_filename</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">caption</span><span class="o">=</span><span class="s">&#39;Open File&#39;</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">selected_filter</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        
+        <span class="sd">&#39;&#39;&#39;Query user for an input filename.</span>
+<span class="sd">        </span>
+<span class="sd">        This is currently just a wrapper to :py:func:`QFileDialog.getOpenFileName`.</span>
+<span class="sd">        A :py:exc:`UserCancelled` exception is raised if the user cancels the dialog.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">dir</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_previous_input_filename</span><span class="p">:</span>
+            <span class="nb">dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_previous_input_filename</span>
+            
+        <span class="n">fn</span> <span class="o">=</span> <span class="n">QFileDialog</span><span class="o">.</span><span class="n">getOpenFileName</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">get_viewer</span><span class="p">(),</span>
+            <span class="n">caption</span><span class="p">,</span>
+            <span class="nb">dir</span><span class="p">,</span>
+            <span class="nb">filter</span><span class="p">,</span>
+            <span class="n">selected_filter</span><span class="p">)</span>
+            
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">fn</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">UserCancelled</span><span class="p">()</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">_previous_input_filename</span> <span class="o">=</span> <span class="n">fn</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
+    </div>
+<div class="viewcode-block" id="Snuffling.modified_snuffling_panel"><a class="viewcode-back" href="../../snuffling.html#pyrocko.snuffling.Snuffling.modified_snuffling_panel">[docs]</a>    <span class="k">def</span> <span class="nf">modified_snuffling_panel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">iparam</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Called when the user has played with an adjustable parameter.</span>
+<span class="sd">        </span>
+<span class="sd">        The default implementation sets the parameter, calls the snuffling&#39;s </span>
+<span class="sd">        :py:meth:`call` method and finally triggers an update on the viewer widget.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        
+        <span class="n">param</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_parameters</span><span class="p">()[</span><span class="n">iparam</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_parameter</span><span class="p">(</span><span class="n">param</span><span class="o">.</span><span class="n">ident</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_live_update</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">check_call</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">get_viewer</span><span class="p">()</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+        
+</div>
+<div class="viewcode-block" id="Snuffling.switch_on_snuffling_panel"><a class="viewcode-back" href="../../snuffling.html#pyrocko.snuffling.Snuffling.switch_on_snuffling_panel">[docs]</a>    <span class="k">def</span> <span class="nf">switch_on_snuffling_panel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ident</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Called when the user has toggled a switchable parameter.&#39;&#39;&#39;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_parameter</span><span class="p">(</span><span class="n">ident</span><span class="p">,</span> <span class="n">state</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_live_update</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">check_call</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">get_viewer</span><span class="p">()</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="Snuffling.choose_on_snuffling_panel"><a class="viewcode-back" href="../../snuffling.html#pyrocko.snuffling.Snuffling.choose_on_snuffling_panel">[docs]</a>    <span class="k">def</span> <span class="nf">choose_on_snuffling_panel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ident</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Called when the user has made a choice about a choosable parameter.&#39;&#39;&#39;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_parameter</span><span class="p">(</span><span class="n">ident</span><span class="p">,</span> <span class="n">state</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_live_update</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">check_call</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">get_viewer</span><span class="p">()</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="Snuffling.menuitem_triggered"><a class="viewcode-back" href="../../snuffling.html#pyrocko.snuffling.Snuffling.menuitem_triggered">[docs]</a>    <span class="k">def</span> <span class="nf">menuitem_triggered</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Called when the user has triggered the snuffling&#39;s menu.</span>
+<span class="sd">        </span>
+<span class="sd">        The default implementation calls the snuffling&#39;s :py:meth:`call` method and triggers</span>
+<span class="sd">        an update on the viewer widget.&#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_call</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">get_viewer</span><span class="p">()</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+        </div>
+<div class="viewcode-block" id="Snuffling.call_button_triggered"><a class="viewcode-back" href="../../snuffling.html#pyrocko.snuffling.Snuffling.call_button_triggered">[docs]</a>    <span class="k">def</span> <span class="nf">call_button_triggered</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Called when the user has clicked the snuffling&#39;s call button.</span>
+<span class="sd">        </span>
+<span class="sd">        The default implementation calls the snuffling&#39;s :py:meth:`call` method and triggers</span>
+<span class="sd">        an update on the viewer widget.&#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_call</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">get_viewer</span><span class="p">()</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+        </div>
+<div class="viewcode-block" id="Snuffling.clear_button_triggered"><a class="viewcode-back" href="../../snuffling.html#pyrocko.snuffling.Snuffling.clear_button_triggered">[docs]</a>    <span class="k">def</span> <span class="nf">clear_button_triggered</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Called when the user has clicked the snuffling&#39;s clear button.</span>
+<span class="sd">        </span>
+<span class="sd">        This calls the :py:meth:`cleanup` method and triggers an update on the viewer </span>
+<span class="sd">        widget.&#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">get_viewer</span><span class="p">()</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+        </div>
+<div class="viewcode-block" id="Snuffling.live_update_toggled"><a class="viewcode-back" href="../../snuffling.html#pyrocko.snuffling.Snuffling.live_update_toggled">[docs]</a>    <span class="k">def</span> <span class="nf">live_update_toggled</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">on</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Called when the checkbox for live-updates has been toggled.&#39;&#39;&#39;</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_live_update</span><span class="p">(</span><span class="n">on</span><span class="p">)</span>
+        </div>
+<div class="viewcode-block" id="Snuffling.add_traces"><a class="viewcode-back" href="../../snuffling.html#pyrocko.snuffling.Snuffling.add_traces">[docs]</a>    <span class="k">def</span> <span class="nf">add_traces</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">traces</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Add traces to the viewer.</span>
+<span class="sd">        </span>
+<span class="sd">        :param traces: list of objects of type :py:class:`pyrocko.trace.Trace`</span>
+<span class="sd">            </span>
+<span class="sd">        The traces are put into a :py:class:`pyrocko.pile.MemTracesFile` and added to the viewer&#39;s </span>
+<span class="sd">        internal pile for display. Note, that unlike with the traces from the </span>
+<span class="sd">        files given on the command line, these traces are kept in memory and so</span>
+<span class="sd">        may quickly occupy a lot of ram if a lot of traces are added.</span>
+<span class="sd">        </span>
+<span class="sd">        This method should be preferred over modifying the viewer&#39;s internal </span>
+<span class="sd">        pile directly, because this way, the snuffling has a chance to</span>
+<span class="sd">        automatically remove its private traces again (see :py:meth:`cleanup` method).</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        
+        <span class="n">ticket</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_viewer</span><span class="p">()</span><span class="o">.</span><span class="n">add_traces</span><span class="p">(</span><span class="n">traces</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tickets</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="n">ticket</span> <span class="p">)</span>
+        <span class="k">return</span> <span class="n">ticket</span>
+</div>
+<div class="viewcode-block" id="Snuffling.add_trace"><a class="viewcode-back" href="../../snuffling.html#pyrocko.snuffling.Snuffling.add_trace">[docs]</a>    <span class="k">def</span> <span class="nf">add_trace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tr</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_traces</span><span class="p">([</span><span class="n">tr</span><span class="p">])</span>
+</div>
+<div class="viewcode-block" id="Snuffling.add_markers"><a class="viewcode-back" href="../../snuffling.html#pyrocko.snuffling.Snuffling.add_markers">[docs]</a>    <span class="k">def</span> <span class="nf">add_markers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">markers</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Add some markers to the display.</span>
+<span class="sd">        </span>
+<span class="sd">        Takes a list of objects of type :py:class:`pyrocko.pile_viewer.Marker` and adds</span>
+<span class="sd">        these to the viewer.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">get_viewer</span><span class="p">()</span><span class="o">.</span><span class="n">add_markers</span><span class="p">(</span><span class="n">markers</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_markers</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">markers</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Snuffling.add_marker"><a class="viewcode-back" href="../../snuffling.html#pyrocko.snuffling.Snuffling.add_marker">[docs]</a>    <span class="k">def</span> <span class="nf">add_marker</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">marker</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_markers</span><span class="p">([</span><span class="n">marker</span><span class="p">])</span>
+</div>
+<div class="viewcode-block" id="Snuffling.cleanup"><a class="viewcode-back" href="../../snuffling.html#pyrocko.snuffling.Snuffling.cleanup">[docs]</a>    <span class="k">def</span> <span class="nf">cleanup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Remove all traces and markers which have been added so far by the snuffling.&#39;&#39;&#39;</span>
+        
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">viewer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_viewer</span><span class="p">()</span>
+            <span class="n">viewer</span><span class="o">.</span><span class="n">release_data</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tickets</span><span class="p">)</span>
+            <span class="n">viewer</span><span class="o">.</span><span class="n">remove_markers</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_markers</span><span class="p">)</span>
+            
+        <span class="k">except</span> <span class="n">NoViewerSet</span><span class="p">:</span>
+            <span class="k">pass</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tickets</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_markers</span> <span class="o">=</span> <span class="p">[]</span>
+   </div>
+<div class="viewcode-block" id="Snuffling.check_call"><a class="viewcode-back" href="../../snuffling.html#pyrocko.snuffling.Snuffling.check_call">[docs]</a>    <span class="k">def</span> <span class="nf">check_call</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">call</span><span class="p">()</span>
+        <span class="k">except</span> <span class="n">SnufflingCallFailed</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)))</span>
+</div>
+<div class="viewcode-block" id="Snuffling.call"><a class="viewcode-back" href="../../snuffling.html#pyrocko.snuffling.Snuffling.call">[docs]</a>    <span class="k">def</span> <span class="nf">call</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Main work routine of the snuffling.</span>
+<span class="sd">        </span>
+<span class="sd">        This method is called when the snuffling&#39;s menu item has been triggered</span>
+<span class="sd">        or when the user has played with the panel controls. To be overloaded in</span>
+<span class="sd">        subclass. The default implementation does nothing useful.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        
+        <span class="k">pass</span>
+    </div>
+    <span class="k">def</span> <span class="nf">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tempdir</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="kn">import</span> <span class="nn">shutil</span>
+            <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tempdir</span><span class="p">)</span>
+
+        </div>
+</pre></div>
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">Pyrocko v1.0 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2011, Sebastian Heimann.
+    </div>
+  </body>
+</html>
