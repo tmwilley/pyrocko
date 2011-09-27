@@ -7,13 +7,13 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>The snuffling Module &mdash; Pyrocko v1.0 documentation</title>
+    <title>The snuffling Module &mdash; Pyrocko v0.2 documentation</title>
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
-        VERSION:     '1.0',
+        VERSION:     '0.2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -22,7 +22,11 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="Pyrocko v1.0 documentation" href="index.html" />
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within Pyrocko v0.2 documentation"
+          href="_static/opensearch.xml"/>
+    <link rel="top" title="Pyrocko v0.2 documentation" href="index.html" />
+    <link rel="up" title="Library Reference" href="reference.html" />
     <link rel="next" title="The pile_viewer Module" href="pile_viewer.html" />
     <link rel="prev" title="The rdseed Module" href="rdseed.html" /> 
   </head>
@@ -42,7 +46,8 @@
         <li class="right" >
           <a href="rdseed.html" title="The rdseed Module"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">Pyrocko v1.0 documentation</a> &raquo;</li> 
+        <li><a href="index.html">Pyrocko v0.2 documentation</a> &raquo;</li>
+          <li><a href="reference.html" accesskey="U">Library Reference</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -55,11 +60,6 @@
 <p>Snuffling infrastructure</p>
 <p>This module provides the base class <a class="reference internal" href="#pyrocko.snuffling.Snuffling" title="pyrocko.snuffling.Snuffling"><tt class="xref py py-class docutils literal"><span class="pre">Snuffling</span></tt></a> for user-defined snufflings and 
 some utilities for their handling.</p>
-<dl class="function">
-<dt id="pyrocko.snuffling.str_traceback">
-<tt class="descname">str_traceback</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#str_traceback"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.str_traceback" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
 <dl class="class">
 <dt id="pyrocko.snuffling.Param">
 <em class="property">class </em><tt class="descname">Param</tt><big>(</big><em>name</em>, <em>ident</em>, <em>default</em>, <em>minimum</em>, <em>maximum</em>, <em>low_is_none=None</em>, <em>high_is_none=None</em><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#Param"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.Param" title="Permalink to this definition">¶</a></dt>
@@ -77,105 +77,8 @@ checkbox for such a switch.</p>
 <dl class="class">
 <dt id="pyrocko.snuffling.Choice">
 <em class="property">class </em><tt class="descname">Choice</tt><big>(</big><em>name</em>, <em>ident</em>, <em>default</em>, <em>choices</em><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#Choice"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.Choice" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="class">
-<dt id="pyrocko.snuffling.MyScrollArea">
-<em class="property">class </em><tt class="descname">MyScrollArea</tt><a class="reference internal" href="_modules/pyrocko/snuffling.html#MyScrollArea"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.MyScrollArea" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="method">
-<dt id="pyrocko.snuffling.MyScrollArea.sizeHint">
-<tt class="descname">sizeHint</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#MyScrollArea.sizeHint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.MyScrollArea.sizeHint" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="pyrocko.snuffling.SwitchControl">
-<em class="property">class </em><tt class="descname">SwitchControl</tt><big>(</big><em>ident</em>, <em>default</em>, <em>*args</em><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#SwitchControl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.SwitchControl" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="method">
-<dt id="pyrocko.snuffling.SwitchControl.sw_toggled">
-<tt class="descname">sw_toggled</tt><big>(</big><em>state</em><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#SwitchControl.sw_toggled"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.SwitchControl.sw_toggled" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.snuffling.SwitchControl.set_value">
-<tt class="descname">set_value</tt><big>(</big><em>state</em><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#SwitchControl.set_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.SwitchControl.set_value" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="pyrocko.snuffling.ChoiceControl">
-<em class="property">class </em><tt class="descname">ChoiceControl</tt><big>(</big><em>ident</em>, <em>default</em>, <em>choices</em>, <em>name</em>, <em>*args</em><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#ChoiceControl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.ChoiceControl" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="method">
-<dt id="pyrocko.snuffling.ChoiceControl.choosen">
-<tt class="descname">choosen</tt><big>(</big><em>i</em><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#ChoiceControl.choosen"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.ChoiceControl.choosen" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.snuffling.ChoiceControl.set_value">
-<tt class="descname">set_value</tt><big>(</big><em>v</em><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#ChoiceControl.set_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.ChoiceControl.set_value" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="exception">
-<dt id="pyrocko.snuffling.BrokenSnufflingModule">
-<em class="property">exception </em><tt class="descname">BrokenSnufflingModule</tt><a class="reference internal" href="_modules/pyrocko/snuffling.html#BrokenSnufflingModule"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.BrokenSnufflingModule" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="class">
-<dt id="pyrocko.snuffling.SnufflingModule">
-<em class="property">class </em><tt class="descname">SnufflingModule</tt><big>(</big><em>path</em>, <em>name</em>, <em>handler</em><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#SnufflingModule"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.SnufflingModule" title="Permalink to this definition">¶</a></dt>
-<dd><p>Utility class to load/reload snufflings from a file.</p>
-<p>The snufflings are created by a user module which has a special function
-<tt class="xref py py-func docutils literal"><span class="pre">__snufflings__()</span></tt> which return the snuffling instances to be exported. The
-snuffling module is attached to a handler class, which makes use of the
-snufflings (e.g. <tt class="xref py py-class docutils literal"><span class="pre">pyrocko.pile_viewer.PileOverwiew</span></tt> from <tt class="docutils literal"><span class="pre">pile_viewer.py</span></tt>). The handler class must
-implement the methods <tt class="docutils literal"><span class="pre">add_snuffling()</span></tt> and <tt class="docutils literal"><span class="pre">remove_snuffling()</span></tt> which are used
-as callbacks. The callbacks are utilized from the methods <a class="reference internal" href="#pyrocko.snuffling.SnufflingModule.load_if_needed" title="pyrocko.snuffling.SnufflingModule.load_if_needed"><tt class="xref py py-meth docutils literal"><span class="pre">load_if_needed()</span></tt></a>
-and <a class="reference internal" href="#pyrocko.snuffling.SnufflingModule.remove_snufflings" title="pyrocko.snuffling.SnufflingModule.remove_snufflings"><tt class="xref py py-meth docutils literal"><span class="pre">remove_snufflings()</span></tt></a> which may be called from the handler class, when
-needed.</p>
-<dl class="method">
-<dt id="pyrocko.snuffling.SnufflingModule.load_if_needed">
-<tt class="descname">load_if_needed</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#SnufflingModule.load_if_needed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.SnufflingModule.load_if_needed" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.snuffling.SnufflingModule.add_snuffling">
-<tt class="descname">add_snuffling</tt><big>(</big><em>snuffling</em>, <em>reloaded=False</em><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#SnufflingModule.add_snuffling"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.SnufflingModule.add_snuffling" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.snuffling.SnufflingModule.remove_snufflings">
-<tt class="descname">remove_snufflings</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#SnufflingModule.remove_snufflings"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.SnufflingModule.remove_snufflings" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="exception">
-<dt id="pyrocko.snuffling.NoViewerSet">
-<em class="property">exception </em><tt class="descname">NoViewerSet</tt><a class="reference internal" href="_modules/pyrocko/snuffling.html#NoViewerSet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.NoViewerSet" title="Permalink to this definition">¶</a></dt>
-<dd><p>This exception is raised, when no viewer has been set on a Snuffling.</p>
-</dd></dl>
-
-<dl class="exception">
-<dt id="pyrocko.snuffling.NoTracesSelected">
-<em class="property">exception </em><tt class="descname">NoTracesSelected</tt><a class="reference internal" href="_modules/pyrocko/snuffling.html#NoTracesSelected"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.NoTracesSelected" title="Permalink to this definition">¶</a></dt>
-<dd><p>This exception is raised, when no traces have been selected in the viewer 
-and we cannot fallback to using the current view.</p>
-</dd></dl>
-
-<dl class="exception">
-<dt id="pyrocko.snuffling.UserCancelled">
-<em class="property">exception </em><tt class="descname">UserCancelled</tt><a class="reference internal" href="_modules/pyrocko/snuffling.html#UserCancelled"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.UserCancelled" title="Permalink to this definition">¶</a></dt>
-<dd><p>This exception is raised, when the user has cancelled a snuffling dialog.</p>
-</dd></dl>
-
-<dl class="exception">
-<dt id="pyrocko.snuffling.SnufflingCallFailed">
-<em class="property">exception </em><tt class="descname">SnufflingCallFailed</tt><a class="reference internal" href="_modules/pyrocko/snuffling.html#SnufflingCallFailed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.SnufflingCallFailed" title="Permalink to this definition">¶</a></dt>
-<dd><p>This exception is raised, when <a class="reference internal" href="#pyrocko.snuffling.Snuffling.fail" title="pyrocko.snuffling.Snuffling.fail"><tt class="xref py py-meth docutils literal"><span class="pre">Snuffling.fail()</span></tt></a> is called from <a class="reference internal" href="#pyrocko.snuffling.Snuffling.call" title="pyrocko.snuffling.Snuffling.call"><tt class="xref py py-meth docutils literal"><span class="pre">Snuffling.call()</span></tt></a>.</p>
+<dd><p>Definition of a choice for the snuffling. The snuffling may display a
+menu for such a choice.</p>
 </dd></dl>
 
 <dl class="class">
@@ -520,6 +423,105 @@ subclass. The default implementation does nothing useful.</p>
 
 </dd></dl>
 
+<dl class="exception">
+<dt id="pyrocko.snuffling.NoViewerSet">
+<em class="property">exception </em><tt class="descname">NoViewerSet</tt><a class="reference internal" href="_modules/pyrocko/snuffling.html#NoViewerSet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.NoViewerSet" title="Permalink to this definition">¶</a></dt>
+<dd><p>This exception is raised, when no viewer has been set on a Snuffling.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="pyrocko.snuffling.NoTracesSelected">
+<em class="property">exception </em><tt class="descname">NoTracesSelected</tt><a class="reference internal" href="_modules/pyrocko/snuffling.html#NoTracesSelected"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.NoTracesSelected" title="Permalink to this definition">¶</a></dt>
+<dd><p>This exception is raised, when no traces have been selected in the viewer 
+and we cannot fallback to using the current view.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="pyrocko.snuffling.UserCancelled">
+<em class="property">exception </em><tt class="descname">UserCancelled</tt><a class="reference internal" href="_modules/pyrocko/snuffling.html#UserCancelled"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.UserCancelled" title="Permalink to this definition">¶</a></dt>
+<dd><p>This exception is raised, when the user has cancelled a snuffling dialog.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="pyrocko.snuffling.SnufflingCallFailed">
+<em class="property">exception </em><tt class="descname">SnufflingCallFailed</tt><a class="reference internal" href="_modules/pyrocko/snuffling.html#SnufflingCallFailed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.SnufflingCallFailed" title="Permalink to this definition">¶</a></dt>
+<dd><p>This exception is raised, when <a class="reference internal" href="#pyrocko.snuffling.Snuffling.fail" title="pyrocko.snuffling.Snuffling.fail"><tt class="xref py py-meth docutils literal"><span class="pre">Snuffling.fail()</span></tt></a> is called from <a class="reference internal" href="#pyrocko.snuffling.Snuffling.call" title="pyrocko.snuffling.Snuffling.call"><tt class="xref py py-meth docutils literal"><span class="pre">Snuffling.call()</span></tt></a>.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="pyrocko.snuffling.SnufflingModule">
+<em class="property">class </em><tt class="descname">SnufflingModule</tt><big>(</big><em>path</em>, <em>name</em>, <em>handler</em><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#SnufflingModule"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.SnufflingModule" title="Permalink to this definition">¶</a></dt>
+<dd><p>Utility class to load/reload snufflings from a file.</p>
+<p>The snufflings are created by a user module which has a special function
+<tt class="xref py py-func docutils literal"><span class="pre">__snufflings__()</span></tt> which return the snuffling instances to be exported. The
+snuffling module is attached to a handler class, which makes use of the
+snufflings (e.g. <tt class="xref py py-class docutils literal"><span class="pre">pyrocko.pile_viewer.PileOverwiew</span></tt> from <tt class="docutils literal"><span class="pre">pile_viewer.py</span></tt>). The handler class must
+implement the methods <tt class="docutils literal"><span class="pre">add_snuffling()</span></tt> and <tt class="docutils literal"><span class="pre">remove_snuffling()</span></tt> which are used
+as callbacks. The callbacks are utilized from the methods <a class="reference internal" href="#pyrocko.snuffling.SnufflingModule.load_if_needed" title="pyrocko.snuffling.SnufflingModule.load_if_needed"><tt class="xref py py-meth docutils literal"><span class="pre">load_if_needed()</span></tt></a>
+and <a class="reference internal" href="#pyrocko.snuffling.SnufflingModule.remove_snufflings" title="pyrocko.snuffling.SnufflingModule.remove_snufflings"><tt class="xref py py-meth docutils literal"><span class="pre">remove_snufflings()</span></tt></a> which may be called from the handler class, when
+needed.</p>
+<dl class="method">
+<dt id="pyrocko.snuffling.SnufflingModule.load_if_needed">
+<tt class="descname">load_if_needed</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#SnufflingModule.load_if_needed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.SnufflingModule.load_if_needed" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.snuffling.SnufflingModule.add_snuffling">
+<tt class="descname">add_snuffling</tt><big>(</big><em>snuffling</em>, <em>reloaded=False</em><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#SnufflingModule.add_snuffling"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.SnufflingModule.add_snuffling" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.snuffling.SnufflingModule.remove_snufflings">
+<tt class="descname">remove_snufflings</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#SnufflingModule.remove_snufflings"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.SnufflingModule.remove_snufflings" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="exception">
+<dt id="pyrocko.snuffling.BrokenSnufflingModule">
+<em class="property">exception </em><tt class="descname">BrokenSnufflingModule</tt><a class="reference internal" href="_modules/pyrocko/snuffling.html#BrokenSnufflingModule"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.BrokenSnufflingModule" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="pyrocko.snuffling.MyScrollArea">
+<em class="property">class </em><tt class="descname">MyScrollArea</tt><a class="reference internal" href="_modules/pyrocko/snuffling.html#MyScrollArea"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.MyScrollArea" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="pyrocko.snuffling.MyScrollArea.sizeHint">
+<tt class="descname">sizeHint</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#MyScrollArea.sizeHint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.MyScrollArea.sizeHint" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pyrocko.snuffling.SwitchControl">
+<em class="property">class </em><tt class="descname">SwitchControl</tt><big>(</big><em>ident</em>, <em>default</em>, <em>*args</em><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#SwitchControl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.SwitchControl" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="pyrocko.snuffling.SwitchControl.sw_toggled">
+<tt class="descname">sw_toggled</tt><big>(</big><em>state</em><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#SwitchControl.sw_toggled"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.SwitchControl.sw_toggled" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.snuffling.SwitchControl.set_value">
+<tt class="descname">set_value</tt><big>(</big><em>state</em><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#SwitchControl.set_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.SwitchControl.set_value" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pyrocko.snuffling.ChoiceControl">
+<em class="property">class </em><tt class="descname">ChoiceControl</tt><big>(</big><em>ident</em>, <em>default</em>, <em>choices</em>, <em>name</em>, <em>*args</em><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#ChoiceControl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.ChoiceControl" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="pyrocko.snuffling.ChoiceControl.choosen">
+<tt class="descname">choosen</tt><big>(</big><em>i</em><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#ChoiceControl.choosen"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.ChoiceControl.choosen" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.snuffling.ChoiceControl.set_value">
+<tt class="descname">set_value</tt><big>(</big><em>v</em><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#ChoiceControl.set_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.ChoiceControl.set_value" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 <dl class="function">
 <dt id="pyrocko.snuffling.bin">
 <tt class="descname">bin</tt><big>(</big><big>)</big><a class="headerlink" href="#pyrocko.snuffling.bin" title="Permalink to this definition">¶</a></dt>
@@ -560,7 +562,8 @@ subclass. The default implementation does nothing useful.</p>
         <li class="right" >
           <a href="rdseed.html" title="The rdseed Module"
              >previous</a> |</li>
-        <li><a href="index.html">Pyrocko v1.0 documentation</a> &raquo;</li> 
+        <li><a href="index.html">Pyrocko v0.2 documentation</a> &raquo;</li>
+          <li><a href="reference.html" >Library Reference</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
