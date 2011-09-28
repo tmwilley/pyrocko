@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Snuffler &mdash; Pyrocko v0.2 documentation</title>
+    <title>Snuffler &mdash; Pyrocko v0.2 Manual</title>
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript">
@@ -23,9 +23,9 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
-          title="Search within Pyrocko v0.2 documentation"
+          title="Search within Pyrocko v0.2 Manual"
           href="_static/opensearch.xml"/>
-    <link rel="top" title="Pyrocko v0.2 documentation" href="index.html" />
+    <link rel="top" title="Pyrocko v0.2 Manual" href="index.html" />
     <link rel="next" title="Writing a Snuffling" href="snuffling_howto.html" />
     <link rel="prev" title="Installation" href="install.html" /> 
   </head>
@@ -45,7 +45,7 @@
         <li class="right" >
           <a href="install.html" title="Installation"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">Pyrocko v0.2 documentation</a> &raquo;</li> 
+        <li><a href="index.html">Pyrocko v0.2 Manual</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -126,13 +126,19 @@
 <dl class="option">
 <dt id="cmdoption-snuffler--stations">
 <tt class="descname">--stations</tt><tt class="descclassname">=STATIONS</tt><a class="headerlink" href="#cmdoption-snuffler--stations" title="Permalink to this definition">¶</a></dt>
-<dd><p>read station information from file <tt class="docutils literal"><span class="pre">STATIONS</span></tt></p>
+<dd><p>read station information from file <tt class="docutils literal"><span class="pre">STATIONS</span></tt>, this option can be given more than once</p>
 </dd></dl>
 
 <dl class="option">
 <dt id="cmdoption-snuffler--event">
-<tt class="descname">--event</tt><tt class="descclassname">=EVENT</tt><a class="headerlink" href="#cmdoption-snuffler--event" title="Permalink to this definition">¶</a></dt>
-<dd><p>read event information from file <tt class="docutils literal"><span class="pre">EVENT</span></tt></p>
+<tt class="descname">--event</tt><tt class="descclassname">=EVENT</tt><tt class="descclassname">, </tt><tt class="descname">--events</tt><tt class="descclassname">=EVENT</tt><a class="headerlink" href="#cmdoption-snuffler--event" title="Permalink to this definition">¶</a></dt>
+<dd><p>read event information from file <tt class="docutils literal"><span class="pre">EVENT</span></tt>, this option can be given more than once</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-snuffler--markers">
+<tt class="descname">--markers</tt><tt class="descclassname">=MARKERS</tt><a class="headerlink" href="#cmdoption-snuffler--markers" title="Permalink to this definition">¶</a></dt>
+<dd><p>read marker information from file <tt class="docutils literal"><span class="pre">MARKERS</span></tt>, this option can be given more than once</p>
 </dd></dl>
 
 <dl class="option">
@@ -176,8 +182,8 @@
 <h2>Keystrokes<a class="headerlink" href="#keystrokes" title="Permalink to this headline">¶</a></h2>
 <table border="1" class="docutils">
 <colgroup>
-<col width="37%" />
-<col width="63%" />
+<col width="24%" />
+<col width="76%" />
 </colgroup>
 <thead valign="bottom">
 <tr><th class="head">Key</th>
@@ -215,23 +221,47 @@
 <tr><td><em>-</em></td>
 <td>Show one track less</td>
 </tr>
+<tr><td><em>=</em></td>
+<td>Show initial number of tracks</td>
+</tr>
+<tr><td><em>g</em></td>
+<td>Go to selection / show all</td>
+</tr>
 <tr><td><em>n</em></td>
 <td>Go to next marker</td>
 </tr>
 <tr><td><em>p</em></td>
 <td>Go to previous marker</td>
 </tr>
+<tr><td><em>N</em></td>
+<td>Go to next event marker</td>
+</tr>
+<tr><td><em>P</em></td>
+<td>Go to previous event marker</td>
+</tr>
 <tr><td><em>a</em></td>
-<td>Select all markers in current view</td>
+<td>Select all markers currently visible</td>
+</tr>
+<tr><td><em>A</em></td>
+<td>Select all markers</td>
 </tr>
 <tr><td><em>d</em></td>
 <td>Deselect all markers</td>
 </tr>
-<tr><td><em>&lt;backspace&gt;</em></td>
-<td>Delete selected markers</td>
-</tr>
 <tr><td><em>0</em> ... <em>5</em></td>
-<td>Change type of selected marker</td>
+<td>Change color of marker</td>
+</tr>
+<tr><td><em>&lt;f1&gt;</em> ... <em>&lt;f5&gt;</em></td>
+<td>Convert to phase marker</td>
+</tr>
+<tr><td><em>e</em></td>
+<td>Convert to event marker / set active event / associate to event</td>
+</tr>
+<tr><td><em>&lt;f10&gt;</em></td>
+<td>Convert phase marker to normal marker</td>
+</tr>
+<tr><td><em>&lt;backspace&gt;</em></td>
+<td>Delete marker</td>
 </tr>
 <tr><td><em>&lt;escape&gt;</em></td>
 <td>Abort picking</td>
@@ -331,6 +361,32 @@ unhide n|s|l|c &lt;pattern&gt;</pre>
 </div>
 <p>The <tt class="docutils literal"><span class="pre">&lt;pattern&gt;</span></tt> argument must exactly correspond to a pattern previously given to the <tt class="docutils literal"><span class="pre">hide</span></tt> command. When <tt class="docutils literal"><span class="pre">unhide</span></tt> is called without any arguments, all currently active hide patterns are cleared.</p>
 </div>
+<div class="section" id="markers">
+<h3>Markers<a class="headerlink" href="#markers" title="Permalink to this headline">¶</a></h3>
+<p>Toggle marker visibility.</p>
+<div class="highlight-python"><pre>markers [0][1][2][3][4][5]
+markers all
+markers</pre>
+</div>
+<p>The visibility of the markers can be set selectively with regard to their kind
+(color). Each number given in the argument to this command turns on visibility
+of the corresponding marker kind, all other markers are hidden. If no arguments
+are given, all markers are hidden. If the argument is <tt class="docutils literal"><span class="pre">all</span></tt>, all markers are shown.</p>
+</div>
+<div class="section" id="scaling">
+<h3>Scaling<a class="headerlink" href="#scaling" title="Permalink to this headline">¶</a></h3>
+<p>Set scaling rules.</p>
+<div class="highlight-python"><pre>scaling &lt;vmin&gt; &lt;vmax&gt;
+scaling &lt;pattern&gt; &lt;vmin&gt; &lt;vmax&gt;
+scaling</pre>
+</div>
+<p>Traces are scaled according to the range [<tt class="docutils literal"><span class="pre">&lt;vmin&gt;</span></tt>, <tt class="docutils literal"><span class="pre">&lt;vmax&gt;</span></tt>]. Either of
+<tt class="docutils literal"><span class="pre">&lt;vmin&gt;</span></tt> or <tt class="docutils literal"><span class="pre">&lt;vmax&gt;</span></tt> may be set to the string &#8216;nan&#8217;, to maintain automatic
+scaling for the corresponding limit.  If three arguments are given, the first
+argument should be a pattern, restricting application of the given scaling rule
+to matching traces.  If no arguments are given, any previously set scalings
+rules are cleared.</p>
+</div>
 </div>
 </div>
 
@@ -354,7 +410,7 @@ unhide n|s|l|c &lt;pattern&gt;</pre>
         <li class="right" >
           <a href="install.html" title="Installation"
              >previous</a> |</li>
-        <li><a href="index.html">Pyrocko v0.2 documentation</a> &raquo;</li> 
+        <li><a href="index.html">Pyrocko v0.2 Manual</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
