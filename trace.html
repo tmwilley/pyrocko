@@ -314,7 +314,7 @@ possible downsampling ratios.</p>
 
 <dl class="method">
 <dt id="pyrocko.trace.Trace.lowpass">
-<tt class="descname">lowpass</tt><big>(</big><em>order</em>, <em>corner</em><big>)</big><a class="reference internal" href="_modules/pyrocko/trace.html#Trace.lowpass"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.trace.Trace.lowpass" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">lowpass</tt><big>(</big><em>order</em>, <em>corner</em>, <em>nyquist_warn=True</em>, <em>nyquist_exception=False</em><big>)</big><a class="reference internal" href="_modules/pyrocko/trace.html#Trace.lowpass"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.trace.Trace.lowpass" title="Permalink to this definition">¶</a></dt>
 <dd><p>Apply Butterworth lowpass to the trace.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -333,7 +333,7 @@ possible downsampling ratios.</p>
 
 <dl class="method">
 <dt id="pyrocko.trace.Trace.highpass">
-<tt class="descname">highpass</tt><big>(</big><em>order</em>, <em>corner</em><big>)</big><a class="reference internal" href="_modules/pyrocko/trace.html#Trace.highpass"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.trace.Trace.highpass" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">highpass</tt><big>(</big><em>order</em>, <em>corner</em>, <em>nyquist_warn=True</em>, <em>nyquist_exception=False</em><big>)</big><a class="reference internal" href="_modules/pyrocko/trace.html#Trace.highpass"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.trace.Trace.highpass" title="Permalink to this definition">¶</a></dt>
 <dd><p>Apply butterworth highpass to the trace.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -390,7 +390,7 @@ possible downsampling ratios.</p>
 
 <dl class="method">
 <dt id="pyrocko.trace.Trace.sta_lta_centered">
-<tt class="descname">sta_lta_centered</tt><big>(</big><em>tshort</em>, <em>tlong</em>, <em>quad=True</em><big>)</big><a class="reference internal" href="_modules/pyrocko/trace.html#Trace.sta_lta_centered"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.trace.Trace.sta_lta_centered" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">sta_lta_centered</tt><big>(</big><em>tshort</em>, <em>tlong</em>, <em>quad=True</em>, <em>scalingmethod=1</em><big>)</big><a class="reference internal" href="_modules/pyrocko/trace.html#Trace.sta_lta_centered"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.trace.Trace.sta_lta_centered" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run special STA/LTA filter where the short time window is centered on the long time window.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -400,8 +400,36 @@ possible downsampling ratios.</p>
 <li><strong>tshort</strong> &#8211; length of short time window in [s]</li>
 <li><strong>tlong</strong> &#8211; length of long time window in [s]</li>
 <li><strong>quad</strong> &#8211; whether to square the data prior to applying the STA/LTA filter</li>
+<li><strong>scalingmethod</strong> &#8211; integer key to select how output values are scaled / normalized (<tt class="docutils literal"><span class="pre">1</span></tt>, <tt class="docutils literal"><span class="pre">2</span></tt>, or <tt class="docutils literal"><span class="pre">3</span></tt>)</li>
 </ul>
 </td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils">
+<colgroup>
+<col width="23%" />
+<col width="54%" />
+<col width="23%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">Scalingmethod</th>
+<th class="head">Implementation</th>
+<th class="head">Range</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td><tt class="docutils literal"><span class="pre">1</span></tt></td>
+<td>As/Al* Tl/Ts</td>
+<td>[0,1]</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">2</span></tt></td>
+<td>(As/Al - 1) / (Tl/Ts - 1)</td>
+<td>[-Ts/Tl,1]</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">3</span></tt></td>
+<td>Like <tt class="docutils literal"><span class="pre">2</span></tt> but clipping range at zero</td>
+<td>[0,1]</td>
 </tr>
 </tbody>
 </table>

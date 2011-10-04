@@ -136,7 +136,7 @@
 <div class="viewcode-block" id="Trace.name"><a class="viewcode-back" href="../../trace.html#pyrocko.trace.Trace.name">[docs]</a>    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Get a short string description.&#39;&#39;&#39;</span>
 
-        <span class="n">s</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s">.</span><span class="si">%s</span><span class="s">.</span><span class="si">%s</span><span class="s">.</span><span class="si">%s</span><span class="s">, </span><span class="si">%s</span><span class="s">, </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nslc_id</span> <span class="o">+</span> <span class="p">(</span><span class="n">util</span><span class="o">.</span><span class="n">str_to_time</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tmin</span><span class="p">),</span> <span class="n">util</span><span class="o">.</span><span class="n">str_to_time</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tmax</span><span class="p">)))</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s">.</span><span class="si">%s</span><span class="s">.</span><span class="si">%s</span><span class="s">.</span><span class="si">%s</span><span class="s">, </span><span class="si">%s</span><span class="s">, </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nslc_id</span> <span class="o">+</span> <span class="p">(</span><span class="n">util</span><span class="o">.</span><span class="n">time_to_str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tmin</span><span class="p">),</span> <span class="n">util</span><span class="o">.</span><span class="n">time_to_str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tmax</span><span class="p">)))</span>
         <span class="k">return</span> <span class="n">s</span>
         </div>
     <span class="k">def</span> <span class="nf">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
@@ -505,7 +505,7 @@
             <span class="k">if</span> <span class="n">raise_exception</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="n">AboveNyquist</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
             </div>
-<div class="viewcode-block" id="Trace.lowpass"><a class="viewcode-back" href="../../trace.html#pyrocko.trace.Trace.lowpass">[docs]</a>    <span class="k">def</span> <span class="nf">lowpass</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">corner</span><span class="p">):</span>
+<div class="viewcode-block" id="Trace.lowpass"><a class="viewcode-back" href="../../trace.html#pyrocko.trace.Trace.lowpass">[docs]</a>    <span class="k">def</span> <span class="nf">lowpass</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">corner</span><span class="p">,</span> <span class="n">nyquist_warn</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">nyquist_exception</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Apply Butterworth lowpass to the trace.</span>
 <span class="sd">        </span>
 <span class="sd">        :param order: order of the filter</span>
@@ -513,14 +513,14 @@
 
 <span class="sd">        Mean is removed before filtering.</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">nyquist_check</span><span class="p">(</span><span class="n">corner</span><span class="p">,</span> <span class="s">&#39;Corner frequency of lowpass&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nyquist_check</span><span class="p">(</span><span class="n">corner</span><span class="p">,</span> <span class="s">&#39;Corner frequency of lowpass&#39;</span><span class="p">,</span> <span class="n">nyquist_warn</span><span class="p">,</span> <span class="n">nyquist_exception</span><span class="p">)</span>
         <span class="p">(</span><span class="n">b</span><span class="p">,</span><span class="n">a</span><span class="p">)</span> <span class="o">=</span> <span class="n">_get_cached_filter_coefs</span><span class="p">(</span><span class="n">order</span><span class="p">,</span> <span class="p">[</span><span class="n">corner</span><span class="o">*</span><span class="mf">2.0</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">deltat</span><span class="p">],</span> <span class="n">btype</span><span class="o">=</span><span class="s">&#39;low&#39;</span><span class="p">)</span>
         <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ydata</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">num</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
         <span class="n">data</span> <span class="o">-=</span> <span class="n">num</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">drop_growbuffer</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ydata</span> <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">lfilter</span><span class="p">(</span><span class="n">b</span><span class="p">,</span><span class="n">a</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
         </div>
-<div class="viewcode-block" id="Trace.highpass"><a class="viewcode-back" href="../../trace.html#pyrocko.trace.Trace.highpass">[docs]</a>    <span class="k">def</span> <span class="nf">highpass</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">corner</span><span class="p">):</span>
+<div class="viewcode-block" id="Trace.highpass"><a class="viewcode-back" href="../../trace.html#pyrocko.trace.Trace.highpass">[docs]</a>    <span class="k">def</span> <span class="nf">highpass</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">corner</span><span class="p">,</span> <span class="n">nyquist_warn</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">nyquist_exception</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Apply butterworth highpass to the trace.</span>
 
 <span class="sd">        :param order: order of the filter</span>
@@ -529,7 +529,7 @@
 <span class="sd">        Mean is removed before filtering.</span>
 <span class="sd">        &#39;&#39;&#39;</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">nyquist_check</span><span class="p">(</span><span class="n">corner</span><span class="p">,</span> <span class="s">&#39;Corner frequency of highpass&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nyquist_check</span><span class="p">(</span><span class="n">corner</span><span class="p">,</span> <span class="s">&#39;Corner frequency of highpass&#39;</span><span class="p">,</span> <span class="n">nyquist_warn</span><span class="p">,</span> <span class="n">nyquist_exception</span><span class="p">)</span>
         <span class="p">(</span><span class="n">b</span><span class="p">,</span><span class="n">a</span><span class="p">)</span> <span class="o">=</span> <span class="n">_get_cached_filter_coefs</span><span class="p">(</span><span class="n">order</span><span class="p">,</span> <span class="p">[</span><span class="n">corner</span><span class="o">*</span><span class="mf">2.0</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">deltat</span><span class="p">],</span> <span class="n">btype</span><span class="o">=</span><span class="s">&#39;high&#39;</span><span class="p">)</span>
         <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ydata</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">num</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
         <span class="n">data</span> <span class="o">-=</span> <span class="n">num</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
@@ -589,12 +589,22 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">tmax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tmin</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ydata</span><span class="o">.</span><span class="n">size</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">deltat</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_update_ids</span><span class="p">()</span>
 </div>
-<div class="viewcode-block" id="Trace.sta_lta_centered"><a class="viewcode-back" href="../../trace.html#pyrocko.trace.Trace.sta_lta_centered">[docs]</a>    <span class="k">def</span> <span class="nf">sta_lta_centered</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tshort</span><span class="p">,</span> <span class="n">tlong</span><span class="p">,</span> <span class="n">quad</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+<div class="viewcode-block" id="Trace.sta_lta_centered"><a class="viewcode-back" href="../../trace.html#pyrocko.trace.Trace.sta_lta_centered">[docs]</a>    <span class="k">def</span> <span class="nf">sta_lta_centered</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tshort</span><span class="p">,</span> <span class="n">tlong</span><span class="p">,</span> <span class="n">quad</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">scalingmethod</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Run special STA/LTA filter where the short time window is centered on the long time window.</span>
 
 <span class="sd">        :param tshort: length of short time window in [s]</span>
 <span class="sd">        :param tlong: length of long time window in [s]</span>
 <span class="sd">        :param quad: whether to square the data prior to applying the STA/LTA filter</span>
+<span class="sd">        :param scalingmethod: integer key to select how output values are scaled / normalized (``1``, ``2``, or ``3``)</span>
+<span class="sd">        </span>
+<span class="sd">        =================== ============================================ ===================</span>
+<span class="sd">        Scalingmethod       Implementation                               Range</span>
+<span class="sd">        =================== ============================================ ===================</span>
+<span class="sd">        ``1``               As/Al* Tl/Ts                                 [0,1]</span>
+<span class="sd">        ``2``               (As/Al - 1) / (Tl/Ts - 1)                    [-Ts/Tl,1]</span>
+<span class="sd">        ``3``               Like ``2`` but clipping range at zero        [0,1]</span>
+<span class="sd">        =================== ============================================ ===================</span>
+<span class="sd">        </span>
 <span class="sd">        &#39;&#39;&#39;</span>
     
         <span class="n">nshort</span> <span class="o">=</span> <span class="n">tshort</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">deltat</span>
@@ -613,8 +623,18 @@
         <span class="n">mavg_long</span> <span class="o">=</span> <span class="n">moving_avg</span><span class="p">(</span><span class="n">sqrdata</span><span class="p">,</span><span class="n">nlong</span><span class="p">)</span>
     
         <span class="bp">self</span><span class="o">.</span><span class="n">drop_growbuffer</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ydata</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">maximum</span><span class="p">((</span><span class="n">mavg_short</span><span class="o">/</span><span class="n">mavg_long</span> <span class="o">-</span> <span class="mf">1.</span><span class="p">)</span> <span class="o">*</span> <span class="nb">float</span><span class="p">(</span><span class="n">nshort</span><span class="p">)</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="n">nlong</span><span class="p">),</span> <span class="mf">0.0</span><span class="p">)</span>
-        </div>
+        
+        <span class="k">if</span> <span class="n">scalingmethod</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&#39;Invalid argument to scalingrange argument.&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">scalingmethod</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ydata</span> <span class="o">=</span> <span class="n">mavg_short</span><span class="o">/</span><span class="n">mavg_long</span> <span class="o">*</span> <span class="nb">float</span><span class="p">(</span><span class="n">nshort</span><span class="p">)</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="n">nlong</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">scalingmethod</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ydata</span> <span class="o">=</span> <span class="p">(</span><span class="n">mavg_short</span><span class="o">/</span><span class="n">mavg_long</span> <span class="o">-</span> <span class="mf">1.</span><span class="p">)</span> <span class="o">/</span> <span class="p">((</span><span class="nb">float</span><span class="p">(</span><span class="n">nlong</span><span class="p">)</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="n">nshort</span><span class="p">))</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">scalingmethod</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ydata</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ydata</span><span class="p">,</span> <span class="mf">0.</span><span class="p">)</span>
+</div>
 <div class="viewcode-block" id="Trace.peaks"><a class="viewcode-back" href="../../trace.html#pyrocko.trace.Trace.peaks">[docs]</a>    <span class="k">def</span> <span class="nf">peaks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">threshold</span><span class="p">,</span> <span class="n">tsearch</span><span class="p">,</span> <span class="n">deadtime</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">nblock_duration_detection</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Detect peaks above given threshold.</span>
 <span class="sd">        </span>

@@ -1527,6 +1527,10 @@
                 <span class="n">sk</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">station_key</span><span class="p">(</span><span class="n">station</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">stations</span><span class="p">[</span><span class="n">sk</span><span class="p">]</span> <span class="o">=</span> <span class="n">station</span>
         
+            <span class="n">ev</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_active_event</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">ev</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">set_origin</span><span class="p">(</span><span class="n">ev</span><span class="p">)</span>
+
         <span class="k">def</span> <span class="nf">add_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
             <span class="n">marker</span> <span class="o">=</span> <span class="n">EventMarker</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">add_marker</span><span class="p">(</span> <span class="n">marker</span> <span class="p">)</span>
