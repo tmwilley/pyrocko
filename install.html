@@ -71,7 +71,9 @@
 </ul>
 <div class="section" id="how-to-install-prerequisites-available-through-the-package-manager-of-your-system">
 <h3>How to install prerequisites available through the package manager of your system<a class="headerlink" href="#how-to-install-prerequisites-available-through-the-package-manager-of-your-system" title="Permalink to this headline">¶</a></h3>
-<p>The exact package names may differ from system to system. Whether there are separate packages for the development headers of NumPy and Python (the *-dev packages) is also system specific.</p>
+<p>The exact package names may differ from system to system. Whether there are
+separate packages for the development headers of NumPy and Python (the *-dev
+packages) is also system specific.</p>
 <ul>
 <li><p class="first">Debian GNU/Linux:</p>
 <div class="highlight-python"><pre>apt-get install python-dev python-numpy python-numpy-dev python-scipy python-qt4 python-qt4-opengl</pre>
@@ -82,7 +84,7 @@
 </div>
 </li>
 <li><p class="first">Ubuntu:</p>
-<div class="highlight-python"><pre>apt-get install python-numpy python-scipy python-qt4 python-qt4-gl</pre>
+<div class="highlight-python"><pre>sudo apt-get install python-dev python-numpy python-scipy python-qt4 python-qt4-gl python-progressbar</pre>
 </div>
 </li>
 </ul>
@@ -94,6 +96,8 @@
 <div class="highlight-python"><pre>cd ~/src/   # or wherever you keep your source packages
 git clone git://github.com/emolch/pyrocko.git pyrocko</pre>
 </div>
+<p>Alternatively, you may download Pyrocko as a <a class="reference external" href="http://github.com/emolch/pyrocko/tarball/master">tar archive</a>, but updating is easier
+with the method described above.</p>
 </div>
 <div class="section" id="installing-the-included-prerequisites-libmseed-and-libevresp">
 <h2>Installing the included prerequisites (libmseed and libevresp)<a class="headerlink" href="#installing-the-included-prerequisites-libmseed-and-libevresp" title="Permalink to this headline">¶</a></h2>
@@ -105,19 +109,25 @@ cd libmseed/
 make gcc
 cd ..</pre>
 </div>
-<p>Next, compile and install the evalresp library. Its tarball is also included in the top directory of Pyrocko. You may install it as a shared library (see below), or try with a static library (if you don&#8217;t want to install evalresp):</p>
+<p>Next, compile and install the evalresp library. Its tarball is also included in
+the top directory of Pyrocko. You may install it as a shared library (see
+below), or try with a static library (if you don&#8217;t want to install evalresp):</p>
 <div class="highlight-python"><pre>tar -xzvf evalresp-3.3.0.tar.gz
 cd evalresp-3.3.0/
 ./configure --enable-shared
 make
 sudo make install
-cd ..</pre>
+cd ..
+
+# now check that $LD_LIBRARY_PATH contains /usr/local/lib
+echo $LD_LIBRARY_PATH
+# if it is not in there you have to adjust your environment variables</pre>
 </div>
 </div>
 <div class="section" id="installing-pyrocko">
 <h2>Installing Pyrocko<a class="headerlink" href="#installing-pyrocko" title="Permalink to this headline">¶</a></h2>
 <p>Now compile and install Pyrocko itself:</p>
-<div class="highlight-python"><pre>python setup.py install</pre>
+<div class="highlight-python"><pre>sudo python setup.py install</pre>
 </div>
 </div>
 <div class="section" id="installing-pyrocko-to-a-custom-location">
@@ -130,7 +140,7 @@ cd ..</pre>
 <h2>Updating<a class="headerlink" href="#updating" title="Permalink to this headline">¶</a></h2>
 <p>If you later want to update Pyrocko, run the following from within Pyrocko&#8217;s top directory:</p>
 <div class="highlight-python"><pre>git pull origin master
-python setup.py install</pre>
+sudo python setup.py install</pre>
 </div>
 </div>
 </div>

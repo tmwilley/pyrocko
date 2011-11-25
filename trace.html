@@ -209,6 +209,11 @@ match.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="pyrocko.trace.Trace.data_len">
+<tt class="descname">data_len</tt><big>(</big><big>)</big><a class="headerlink" href="#pyrocko.trace.Trace.data_len" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
 <dt id="pyrocko.trace.Trace.drop_data">
 <tt class="descname">drop_data</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/trace.html#Trace.drop_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.trace.Trace.drop_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Forget data, make dataless trace.</p>
@@ -831,11 +836,11 @@ T(f) = constant * -------------------------------------------------------
 
 <dl class="class">
 <dt id="pyrocko.trace.IntegrationResponse">
-<em class="property">class </em><tt class="descname">IntegrationResponse</tt><big>(</big><em>gain=1.0</em><big>)</big><a class="reference internal" href="_modules/pyrocko/trace.html#IntegrationResponse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.trace.IntegrationResponse" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descname">IntegrationResponse</tt><big>(</big><em>n=1</em>, <em>gain=1.0</em><big>)</big><a class="reference internal" href="_modules/pyrocko/trace.html#IntegrationResponse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.trace.IntegrationResponse" title="Permalink to this definition">¶</a></dt>
 <dd><p>The integration response, optionally multiplied by a constant gain.</p>
-<div class="highlight-python"><pre>          gain
-T(f) = ----------
-       j*2*pi * f</pre>
+<div class="highlight-python"><pre>            gain
+T(f) = --------------
+       (j*2*pi * f)^n</pre>
 </div>
 <dl class="method">
 <dt id="pyrocko.trace.IntegrationResponse.evaluate">
@@ -846,9 +851,9 @@ T(f) = ----------
 
 <dl class="class">
 <dt id="pyrocko.trace.DifferentiationResponse">
-<em class="property">class </em><tt class="descname">DifferentiationResponse</tt><big>(</big><em>gain=1.0</em><big>)</big><a class="reference internal" href="_modules/pyrocko/trace.html#DifferentiationResponse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.trace.DifferentiationResponse" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descname">DifferentiationResponse</tt><big>(</big><em>n=1</em>, <em>gain=1.0</em><big>)</big><a class="reference internal" href="_modules/pyrocko/trace.html#DifferentiationResponse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.trace.DifferentiationResponse" title="Permalink to this definition">¶</a></dt>
 <dd><p>The differentiation response, optionally multiplied by a constant gain.</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">T</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="o">=</span> <span class="n">gain</span> <span class="o">*</span> <span class="n">j</span><span class="o">*</span><span class="mi">2</span><span class="o">*</span><span class="n">pi</span> <span class="o">*</span> <span class="n">f</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">T</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="o">=</span> <span class="n">gain</span> <span class="o">*</span> <span class="p">(</span><span class="n">j</span><span class="o">*</span><span class="mi">2</span><span class="o">*</span><span class="n">pi</span> <span class="o">*</span> <span class="n">f</span><span class="p">)</span><span class="o">^</span><span class="n">n</span>
 </pre></div>
 </div>
 <dl class="method">
@@ -880,6 +885,83 @@ T(f) = ----------
 <dd></dd></dl>
 
 </dd></dl>
+
+<dl class="function">
+<dt id="pyrocko.trace.pump">
+<tt class="descname">pump</tt><big>(</big><em>func</em><big>)</big><a class="headerlink" href="#pyrocko.trace.pump" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="pyrocko.trace.States">
+<em class="property">class </em><tt class="descname">States</tt><a class="headerlink" href="#pyrocko.trace.States" title="Permalink to this definition">¶</a></dt>
+<dd><p>Utility to store channel-specific state in pumps.</p>
+<dl class="method">
+<dt id="pyrocko.trace.States.get">
+<tt class="descname">get</tt><big>(</big><em>tr</em><big>)</big><a class="headerlink" href="#pyrocko.trace.States.get" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.trace.States.set">
+<tt class="descname">set</tt><big>(</big><em>tr</em>, <em>value</em><big>)</big><a class="headerlink" href="#pyrocko.trace.States.set" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="pyrocko.trace.co_lfilter">
+<tt class="descname">co_lfilter</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#pyrocko.trace.co_lfilter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Successively filter broken continuous trace data (Pump).</p>
+<p>Create coroutine which takes <a class="reference internal" href="#pyrocko.trace.Trace" title="pyrocko.trace.Trace"><tt class="xref py py-class docutils literal"><span class="pre">Trace</span></tt></a> objects, filters their data
+through <tt class="xref py py-func docutils literal"><span class="pre">scipy.signal.lfilter()</span></tt> and yields new <a class="reference internal" href="#pyrocko.trace.Trace" title="pyrocko.trace.Trace"><tt class="xref py py-class docutils literal"><span class="pre">Trace</span></tt></a>
+objects containing the filtered data. This is useful, if one wants to
+filter a long continuous time series, which is split into many successive
+traces without producing filter artifacts at trace boundaries.</p>
+<p>Filter states are kept <em>per channel</em>, specifically, for each (network,
+station, location, channel) combination occuring in the input traces, a
+separate state is created and maintained. This makes it possible to filter
+multichannel or multistation data with only one <a class="reference internal" href="#pyrocko.trace.co_lfilter" title="pyrocko.trace.co_lfilter"><tt class="xref py py-func docutils literal"><span class="pre">co_lfilter()</span></tt></a>
+instance.</p>
+<p>Filter state is reset, when gaps occur.</p>
+<p>Use it like this:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">pyrocko.trace</span> <span class="kn">import</span> <span class="n">co_lfilter</span>
+
+<span class="nb">filter</span> <span class="o">=</span> <span class="n">co_lfilter</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">trace</span> <span class="ow">in</span> <span class="n">traces</span><span class="p">:</span>
+     <span class="n">filtered_trace</span> <span class="o">=</span> <span class="nb">filter</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">trace</span><span class="p">)</span>
+
+<span class="nb">filter</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyrocko.trace.co_downsample">
+<tt class="descname">co_downsample</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#pyrocko.trace.co_downsample" title="Permalink to this definition">¶</a></dt>
+<dd><p>Successively downsample broken continuous trace data (Pump).</p>
+<p>Create coroutine which takes <a class="reference internal" href="#pyrocko.trace.Trace" title="pyrocko.trace.Trace"><tt class="xref py py-class docutils literal"><span class="pre">Trace</span></tt></a> objects, downsamples their
+data and yields new <a class="reference internal" href="#pyrocko.trace.Trace" title="pyrocko.trace.Trace"><tt class="xref py py-class docutils literal"><span class="pre">Trace</span></tt></a> objects containing the downsampled
+data.  This is useful, if one wants to downsample a long continuous time
+series, which is split into many successive traces without producing filter
+artifacts and gaps at trace boundaries.</p>
+<p>Filter states are kept <em>per channel</em>, specifically, for each (network,
+station, location, channel) combination occuring in the input traces, a
+separate state is created and maintained. This makes it possible to filter
+multichannel or multistation data with only one <a class="reference internal" href="#pyrocko.trace.co_lfilter" title="pyrocko.trace.co_lfilter"><tt class="xref py py-func docutils literal"><span class="pre">co_lfilter()</span></tt></a>
+instance.</p>
+<p>Filter state is reset, when gaps occur. The sampling instances are choosen
+so that they occur at (or as close as possible) to even multiples of the
+sampling interval of the downsampled trace (based on system time).</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyrocko.trace.chain">
+<tt class="descname">chain</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#pyrocko.trace.chain" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pyrocko.trace.co_downsample_to">
+<tt class="descname">co_downsample_to</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#pyrocko.trace.co_downsample_to" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="function">
 <dt id="pyrocko.trace.numpy_has_correlate_flip_bug">
@@ -915,6 +997,11 @@ T(f) = ----------
 <dl class="function">
 <dt id="pyrocko.trace.t2ind">
 <tt class="descname">t2ind</tt><big>(</big><em>t</em>, <em>tdelta</em>, <em>snap=&lt;built-in function round&gt;</em><big>)</big><a class="reference internal" href="_modules/pyrocko/trace.html#t2ind"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.trace.t2ind" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pyrocko.trace.near">
+<tt class="descname">near</tt><big>(</big><em>a</em>, <em>b</em>, <em>eps</em><big>)</big><a class="headerlink" href="#pyrocko.trace.near" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </div>
