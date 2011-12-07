@@ -718,19 +718,19 @@
     <span class="k">def</span> <span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ev</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">events</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ev</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">first_leg</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="PhaseDef.first_leg"><a class="viewcode-back" href="../../cake.html#pyrocko.cake.PhaseDef.first_leg">[docs]</a>    <span class="k">def</span> <span class="nf">first_leg</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">events</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-
-    <span class="k">def</span> <span class="nf">last_leg</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="PhaseDef.last_leg"><a class="viewcode-back" href="../../cake.html#pyrocko.cake.PhaseDef.last_leg">[docs]</a>    <span class="k">def</span> <span class="nf">last_leg</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">events</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-
-    <span class="k">def</span> <span class="nf">legs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="PhaseDef.legs"><a class="viewcode-back" href="../../cake.html#pyrocko.cake.PhaseDef.legs">[docs]</a>    <span class="k">def</span> <span class="nf">legs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">(</span> <span class="n">leg</span> <span class="k">for</span> <span class="n">leg</span> <span class="ow">in</span> <span class="bp">self</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">leg</span><span class="p">,</span> <span class="n">Leg</span><span class="p">)</span> <span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">knees</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="PhaseDef.knees"><a class="viewcode-back" href="../../cake.html#pyrocko.cake.PhaseDef.knees">[docs]</a>    <span class="k">def</span> <span class="nf">knees</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">(</span> <span class="n">knee</span> <span class="k">for</span> <span class="n">knee</span> <span class="ow">in</span> <span class="bp">self</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">knee</span><span class="p">,</span> <span class="n">Knee</span><span class="p">)</span> <span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">used_repr</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="PhaseDef.used_repr"><a class="viewcode-back" href="../../cake.html#pyrocko.cake.PhaseDef.used_repr">[docs]</a>    <span class="k">def</span> <span class="nf">used_repr</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">x</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">el</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">el</span><span class="p">,</span> <span class="n">Leg</span><span class="p">):</span>
@@ -754,7 +754,7 @@
             <span class="n">x</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\\</span><span class="s">&#39;</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="s">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-   
+   </div>
     <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s">&quot;PhaseDef(&#39;</span><span class="si">%s</span><span class="s">&#39;)&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">definition</span>
 
@@ -768,16 +768,16 @@
         <span class="k">return</span> <span class="s">&#39;Phase definition &quot;</span><span class="si">%s</span><span class="s">&quot;</span><span class="si">%s</span><span class="s">:</span><span class="se">\n</span><span class="s"> - &#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">used</span><span class="p">,</span> <span class="n">orig</span><span class="p">)</span> <span class="o">+</span> <span class="s">&#39;</span><span class="se">\n</span><span class="s"> - &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">ev</span><span class="p">)</span> <span class="k">for</span> <span class="n">ev</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">)</span> <span class="o">+</span> <span class="n">sarrive</span>
         
 
-    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="PhaseDef.copy"><a class="viewcode-back" href="../../cake.html#pyrocko.cake.PhaseDef.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-</div>
+</div></div>
 <span class="k">def</span> <span class="nf">csswap</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">cmath</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">1.</span><span class="o">-</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
 
-<span class="k">def</span> <span class="nf">psv_surface_ind</span><span class="p">(</span><span class="n">in_mode</span><span class="p">,</span> <span class="n">out_mode</span><span class="p">):</span>
+<div class="viewcode-block" id="psv_surface_ind"><a class="viewcode-back" href="../../cake.html#pyrocko.cake.psv_surface_ind">[docs]</a><span class="k">def</span> <span class="nf">psv_surface_ind</span><span class="p">(</span><span class="n">in_mode</span><span class="p">,</span> <span class="n">out_mode</span><span class="p">):</span>
     <span class="k">return</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">in_mode</span><span class="o">==</span><span class="n">S</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">out_mode</span><span class="o">==</span><span class="n">S</span><span class="p">))</span>
-
-<span class="k">def</span> <span class="nf">psv_surface</span><span class="p">(</span><span class="n">material</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">energy</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="psv_surface"><a class="viewcode-back" href="../../cake.html#pyrocko.cake.psv_surface">[docs]</a><span class="k">def</span> <span class="nf">psv_surface</span><span class="p">(</span><span class="n">material</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">energy</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
 
     <span class="n">vp</span><span class="p">,</span> <span class="n">vs</span><span class="p">,</span> <span class="n">rho</span> <span class="o">=</span> <span class="n">material</span><span class="o">.</span><span class="n">vp</span><span class="p">,</span> <span class="n">material</span><span class="o">.</span><span class="n">vs</span><span class="p">,</span> <span class="n">material</span><span class="o">.</span><span class="n">rho</span>
     
@@ -799,10 +799,10 @@
         <span class="n">normvec</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">vp</span><span class="o">*</span><span class="n">rho</span><span class="o">*</span><span class="n">cosphi</span><span class="o">+</span><span class="n">eps</span><span class="p">,</span> <span class="n">vs</span><span class="o">*</span><span class="n">rho</span><span class="o">*</span><span class="n">coslam</span><span class="o">+</span><span class="n">eps</span><span class="p">])</span>
         <span class="n">escatter</span> <span class="o">=</span> <span class="n">scatter</span><span class="o">*</span><span class="n">num</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">scatter</span><span class="p">)</span> <span class="o">*</span> <span class="n">num</span><span class="o">.</span><span class="n">real</span><span class="p">((</span><span class="n">normvec</span><span class="p">[:,</span><span class="n">num</span><span class="o">.</span><span class="n">newaxis</span><span class="p">])</span> <span class="o">/</span> <span class="p">(</span><span class="n">normvec</span><span class="p">[</span><span class="n">num</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,:]))</span>
         <span class="k">return</span> <span class="n">num</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">escatter</span><span class="p">)</span>
-
-<span class="k">def</span> <span class="nf">psv_solid_ind</span><span class="p">(</span><span class="n">in_direction</span><span class="p">,</span> <span class="n">out_direction</span><span class="p">,</span> <span class="n">in_mode</span><span class="p">,</span> <span class="n">out_mode</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="psv_solid_ind"><a class="viewcode-back" href="../../cake.html#pyrocko.cake.psv_solid_ind">[docs]</a><span class="k">def</span> <span class="nf">psv_solid_ind</span><span class="p">(</span><span class="n">in_direction</span><span class="p">,</span> <span class="n">out_direction</span><span class="p">,</span> <span class="n">in_mode</span><span class="p">,</span> <span class="n">out_mode</span><span class="p">):</span>
     <span class="k">return</span>  <span class="p">(</span><span class="n">out_direction</span><span class="o">==</span><span class="n">DOWN</span><span class="p">)</span><span class="o">*</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">out_mode</span><span class="o">==</span><span class="n">S</span><span class="p">),</span> <span class="p">(</span><span class="n">in_direction</span><span class="o">==</span><span class="n">UP</span><span class="p">)</span><span class="o">*</span><span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">in_mode</span><span class="o">==</span><span class="n">S</span><span class="p">)</span>
-    
+    </div>
 <div class="viewcode-block" id="psv_solid"><a class="viewcode-back" href="../../cake.html#pyrocko.cake.psv_solid">[docs]</a><span class="k">def</span> <span class="nf">psv_solid</span><span class="p">(</span><span class="n">material1</span><span class="p">,</span> <span class="n">material2</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">energy</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Solid-solid interface scatter matrix.</span>
 
@@ -896,7 +896,7 @@
     <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s">&#39;Cannot enter layer </span><span class="si">%i</span><span class="s"> from </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ilayer</span><span class="p">,</span> <span class="p">{</span><span class="n">UP</span><span class="p">:</span> <span class="s">&#39;below&#39;</span><span class="p">,</span> <span class="n">DOWN</span><span class="p">:</span> <span class="s">&#39;above&#39;</span><span class="p">}[</span><span class="bp">self</span><span class="o">.</span><span class="n">_direction</span><span class="p">])</span>
 
-<span class="k">class</span> <span class="nc">Layer</span><span class="p">:</span>
+<div class="viewcode-block" id="Layer"><a class="viewcode-back" href="../../cake.html#pyrocko.cake.Layer">[docs]</a><span class="k">class</span> <span class="nc">Layer</span><span class="p">:</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ztop</span><span class="p">,</span> <span class="n">zbot</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ztop</span> <span class="o">=</span> <span class="n">ztop</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">zbot</span> <span class="o">=</span> <span class="n">zbot</span>
@@ -912,34 +912,34 @@
         <span class="k">except</span> <span class="n">BadPotIntCoefs</span><span class="p">:</span>
             <span class="k">pass</span>
 
-    <span class="k">def</span> <span class="nf">potint_coefs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode</span><span class="p">):</span>
+<div class="viewcode-block" id="Layer.potint_coefs"><a class="viewcode-back" href="../../cake.html#pyrocko.cake.Layer.potint_coefs">[docs]</a>    <span class="k">def</span> <span class="nf">potint_coefs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="n">P</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ppic</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_spic</span>
-
-    <span class="k">def</span> <span class="nf">contains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="Layer.contains"><a class="viewcode-back" href="../../cake.html#pyrocko.cake.Layer.contains">[docs]</a>    <span class="k">def</span> <span class="nf">contains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ztop</span> <span class="o">&lt;=</span> <span class="n">z</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">zbot</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">at_bottom</span><span class="p">(</span><span class="n">z</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">at_top</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">inner</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="Layer.inner"><a class="viewcode-back" href="../../cake.html#pyrocko.cake.Layer.inner">[docs]</a>    <span class="k">def</span> <span class="nf">inner</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">ztop</span> <span class="o">&lt;=</span> <span class="n">z</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">zbot</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">at_bottom</span><span class="p">(</span><span class="n">z</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">at_top</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">at_bottom</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="Layer.at_bottom"><a class="viewcode-back" href="../../cake.html#pyrocko.cake.Layer.at_bottom">[docs]</a>    <span class="k">def</span> <span class="nf">at_bottom</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">zbot</span> <span class="o">-</span> <span class="n">z</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">ZEPS</span>
-
-    <span class="k">def</span> <span class="nf">at_top</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="Layer.at_top"><a class="viewcode-back" href="../../cake.html#pyrocko.cake.Layer.at_top">[docs]</a>    <span class="k">def</span> <span class="nf">at_top</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ztop</span> <span class="o">-</span> <span class="n">z</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">ZEPS</span>
-
-    <span class="k">def</span> <span class="nf">pflat_top</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="Layer.pflat_top"><a class="viewcode-back" href="../../cake.html#pyrocko.cake.Layer.pflat_top">[docs]</a>    <span class="k">def</span> <span class="nf">pflat_top</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">p</span> <span class="o">/</span> <span class="p">(</span><span class="n">earthradius</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">ztop</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">pflat_bottom</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="Layer.pflat_bottom"><a class="viewcode-back" href="../../cake.html#pyrocko.cake.Layer.pflat_bottom">[docs]</a>    <span class="k">def</span> <span class="nf">pflat_bottom</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">p</span> <span class="o">/</span> <span class="p">(</span><span class="n">earthradius</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">zbot</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">pflat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="Layer.pflat"><a class="viewcode-back" href="../../cake.html#pyrocko.cake.Layer.pflat">[docs]</a>    <span class="k">def</span> <span class="nf">pflat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">p</span> <span class="o">/</span> <span class="p">(</span><span class="n">earthradius</span><span class="o">-</span><span class="n">z</span><span class="p">)</span>
-    
-    <span class="k">def</span> <span class="nf">xt_potint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">zpart</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    </div>
+<div class="viewcode-block" id="Layer.xt_potint"><a class="viewcode-back" href="../../cake.html#pyrocko.cake.Layer.xt_potint">[docs]</a>    <span class="k">def</span> <span class="nf">xt_potint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">zpart</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="n">utop</span><span class="p">,</span> <span class="n">ubot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">us</span><span class="p">(</span><span class="n">mode</span><span class="p">)</span>
         <span class="n">a</span><span class="p">,</span><span class="n">b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">potint_coefs</span><span class="p">(</span><span class="n">mode</span><span class="p">)</span>
         <span class="n">ztop</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ztop</span>
@@ -979,16 +979,16 @@
                 <span class="n">t</span> <span class="o">*=</span> <span class="mf">2.</span>
         
         <span class="k">return</span> <span class="n">x</span><span class="p">,</span><span class="n">t</span>
-
-    <span class="k">def</span> <span class="nf">test</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="Layer.test"><a class="viewcode-back" href="../../cake.html#pyrocko.cake.Layer.test">[docs]</a>    <span class="k">def</span> <span class="nf">test</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">(</span><span class="n">mode</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span><span class="o">*</span><span class="n">radius</span><span class="p">(</span><span class="n">z</span><span class="p">)</span> <span class="o">-</span> <span class="n">p</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">0</span>
-   
-    <span class="k">def</span> <span class="nf">zturn_potint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">mode</span><span class="p">):</span>
+   </div>
+<div class="viewcode-block" id="Layer.zturn_potint"><a class="viewcode-back" href="../../cake.html#pyrocko.cake.Layer.zturn_potint">[docs]</a>    <span class="k">def</span> <span class="nf">zturn_potint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">mode</span><span class="p">):</span>
         <span class="n">a</span><span class="p">,</span><span class="n">b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">potint_coefs</span><span class="p">(</span><span class="n">mode</span><span class="p">)</span>
         <span class="n">r</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">num</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">a</span><span class="o">*</span><span class="n">p</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="n">b</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">earthradius</span><span class="o">-</span><span class="n">r</span>
-
-    <span class="k">def</span> <span class="nf">propagate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">direction</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="Layer.propagate"><a class="viewcode-back" href="../../cake.html#pyrocko.cake.Layer.propagate">[docs]</a>    <span class="k">def</span> <span class="nf">propagate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">direction</span><span class="p">):</span>
 
         <span class="k">if</span> <span class="n">direction</span> <span class="o">==</span> <span class="n">DOWN</span><span class="p">:</span>
             <span class="n">zin</span><span class="p">,</span> <span class="n">zout</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ztop</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">zbot</span>
@@ -1002,7 +1002,7 @@
             <span class="k">return</span> <span class="o">-</span><span class="n">direction</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">direction</span>
-
+</div></div>
 <span class="k">class</span> <span class="nc">DoesNotTurn</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
     <span class="k">pass</span>
 
@@ -1011,7 +1011,7 @@
 <span class="k">def</span> <span class="nf">radius</span><span class="p">(</span><span class="n">z</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">earthradius</span> <span class="o">-</span> <span class="n">z</span>
 
-<span class="k">class</span> <span class="nc">HomogeneousLayer</span><span class="p">(</span><span class="n">Layer</span><span class="p">):</span>
+<div class="viewcode-block" id="HomogeneousLayer"><a class="viewcode-back" href="../../cake.html#pyrocko.cake.HomogeneousLayer">[docs]</a><span class="k">class</span> <span class="nc">HomogeneousLayer</span><span class="p">(</span><span class="n">Layer</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ztop</span><span class="p">,</span> <span class="n">zbot</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="n">Layer</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">ztop</span><span class="p">,</span> <span class="n">zbot</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">m</span> <span class="o">=</span> <span class="n">m</span>
@@ -1086,8 +1086,8 @@
             <span class="n">calcmode</span> <span class="o">=</span> <span class="s">&#39;H&#39;</span>
 
         <span class="k">return</span> <span class="s">&#39;  (</span><span class="si">%i</span><span class="s">) homogeneous layer </span><span class="si">%s</span><span class="s">(</span><span class="si">%g</span><span class="s"> km - </span><span class="si">%g</span><span class="s"> km) [</span><span class="si">%s</span><span class="s">]</span><span class="se">\n</span><span class="s">    </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ilayer</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ztop</span><span class="o">/</span><span class="n">km</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">zbot</span><span class="o">/</span><span class="n">km</span><span class="p">,</span> <span class="n">calcmode</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">m</span><span class="p">)</span>
-
-<span class="k">class</span> <span class="nc">GradientLayer</span><span class="p">(</span><span class="n">Layer</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="GradientLayer"><a class="viewcode-back" href="../../cake.html#pyrocko.cake.GradientLayer">[docs]</a><span class="k">class</span> <span class="nc">GradientLayer</span><span class="p">(</span><span class="n">Layer</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ztop</span><span class="p">,</span> <span class="n">zbot</span><span class="p">,</span> <span class="n">mtop</span><span class="p">,</span> <span class="n">mbot</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="n">Layer</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ztop</span><span class="p">,</span> <span class="n">zbot</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mtop</span> <span class="o">=</span> <span class="n">mtop</span>
@@ -1191,15 +1191,15 @@
             <span class="n">calcmode</span> <span class="o">=</span> <span class="s">&#39;G&#39;</span>
 
         <span class="k">return</span> <span class="s">&#39;  (</span><span class="si">%i</span><span class="s">) gradient layer </span><span class="si">%s</span><span class="s">(</span><span class="si">%g</span><span class="s"> km - </span><span class="si">%g</span><span class="s"> km) [</span><span class="si">%s</span><span class="s">]</span><span class="se">\n</span><span class="s">    </span><span class="si">%s</span><span class="se">\n</span><span class="s">    </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ilayer</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ztop</span><span class="o">/</span><span class="n">km</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">zbot</span><span class="o">/</span><span class="n">km</span><span class="p">,</span> <span class="n">calcmode</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mtop</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mbot</span><span class="p">)</span>
-
-<span class="k">class</span> <span class="nc">Discontinuity</span><span class="p">:</span>
+</div>
+<div class="viewcode-block" id="Discontinuity"><a class="viewcode-back" href="../../cake.html#pyrocko.cake.Discontinuity">[docs]</a><span class="k">class</span> <span class="nc">Discontinuity</span><span class="p">:</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">z</span> <span class="o">=</span> <span class="n">z</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">zbot</span> <span class="o">=</span> <span class="n">z</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ztop</span> <span class="o">=</span> <span class="n">z</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
-
-<span class="k">class</span> <span class="nc">Interface</span><span class="p">(</span><span class="n">Discontinuity</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="Interface"><a class="viewcode-back" href="../../cake.html#pyrocko.cake.Interface">[docs]</a><span class="k">class</span> <span class="nc">Interface</span><span class="p">(</span><span class="n">Discontinuity</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">mabove</span><span class="p">,</span> <span class="n">mbelow</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="n">Discontinuity</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mabove</span> <span class="o">=</span> <span class="n">mabove</span>
@@ -1236,8 +1236,8 @@
     <span class="k">def</span> <span class="nf">efficiency</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">in_direction</span><span class="p">,</span> <span class="n">out_direction</span><span class="p">,</span> <span class="n">in_mode</span><span class="p">,</span> <span class="n">out_mode</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
         <span class="n">scatter</span> <span class="o">=</span> <span class="n">psv_solid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mabove</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mbelow</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pflat</span><span class="p">(</span><span class="n">p</span><span class="p">),</span> <span class="n">energy</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">scatter</span><span class="p">[</span><span class="n">psv_solid_ind</span><span class="p">(</span><span class="n">in_direction</span><span class="p">,</span> <span class="n">out_direction</span><span class="p">,</span> <span class="n">in_mode</span><span class="p">,</span> <span class="n">out_mode</span><span class="p">)]</span>
-
-<span class="k">class</span> <span class="nc">Surface</span><span class="p">(</span><span class="n">Discontinuity</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="Surface"><a class="viewcode-back" href="../../cake.html#pyrocko.cake.Surface">[docs]</a><span class="k">class</span> <span class="nc">Surface</span><span class="p">(</span><span class="n">Discontinuity</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">mbelow</span><span class="p">):</span>
         <span class="n">Discontinuity</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="s">&#39;surface&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">z</span> <span class="o">=</span> <span class="n">z</span>
@@ -1254,7 +1254,7 @@
 
     <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s">&#39;surface&#39;</span>
-
+</div>
 <span class="k">class</span> <span class="nc">Walker</span><span class="p">:</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elements</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_elements</span> <span class="o">=</span> <span class="n">elements</span>
@@ -1298,11 +1298,11 @@
             <span class="k">raise</span> <span class="n">OutOfBounds</span><span class="p">()</span>
 
 
-<span class="k">class</span> <span class="nc">RayElement</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="RayElement"><a class="viewcode-back" href="../../cake.html#pyrocko.cake.RayElement">[docs]</a><span class="k">class</span> <span class="nc">RayElement</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">==</span> <span class="nb">type</span><span class="p">(</span><span class="n">other</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">__dict__</span>
-
-<span class="k">class</span> <span class="nc">Straight</span><span class="p">(</span><span class="n">RayElement</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="Straight"><a class="viewcode-back" href="../../cake.html#pyrocko.cake.Straight">[docs]</a><span class="k">class</span> <span class="nc">Straight</span><span class="p">(</span><span class="n">RayElement</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">direction_in</span><span class="p">,</span> <span class="n">direction_out</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">layer</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="n">mode</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">direction_in</span> <span class="o">=</span> <span class="n">direction_in</span>
@@ -1358,8 +1358,8 @@
 
     <span class="k">def</span> <span class="nf">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">hash</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">direction_in</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">direction_out</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span><span class="p">,</span> <span class="nb">id</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layer</span><span class="p">)))</span>
-
-<span class="k">class</span> <span class="nc">Kink</span><span class="p">(</span><span class="n">RayElement</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="Kink"><a class="viewcode-back" href="../../cake.html#pyrocko.cake.Kink">[docs]</a><span class="k">class</span> <span class="nc">Kink</span><span class="p">(</span><span class="n">RayElement</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">in_direction</span><span class="p">,</span> <span class="n">out_direction</span><span class="p">,</span> <span class="n">in_mode</span><span class="p">,</span> <span class="n">out_mode</span><span class="p">,</span> <span class="n">discontinuity</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">in_direction</span> <span class="o">=</span> <span class="n">in_direction</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">out_direction</span> <span class="o">=</span> <span class="n">out_direction</span>
@@ -1388,11 +1388,11 @@
 
     <span class="k">def</span> <span class="nf">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">hash</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">in_direction</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_direction</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_mode</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_mode</span><span class="p">,</span> <span class="nb">id</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">discontinuity</span><span class="p">)))</span>
-
+</div>
 <span class="k">class</span> <span class="nc">PRangeNotSet</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
     <span class="k">pass</span>
 
-<span class="k">class</span> <span class="nc">RayPath</span><span class="p">:</span>
+<div class="viewcode-block" id="RayPath"><a class="viewcode-back" href="../../cake.html#pyrocko.cake.RayPath">[docs]</a><span class="k">class</span> <span class="nc">RayPath</span><span class="p">:</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phase</span><span class="p">,</span> <span class="n">zstart</span><span class="p">,</span> <span class="n">zstop</span><span class="p">,</span> <span class="n">redistribute_p</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">elements</span> <span class="o">=</span> <span class="p">[]</span>
@@ -1421,42 +1421,42 @@
     <span class="k">def</span> <span class="nf">set_used_phase</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phase</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">used_phase</span> <span class="o">=</span> <span class="n">phase</span>
   
-    <span class="k">def</span> <span class="nf">pmax</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="RayPath.pmax"><a class="viewcode-back" href="../../cake.html#pyrocko.cake.RayPath.pmax">[docs]</a>    <span class="k">def</span> <span class="nf">pmax</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_check_have_prange</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pmax</span>
-
-    <span class="k">def</span> <span class="nf">pmin</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="RayPath.pmin"><a class="viewcode-back" href="../../cake.html#pyrocko.cake.RayPath.pmin">[docs]</a>    <span class="k">def</span> <span class="nf">pmin</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_check_have_prange</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pmin</span>
-
-    <span class="k">def</span> <span class="nf">xmin</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="RayPath.xmin"><a class="viewcode-back" href="../../cake.html#pyrocko.cake.RayPath.xmin">[docs]</a>    <span class="k">def</span> <span class="nf">xmin</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_analyse</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_xmin</span>
-
-    <span class="k">def</span> <span class="nf">xmax</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="RayPath.xmax"><a class="viewcode-back" href="../../cake.html#pyrocko.cake.RayPath.xmax">[docs]</a>    <span class="k">def</span> <span class="nf">xmax</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_analyse</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_xmax</span>
-
-    <span class="k">def</span> <span class="nf">kinks</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="RayPath.kinks"><a class="viewcode-back" href="../../cake.html#pyrocko.cake.RayPath.kinks">[docs]</a>    <span class="k">def</span> <span class="nf">kinks</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">(</span> <span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">elements</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">Kink</span><span class="p">)</span> <span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">straights</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="RayPath.straights"><a class="viewcode-back" href="../../cake.html#pyrocko.cake.RayPath.straights">[docs]</a>    <span class="k">def</span> <span class="nf">straights</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">(</span> <span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">elements</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">Straight</span><span class="p">)</span> <span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">first_straight</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="RayPath.first_straight"><a class="viewcode-back" href="../../cake.html#pyrocko.cake.RayPath.first_straight">[docs]</a>    <span class="k">def</span> <span class="nf">first_straight</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">elements</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">Straight</span><span class="p">):</span>
                 <span class="k">return</span> <span class="n">s</span>
-
-    <span class="k">def</span> <span class="nf">last_straight</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="RayPath.last_straight"><a class="viewcode-back" href="../../cake.html#pyrocko.cake.RayPath.last_straight">[docs]</a>    <span class="k">def</span> <span class="nf">last_straight</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">elements</span><span class="p">):</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">Straight</span><span class="p">):</span>
                 <span class="k">return</span> <span class="n">s</span>
-
-    <span class="k">def</span> <span class="nf">efficiency</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="RayPath.efficiency"><a class="viewcode-back" href="../../cake.html#pyrocko.cake.RayPath.efficiency">[docs]</a>    <span class="k">def</span> <span class="nf">efficiency</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">reduce</span><span class="p">(</span> <span class="n">operator</span><span class="o">.</span><span class="n">mul</span><span class="p">,</span> <span class="p">(</span><span class="n">k</span><span class="o">.</span><span class="n">efficiency</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">kinks</span><span class="p">()),</span> <span class="mf">1.</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">spreading</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="RayPath.spreading"><a class="viewcode-back" href="../../cake.html#pyrocko.cake.RayPath.spreading">[docs]</a>    <span class="k">def</span> <span class="nf">spreading</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_check_have_prange</span><span class="p">()</span>
         <span class="n">dp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prange_dp</span> <span class="o">*</span> <span class="mf">0.01</span>
         <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pmax</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pmin</span> <span class="o">&gt;</span> <span class="n">dp</span>
@@ -1479,7 +1479,7 @@
                 <span class="p">(</span><span class="n">earthradius</span><span class="o">-</span><span class="n">first</span><span class="o">.</span><span class="n">z_in</span><span class="p">())</span> <span class="o">*</span> <span class="p">(</span><span class="n">earthradius</span><span class="o">-</span><span class="n">last</span><span class="o">.</span><span class="n">z_out</span><span class="p">())</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> 
                 <span class="n">first</span><span class="o">.</span><span class="n">u_in</span><span class="p">()</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">num</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">num</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">first</span><span class="o">.</span><span class="n">angle_in</span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="o">*</span><span class="n">d2r</span><span class="p">))</span> <span class="o">*</span> 
                 <span class="n">num</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">num</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">last</span><span class="o">.</span><span class="n">angle_out</span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="o">*</span><span class="n">d2r</span><span class="p">)))</span>
-    
+    </div>
     <span class="k">def</span> <span class="nf">make_p</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dp</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">nmin</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="k">assert</span> <span class="n">dp</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="n">n</span> <span class="ow">is</span> <span class="bp">None</span>
         
@@ -1495,7 +1495,7 @@
         <span class="n">ppp</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pmin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pmax</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">ppp</span>
 
-    <span class="k">def</span> <span class="nf">xt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
+<div class="viewcode-block" id="RayPath.xt"><a class="viewcode-back" href="../../cake.html#pyrocko.cake.RayPath.xt">[docs]</a>    <span class="k">def</span> <span class="nf">xt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">num</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
             <span class="n">sx</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
             <span class="n">st</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
@@ -1509,7 +1509,7 @@
             <span class="n">st</span> <span class="o">+=</span> <span class="n">t</span>
 
         <span class="k">return</span> <span class="n">sx</span><span class="p">,</span> <span class="n">st</span>
-
+</div>
     <span class="k">def</span> <span class="nf">iter_zxt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
         <span class="n">sx</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
         <span class="n">st</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
@@ -1677,8 +1677,8 @@
         <span class="k">return</span> <span class="s">&#39;</span><span class="si">%s</span><span class="se">\n</span><span class="s"> - x range: </span><span class="si">%g</span><span class="s"> </span><span class="si">%g</span><span class="se">\n</span><span class="s"> - t range: </span><span class="si">%g</span><span class="s"> </span><span class="si">%g</span><span class="se">\n</span><span class="s"> - p range: </span><span class="si">%g</span><span class="s"> </span><span class="si">%g</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span>
                 <span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_xmin</span><span class="o">*</span><span class="n">r2d</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_xmax</span><span class="o">*</span><span class="n">r2d</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tmin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tmax</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pmin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pmax</span><span class="p">)</span>
 
-
-<span class="k">class</span> <span class="nc">Ray</span><span class="p">:</span>
+</div>
+<div class="viewcode-block" id="Ray"><a class="viewcode-back" href="../../cake.html#pyrocko.cake.Ray">[docs]</a><span class="k">class</span> <span class="nc">Ray</span><span class="p">:</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">path</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">p</span> <span class="o">=</span> <span class="n">p</span>
@@ -1734,7 +1734,7 @@
         <span class="k">return</span> <span class="s">&#39;</span><span class="si">%7.5g</span><span class="s"> s/deg </span><span class="si">%s</span><span class="s"> </span><span class="si">%6.4g</span><span class="s"> s </span><span class="si">%5.1f</span><span class="s"> </span><span class="si">%5.1f</span><span class="s"> </span><span class="si">%3.0f%%</span><span class="s"> </span><span class="si">%3.0f%%</span><span class="s"> </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="o">/</span><span class="n">r2d</span><span class="p">,</span> <span class="n">sd</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">takeoff_angle</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">incidence_angle</span><span class="p">(),</span> 
                 <span class="mi">100</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">efficiency</span><span class="p">(),</span> <span class="mi">100</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">spreading</span><span class="p">()</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">surface_sphere</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
-
+</div>
 <span class="k">class</span> <span class="nc">DiscontinuityNotFound</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">depth_or_name</span><span class="p">):</span>
         <span class="ne">Exception</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
@@ -1746,7 +1746,7 @@
 <span class="k">class</span> <span class="nc">NotPhaseConform</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
     <span class="k">pass</span>
 
-<span class="k">class</span> <span class="nc">LayeredModel</span><span class="p">:</span>
+<div class="viewcode-block" id="LayeredModel"><a class="viewcode-back" href="../../cake.html#pyrocko.cake.LayeredModel">[docs]</a><span class="k">class</span> <span class="nc">LayeredModel</span><span class="p">:</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_surface_material</span> <span class="o">=</span> <span class="bp">None</span>
@@ -1757,7 +1757,7 @@
     <span class="k">def</span> <span class="nf">zeq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z1</span><span class="p">,</span> <span class="n">z2</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">abs</span><span class="p">(</span><span class="n">z1</span><span class="o">-</span><span class="n">z2</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">ZEPS</span>
 
-    <span class="k">def</span> <span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element</span><span class="p">):</span>
+<div class="viewcode-block" id="LayeredModel.append"><a class="viewcode-back" href="../../cake.html#pyrocko.cake.LayeredModel.append">[docs]</a>    <span class="k">def</span> <span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elements</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_elements</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">below</span> <span class="o">=</span> <span class="n">element</span>
         
@@ -1766,18 +1766,18 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">nlayers</span> <span class="o">+=</span> <span class="mi">1</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_elements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">element</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">layers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="n">DOWN</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="LayeredModel.layers"><a class="viewcode-back" href="../../cake.html#pyrocko.cake.LayeredModel.layers">[docs]</a>    <span class="k">def</span> <span class="nf">layers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="n">DOWN</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">direction</span> <span class="o">==</span> <span class="n">DOWN</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">(</span> <span class="n">el</span> <span class="k">for</span> <span class="n">el</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elements</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">el</span><span class="p">,</span> <span class="n">Layer</span><span class="p">)</span> <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">(</span> <span class="n">el</span> <span class="k">for</span> <span class="n">el</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_elements</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">el</span><span class="p">,</span> <span class="n">Layer</span><span class="p">)</span> <span class="p">)</span>
-    
-    <span class="k">def</span> <span class="nf">layer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="n">DOWN</span><span class="p">):</span>
+    </div>
+<div class="viewcode-block" id="LayeredModel.layer"><a class="viewcode-back" href="../../cake.html#pyrocko.cake.LayeredModel.layer">[docs]</a>    <span class="k">def</span> <span class="nf">layer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="n">DOWN</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">(</span><span class="n">direction</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">l</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">z</span><span class="p">):</span>
                 <span class="k">return</span> <span class="n">l</span>
-
+</div>
     <span class="k">def</span> <span class="nf">walker</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">breaks</span><span class="p">):</span>
         <span class="n">breaks</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">breaks</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">breaks</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">walkers</span><span class="p">:</span>
@@ -1795,14 +1795,14 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">walkers</span><span class="p">[</span><span class="n">breaks</span><span class="p">]</span> <span class="o">=</span> <span class="n">w</span>
         <span class="k">return</span> <span class="n">w</span>
 
-    <span class="k">def</span> <span class="nf">material</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="n">DOWN</span><span class="p">):</span>
+<div class="viewcode-block" id="LayeredModel.material"><a class="viewcode-back" href="../../cake.html#pyrocko.cake.LayeredModel.material">[docs]</a>    <span class="k">def</span> <span class="nf">material</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="n">DOWN</span><span class="p">):</span>
         <span class="n">l</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">layer</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">direction</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">l</span><span class="o">.</span><span class="n">material</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">discontinuities</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="LayeredModel.discontinuities"><a class="viewcode-back" href="../../cake.html#pyrocko.cake.LayeredModel.discontinuities">[docs]</a>    <span class="k">def</span> <span class="nf">discontinuities</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">(</span> <span class="n">el</span> <span class="k">for</span> <span class="n">el</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elements</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">el</span><span class="p">,</span> <span class="n">Discontinuity</span><span class="p">)</span> <span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">discontinuity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name_or_z</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="LayeredModel.discontinuity"><a class="viewcode-back" href="../../cake.html#pyrocko.cake.LayeredModel.discontinuity">[docs]</a>    <span class="k">def</span> <span class="nf">discontinuity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name_or_z</span><span class="p">):</span>
         
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">name_or_z</span><span class="p">,</span> <span class="nb">float</span><span class="p">):</span>
             <span class="n">candi</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">discontinuities</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">i</span><span class="p">:</span> <span class="nb">abs</span><span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">z</span><span class="o">-</span><span class="n">name_or_z</span><span class="p">))</span>
@@ -1813,8 +1813,8 @@
             <span class="k">raise</span> <span class="n">DiscontinuityNotFound</span><span class="p">(</span><span class="n">name_or_z</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">candi</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        
-    <span class="k">def</span> <span class="nf">adapt_phase</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phase</span><span class="p">):</span>
+        </div>
+<div class="viewcode-block" id="LayeredModel.adapt_phase"><a class="viewcode-back" href="../../cake.html#pyrocko.cake.LayeredModel.adapt_phase">[docs]</a>    <span class="k">def</span> <span class="nf">adapt_phase</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phase</span><span class="p">):</span>
         <span class="n">phase</span> <span class="o">=</span> <span class="n">phase</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">knee</span> <span class="ow">in</span> <span class="n">phase</span><span class="o">.</span><span class="n">knees</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">knee</span><span class="o">.</span><span class="n">depth</span> <span class="o">!=</span> <span class="s">&#39;surface&#39;</span><span class="p">:</span>
@@ -1824,8 +1824,8 @@
                 <span class="n">leg</span><span class="o">.</span><span class="n">depthmax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">discontinuity</span><span class="p">(</span><span class="n">leg</span><span class="o">.</span><span class="n">depthmax</span><span class="p">)</span><span class="o">.</span><span class="n">z</span>
 
         <span class="k">return</span> <span class="n">phase</span>
-
-    <span class="k">def</span> <span class="nf">path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">phase</span><span class="o">=</span><span class="n">PhaseDef</span><span class="p">(</span><span class="s">&#39;P&#39;</span><span class="p">),</span> <span class="n">zstart</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">zstop</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="LayeredModel.path"><a class="viewcode-back" href="../../cake.html#pyrocko.cake.LayeredModel.path">[docs]</a>    <span class="k">def</span> <span class="nf">path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">phase</span><span class="o">=</span><span class="n">PhaseDef</span><span class="p">(</span><span class="s">&#39;P&#39;</span><span class="p">),</span> <span class="n">zstart</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">zstop</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
         
         <span class="n">phase</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">adapt_phase</span><span class="p">(</span><span class="n">phase</span><span class="p">)</span>
         <span class="n">knees</span> <span class="o">=</span> <span class="n">phase</span><span class="o">.</span><span class="n">knees</span><span class="p">()</span>
@@ -1914,8 +1914,8 @@
         <span class="n">path</span><span class="o">.</span><span class="n">set_used_phase</span><span class="p">(</span><span class="n">used_phase</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">path</span>
-
-    <span class="k">def</span> <span class="nf">gather_pathes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phases</span><span class="o">=</span><span class="n">PhaseDef</span><span class="p">(</span><span class="s">&#39;P&#39;</span><span class="p">),</span> <span class="n">zstart</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">zstop</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">np</span><span class="o">=</span><span class="mi">1000</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="LayeredModel.gather_pathes"><a class="viewcode-back" href="../../cake.html#pyrocko.cake.LayeredModel.gather_pathes">[docs]</a>    <span class="k">def</span> <span class="nf">gather_pathes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phases</span><span class="o">=</span><span class="n">PhaseDef</span><span class="p">(</span><span class="s">&#39;P&#39;</span><span class="p">),</span> <span class="n">zstart</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">zstop</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">np</span><span class="o">=</span><span class="mi">1000</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">phases</span><span class="p">,</span> <span class="n">PhaseDef</span><span class="p">):</span>
             <span class="n">phases</span> <span class="o">=</span> <span class="p">[</span> <span class="n">phases</span> <span class="p">]</span>
         <span class="n">pathes</span> <span class="o">=</span> <span class="p">{}</span>
@@ -1967,8 +1967,8 @@
         <span class="n">pathes</span> <span class="o">=</span> <span class="n">pathes</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
         <span class="n">pathes</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">pmin</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">pathes</span>
-    
-    <span class="k">def</span> <span class="nf">arrivals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distances</span><span class="o">=</span><span class="p">[],</span> <span class="n">phases</span><span class="o">=</span><span class="n">PhaseDef</span><span class="p">(</span><span class="s">&#39;P&#39;</span><span class="p">),</span> <span class="n">zstart</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">zstop</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">np</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">refine</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="s">&#39;linear&#39;</span><span class="p">):</span>
+    </div>
+<div class="viewcode-block" id="LayeredModel.arrivals"><a class="viewcode-back" href="../../cake.html#pyrocko.cake.LayeredModel.arrivals">[docs]</a>    <span class="k">def</span> <span class="nf">arrivals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">distances</span><span class="o">=</span><span class="p">[],</span> <span class="n">phases</span><span class="o">=</span><span class="n">PhaseDef</span><span class="p">(</span><span class="s">&#39;P&#39;</span><span class="p">),</span> <span class="n">zstart</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">zstop</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">np</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">refine</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="s">&#39;linear&#39;</span><span class="p">):</span>
 
         <span class="n">arrivals</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">gather_pathes</span><span class="p">(</span> <span class="n">phases</span><span class="p">,</span> <span class="n">zstart</span><span class="o">=</span><span class="n">zstart</span><span class="p">,</span> <span class="n">zstop</span><span class="o">=</span><span class="n">zstop</span><span class="p">,</span> <span class="n">np</span><span class="o">=</span><span class="n">np</span> <span class="p">):</span>
@@ -1987,9 +1987,9 @@
 
         <span class="n">arrivals</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">t</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">arrivals</span>
-
+</div>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">from_scanlines</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">producer</span><span class="p">):</span>
+<div class="viewcode-block" id="LayeredModel.from_scanlines"><a class="viewcode-back" href="../../cake.html#pyrocko.cake.LayeredModel.from_scanlines">[docs]</a>    <span class="k">def</span> <span class="nf">from_scanlines</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">producer</span><span class="p">):</span>
         
         <span class="bp">self</span> <span class="o">=</span> <span class="n">cls</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">z</span><span class="p">,</span> <span class="n">material</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">producer</span><span class="p">:</span>
@@ -2020,7 +2020,7 @@
                     <span class="bp">self</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">layer</span><span class="p">)</span>
     
         <span class="k">return</span> <span class="bp">self</span>
-
+</div>
     <span class="k">def</span> <span class="nf">iter_material_parameter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">get</span><span class="p">):</span>
         <span class="k">assert</span> <span class="n">get</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;vp&#39;</span><span class="p">,</span> <span class="s">&#39;vs&#39;</span><span class="p">,</span> <span class="s">&#39;rho&#39;</span><span class="p">,</span> <span class="s">&#39;qp&#39;</span><span class="p">,</span> <span class="s">&#39;qs&#39;</span><span class="p">)</span>
         <span class="n">getter</span> <span class="o">=</span> <span class="n">operator</span><span class="o">.</span><span class="n">attrgetter</span><span class="p">(</span><span class="n">get</span><span class="p">)</span>
@@ -2028,16 +2028,16 @@
             <span class="k">yield</span> <span class="n">getter</span><span class="p">(</span><span class="n">layer</span><span class="o">.</span><span class="n">mtop</span><span class="p">)</span>
             <span class="k">yield</span> <span class="n">getter</span><span class="p">(</span><span class="n">layer</span><span class="o">.</span><span class="n">mbot</span><span class="p">)</span>
          
-    <span class="k">def</span> <span class="nf">min</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">get</span><span class="o">=</span><span class="s">&#39;vp&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="LayeredModel.min"><a class="viewcode-back" href="../../cake.html#pyrocko.cake.LayeredModel.min">[docs]</a>    <span class="k">def</span> <span class="nf">min</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">get</span><span class="o">=</span><span class="s">&#39;vp&#39;</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">iter_material_parameter</span><span class="p">(</span><span class="n">get</span><span class="p">))</span>
-
-    <span class="k">def</span> <span class="nf">max</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">get</span><span class="o">=</span><span class="s">&#39;vp&#39;</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="LayeredModel.max"><a class="viewcode-back" href="../../cake.html#pyrocko.cake.LayeredModel.max">[docs]</a>    <span class="k">def</span> <span class="nf">max</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">get</span><span class="o">=</span><span class="s">&#39;vp&#39;</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">iter_material_parameter</span><span class="p">(</span><span class="n">get</span><span class="p">))</span>
-
+</div>
     <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span> <span class="nb">str</span><span class="p">(</span><span class="n">element</span><span class="p">)</span> <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elements</span> <span class="p">)</span>
-                
-<span class="k">def</span> <span class="nf">read_hyposat_model</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
+                </div>
+<div class="viewcode-block" id="read_hyposat_model"><a class="viewcode-back" href="../../cake.html#pyrocko.cake.read_hyposat_model">[docs]</a><span class="k">def</span> <span class="nf">read_hyposat_model</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
     <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">)</span>
     <span class="n">translate</span> <span class="o">=</span> <span class="p">{</span> <span class="s">&#39;MOHO&#39;</span><span class="p">:</span> <span class="s">&#39;moho&#39;</span><span class="p">,</span> <span class="s">&#39;CONR&#39;</span><span class="p">:</span> <span class="s">&#39;conrad&#39;</span> <span class="p">}</span>
     <span class="n">lname</span> <span class="o">=</span> <span class="bp">None</span>
@@ -2056,8 +2056,8 @@
         <span class="n">lname</span> <span class="o">=</span> <span class="n">name</span>
 
     <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-        
-<span class="k">def</span> <span class="nf">read_nd_model</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
+        </div>
+<div class="viewcode-block" id="read_nd_model"><a class="viewcode-back" href="../../cake.html#pyrocko.cake.read_nd_model">[docs]</a><span class="k">def</span> <span class="nf">read_nd_model</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
     <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">)</span>
     <span class="n">translate</span> <span class="o">=</span> <span class="p">{</span> <span class="s">&#39;mantle&#39;</span><span class="p">:</span> <span class="s">&#39;moho&#39;</span><span class="p">,</span> <span class="s">&#39;outer-core&#39;</span><span class="p">:</span> <span class="s">&#39;cmb&#39;</span><span class="p">,</span> <span class="s">&#39;inner-core&#39;</span><span class="p">:</span> <span class="s">&#39;icb&#39;</span> <span class="p">}</span>
     <span class="n">name</span> <span class="o">=</span> <span class="bp">None</span>
@@ -2072,8 +2072,8 @@
             <span class="n">name</span> <span class="o">=</span> <span class="n">translate</span><span class="p">[</span><span class="n">toks</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
 
     <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-
-<span class="k">def</span> <span class="nf">load_model</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">format</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="load_model"><a class="viewcode-back" href="../../cake.html#pyrocko.cake.load_model">[docs]</a><span class="k">def</span> <span class="nf">load_model</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">format</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">format</span> <span class="o">==</span> <span class="s">&#39;nd&#39;</span><span class="p">:</span>
         <span class="n">reader</span> <span class="o">=</span> <span class="n">read_nd_model</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">format</span> <span class="o">==</span> <span class="s">&#39;hyposat&#39;</span><span class="p">:</span>
@@ -2082,7 +2082,7 @@
         <span class="k">assert</span> <span class="bp">False</span><span class="p">,</span> <span class="s">&#39;unsupported model format&#39;</span>
 
     <span class="k">return</span> <span class="n">LayeredModel</span><span class="o">.</span><span class="n">from_scanlines</span><span class="p">(</span><span class="n">reader</span><span class="p">)</span>
-</pre></div>
+</pre></div></div>
 
           </div>
       </div>
