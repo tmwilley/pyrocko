@@ -69,6 +69,32 @@
 </pre></div>
 </div>
 </div>
+<div class="section" id="quickly-look-at-a-trace">
+<h2>Quickly look at a trace<a class="headerlink" href="#quickly-look-at-a-trace" title="Permalink to this headline">¶</a></h2>
+<p>To visualize a single trace, use the <a class="reference internal" href="trace.html#pyrocko.trace.Trace.snuffle" title="pyrocko.trace.Trace.snuffle"><tt class="xref py py-meth docutils literal"><span class="pre">pyrocko.trace.Trace.snuffle()</span></tt></a> method. To look at a list of traces, use the <a class="reference internal" href="trace.html#pyrocko.trace.snuffle" title="pyrocko.trace.snuffle"><tt class="xref py py-func docutils literal"><span class="pre">pyrocko.trace.snuffle()</span></tt></a> function. If you want to see the contents of a pile, the <a class="reference internal" href="pile.html#pyrocko.pile.Pile.snuffle" title="pyrocko.pile.Pile.snuffle"><tt class="xref py py-meth docutils literal"><span class="pre">pyrocko.pile.Pile.snuffle()</span></tt></a> method is your friend. Alternatively, you could of course save the traces to file and use the standalone Snuffler to look at them.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">pyrocko</span> <span class="kn">import</span> <span class="n">io</span><span class="p">,</span> <span class="n">trace</span><span class="p">,</span> <span class="n">pile</span>
+
+<span class="n">traces</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s">&#39;test.mseed&#39;</span><span class="p">)</span>
+<span class="n">traces</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">snuffle</span><span class="p">()</span> <span class="c"># look at a single trace</span>
+<span class="n">trace</span><span class="o">.</span><span class="n">snuffle</span><span class="p">(</span><span class="n">traces</span><span class="p">)</span> <span class="c"># look at a bunch of traces</span>
+
+<span class="c"># do something with the traces:</span>
+<span class="n">new_traces</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">tr</span> <span class="ow">in</span> <span class="n">traces</span><span class="p">:</span>
+    <span class="n">new</span> <span class="o">=</span> <span class="n">tr</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="n">new</span><span class="o">.</span><span class="n">whiten</span><span class="p">()</span>
+    <span class="c"># to allow the viewer to distinguish the traces</span>
+    <span class="n">new</span><span class="o">.</span><span class="n">set_location</span><span class="p">(</span><span class="s">&#39;whitened&#39;</span><span class="p">)</span>
+    <span class="n">new_traces</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new</span><span class="p">)</span>
+
+<span class="n">trace</span><span class="o">.</span><span class="n">snuffle</span><span class="p">(</span><span class="n">traces</span> <span class="o">+</span> <span class="n">new_traces</span><span class="p">)</span>
+
+<span class="c"># it is also possible to &#39;snuffle&#39; a pile:</span>
+<span class="n">p</span> <span class="o">=</span> <span class="n">pile</span><span class="o">.</span><span class="n">make_pile</span><span class="p">([</span><span class="s">&#39;test.mseed&#39;</span><span class="p">])</span>
+<span class="n">p</span><span class="o">.</span><span class="n">snuffle</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
 <div class="section" id="create-a-trace-object-from-scratch">
 <h2>Create a trace object from scratch<a class="headerlink" href="#create-a-trace-object-from-scratch" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">pyrocko</span> <span class="kn">import</span> <span class="n">trace</span><span class="p">,</span> <span class="n">util</span><span class="p">,</span> <span class="n">io</span>
