@@ -146,6 +146,34 @@
     <span class="n">decimate_iir_coeffs</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="n">re_frac</span> <span class="o">=</span> <span class="bp">None</span>
 </div>
+<div class="viewcode-block" id="decimate_coeffs"><a class="viewcode-back" href="../../util.html#pyrocko.util.decimate_coeffs">[docs]</a><span class="k">def</span> <span class="nf">decimate_coeffs</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">ftype</span><span class="o">=</span><span class="s">&#39;iir&#39;</span><span class="p">):</span>
+
+    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">q</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">type</span><span class="p">(</span><span class="mi">1</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">Error</span><span class="p">,</span> <span class="s">&quot;q should be an integer&quot;</span>
+
+    <span class="k">if</span> <span class="n">n</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">ftype</span> <span class="o">==</span> <span class="s">&#39;fir&#39;</span><span class="p">:</span>
+            <span class="n">n</span> <span class="o">=</span> <span class="mi">30</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">n</span> <span class="o">=</span> <span class="mi">8</span>
+            
+    <span class="k">if</span> <span class="n">ftype</span> <span class="o">==</span> <span class="s">&#39;fir&#39;</span><span class="p">:</span>
+        <span class="n">coeffs</span> <span class="o">=</span> <span class="n">GlobalVars</span><span class="o">.</span><span class="n">decimate_fir_coeffs</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="mf">1.</span><span class="o">/</span><span class="n">q</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">coeffs</span><span class="p">:</span>
+            <span class="n">coeffs</span><span class="p">[</span><span class="n">n</span><span class="p">,</span><span class="mf">1.</span><span class="o">/</span><span class="n">q</span><span class="p">]</span> <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">firwin</span><span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="mf">1.</span><span class="o">/</span><span class="n">q</span><span class="p">,</span> <span class="n">window</span><span class="o">=</span><span class="s">&#39;hamming&#39;</span><span class="p">)</span>
+        
+        <span class="n">b</span> <span class="o">=</span> <span class="n">coeffs</span><span class="p">[</span><span class="n">n</span><span class="p">,</span><span class="mf">1.</span><span class="o">/</span><span class="n">q</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">b</span><span class="p">,</span> <span class="p">[</span><span class="mf">1.</span><span class="p">],</span> <span class="n">n</span> 
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">coeffs</span> <span class="o">=</span> <span class="n">GlobalVars</span><span class="o">.</span><span class="n">decimate_iir_coeffs</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="mf">0.05</span><span class="p">,</span><span class="mf">0.8</span><span class="o">/</span><span class="n">q</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">coeffs</span><span class="p">:</span>
+            <span class="n">coeffs</span><span class="p">[</span><span class="n">n</span><span class="p">,</span><span class="mf">0.05</span><span class="p">,</span><span class="mf">0.8</span><span class="o">/</span><span class="n">q</span><span class="p">]</span> <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">cheby1</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.8</span><span class="o">/</span><span class="n">q</span><span class="p">)</span>
+           
+        <span class="n">b</span><span class="p">,</span> <span class="n">a</span> <span class="o">=</span> <span class="n">coeffs</span><span class="p">[</span><span class="n">n</span><span class="p">,</span><span class="mf">0.05</span><span class="p">,</span><span class="mf">0.8</span><span class="o">/</span><span class="n">q</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">b</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">n</span>
+
+</div>
 <div class="viewcode-block" id="decimate"><a class="viewcode-back" href="../../util.html#pyrocko.util.decimate">[docs]</a><span class="k">def</span> <span class="nf">decimate</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">ftype</span><span class="o">=</span><span class="s">&#39;iir&#39;</span><span class="p">,</span> <span class="n">zi</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Downsample the signal x by an integer factor q, using an order n filter</span>
 <span class="sd">    </span>
@@ -162,44 +190,14 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">q</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">type</span><span class="p">(</span><span class="mi">1</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="n">Error</span><span class="p">,</span> <span class="s">&quot;q should be an integer&quot;</span>
-
-    <span class="k">if</span> <span class="n">n</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">ftype</span> <span class="o">==</span> <span class="s">&#39;fir&#39;</span><span class="p">:</span>
-            <span class="n">n</span> <span class="o">=</span> <span class="mi">30</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">n</span> <span class="o">=</span> <span class="mi">8</span>
+    <span class="n">b</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">n</span> <span class="o">=</span> <span class="n">decimate_coeffs</span><span class="p">(</span><span class="n">q</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="n">ftype</span><span class="p">)</span>
             
-            
-    <span class="k">if</span> <span class="n">ftype</span> <span class="o">==</span> <span class="s">&#39;fir&#39;</span><span class="p">:</span>
-        <span class="n">coeffs</span> <span class="o">=</span> <span class="n">GlobalVars</span><span class="o">.</span><span class="n">decimate_fir_coeffs</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="mf">1.</span><span class="o">/</span><span class="n">q</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">coeffs</span><span class="p">:</span>
-            <span class="n">coeffs</span><span class="p">[</span><span class="n">n</span><span class="p">,</span><span class="mf">1.</span><span class="o">/</span><span class="n">q</span><span class="p">]</span> <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">firwin</span><span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="mf">1.</span><span class="o">/</span><span class="n">q</span><span class="p">,</span> <span class="n">window</span><span class="o">=</span><span class="s">&#39;hamming&#39;</span><span class="p">)</span>
-        
-        <span class="n">b</span> <span class="o">=</span> <span class="n">coeffs</span><span class="p">[</span><span class="n">n</span><span class="p">,</span><span class="mf">1.</span><span class="o">/</span><span class="n">q</span><span class="p">]</span>
-        
-        <span class="k">if</span> <span class="n">zi</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="n">zi</span> <span class="ow">is</span> <span class="bp">True</span><span class="p">:</span>
-            <span class="n">zi_</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">b</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">num</span><span class="o">.</span><span class="n">float</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">zi_</span> <span class="o">=</span> <span class="n">zi</span>
-        
-        <span class="n">y</span><span class="p">,</span> <span class="n">zf</span> <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">lfilter</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">zi</span><span class="o">=</span><span class="n">zi_</span><span class="p">)</span>
-            
-            
+    <span class="k">if</span> <span class="n">zi</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="n">zi</span> <span class="ow">is</span> <span class="bp">True</span><span class="p">:</span>
+        <span class="n">zi_</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">),</span><span class="nb">len</span><span class="p">(</span><span class="n">b</span><span class="p">))</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">num</span><span class="o">.</span><span class="n">float</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">coeffs</span> <span class="o">=</span> <span class="n">GlobalVars</span><span class="o">.</span><span class="n">decimate_iir_coeffs</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="mf">0.05</span><span class="p">,</span><span class="mf">0.8</span><span class="o">/</span><span class="n">q</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">coeffs</span><span class="p">:</span>
-            <span class="n">coeffs</span><span class="p">[</span><span class="n">n</span><span class="p">,</span><span class="mf">0.05</span><span class="p">,</span><span class="mf">0.8</span><span class="o">/</span><span class="n">q</span><span class="p">]</span> <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">cheby1</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.8</span><span class="o">/</span><span class="n">q</span><span class="p">)</span>
-           
-        <span class="n">b</span><span class="p">,</span> <span class="n">a</span> <span class="o">=</span> <span class="n">coeffs</span><span class="p">[</span><span class="n">n</span><span class="p">,</span><span class="mf">0.05</span><span class="p">,</span><span class="mf">0.8</span><span class="o">/</span><span class="n">q</span><span class="p">]</span>
-        
-        <span class="k">if</span> <span class="n">zi</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">is</span> <span class="bp">True</span><span class="p">:</span>
-            <span class="n">zi_</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">),</span><span class="nb">len</span><span class="p">(</span><span class="n">b</span><span class="p">))</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">num</span><span class="o">.</span><span class="n">float</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">zi_</span> <span class="o">=</span> <span class="n">zi</span>
-        <span class="n">y</span><span class="p">,</span> <span class="n">zf</span> <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">lfilter</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">zi</span><span class="o">=</span><span class="n">zi_</span><span class="p">)</span>
-
+        <span class="n">zi_</span> <span class="o">=</span> <span class="n">zi</span>
+    
+    <span class="n">y</span><span class="p">,</span> <span class="n">zf</span> <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">lfilter</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">zi</span><span class="o">=</span><span class="n">zi_</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">zi</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">y</span><span class="p">[</span><span class="n">n</span><span class="o">/</span><span class="mi">2</span><span class="p">::</span><span class="n">q</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span> <span class="n">zf</span>
@@ -288,6 +286,48 @@
     <span class="n">tt</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">gmtime</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">timestamp</span><span class="p">))</span>
     <span class="n">tts</span> <span class="o">=</span> <span class="n">tt</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">tt</span><span class="p">[</span><span class="mi">6</span><span class="p">:</span><span class="mi">9</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">calendar</span><span class="o">.</span><span class="n">timegm</span><span class="p">(</span><span class="n">tts</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="iter_days"><a class="viewcode-back" href="../../util.html#pyrocko.util.iter_days">[docs]</a><span class="k">def</span> <span class="nf">iter_days</span><span class="p">(</span><span class="n">tmin</span><span class="p">,</span> <span class="n">tmax</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Yields begin and end of days until given time span is covered.</span>
+
+<span class="sd">    :param tmin,tmax: input time span</span>
+<span class="sd">    </span>
+<span class="sd">    :yields: tuples with (begin, end) of days as system timestamps</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="n">t</span> <span class="o">=</span> <span class="n">day_start</span><span class="p">(</span><span class="n">tmin</span><span class="p">)</span>
+    <span class="k">while</span> <span class="n">t</span> <span class="o">&lt;</span> <span class="n">tmax</span><span class="p">:</span>
+        <span class="n">tend</span> <span class="o">=</span> <span class="n">day_start</span><span class="p">(</span> <span class="n">t</span> <span class="o">+</span> <span class="mi">26</span><span class="o">*</span><span class="mi">60</span><span class="o">*</span><span class="mi">60</span> <span class="p">)</span>
+        <span class="k">yield</span> <span class="n">t</span><span class="p">,</span> <span class="n">tend</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">tend</span>
+</div>
+<div class="viewcode-block" id="iter_months"><a class="viewcode-back" href="../../util.html#pyrocko.util.iter_months">[docs]</a><span class="k">def</span> <span class="nf">iter_months</span><span class="p">(</span><span class="n">tmin</span><span class="p">,</span> <span class="n">tmax</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Yields begin and end of months until given time span is covered.</span>
+
+<span class="sd">    :param tmin,tmax: input time span</span>
+<span class="sd">    </span>
+<span class="sd">    :yields: tuples with (begin, end) of months as system timestamps</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    
+    <span class="n">t</span> <span class="o">=</span> <span class="n">month_start</span><span class="p">(</span><span class="n">tmin</span><span class="p">)</span>
+    <span class="k">while</span> <span class="n">t</span> <span class="o">&lt;</span> <span class="n">tmax</span><span class="p">:</span>
+        <span class="n">tend</span> <span class="o">=</span> <span class="n">month_start</span><span class="p">(</span><span class="n">t</span> <span class="o">+</span> <span class="mi">24</span><span class="o">*</span><span class="mi">60</span><span class="o">*</span><span class="mi">60</span><span class="o">*</span><span class="mi">33</span> <span class="p">)</span>
+        <span class="k">yield</span> <span class="n">t</span><span class="p">,</span> <span class="n">tend</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">tend</span>
+</div>
+<div class="viewcode-block" id="iter_years"><a class="viewcode-back" href="../../util.html#pyrocko.util.iter_years">[docs]</a><span class="k">def</span> <span class="nf">iter_years</span><span class="p">(</span><span class="n">tmin</span><span class="p">,</span> <span class="n">tmax</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Yields begin and end of years until given time span is covered.</span>
+
+<span class="sd">    :param tmin,tmax: input time span</span>
+<span class="sd">    </span>
+<span class="sd">    :yields: tuples with (begin, end) of years as system timestamps</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    
+    <span class="n">t</span> <span class="o">=</span> <span class="n">year_start</span><span class="p">(</span><span class="n">tmin</span><span class="p">)</span>
+    <span class="k">while</span> <span class="n">t</span> <span class="o">&lt;</span> <span class="n">tmax</span><span class="p">:</span>
+        <span class="n">tend</span> <span class="o">=</span> <span class="n">year_start</span><span class="p">(</span><span class="n">t</span> <span class="o">+</span> <span class="mi">24</span><span class="o">*</span><span class="mi">60</span><span class="o">*</span><span class="mi">60</span><span class="o">*</span><span class="mi">369</span> <span class="p">)</span>
+        <span class="k">yield</span> <span class="n">t</span><span class="p">,</span> <span class="n">tend</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">tend</span>
 </div>
 <div class="viewcode-block" id="decitab"><a class="viewcode-back" href="../../util.html#pyrocko.util.decitab">[docs]</a><span class="k">def</span> <span class="nf">decitab</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Get integer decimation sequence for given downampling factor.</span>
@@ -570,7 +610,9 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">good</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">path</span><span class="p">))</span>
         
-        
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">paths</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">paths</span> <span class="o">=</span> <span class="p">[</span> <span class="n">paths</span> <span class="p">]</span>
+
     <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">paths</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
             <span class="k">for</span> <span class="p">(</span><span class="n">dirpath</span><span class="p">,</span> <span class="n">dirnames</span><span class="p">,</span> <span class="n">filenames</span><span class="p">)</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>

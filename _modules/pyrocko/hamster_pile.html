@@ -119,46 +119,23 @@
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mapping</span><span class="p">,</span> <span class="n">deltat</span><span class="p">):</span>
         <span class="n">Processor</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_mapping</span> <span class="o">=</span> <span class="n">mapping</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_deltat</span> <span class="o">=</span> <span class="n">deltat</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_tout</span> <span class="o">=</span> <span class="p">{}</span>
-
+        <span class="bp">self</span><span class="o">.</span><span class="n">_downsampler</span> <span class="o">=</span> <span class="n">tracemod</span><span class="o">.</span><span class="n">co_downsample_to</span><span class="p">(</span><span class="n">deltat</span><span class="p">)</span>
+        
 <div class="viewcode-block" id="Downsampler.process"><a class="viewcode-back" href="../../hamster_pile.html#pyrocko.hamster_pile.Downsampler.process">[docs]</a>    <span class="k">def</span> <span class="nf">process</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trace</span><span class="p">):</span>
         <span class="n">target_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mapping</span><span class="p">(</span><span class="n">trace</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">target_id</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">[]</span>
 
-        <span class="nb">buffer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_buffer</span><span class="p">(</span><span class="n">trace</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">buffer</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="nb">buffer</span> <span class="o">=</span> <span class="n">trace</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">set_buffer</span><span class="p">(</span><span class="nb">buffer</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="nb">buffer</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">trace</span><span class="o">.</span><span class="n">ydata</span><span class="p">)</span>
-
-        <span class="n">ds_trace</span> <span class="o">=</span> <span class="nb">buffer</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-        <span class="n">ds_trace</span><span class="o">.</span><span class="n">downsample_to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_deltat</span><span class="p">,</span> <span class="n">snap</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">demean</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+        <span class="n">ds_trace</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_downsampler</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">trace</span><span class="p">)</span> 
         <span class="n">ds_trace</span><span class="o">.</span><span class="n">set_codes</span><span class="p">(</span><span class="o">*</span><span class="n">target_id</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">ds_trace</span><span class="o">.</span><span class="n">get_ydata</span><span class="p">()</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">ds_trace</span><span class="o">.</span><span class="n">data_len</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">[]</span>
-
-        <span class="n">tpad</span> <span class="o">=</span> <span class="p">((</span><span class="nb">buffer</span><span class="o">.</span><span class="n">tmax</span><span class="o">-</span><span class="nb">buffer</span><span class="o">.</span><span class="n">tmin</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="n">ds_trace</span><span class="o">.</span><span class="n">tmax</span><span class="o">-</span><span class="n">ds_trace</span><span class="o">.</span><span class="n">tmin</span><span class="p">))</span> <span class="o">*</span> <span class="mf">3.</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="nb">buffer</span><span class="o">.</span><span class="n">chop</span><span class="p">(</span><span class="nb">buffer</span><span class="o">.</span><span class="n">tmax</span><span class="o">-</span><span class="n">tpad</span><span class="p">,</span> <span class="nb">buffer</span><span class="o">.</span><span class="n">tmax</span><span class="p">,</span> <span class="n">include_last</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-        <span class="k">except</span> <span class="n">tracemod</span><span class="o">.</span><span class="n">NoData</span><span class="p">:</span>
-            <span class="k">pass</span>
-
-        
-        <span class="k">if</span> <span class="n">target_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tout</span><span class="p">:</span>
-            <span class="n">tout</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tout</span><span class="p">[</span><span class="n">target_id</span><span class="p">]</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">ds_trace</span><span class="o">.</span><span class="n">chop</span><span class="p">(</span><span class="n">tout</span><span class="o">+</span><span class="n">ds_trace</span><span class="o">.</span><span class="n">deltat</span><span class="p">,</span> <span class="n">ds_trace</span><span class="o">.</span><span class="n">tmax</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-            <span class="k">except</span> <span class="n">tracemod</span><span class="o">.</span><span class="n">NoData</span><span class="p">:</span>
-                <span class="k">return</span> <span class="p">[]</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_tout</span><span class="p">[</span><span class="n">target_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">ds_trace</span><span class="o">.</span><span class="n">tmax</span>
         
         <span class="k">return</span> <span class="p">[</span> <span class="n">ds_trace</span> <span class="p">]</span>
-</div></div>
+</div>
+    <span class="k">def</span> <span class="nf">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_downsampler</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</div>
 <div class="viewcode-block" id="Grower"><a class="viewcode-back" href="../../hamster_pile.html#pyrocko.hamster_pile.Grower">[docs]</a><span class="k">class</span> <span class="nc">Grower</span><span class="p">(</span><span class="n">Processor</span><span class="p">):</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tflush</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>

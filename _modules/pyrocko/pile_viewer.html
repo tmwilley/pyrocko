@@ -50,7 +50,7 @@
   <h1>Source code for pyrocko.pile_viewer</h1><div class="highlight"><pre>
 <span class="c">#!/usr/bin/env python</span>
 
-<span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">time</span><span class="o">,</span> <span class="nn">calendar</span><span class="o">,</span> <span class="nn">datetime</span><span class="o">,</span> <span class="nn">signal</span><span class="o">,</span> <span class="nn">re</span><span class="o">,</span> <span class="nn">math</span><span class="o">,</span> <span class="nn">scipy.stats</span><span class="o">,</span> <span class="nn">tempfile</span><span class="o">,</span> <span class="nn">logging</span><span class="o">,</span> <span class="nn">traceback</span><span class="o">,</span> <span class="nn">shlex</span> 
+<span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">time</span><span class="o">,</span> <span class="nn">calendar</span><span class="o">,</span> <span class="nn">datetime</span><span class="o">,</span> <span class="nn">signal</span><span class="o">,</span> <span class="nn">re</span><span class="o">,</span> <span class="nn">math</span><span class="o">,</span> <span class="nn">scipy.stats</span><span class="o">,</span> <span class="nn">tempfile</span><span class="o">,</span> <span class="nn">logging</span><span class="o">,</span> <span class="nn">traceback</span><span class="o">,</span> <span class="nn">shlex</span><span class="o">,</span> <span class="nn">operator</span>
 
 <span class="kn">from</span> <span class="nn">optparse</span> <span class="kn">import</span> <span class="n">OptionParser</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">num</span> 
@@ -61,7 +61,8 @@
 <span class="kn">from</span> <span class="nn">pyrocko.util</span> <span class="kn">import</span> <span class="n">TableWriter</span><span class="p">,</span> <span class="n">TableReader</span>
 
 <span class="kn">from</span> <span class="nn">pyrocko.nano</span> <span class="kn">import</span> <span class="n">Nano</span>
-<span class="kn">from</span> <span class="nn">pyrocko.gui_util</span> <span class="kn">import</span> <span class="n">ValControl</span><span class="p">,</span> <span class="n">LinValControl</span>
+<span class="kn">from</span> <span class="nn">pyrocko.gui_util</span> <span class="kn">import</span> <span class="n">ValControl</span><span class="p">,</span> <span class="n">LinValControl</span><span class="p">,</span> <span class="n">Marker</span><span class="p">,</span> <span class="n">EventMarker</span><span class="p">,</span> <span class="n">PhaseMarker</span><span class="p">,</span> <span class="n">make_QPolygonF</span><span class="p">,</span> <span class="n">draw_label</span><span class="p">,</span> \
+    <span class="n">gmtime_x</span><span class="p">,</span> <span class="n">myctime</span><span class="p">,</span> <span class="n">mystrftime</span>
 
 <span class="kn">from</span> <span class="nn">PyQt4.QtCore</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">PyQt4.QtGui</span> <span class="kn">import</span> <span class="o">*</span>
@@ -108,21 +109,6 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">deg_float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="str_to_float_or_none"><a class="viewcode-back" href="../../pile_viewer.html#pyrocko.pile_viewer.str_to_float_or_none">[docs]</a><span class="k">def</span> <span class="nf">str_to_float_or_none</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">s</span> <span class="o">==</span> <span class="s">&#39;None&#39;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">None</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
-</div>
-<div class="viewcode-block" id="str_to_str_or_none"><a class="viewcode-back" href="../../pile_viewer.html#pyrocko.pile_viewer.str_to_str_or_none">[docs]</a><span class="k">def</span> <span class="nf">str_to_str_or_none</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">s</span> <span class="o">==</span> <span class="s">&#39;None&#39;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">None</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">s</span>
-</div>
-<div class="viewcode-block" id="str_to_bool"><a class="viewcode-back" href="../../pile_viewer.html#pyrocko.pile_viewer.str_to_bool">[docs]</a><span class="k">def</span> <span class="nf">str_to_bool</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">s</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;true&#39;</span><span class="p">,</span> <span class="s">&#39;t&#39;</span><span class="p">,</span> <span class="s">&#39;1&#39;</span><span class="p">)</span>
-</div>
 <div class="viewcode-block" id="sector_int"><a class="viewcode-back" href="../../pile_viewer.html#pyrocko.pile_viewer.sector_int">[docs]</a><span class="k">class</span> <span class="nc">sector_int</span><span class="p">(</span><span class="nb">int</span><span class="p">):</span>
     
     <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -163,50 +149,6 @@
         
         <span class="k">return</span> <span class="n">traces</span>
         </div></div>
-<div class="viewcode-block" id="make_QPolygonF"><a class="viewcode-back" href="../../pile_viewer.html#pyrocko.pile_viewer.make_QPolygonF">[docs]</a><span class="k">def</span> <span class="nf">make_QPolygonF</span><span class="p">(</span> <span class="n">xdata</span><span class="p">,</span> <span class="n">ydata</span> <span class="p">):</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">xdata</span><span class="p">,</span> <span class="n">Nano</span><span class="p">):</span>
-        <span class="n">xdata</span> <span class="o">=</span> <span class="n">xdata</span><span class="o">.</span><span class="n">float_array</span><span class="p">()</span>
-        
-    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">xdata</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">ydata</span><span class="p">)</span>
-    <span class="n">qpoints</span> <span class="o">=</span> <span class="n">QPolygonF</span><span class="p">(</span> <span class="nb">len</span><span class="p">(</span><span class="n">ydata</span><span class="p">)</span> <span class="p">)</span>
-    <span class="n">vptr</span> <span class="o">=</span> <span class="n">qpoints</span><span class="o">.</span><span class="n">data</span><span class="p">()</span>
-    <span class="n">vptr</span><span class="o">.</span><span class="n">setsize</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ydata</span><span class="p">)</span><span class="o">*</span><span class="mi">8</span><span class="o">*</span><span class="mi">2</span><span class="p">)</span>
-    <span class="n">aa</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">ndarray</span><span class="p">(</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ydata</span><span class="p">),</span><span class="mi">2</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">num</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="nb">buffer</span><span class="o">=</span><span class="nb">buffer</span><span class="p">(</span><span class="n">vptr</span><span class="p">))</span>
-    <span class="n">aa</span><span class="o">.</span><span class="n">setflags</span><span class="p">(</span><span class="n">write</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-    <span class="n">aa</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">xdata</span>
-    <span class="n">aa</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">ydata</span>
-    <span class="k">return</span> <span class="n">qpoints</span>
-</div>
-<div class="viewcode-block" id="draw_label"><a class="viewcode-back" href="../../pile_viewer.html#pyrocko.pile_viewer.draw_label">[docs]</a><span class="k">def</span> <span class="nf">draw_label</span><span class="p">(</span> <span class="n">p</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span> <span class="n">label_str</span><span class="p">,</span> <span class="n">label_bg</span><span class="p">,</span> <span class="n">anchor</span><span class="o">=</span><span class="s">&#39;BL&#39;</span><span class="p">,</span> <span class="n">outline</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
-    <span class="n">fm</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">fontMetrics</span><span class="p">()</span>
-    
-    <span class="n">label</span> <span class="o">=</span> <span class="n">QString</span><span class="p">(</span> <span class="n">label_str</span> <span class="p">)</span>
-    <span class="n">rect</span> <span class="o">=</span> <span class="n">fm</span><span class="o">.</span><span class="n">boundingRect</span><span class="p">(</span> <span class="n">label</span> <span class="p">)</span>
-    
-    <span class="n">tx</span><span class="p">,</span><span class="n">ty</span> <span class="o">=</span><span class="n">x</span><span class="p">,</span><span class="n">y</span>
-    <span class="k">if</span> <span class="s">&#39;T&#39;</span> <span class="ow">in</span> <span class="n">anchor</span><span class="p">:</span>
-        <span class="n">ty</span> <span class="o">+=</span> <span class="n">rect</span><span class="o">.</span><span class="n">height</span><span class="p">()</span>
-    <span class="k">if</span> <span class="s">&#39;R&#39;</span> <span class="ow">in</span> <span class="n">anchor</span><span class="p">:</span>
-        <span class="n">tx</span> <span class="o">-=</span> <span class="n">rect</span><span class="o">.</span><span class="n">width</span><span class="p">()</span>
-    <span class="k">if</span> <span class="s">&#39;M&#39;</span> <span class="ow">in</span> <span class="n">anchor</span><span class="p">:</span>
-        <span class="n">ty</span> <span class="o">+=</span> <span class="n">rect</span><span class="o">.</span><span class="n">height</span><span class="p">()</span><span class="o">/</span><span class="mf">2.</span>
-    <span class="k">if</span> <span class="s">&#39;C&#39;</span> <span class="ow">in</span> <span class="n">anchor</span><span class="p">:</span>
-        <span class="n">tx</span> <span class="o">-=</span> <span class="n">rect</span><span class="o">.</span><span class="n">width</span><span class="p">()</span><span class="o">/</span><span class="mf">2.</span>
-        
-    <span class="n">rect</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span> <span class="n">tx</span><span class="p">,</span> <span class="n">ty</span> <span class="p">)</span>
-    <span class="k">if</span> <span class="n">outline</span><span class="p">:</span>
-        <span class="n">oldpen</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">pen</span><span class="p">()</span>
-        <span class="n">oldbrush</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">brush</span><span class="p">()</span>
-        <span class="n">p</span><span class="o">.</span><span class="n">setBrush</span><span class="p">(</span><span class="n">label_bg</span><span class="p">)</span>
-        <span class="n">rect</span><span class="o">.</span><span class="n">adjust</span><span class="p">(</span><span class="o">-</span><span class="mf">2.</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">2.</span><span class="p">,</span><span class="mf">0.</span><span class="p">)</span>
-        <span class="n">p</span><span class="o">.</span><span class="n">drawRect</span><span class="p">(</span> <span class="n">rect</span> <span class="p">)</span>
-        <span class="n">p</span><span class="o">.</span><span class="n">setPen</span><span class="p">(</span><span class="n">oldpen</span><span class="p">)</span>
-        <span class="n">p</span><span class="o">.</span><span class="n">setBrush</span><span class="p">(</span><span class="n">oldbrush</span><span class="p">)</span>
-        
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">p</span><span class="o">.</span><span class="n">fillRect</span><span class="p">(</span><span class="n">rect</span><span class="p">,</span> <span class="n">label_bg</span><span class="p">)</span>
-    <span class="n">p</span><span class="o">.</span><span class="n">drawText</span><span class="p">(</span> <span class="n">tx</span><span class="p">,</span> <span class="n">ty</span><span class="p">,</span> <span class="n">label</span> <span class="p">)</span>
-</div>
 <div class="viewcode-block" id="ObjectStyle"><a class="viewcode-back" href="../../pile_viewer.html#pyrocko.pile_viewer.ObjectStyle">[docs]</a><span class="k">class</span> <span class="nc">ObjectStyle</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frame_pen</span><span class="p">,</span> <span class="n">fill_brush</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">frame_pen</span> <span class="o">=</span> <span class="n">frame_pen</span>
@@ -324,15 +266,6 @@
     <span class="n">tts</span> <span class="o">=</span> <span class="n">tt</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">tt</span><span class="p">[</span><span class="mi">6</span><span class="p">:</span><span class="mi">9</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">calendar</span><span class="o">.</span><span class="n">timegm</span><span class="p">(</span><span class="n">tts</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="gmtime_x"><a class="viewcode-back" href="../../pile_viewer.html#pyrocko.pile_viewer.gmtime_x">[docs]</a><span class="k">def</span> <span class="nf">gmtime_x</span><span class="p">(</span><span class="n">timestamp</span><span class="p">):</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">timestamp</span><span class="p">,</span> <span class="n">Nano</span><span class="p">):</span>
-        <span class="n">etimestamp</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">timestamp</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">etimestamp</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">timestamp</span><span class="p">)</span>
-    <span class="n">tt</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">gmtime</span><span class="p">(</span><span class="n">etimestamp</span><span class="p">)</span>
-    <span class="n">ms</span> <span class="o">=</span> <span class="p">(</span><span class="n">timestamp</span><span class="o">-</span><span class="n">etimestamp</span><span class="p">)</span><span class="o">*</span><span class="mi">1000</span>
-    <span class="k">return</span> <span class="n">tt</span><span class="p">,</span><span class="n">ms</span>
-        </div>
 <div class="viewcode-block" id="time_nice_value"><a class="viewcode-back" href="../../pile_viewer.html#pyrocko.pile_viewer.time_nice_value">[docs]</a><span class="k">def</span> <span class="nf">time_nice_value</span><span class="p">(</span><span class="n">inc0</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">inc0</span> <span class="o">&lt;</span> <span class="n">acceptable_tincs</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
         <span class="k">return</span> <span class="n">pyrocko</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">nice_value</span><span class="p">(</span><span class="n">inc0</span><span class="p">)</span>
@@ -458,21 +391,6 @@
     <span class="k">return</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)[</span><span class="n">l1_trig</span><span class="p">:]</span> <span class="o">==</span> <span class="n">tt</span><span class="p">[</span><span class="n">l1_trig</span><span class="p">:</span><span class="mi">6</span><span class="p">]</span> <span class="ow">and</span> <span class="n">ms</span> <span class="o">==</span> <span class="mf">0.0</span>
     
  </div>
-<div class="viewcode-block" id="mystrftime"><a class="viewcode-back" href="../../pile_viewer.html#pyrocko.pile_viewer.mystrftime">[docs]</a><span class="k">def</span> <span class="nf">mystrftime</span><span class="p">(</span><span class="n">fmt</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">tt</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">milliseconds</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
-   
-    <span class="k">if</span> <span class="n">fmt</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span> <span class="n">fmt</span> <span class="o">=</span> <span class="s">&#39;%Y-%m-</span><span class="si">%d</span><span class="s"> %H:%M:%S .</span><span class="si">%r</span><span class="s">&#39;</span>
-    <span class="k">if</span> <span class="n">tt</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span> <span class="n">tt</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
-    
-    <span class="n">fmt2</span> <span class="o">=</span> <span class="n">fmt</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%r</span><span class="s">&#39;</span><span class="p">,</span> <span class="s">&#39;</span><span class="si">%03i</span><span class="s">&#39;</span> <span class="o">%</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">milliseconds</span><span class="p">)))</span>
-    <span class="n">fmt3</span> <span class="o">=</span> <span class="n">fmt2</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%u</span><span class="s">&#39;</span><span class="p">,</span> <span class="s">&#39;</span><span class="si">%06i</span><span class="s">&#39;</span> <span class="o">%</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">milliseconds</span><span class="o">*</span><span class="mi">1000</span><span class="p">)))</span>
-    <span class="k">return</span> <span class="n">time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="n">fmt3</span><span class="p">,</span> <span class="n">tt</span><span class="p">)</span>
-        
-        </div>
-<div class="viewcode-block" id="myctime"><a class="viewcode-back" href="../../pile_viewer.html#pyrocko.pile_viewer.myctime">[docs]</a><span class="k">def</span> <span class="nf">myctime</span><span class="p">(</span><span class="n">timestamp</span><span class="p">):</span>
-    <span class="n">tt</span><span class="p">,</span> <span class="n">ms</span> <span class="o">=</span> <span class="n">gmtime_x</span><span class="p">(</span><span class="n">timestamp</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">mystrftime</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="n">tt</span><span class="p">,</span> <span class="n">ms</span><span class="p">)</span>
-    
-</div>
 <div class="viewcode-block" id="tick_to_labels"><a class="viewcode-back" href="../../pile_viewer.html#pyrocko.pile_viewer.tick_to_labels">[docs]</a><span class="k">def</span> <span class="nf">tick_to_labels</span><span class="p">(</span><span class="n">tick</span><span class="p">,</span> <span class="n">inc</span><span class="p">):</span>
     <span class="n">tt</span><span class="p">,</span> <span class="n">ms</span> <span class="o">=</span> <span class="n">gmtime_x</span><span class="p">(</span><span class="n">tick</span><span class="p">)</span>
     <span class="n">l0_fmt</span><span class="p">,</span> <span class="n">l0_fmt_brief</span><span class="p">,</span> <span class="n">l0_center</span><span class="p">,</span> <span class="n">l1_fmt</span><span class="p">,</span> <span class="n">l1_trig</span><span class="p">,</span> <span class="n">l2_fmt</span><span class="p">,</span> <span class="n">l2_trig</span> <span class="o">=</span> <span class="n">fancy_time_ax_format</span><span class="p">(</span><span class="n">inc</span><span class="p">)</span>
@@ -625,518 +543,6 @@
     <span class="n">menuitems</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">setChecked</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">menuitems</span>
 </div>
-<div class="viewcode-block" id="MarkerParseError"><a class="viewcode-back" href="../../pile_viewer.html#pyrocko.pile_viewer.MarkerParseError">[docs]</a><span class="k">class</span> <span class="nc">MarkerParseError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
-    <span class="k">pass</span>
-</div>
-<div class="viewcode-block" id="Marker"><a class="viewcode-back" href="../../pile_viewer.html#pyrocko.pile_viewer.Marker">[docs]</a><span class="k">class</span> <span class="nc">Marker</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    
-    <span class="nd">@staticmethod</span>
-<div class="viewcode-block" id="Marker.from_string"><a class="viewcode-back" href="../../pile_viewer.html#pyrocko.pile_viewer.Marker.from_string">[docs]</a>    <span class="k">def</span> <span class="nf">from_string</span><span class="p">(</span><span class="n">line</span><span class="p">):</span>
-        
-        <span class="k">def</span> <span class="nf">fail</span><span class="p">():</span>
-            <span class="k">raise</span> <span class="n">MarkerParseError</span><span class="p">(</span>
-                <span class="s">&#39;Unable to create marker from string: &quot;</span><span class="si">%s</span><span class="s">&quot;&#39;</span> <span class="o">%</span> <span class="n">line</span><span class="p">)</span>
-                
-        <span class="k">def</span> <span class="nf">parsedate</span><span class="p">(</span><span class="n">ymd</span><span class="p">,</span><span class="n">hms</span><span class="p">,</span><span class="n">sfs</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">calendar</span><span class="o">.</span><span class="n">timegm</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">ymd</span><span class="o">+</span><span class="s">&#39; &#39;</span><span class="o">+</span><span class="n">hms</span><span class="p">,</span> <span class="s">&#39;%Y-%m-</span><span class="si">%d</span><span class="s"> %H:%M:%S&#39;</span><span class="p">))</span> <span class="o">+</span> <span class="nb">float</span><span class="p">(</span><span class="n">sfs</span><span class="p">)</span>
-        
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">toks</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">toks</span><span class="p">)</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">):</span>
-                <span class="n">tmin</span> <span class="o">=</span> <span class="n">parsedate</span><span class="p">(</span><span class="o">*</span><span class="n">toks</span><span class="p">[:</span><span class="mi">3</span><span class="p">])</span>
-                <span class="n">tmax</span> <span class="o">=</span> <span class="n">tmin</span>
-                
-            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">toks</span><span class="p">)</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">):</span>
-                <span class="n">tmin</span> <span class="o">=</span> <span class="n">parsedate</span><span class="p">(</span><span class="o">*</span><span class="n">toks</span><span class="p">[:</span><span class="mi">3</span><span class="p">])</span>
-                <span class="n">tmax</span> <span class="o">=</span> <span class="n">parsedate</span><span class="p">(</span><span class="o">*</span><span class="n">toks</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="mi">6</span><span class="p">])</span>
-            
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">fail</span><span class="p">()</span>
-            
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">toks</span><span class="p">)</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">9</span><span class="p">):</span>
-                <span class="n">kind</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">toks</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">kind</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">toks</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
-                
-            <span class="n">nslc_ids</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">toks</span><span class="p">)</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">9</span><span class="p">):</span>
-                <span class="k">for</span> <span class="n">snslc</span> <span class="ow">in</span> <span class="n">toks</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;,&#39;</span><span class="p">):</span>
-                    <span class="n">nslc</span> <span class="o">=</span> <span class="n">snslc</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;.&#39;</span><span class="p">)</span>
-                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">nslc</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">4</span><span class="p">:</span>
-                        <span class="n">fail</span><span class="p">()</span>
-                        
-                    <span class="n">nslc_ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">nslc</span><span class="p">))</span>
-                
-        <span class="k">except</span> <span class="n">MarkerParseError</span><span class="p">:</span>
-            <span class="n">fail</span><span class="p">()</span>
-    
-        <span class="k">return</span> <span class="n">Marker</span><span class="p">(</span><span class="n">nslc_ids</span><span class="p">,</span> <span class="n">tmin</span><span class="p">,</span> <span class="n">tmax</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">kind</span><span class="p">)</span>
-</div>
-    <span class="nd">@staticmethod</span>
-<div class="viewcode-block" id="Marker.save_markers"><a class="viewcode-back" href="../../pile_viewer.html#pyrocko.pile_viewer.Marker.save_markers">[docs]</a>    <span class="k">def</span> <span class="nf">save_markers</span><span class="p">(</span><span class="n">markers</span><span class="p">,</span> <span class="n">fn</span><span class="p">):</span>
-
-        <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span><span class="s">&#39;w&#39;</span><span class="p">)</span>
-        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;# Snuffler Markers File Version 0.2</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
-        <span class="n">writer</span> <span class="o">=</span> <span class="n">TableWriter</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">marker</span> <span class="ow">in</span> <span class="n">markers</span><span class="p">:</span>
-            <span class="n">a</span> <span class="o">=</span> <span class="n">marker</span><span class="o">.</span><span class="n">get_attributes</span><span class="p">()</span>
-            <span class="n">w</span> <span class="o">=</span> <span class="n">marker</span><span class="o">.</span><span class="n">get_attribute_widths</span><span class="p">()</span>
-            <span class="n">row</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">a</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="n">x</span> <span class="o">==</span> <span class="s">&#39;&#39;</span><span class="p">:</span>
-                    <span class="n">row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&#39;None&#39;</span><span class="p">)</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-
-            <span class="n">writer</span><span class="o">.</span><span class="n">writerow</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span>
-
-        <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-</div>
-    <span class="nd">@staticmethod</span>
-<div class="viewcode-block" id="Marker.load_markers"><a class="viewcode-back" href="../../pile_viewer.html#pyrocko.pile_viewer.Marker.load_markers">[docs]</a>    <span class="k">def</span> <span class="nf">load_markers</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
-        <span class="n">markers</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">)</span>
-        <span class="n">line</span>  <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;# Snuffler Markers File Version&#39;</span><span class="p">):</span>
-            <span class="n">f</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">iline</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
-                <span class="n">sline</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="n">sline</span> <span class="ow">or</span> <span class="n">sline</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;#&#39;</span><span class="p">):</span>
-                    <span class="k">continue</span>
-                <span class="k">try</span><span class="p">:</span>
-                    <span class="n">m</span> <span class="o">=</span> <span class="n">Marker</span><span class="o">.</span><span class="n">from_string</span><span class="p">(</span><span class="n">sline</span><span class="p">)</span>
-                    <span class="n">markers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
-                    
-                <span class="k">except</span> <span class="n">MarkerParseError</span><span class="p">:</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&#39;Invalid marker definition in line </span><span class="si">%i</span><span class="s"> of file &quot;</span><span class="si">%s</span><span class="s">&quot;&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">iline</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">fn</span><span class="p">))</span>
-                    
-            <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-        
-        <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;# Snuffler Markers File Version 0.2&#39;</span><span class="p">):</span>
-            <span class="n">reader</span> <span class="o">=</span> <span class="n">TableReader</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
-            <span class="k">while</span> <span class="ow">not</span> <span class="n">reader</span><span class="o">.</span><span class="n">eof</span><span class="p">:</span>
-                <span class="n">row</span> <span class="o">=</span> <span class="n">reader</span><span class="o">.</span><span class="n">readrow</span><span class="p">()</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="n">row</span><span class="p">:</span>
-                    <span class="k">continue</span>
-                <span class="k">if</span> <span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;event:&#39;</span><span class="p">:</span>
-                    <span class="n">marker</span> <span class="o">=</span> <span class="n">EventMarker</span><span class="o">.</span><span class="n">from_attributes</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
-                <span class="k">elif</span> <span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;phase:&#39;</span><span class="p">:</span>
-                    <span class="n">marker</span> <span class="o">=</span> <span class="n">PhaseMarker</span><span class="o">.</span><span class="n">from_attributes</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">marker</span> <span class="o">=</span> <span class="n">Marker</span><span class="o">.</span><span class="n">from_attributes</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
-                 
-                <span class="n">markers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">marker</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&#39;Unsupported Markers File Version&#39;</span><span class="p">)</span>
-        
-        <span class="k">return</span> <span class="n">markers</span>
-</div>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nslc_ids</span><span class="p">,</span> <span class="n">tmin</span><span class="p">,</span> <span class="n">tmax</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">nslc_ids</span><span class="p">,</span> <span class="n">tmin</span><span class="p">,</span> <span class="n">tmax</span><span class="p">)</span>
-        <span class="n">c</span> <span class="o">=</span> <span class="n">pyrocko</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">color</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">color_a</span> <span class="o">=</span> <span class="p">[</span> <span class="n">c</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;aluminium4&#39;</span><span class="p">,</span> <span class="s">&#39;aluminium5&#39;</span><span class="p">,</span> <span class="s">&#39;aluminium6&#39;</span><span class="p">)</span> <span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">color_b</span> <span class="o">=</span> <span class="p">[</span> <span class="n">c</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;scarletred1&#39;</span><span class="p">,</span> <span class="s">&#39;scarletred2&#39;</span><span class="p">,</span> <span class="s">&#39;scarletred3&#39;</span><span class="p">,</span>
-                                        <span class="s">&#39;chameleon1&#39;</span><span class="p">,</span> <span class="s">&#39;chameleon2&#39;</span><span class="p">,</span> <span class="s">&#39;chameleon3&#39;</span><span class="p">,</span>
-                                        <span class="s">&#39;skyblue1&#39;</span><span class="p">,</span> <span class="s">&#39;skyblue2&#39;</span><span class="p">,</span> <span class="s">&#39;skyblue3&#39;</span><span class="p">,</span>
-                                        <span class="s">&#39;orange1&#39;</span><span class="p">,</span> <span class="s">&#39;orange2&#39;</span><span class="p">,</span> <span class="s">&#39;orange3&#39;</span><span class="p">,</span>
-                                        <span class="s">&#39;plum1&#39;</span><span class="p">,</span> <span class="s">&#39;plum2&#39;</span><span class="p">,</span> <span class="s">&#39;plum3&#39;</span><span class="p">,</span>
-                                        <span class="s">&#39;chocolate1&#39;</span><span class="p">,</span> <span class="s">&#39;chocolate2&#39;</span><span class="p">,</span> <span class="s">&#39;chocolate3&#39;</span><span class="p">)</span> <span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">alerted</span> <span class="o">=</span> <span class="bp">False</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">selected</span> <span class="o">=</span> <span class="bp">False</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">kind</span> <span class="o">=</span> <span class="n">kind</span>
-        
-<div class="viewcode-block" id="Marker.set"><a class="viewcode-back" href="../../pile_viewer.html#pyrocko.pile_viewer.Marker.set">[docs]</a>    <span class="k">def</span> <span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nslc_ids</span><span class="p">,</span> <span class="n">tmin</span><span class="p">,</span><span class="n">tmax</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">nslc_ids</span> <span class="o">=</span> <span class="n">nslc_ids</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tmin</span> <span class="o">=</span> <span class="n">tmin</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tmax</span> <span class="o">=</span> <span class="n">tmax</span>
-     </div>
-<div class="viewcode-block" id="Marker.set_kind"><a class="viewcode-back" href="../../pile_viewer.html#pyrocko.pile_viewer.Marker.set_kind">[docs]</a>    <span class="k">def</span> <span class="nf">set_kind</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kind</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">kind</span> <span class="o">=</span> <span class="n">kind</span>
-     </div>
-<div class="viewcode-block" id="Marker.get_tmin"><a class="viewcode-back" href="../../pile_viewer.html#pyrocko.pile_viewer.Marker.get_tmin">[docs]</a>    <span class="k">def</span> <span class="nf">get_tmin</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tmin</span>
-        </div>
-<div class="viewcode-block" id="Marker.get_tmax"><a class="viewcode-back" href="../../pile_viewer.html#pyrocko.pile_viewer.Marker.get_tmax">[docs]</a>    <span class="k">def</span> <span class="nf">get_tmax</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tmax</span>
-</div>
-<div class="viewcode-block" id="Marker.get_nslc_ids"><a class="viewcode-back" href="../../pile_viewer.html#pyrocko.pile_viewer.Marker.get_nslc_ids">[docs]</a>    <span class="k">def</span> <span class="nf">get_nslc_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">nslc_ids</span>
-</div>
-<div class="viewcode-block" id="Marker.is_alerted"><a class="viewcode-back" href="../../pile_viewer.html#pyrocko.pile_viewer.Marker.is_alerted">[docs]</a>    <span class="k">def</span> <span class="nf">is_alerted</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">alerted</span>
-        </div>
-<div class="viewcode-block" id="Marker.is_selected"><a class="viewcode-back" href="../../pile_viewer.html#pyrocko.pile_viewer.Marker.is_selected">[docs]</a>    <span class="k">def</span> <span class="nf">is_selected</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">selected</span>
-</div>
-<div class="viewcode-block" id="Marker.set_alerted"><a class="viewcode-back" href="../../pile_viewer.html#pyrocko.pile_viewer.Marker.set_alerted">[docs]</a>    <span class="k">def</span> <span class="nf">set_alerted</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">alerted</span> <span class="o">=</span> <span class="n">state</span>
-        </div>
-<div class="viewcode-block" id="Marker.set_selected"><a class="viewcode-back" href="../../pile_viewer.html#pyrocko.pile_viewer.Marker.set_selected">[docs]</a>    <span class="k">def</span> <span class="nf">set_selected</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">selected</span> <span class="o">=</span> <span class="n">state</span>
-</div>
-<div class="viewcode-block" id="Marker.match_nsl"><a class="viewcode-back" href="../../pile_viewer.html#pyrocko.pile_viewer.Marker.match_nsl">[docs]</a>    <span class="k">def</span> <span class="nf">match_nsl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nsl</span><span class="p">):</span>
-        <span class="n">patterns</span> <span class="o">=</span> <span class="p">[</span> <span class="s">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">x</span><span class="p">[:</span><span class="mi">3</span><span class="p">])</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nslc_ids</span> <span class="p">]</span>
-        <span class="k">return</span> <span class="n">pyrocko</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">match_nslc</span><span class="p">(</span><span class="n">patterns</span><span class="p">,</span> <span class="n">nsl</span><span class="p">)</span>
-    </div>
-<div class="viewcode-block" id="Marker.match_nslc"><a class="viewcode-back" href="../../pile_viewer.html#pyrocko.pile_viewer.Marker.match_nslc">[docs]</a>    <span class="k">def</span> <span class="nf">match_nslc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nslc</span><span class="p">):</span>
-        <span class="n">patterns</span> <span class="o">=</span> <span class="p">[</span> <span class="s">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nslc_ids</span> <span class="p">]</span>
-        <span class="k">return</span> <span class="n">pyrocko</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">match_nslc</span><span class="p">(</span><span class="n">patterns</span><span class="p">,</span> <span class="n">nslc</span><span class="p">)</span>
-</div>
-    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">traces</span> <span class="o">=</span> <span class="s">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span> <span class="p">[</span> <span class="s">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">nslc_id</span><span class="p">)</span> <span class="k">for</span> <span class="n">nslc_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nslc_ids</span> <span class="p">]</span> <span class="p">)</span>
-        <span class="n">st</span> <span class="o">=</span> <span class="n">myctime</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tmin</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">tmax</span><span class="p">:</span>
-            <span class="k">return</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s"> </span><span class="si">%i</span><span class="s"> </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">st</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tmin</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">kind</span><span class="p">,</span> <span class="n">traces</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s"> </span><span class="si">%s</span><span class="s"> </span><span class="si">%g</span><span class="s"> </span><span class="si">%i</span><span class="s"> </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">st</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tmin</span><span class="p">),</span> <span class="n">st</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tmax</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">tmax</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">tmin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">kind</span><span class="p">,</span> <span class="n">traces</span><span class="p">)</span>
-
-<div class="viewcode-block" id="Marker.get_attributes"><a class="viewcode-back" href="../../pile_viewer.html#pyrocko.pile_viewer.Marker.get_attributes">[docs]</a>    <span class="k">def</span> <span class="nf">get_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">traces</span> <span class="o">=</span> <span class="s">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span> <span class="p">[</span> <span class="s">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">nslc_id</span><span class="p">)</span> <span class="k">for</span> <span class="n">nslc_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nslc_ids</span> <span class="p">]</span> <span class="p">)</span>
-        <span class="n">st</span> <span class="o">=</span> <span class="n">pyrocko</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">time_to_str</span>
-        <span class="n">vals</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">vals</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">st</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tmin</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tmin</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tmax</span><span class="p">:</span>    
-            <span class="n">vals</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">st</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tmax</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
-            <span class="n">vals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tmax</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">tmin</span><span class="p">)</span>
-
-        <span class="n">vals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">kind</span><span class="p">)</span>
-        <span class="n">vals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">traces</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">vals</span>
-</div>
-<div class="viewcode-block" id="Marker.get_attribute_widths"><a class="viewcode-back" href="../../pile_viewer.html#pyrocko.pile_viewer.Marker.get_attribute_widths">[docs]</a>    <span class="k">def</span> <span class="nf">get_attribute_widths</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">ws</span> <span class="o">=</span> <span class="p">[</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">12</span> <span class="p">]</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tmin</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tmax</span><span class="p">:</span>
-            <span class="n">ws</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span> <span class="p">[</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">12</span> <span class="p">]</span> <span class="p">)</span>
-        <span class="n">ws</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span> <span class="p">[</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">15</span> <span class="p">]</span> <span class="p">)</span>
-        <span class="k">return</span> <span class="n">ws</span>
-</div>
-    <span class="nd">@staticmethod</span>
-<div class="viewcode-block" id="Marker.parse_attributes"><a class="viewcode-back" href="../../pile_viewer.html#pyrocko.pile_viewer.Marker.parse_attributes">[docs]</a>    <span class="k">def</span> <span class="nf">parse_attributes</span><span class="p">(</span><span class="n">vals</span><span class="p">):</span>
-        <span class="n">tmin</span> <span class="o">=</span> <span class="n">pyrocko</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">str_to_time</span><span class="p">(</span> <span class="n">vals</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s">&#39; &#39;</span> <span class="o">+</span> <span class="n">vals</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="p">)</span>
-        <span class="n">i</span> <span class="o">=</span> <span class="mi">2</span>
-        <span class="n">tmax</span> <span class="o">=</span> <span class="n">tmin</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">vals</span><span class="p">)</span> <span class="o">==</span> <span class="mi">7</span><span class="p">:</span>
-            <span class="n">tmax</span> <span class="o">=</span> <span class="n">pyrocko</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">str_to_time</span><span class="p">(</span> <span class="n">vals</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="s">&#39; &#39;</span> <span class="o">+</span> <span class="n">vals</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="p">)</span>
-            <span class="n">i</span> <span class="o">=</span> <span class="mi">5</span>
-
-        <span class="n">kind</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">vals</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-        <span class="n">traces</span> <span class="o">=</span> <span class="n">vals</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
-        <span class="k">if</span> <span class="n">traces</span> <span class="o">==</span> <span class="s">&#39;None&#39;</span><span class="p">:</span>
-            <span class="n">nslc_ids</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">nslc_ids</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">([</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">nslc_id</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;.&#39;</span><span class="p">))</span> <span class="k">for</span> <span class="n">nslc_id</span> <span class="ow">in</span> <span class="n">traces</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;,&#39;</span><span class="p">)</span> <span class="p">])</span>
-
-        <span class="k">return</span> <span class="n">nslc_ids</span><span class="p">,</span> <span class="n">tmin</span><span class="p">,</span> <span class="n">tmax</span><span class="p">,</span> <span class="n">kind</span>
-</div>
-    <span class="nd">@staticmethod</span>
-<div class="viewcode-block" id="Marker.from_attributes"><a class="viewcode-back" href="../../pile_viewer.html#pyrocko.pile_viewer.Marker.from_attributes">[docs]</a>    <span class="k">def</span> <span class="nf">from_attributes</span><span class="p">(</span><span class="n">vals</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">Marker</span><span class="p">(</span><span class="o">*</span><span class="n">Marker</span><span class="o">.</span><span class="n">parse_attributes</span><span class="p">(</span><span class="n">vals</span><span class="p">))</span>
-</div>
-<div class="viewcode-block" id="Marker.select_color"><a class="viewcode-back" href="../../pile_viewer.html#pyrocko.pile_viewer.Marker.select_color">[docs]</a>    <span class="k">def</span> <span class="nf">select_color</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">colorlist</span><span class="p">):</span>
-        <span class="n">cl</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">colorlist</span><span class="p">[(</span><span class="bp">self</span><span class="o">.</span><span class="n">kind</span><span class="o">*</span><span class="mi">3</span><span class="o">+</span><span class="n">x</span><span class="p">)</span><span class="o">%</span><span class="nb">len</span><span class="p">(</span><span class="n">colorlist</span><span class="p">)]</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">selected</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">cl</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">alerted</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">cl</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">cl</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-            </div>
-<div class="viewcode-block" id="Marker.draw"><a class="viewcode-back" href="../../pile_viewer.html#pyrocko.pile_viewer.Marker.draw">[docs]</a>    <span class="k">def</span> <span class="nf">draw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">time_projection</span><span class="p">,</span> <span class="n">y_projection</span><span class="p">,</span> <span class="n">draw_line</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">draw_triangle</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
-        
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">selected</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">alerted</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">nslc_ids</span><span class="p">:</span>
-            
-            <span class="n">color</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">select_color</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">color_b</span><span class="p">)</span>            
-            <span class="n">pen</span> <span class="o">=</span> <span class="n">QPen</span><span class="p">(</span><span class="n">QColor</span><span class="p">(</span><span class="o">*</span><span class="n">color</span><span class="p">))</span>
-            <span class="n">pen</span><span class="o">.</span><span class="n">setWidth</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-            <span class="n">linepen</span> <span class="o">=</span> <span class="n">QPen</span><span class="p">(</span><span class="n">pen</span><span class="p">)</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">selected</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">alerted</span><span class="p">:</span>
-                <span class="n">linepen</span><span class="o">.</span><span class="n">setStyle</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">CustomDashLine</span><span class="p">)</span>
-                <span class="n">pat</span> <span class="o">=</span> <span class="p">[</span><span class="mf">5.</span><span class="p">,</span><span class="mf">3.</span><span class="p">]</span>
-                <span class="n">linepen</span><span class="o">.</span><span class="n">setDashPattern</span><span class="p">(</span><span class="n">pat</span><span class="p">)</span>
-                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">alerted</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">selected</span><span class="p">:</span>
-                    <span class="n">linepen</span><span class="o">.</span><span class="n">setColor</span><span class="p">(</span><span class="n">QColor</span><span class="p">(</span><span class="mi">150</span><span class="p">,</span><span class="mi">150</span><span class="p">,</span><span class="mi">150</span><span class="p">))</span>
-            
-            <span class="n">s</span> <span class="o">=</span> <span class="mf">9.</span>
-            <span class="n">utriangle</span> <span class="o">=</span> <span class="n">make_QPolygonF</span><span class="p">(</span> <span class="p">[</span> <span class="o">-</span><span class="mf">0.577</span><span class="o">*</span><span class="n">s</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.577</span><span class="o">*</span><span class="n">s</span> <span class="p">],</span> <span class="p">[</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="o">*</span><span class="n">s</span><span class="p">,</span> <span class="mf">0.</span><span class="p">]</span> <span class="p">)</span> 
-            <span class="n">ltriangle</span> <span class="o">=</span> <span class="n">make_QPolygonF</span><span class="p">(</span> <span class="p">[</span> <span class="o">-</span><span class="mf">0.577</span><span class="o">*</span><span class="n">s</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.577</span><span class="o">*</span><span class="n">s</span> <span class="p">],</span> <span class="p">[</span> <span class="mf">0.</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.</span><span class="o">*</span><span class="n">s</span><span class="p">,</span> <span class="mf">0.</span><span class="p">]</span> <span class="p">)</span> 
-
-            <span class="k">def</span> <span class="nf">drawline</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
-                <span class="n">u</span> <span class="o">=</span> <span class="n">time_projection</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
-                <span class="n">v0</span><span class="p">,</span> <span class="n">v1</span> <span class="o">=</span> <span class="n">y_projection</span><span class="o">.</span><span class="n">get_out_range</span><span class="p">()</span>
-                <span class="n">line</span> <span class="o">=</span> <span class="n">QLineF</span><span class="p">(</span><span class="n">u</span><span class="p">,</span><span class="n">v0</span><span class="p">,</span><span class="n">u</span><span class="p">,</span><span class="n">v1</span><span class="p">)</span>
-                <span class="n">p</span><span class="o">.</span><span class="n">drawLine</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
-        
-            <span class="k">def</span> <span class="nf">drawtriangles</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
-                <span class="n">u</span> <span class="o">=</span> <span class="n">time_projection</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
-                <span class="n">v0</span><span class="p">,</span> <span class="n">v1</span> <span class="o">=</span> <span class="n">y_projection</span><span class="o">.</span><span class="n">get_out_range</span><span class="p">()</span>
-                <span class="n">t</span> <span class="o">=</span> <span class="n">QPolygonF</span><span class="p">(</span><span class="n">utriangle</span><span class="p">)</span>
-                <span class="n">t</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="n">u</span><span class="p">,</span><span class="n">v0</span><span class="p">)</span>
-                <span class="n">p</span><span class="o">.</span><span class="n">drawConvexPolygon</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> 
-                <span class="n">t</span> <span class="o">=</span> <span class="n">QPolygonF</span><span class="p">(</span><span class="n">ltriangle</span><span class="p">)</span>
-                <span class="n">t</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="n">u</span><span class="p">,</span><span class="n">v1</span><span class="p">)</span>
-                <span class="n">p</span><span class="o">.</span><span class="n">drawConvexPolygon</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> 
-           
-            <span class="k">if</span> <span class="n">draw_line</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">selected</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">alerted</span><span class="p">:</span>
-                <span class="n">p</span><span class="o">.</span><span class="n">setPen</span><span class="p">(</span><span class="n">linepen</span><span class="p">)</span>
-                <span class="n">drawline</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tmin</span><span class="p">)</span>
-                <span class="n">drawline</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tmax</span><span class="p">)</span>
-
-            <span class="k">if</span> <span class="n">draw_triangle</span><span class="p">:</span>
-                <span class="n">pen</span><span class="o">.</span><span class="n">setStyle</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">SolidLine</span><span class="p">)</span>
-                <span class="n">pen</span><span class="o">.</span><span class="n">setJoinStyle</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">MiterJoin</span><span class="p">)</span>
-                <span class="n">pen</span><span class="o">.</span><span class="n">setWidth</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-                <span class="n">p</span><span class="o">.</span><span class="n">setPen</span><span class="p">(</span><span class="n">pen</span><span class="p">)</span>
-                <span class="n">p</span><span class="o">.</span><span class="n">setBrush</span><span class="p">(</span><span class="n">QColor</span><span class="p">(</span><span class="o">*</span><span class="n">color</span><span class="p">))</span>
-                <span class="n">drawtriangles</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tmin</span><span class="p">)</span>
-
-</div>
-<div class="viewcode-block" id="Marker.draw_trace"><a class="viewcode-back" href="../../pile_viewer.html#pyrocko.pile_viewer.Marker.draw_trace">[docs]</a>    <span class="k">def</span> <span class="nf">draw_trace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">trace</span><span class="p">,</span> <span class="n">time_projection</span><span class="p">,</span> <span class="n">track_projection</span><span class="p">,</span> <span class="n">gain</span><span class="p">,</span> <span class="n">outline_label</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">nslc_ids</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">match_nslc</span><span class="p">(</span><span class="n">trace</span><span class="o">.</span><span class="n">nslc_id</span><span class="p">):</span> <span class="k">return</span>
-        
-        <span class="n">color</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">select_color</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">color_b</span><span class="p">)</span>
-        <span class="n">pen</span> <span class="o">=</span> <span class="n">QPen</span><span class="p">(</span><span class="n">QColor</span><span class="p">(</span><span class="o">*</span><span class="n">color</span><span class="p">))</span>
-        <span class="n">pen</span><span class="o">.</span><span class="n">setWidth</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-        <span class="n">p</span><span class="o">.</span><span class="n">setPen</span><span class="p">(</span><span class="n">pen</span><span class="p">)</span>
-        <span class="n">p</span><span class="o">.</span><span class="n">setBrush</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">NoBrush</span><span class="p">)</span>
-        <span class="k">def</span> <span class="nf">drawpoint</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">y</span><span class="p">):</span>
-            <span class="n">u</span> <span class="o">=</span> <span class="n">time_projection</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
-            <span class="n">v</span> <span class="o">=</span> <span class="n">track_projection</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
-            <span class="n">rect</span> <span class="o">=</span> <span class="n">QRectF</span><span class="p">(</span><span class="n">u</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="n">v</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span>
-            <span class="n">p</span><span class="o">.</span><span class="n">drawRect</span><span class="p">(</span><span class="n">rect</span><span class="p">)</span>
-            
-        <span class="k">def</span> <span class="nf">drawline</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
-            <span class="n">u</span> <span class="o">=</span> <span class="n">time_projection</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
-            <span class="n">v0</span><span class="p">,</span> <span class="n">v1</span> <span class="o">=</span> <span class="n">track_projection</span><span class="o">.</span><span class="n">get_out_range</span><span class="p">()</span>
-            <span class="n">line</span> <span class="o">=</span> <span class="n">QLineF</span><span class="p">(</span><span class="n">u</span><span class="p">,</span><span class="n">v0</span><span class="p">,</span><span class="n">u</span><span class="p">,</span><span class="n">v1</span><span class="p">)</span>
-            <span class="n">p</span><span class="o">.</span><span class="n">drawLine</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
-
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">snippet</span> <span class="o">=</span> <span class="n">trace</span><span class="o">.</span><span class="n">chop</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tmin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tmax</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">include_last</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">snap</span><span class="o">=</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">,</span><span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">))</span>
-            
-            <span class="n">vdata</span> <span class="o">=</span> <span class="n">track_projection</span><span class="p">(</span> <span class="n">gain</span><span class="o">*</span><span class="n">snippet</span><span class="o">.</span><span class="n">get_ydata</span><span class="p">()</span> <span class="p">)</span>
-            <span class="n">udata_min</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">time_projection</span><span class="p">(</span><span class="n">snippet</span><span class="o">.</span><span class="n">tmin</span><span class="p">))</span>
-            <span class="n">udata_max</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">time_projection</span><span class="p">(</span><span class="n">snippet</span><span class="o">.</span><span class="n">tmin</span><span class="o">+</span><span class="n">snippet</span><span class="o">.</span><span class="n">deltat</span><span class="o">*</span><span class="p">(</span><span class="n">vdata</span><span class="o">.</span><span class="n">size</span><span class="o">-</span><span class="mi">1</span><span class="p">)))</span>
-            <span class="n">udata</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">udata_min</span><span class="p">,</span> <span class="n">udata_max</span><span class="p">,</span> <span class="n">vdata</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
-            <span class="n">qpoints</span> <span class="o">=</span> <span class="n">make_QPolygonF</span><span class="p">(</span> <span class="n">udata</span><span class="p">,</span> <span class="n">vdata</span> <span class="p">)</span>
-            <span class="n">pen</span><span class="o">.</span><span class="n">setWidth</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-            <span class="n">p</span><span class="o">.</span><span class="n">setPen</span><span class="p">(</span><span class="n">pen</span><span class="p">)</span>
-            <span class="n">p</span><span class="o">.</span><span class="n">drawPolyline</span><span class="p">(</span> <span class="n">qpoints</span> <span class="p">)</span>
-            <span class="n">pen</span><span class="o">.</span><span class="n">setWidth</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-            <span class="n">p</span><span class="o">.</span><span class="n">setPen</span><span class="p">(</span><span class="n">pen</span><span class="p">)</span>
-            <span class="n">drawpoint</span><span class="p">(</span><span class="o">*</span><span class="n">trace</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tmin</span><span class="p">,</span> <span class="n">clip</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">snap</span><span class="o">=</span><span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">))</span>
-            <span class="n">drawpoint</span><span class="p">(</span><span class="o">*</span><span class="n">trace</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tmax</span><span class="p">,</span> <span class="n">clip</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">snap</span><span class="o">=</span><span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">))</span>
-            
-        <span class="k">except</span> <span class="n">pyrocko</span><span class="o">.</span><span class="n">trace</span><span class="o">.</span><span class="n">NoData</span><span class="p">:</span>
-            <span class="k">pass</span>
-            
-        <span class="n">color</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">select_color</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">color_b</span><span class="p">)</span>
-        <span class="n">pen</span> <span class="o">=</span> <span class="n">QPen</span><span class="p">(</span><span class="n">QColor</span><span class="p">(</span><span class="o">*</span><span class="n">color</span><span class="p">))</span>
-        <span class="n">pen</span><span class="o">.</span><span class="n">setWidth</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-        <span class="n">p</span><span class="o">.</span><span class="n">setPen</span><span class="p">(</span><span class="n">pen</span><span class="p">)</span>
-
-        <span class="n">drawline</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tmin</span><span class="p">)</span>
-        <span class="n">drawline</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tmax</span><span class="p">)</span>
-
-        <span class="n">label</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_label</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">label</span><span class="p">:</span>
-            <span class="n">label_bg</span> <span class="o">=</span> <span class="n">QBrush</span><span class="p">(</span> <span class="n">QColor</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span><span class="mi">255</span><span class="p">,</span><span class="mi">255</span><span class="p">)</span> <span class="p">)</span>
-            
-            <span class="n">u</span> <span class="o">=</span> <span class="n">time_projection</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tmin</span><span class="p">)</span>
-            <span class="n">v0</span><span class="p">,</span> <span class="n">v1</span> <span class="o">=</span> <span class="n">track_projection</span><span class="o">.</span><span class="n">get_out_range</span><span class="p">()</span>
-            <span class="k">if</span> <span class="n">outline_label</span><span class="p">:</span>
-                <span class="n">du</span> <span class="o">=</span> <span class="o">-</span><span class="mi">7</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">du</span> <span class="o">=</span> <span class="o">-</span><span class="mi">5</span>
-            <span class="n">draw_label</span><span class="p">(</span> <span class="n">p</span><span class="p">,</span> <span class="n">u</span><span class="o">+</span><span class="n">du</span><span class="p">,</span> <span class="n">v0</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">label_bg</span><span class="p">,</span> <span class="s">&#39;TR&#39;</span><span class="p">,</span> <span class="n">outline</span><span class="o">=</span><span class="n">outline_label</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tmin</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">tmax</span><span class="p">:</span>
-            <span class="k">try</span><span class="p">:</span> <span class="n">drawpoint</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tmin</span><span class="p">,</span> <span class="n">trace</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tmin</span><span class="p">))</span>
-            <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span> <span class="k">pass</span>
-        <span class="c">#try: drawpoint(self.tmax, trace.interpolate(self.tmax))</span>
-        <span class="c">#except IndexError: pass            </span>
-    </div>
-<div class="viewcode-block" id="Marker.get_label"><a class="viewcode-back" href="../../pile_viewer.html#pyrocko.pile_viewer.Marker.get_label">[docs]</a>    <span class="k">def</span> <span class="nf">get_label</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">None</span>
-</div>
-<div class="viewcode-block" id="Marker.convert_to_phase_marker"><a class="viewcode-back" href="../../pile_viewer.html#pyrocko.pile_viewer.Marker.convert_to_phase_marker">[docs]</a>    <span class="k">def</span> <span class="nf">convert_to_phase_marker</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">phasename</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">polarity</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">automatic</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">PhaseMarker</span><span class="p">):</span>
-            <span class="k">return</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span> <span class="o">=</span> <span class="n">PhaseMarker</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_event</span> <span class="o">=</span> <span class="n">event</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_phasename</span> <span class="o">=</span> <span class="n">phasename</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_polarity</span> <span class="o">=</span> <span class="n">polarity</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_automatic</span> <span class="o">=</span> <span class="n">automatic</span>
-</div>
-<div class="viewcode-block" id="Marker.convert_to_event_marker"><a class="viewcode-back" href="../../pile_viewer.html#pyrocko.pile_viewer.Marker.convert_to_event_marker">[docs]</a>    <span class="k">def</span> <span class="nf">convert_to_event_marker</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lat</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">lon</span><span class="o">=</span><span class="mf">0.</span><span class="p">):</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">EventMarker</span><span class="p">):</span>
-            <span class="k">return</span>
-
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">PhaseMarker</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">convert_to_marker</span><span class="p">()</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span> <span class="o">=</span> <span class="n">EventMarker</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_event</span> <span class="o">=</span> <span class="n">pyrocko</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">Event</span><span class="p">(</span> <span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tmin</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">&#39;Event&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_active</span> <span class="o">=</span> <span class="bp">False</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">tmax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tmin</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">nslc_ids</span> <span class="o">=</span> <span class="p">[]</span>
-</div></div>
-<div class="viewcode-block" id="EventMarker"><a class="viewcode-back" href="../../pile_viewer.html#pyrocko.pile_viewer.EventMarker">[docs]</a><span class="k">class</span> <span class="nc">EventMarker</span><span class="p">(</span><span class="n">Marker</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">event_hash</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="n">Marker</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="p">[],</span> <span class="n">event</span><span class="o">.</span><span class="n">time</span><span class="p">,</span> <span class="n">event</span><span class="o">.</span><span class="n">time</span><span class="p">,</span> <span class="n">kind</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_event</span> <span class="o">=</span> <span class="n">event</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_active</span> <span class="o">=</span> <span class="bp">False</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_event_hash</span> <span class="o">=</span> <span class="n">event_hash</span>
-
-<div class="viewcode-block" id="EventMarker.get_event_hash"><a class="viewcode-back" href="../../pile_viewer.html#pyrocko.pile_viewer.EventMarker.get_event_hash">[docs]</a>    <span class="k">def</span> <span class="nf">get_event_hash</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_event_hash</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_event_hash</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_event</span><span class="o">.</span><span class="n">get_hash</span><span class="p">()</span>
-</div>
-<div class="viewcode-block" id="EventMarker.set_active"><a class="viewcode-back" href="../../pile_viewer.html#pyrocko.pile_viewer.EventMarker.set_active">[docs]</a>    <span class="k">def</span> <span class="nf">set_active</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">active</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_active</span> <span class="o">=</span> <span class="n">active</span>
-</div>
-<div class="viewcode-block" id="EventMarker.draw"><a class="viewcode-back" href="../../pile_viewer.html#pyrocko.pile_viewer.EventMarker.draw">[docs]</a>    <span class="k">def</span> <span class="nf">draw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">time_projection</span><span class="p">,</span> <span class="n">y_projection</span><span class="p">):</span>
-      
-        <span class="n">Marker</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">time_projection</span><span class="p">,</span> <span class="n">y_projection</span><span class="p">,</span> <span class="n">draw_line</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">draw_triangle</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-        
-        <span class="n">u</span> <span class="o">=</span> <span class="n">time_projection</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tmin</span><span class="p">)</span>
-        <span class="n">v0</span><span class="p">,</span> <span class="n">v1</span> <span class="o">=</span> <span class="n">y_projection</span><span class="o">.</span><span class="n">get_out_range</span><span class="p">()</span>
-        <span class="n">t</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">mag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_event</span><span class="o">.</span><span class="n">magnitude</span>
-        <span class="k">if</span> <span class="n">mag</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="n">t</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&#39;M</span><span class="si">%3.1f</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">mag</span><span class="p">)</span>
-        
-        <span class="n">reg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_event</span><span class="o">.</span><span class="n">region</span>
-        <span class="k">if</span> <span class="n">reg</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="n">t</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">reg</span><span class="p">)</span>
-       
-        <span class="n">nam</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_event</span><span class="o">.</span><span class="n">name</span>
-        <span class="k">if</span> <span class="n">nam</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="n">t</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nam</span><span class="p">)</span>
-
-        <span class="n">label</span> <span class="o">=</span> <span class="s">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
-        <span class="n">label_bg</span> <span class="o">=</span> <span class="n">QBrush</span><span class="p">(</span> <span class="n">QColor</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span><span class="mi">255</span><span class="p">,</span><span class="mi">255</span><span class="p">)</span> <span class="p">)</span>
-        <span class="n">draw_label</span><span class="p">(</span> <span class="n">p</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v0</span><span class="o">-</span><span class="mf">10.</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">label_bg</span><span class="p">,</span> <span class="s">&#39;CB&#39;</span><span class="p">,</span> <span class="n">outline</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_active</span><span class="p">)</span>
-</div>
-<div class="viewcode-block" id="EventMarker.get_event"><a class="viewcode-back" href="../../pile_viewer.html#pyrocko.pile_viewer.EventMarker.get_event">[docs]</a>    <span class="k">def</span> <span class="nf">get_event</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_event</span>
-</div>
-<div class="viewcode-block" id="EventMarker.draw_trace"><a class="viewcode-back" href="../../pile_viewer.html#pyrocko.pile_viewer.EventMarker.draw_trace">[docs]</a>    <span class="k">def</span> <span class="nf">draw_trace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">trace</span><span class="p">,</span> <span class="n">time_projection</span><span class="p">,</span> <span class="n">track_projection</span><span class="p">,</span> <span class="n">gain</span><span class="p">):</span>
-        <span class="k">pass</span>
-    </div>
-<div class="viewcode-block" id="EventMarker.get_attributes"><a class="viewcode-back" href="../../pile_viewer.html#pyrocko.pile_viewer.EventMarker.get_attributes">[docs]</a>    <span class="k">def</span> <span class="nf">get_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">attributes</span> <span class="o">=</span> <span class="p">[</span> <span class="s">&#39;event:&#39;</span> <span class="p">]</span>
-        <span class="n">attributes</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">Marker</span><span class="o">.</span><span class="n">get_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
-        <span class="k">del</span> <span class="n">attributes</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-        <span class="n">e</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_event</span>
-        <span class="n">attributes</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">e</span><span class="o">.</span><span class="n">get_hash</span><span class="p">(),</span> <span class="n">e</span><span class="o">.</span><span class="n">lat</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">lon</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">depth</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">magnitude</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">catalog</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">region</span> <span class="p">])</span>
-        <span class="k">return</span> <span class="n">attributes</span>
-</div>
-<div class="viewcode-block" id="EventMarker.get_attribute_widths"><a class="viewcode-back" href="../../pile_viewer.html#pyrocko.pile_viewer.EventMarker.get_attribute_widths">[docs]</a>    <span class="k">def</span> <span class="nf">get_attribute_widths</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">ws</span> <span class="o">=</span> <span class="p">[</span> <span class="mi">6</span> <span class="p">]</span>
-        <span class="n">ws</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span> <span class="n">Marker</span><span class="o">.</span><span class="n">get_attribute_widths</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="p">)</span>
-        <span class="k">del</span> <span class="n">ws</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-        <span class="n">ws</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span> <span class="p">])</span>
-        <span class="k">return</span> <span class="n">ws</span>
-</div>
-    <span class="nd">@staticmethod</span>
-<div class="viewcode-block" id="EventMarker.from_attributes"><a class="viewcode-back" href="../../pile_viewer.html#pyrocko.pile_viewer.EventMarker.from_attributes">[docs]</a>    <span class="k">def</span> <span class="nf">from_attributes</span><span class="p">(</span><span class="n">vals</span><span class="p">):</span>
-
-        <span class="n">nslc_ids</span><span class="p">,</span> <span class="n">tmin</span><span class="p">,</span> <span class="n">tmax</span><span class="p">,</span> <span class="n">kind</span> <span class="o">=</span> <span class="n">Marker</span><span class="o">.</span><span class="n">parse_attributes</span><span class="p">(</span><span class="n">vals</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">+</span> <span class="p">[</span> <span class="s">&#39;None&#39;</span> <span class="p">])</span>
-        <span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">,</span> <span class="n">depth</span><span class="p">,</span> <span class="n">magnitude</span> <span class="o">=</span> <span class="p">[</span> <span class="n">str_to_float_or_none</span><span class="p">(</span> <span class="n">x</span> <span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">vals</span><span class="p">[</span><span class="mi">5</span><span class="p">:</span><span class="mi">9</span><span class="p">]</span> <span class="p">]</span>
-        <span class="n">catalog</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">region</span> <span class="o">=</span> <span class="p">[</span> <span class="n">str_to_str_or_none</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">vals</span><span class="p">[</span><span class="mi">9</span><span class="p">:]</span> <span class="p">]</span>
-        <span class="n">e</span> <span class="o">=</span> <span class="n">pyrocko</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">Event</span><span class="p">(</span><span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">,</span> <span class="n">tmin</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">depth</span><span class="p">,</span> <span class="n">magnitude</span><span class="p">,</span> <span class="n">region</span><span class="p">,</span> <span class="n">catalog</span><span class="o">=</span><span class="n">catalog</span><span class="p">)</span>
-        <span class="n">marker</span> <span class="o">=</span> <span class="n">EventMarker</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">kind</span><span class="p">,</span> <span class="n">event_hash</span><span class="o">=</span><span class="n">str_to_str_or_none</span><span class="p">(</span><span class="n">vals</span><span class="p">[</span><span class="mi">4</span><span class="p">]))</span>
-        <span class="k">return</span> <span class="n">marker</span>
-</div></div>
-<div class="viewcode-block" id="PhaseMarker"><a class="viewcode-back" href="../../pile_viewer.html#pyrocko.pile_viewer.PhaseMarker">[docs]</a><span class="k">class</span> <span class="nc">PhaseMarker</span><span class="p">(</span><span class="n">Marker</span><span class="p">):</span>
-
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nslc_ids</span><span class="p">,</span> <span class="n">tmin</span><span class="p">,</span> <span class="n">tmax</span><span class="p">,</span> <span class="n">kind</span><span class="p">,</span> <span class="n">event</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">event_hash</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">phasename</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">polarity</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">automatic</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="n">Marker</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nslc_ids</span><span class="p">,</span> <span class="n">tmin</span><span class="p">,</span> <span class="n">tmax</span><span class="p">,</span> <span class="n">kind</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_event</span> <span class="o">=</span> <span class="n">event</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_event_hash</span> <span class="o">=</span> <span class="n">event_hash</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_phasename</span> <span class="o">=</span> <span class="n">phasename</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_polarity</span> <span class="o">=</span> <span class="n">polarity</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_automatic</span> <span class="o">=</span> <span class="n">automatic</span>
-
-<div class="viewcode-block" id="PhaseMarker.draw_trace"><a class="viewcode-back" href="../../pile_viewer.html#pyrocko.pile_viewer.PhaseMarker.draw_trace">[docs]</a>    <span class="k">def</span> <span class="nf">draw_trace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">trace</span><span class="p">,</span> <span class="n">time_projection</span><span class="p">,</span> <span class="n">track_projection</span><span class="p">,</span> <span class="n">gain</span><span class="p">):</span>
-        <span class="n">Marker</span><span class="o">.</span><span class="n">draw_trace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">trace</span><span class="p">,</span> <span class="n">time_projection</span><span class="p">,</span> <span class="n">track_projection</span><span class="p">,</span> <span class="n">gain</span><span class="p">,</span> <span class="n">outline_label</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_event</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">)</span>
-         </div>
-<div class="viewcode-block" id="PhaseMarker.get_label"><a class="viewcode-back" href="../../pile_viewer.html#pyrocko.pile_viewer.PhaseMarker.get_label">[docs]</a>    <span class="k">def</span> <span class="nf">get_label</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">t</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_phasename</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="n">t</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_phasename</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_polarity</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="n">t</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_polarity</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_automatic</span><span class="p">:</span>
-            <span class="n">t</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&#39;@&#39;</span><span class="p">)</span>
-
-        <span class="k">return</span> <span class="s">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
-</div>
-<div class="viewcode-block" id="PhaseMarker.get_event"><a class="viewcode-back" href="../../pile_viewer.html#pyrocko.pile_viewer.PhaseMarker.get_event">[docs]</a>    <span class="k">def</span> <span class="nf">get_event</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_event</span>
-</div>
-<div class="viewcode-block" id="PhaseMarker.get_event_hash"><a class="viewcode-back" href="../../pile_viewer.html#pyrocko.pile_viewer.PhaseMarker.get_event_hash">[docs]</a>    <span class="k">def</span> <span class="nf">get_event_hash</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_event_hash</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_event_hash</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_event</span><span class="o">.</span><span class="n">get_hash</span><span class="p">()</span>
-</div>
-<div class="viewcode-block" id="PhaseMarker.set_event_hash"><a class="viewcode-back" href="../../pile_viewer.html#pyrocko.pile_viewer.PhaseMarker.set_event_hash">[docs]</a>    <span class="k">def</span> <span class="nf">set_event_hash</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event_hash</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_event_hash</span> <span class="o">=</span> <span class="n">event_hash</span>
-</div>
-<div class="viewcode-block" id="PhaseMarker.set_event"><a class="viewcode-back" href="../../pile_viewer.html#pyrocko.pile_viewer.PhaseMarker.set_event">[docs]</a>    <span class="k">def</span> <span class="nf">set_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_event</span> <span class="o">=</span> <span class="n">event</span>
-</div>
-<div class="viewcode-block" id="PhaseMarker.get_phasename"><a class="viewcode-back" href="../../pile_viewer.html#pyrocko.pile_viewer.PhaseMarker.get_phasename">[docs]</a>    <span class="k">def</span> <span class="nf">get_phasename</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_phasename</span>
-</div>
-<div class="viewcode-block" id="PhaseMarker.set_phasename"><a class="viewcode-back" href="../../pile_viewer.html#pyrocko.pile_viewer.PhaseMarker.set_phasename">[docs]</a>    <span class="k">def</span> <span class="nf">set_phasename</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phasename</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_phasename</span> <span class="o">=</span> <span class="n">phasename</span>
-</div>
-<div class="viewcode-block" id="PhaseMarker.convert_to_marker"><a class="viewcode-back" href="../../pile_viewer.html#pyrocko.pile_viewer.PhaseMarker.convert_to_marker">[docs]</a>    <span class="k">def</span> <span class="nf">convert_to_marker</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_event</span>
-        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_phasename</span>
-        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_polarity</span>
-        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_automatic</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span> <span class="o">=</span> <span class="n">Marker</span>
-</div>
-<div class="viewcode-block" id="PhaseMarker.get_attributes"><a class="viewcode-back" href="../../pile_viewer.html#pyrocko.pile_viewer.PhaseMarker.get_attributes">[docs]</a>    <span class="k">def</span> <span class="nf">get_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">attributes</span> <span class="o">=</span> <span class="p">[</span> <span class="s">&#39;phase:&#39;</span> <span class="p">]</span>
-        <span class="n">attributes</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">Marker</span><span class="o">.</span><span class="n">get_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
-        <span class="n">h</span> <span class="o">=</span> <span class="bp">None</span>
-        <span class="n">et</span> <span class="o">=</span> <span class="bp">None</span><span class="p">,</span> <span class="bp">None</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_event</span><span class="p">:</span>
-            <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_event</span><span class="o">.</span><span class="n">get_hash</span><span class="p">()</span>
-            <span class="n">et</span> <span class="o">=</span> <span class="n">pyrocko</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">time_to_str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_event</span><span class="o">.</span><span class="n">time</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
-
-        <span class="n">attributes</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">h</span><span class="p">,</span> <span class="n">et</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">et</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_phasename</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_polarity</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_automatic</span><span class="p">])</span>
-        <span class="k">return</span> <span class="n">attributes</span>
-</div>
-<div class="viewcode-block" id="PhaseMarker.get_attribute_widths"><a class="viewcode-back" href="../../pile_viewer.html#pyrocko.pile_viewer.PhaseMarker.get_attribute_widths">[docs]</a>    <span class="k">def</span> <span class="nf">get_attribute_widths</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">ws</span> <span class="o">=</span> <span class="p">[</span> <span class="mi">6</span> <span class="p">]</span>
-        <span class="n">ws</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span> <span class="n">Marker</span><span class="o">.</span><span class="n">get_attribute_widths</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="p">)</span>
-        <span class="n">ws</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span> <span class="p">])</span>
-        <span class="k">return</span> <span class="n">ws</span>
-</div>
-    <span class="nd">@staticmethod</span>
-<div class="viewcode-block" id="PhaseMarker.from_attributes"><a class="viewcode-back" href="../../pile_viewer.html#pyrocko.pile_viewer.PhaseMarker.from_attributes">[docs]</a>    <span class="k">def</span> <span class="nf">from_attributes</span><span class="p">(</span><span class="n">vals</span><span class="p">):</span>
-        <span class="n">nslc_ids</span><span class="p">,</span> <span class="n">tmin</span><span class="p">,</span> <span class="n">tmax</span><span class="p">,</span> <span class="n">kind</span> <span class="o">=</span> <span class="n">Marker</span><span class="o">.</span><span class="n">parse_attributes</span><span class="p">(</span><span class="n">vals</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
-       
-        <span class="n">i</span> <span class="o">=</span> <span class="mi">8</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">vals</span><span class="p">)</span> <span class="o">==</span> <span class="mi">14</span><span class="p">:</span>
-            <span class="n">i</span> <span class="o">=</span> <span class="mi">11</span>
-       
-        <span class="n">event_hash</span> <span class="o">=</span> <span class="n">str_to_str_or_none</span><span class="p">(</span> <span class="n">vals</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span> <span class="p">)</span>
-        <span class="n">phasename</span><span class="p">,</span> <span class="n">polarity</span> <span class="o">=</span> <span class="p">[</span> <span class="n">str_to_str_or_none</span><span class="p">(</span> <span class="n">x</span> <span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">vals</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="mi">2</span><span class="p">]</span> <span class="p">]</span>
-        <span class="n">automatic</span> <span class="o">=</span> <span class="n">str_to_bool</span><span class="p">(</span> <span class="n">vals</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">2</span><span class="p">]</span> <span class="p">)</span>
-        <span class="n">marker</span> <span class="o">=</span> <span class="n">PhaseMarker</span><span class="p">(</span> <span class="n">nslc_ids</span><span class="p">,</span> <span class="n">tmin</span><span class="p">,</span> <span class="n">tmax</span><span class="p">,</span> <span class="n">kind</span><span class="p">,</span> <span class="n">event</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">event_hash</span><span class="o">=</span><span class="n">event_hash</span><span class="p">,</span>
-            <span class="n">phasename</span><span class="o">=</span><span class="n">phasename</span><span class="p">,</span> <span class="n">polarity</span><span class="o">=</span><span class="n">polarity</span><span class="p">,</span> <span class="n">automatic</span><span class="o">=</span><span class="n">automatic</span> <span class="p">)</span>
-        <span class="k">return</span> <span class="n">marker</span>
-
-</div></div>
 <span class="n">fkey_map</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">((</span><span class="n">Qt</span><span class="o">.</span><span class="n">Key_F1</span><span class="p">,</span> <span class="n">Qt</span><span class="o">.</span><span class="n">Key_F2</span><span class="p">,</span> <span class="n">Qt</span><span class="o">.</span><span class="n">Key_F3</span><span class="p">,</span> <span class="n">Qt</span><span class="o">.</span><span class="n">Key_F4</span><span class="p">,</span> <span class="n">Qt</span><span class="o">.</span><span class="n">Key_F5</span><span class="p">,</span> <span class="n">Qt</span><span class="o">.</span><span class="n">Key_F10</span><span class="p">),(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">0</span><span class="p">)))</span>
 
 <div class="viewcode-block" id="PileOverviewException"><a class="viewcode-back" href="../../pile_viewer.html#pyrocko.pile_viewer.PileOverviewException">[docs]</a><span class="k">class</span> <span class="nc">PileOverviewException</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
@@ -1378,7 +784,9 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">menuitem_close</span><span class="p">,</span> <span class="n">SIGNAL</span><span class="p">(</span><span class="s">&quot;triggered(bool)&quot;</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">myclose</span> <span class="p">)</span>
             
             <span class="bp">self</span><span class="o">.</span><span class="n">menu</span><span class="o">.</span><span class="n">addSeparator</span><span class="p">()</span>
-    
+            
+            <span class="bp">self</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">menu</span><span class="p">,</span> <span class="n">SIGNAL</span><span class="p">(</span><span class="s">&#39;triggered(QAction*)&#39;</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">update</span> <span class="p">)</span>
+
             <span class="n">deltats</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pile</span><span class="o">.</span><span class="n">get_deltats</span><span class="p">()</span>
             <span class="k">if</span> <span class="n">deltats</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">min_deltat</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">deltats</span><span class="p">)</span>
@@ -1984,7 +1392,7 @@
                     <span class="n">tgo</span> <span class="o">=</span> <span class="n">tmid</span>
 
                 <span class="k">if</span> <span class="nb">dir</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s">&#39;n&#39;</span><span class="p">:</span>
-                    <span class="k">for</span> <span class="n">marker</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">markers</span><span class="p">,</span> <span class="nb">cmp</span><span class="o">=</span><span class="k">lambda</span> <span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">:</span> <span class="nb">cmp</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">tmin</span><span class="p">,</span><span class="n">b</span><span class="o">.</span><span class="n">tmin</span><span class="p">)):</span>
+                    <span class="k">for</span> <span class="n">marker</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">markers</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">operator</span><span class="o">.</span><span class="n">attrgetter</span><span class="p">(</span><span class="s">&#39;tmin&#39;</span><span class="p">)):</span>
                         <span class="n">t</span> <span class="o">=</span> <span class="n">marker</span><span class="o">.</span><span class="n">tmin</span>
                         <span class="k">if</span> <span class="n">t</span> <span class="o">&gt;</span> <span class="n">tmid</span> <span class="ow">and</span> <span class="n">marker</span><span class="o">.</span><span class="n">kind</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">visible_marker_kinds</span> \
                                     <span class="ow">and</span> <span class="p">(</span><span class="nb">dir</span> <span class="o">==</span> <span class="s">&#39;n&#39;</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">marker</span><span class="p">,</span> <span class="n">EventMarker</span><span class="p">)):</span>
@@ -1993,7 +1401,7 @@
                             <span class="n">tgo</span> <span class="o">=</span> <span class="n">t</span>
                             <span class="k">break</span>
                 <span class="k">else</span><span class="p">:</span> 
-                    <span class="k">for</span> <span class="n">marker</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">markers</span><span class="p">,</span> <span class="nb">cmp</span><span class="o">=</span><span class="k">lambda</span> <span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">:</span> <span class="nb">cmp</span><span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">tmin</span><span class="p">,</span><span class="n">a</span><span class="o">.</span><span class="n">tmin</span><span class="p">)):</span>
+                    <span class="k">for</span> <span class="n">marker</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">markers</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">operator</span><span class="o">.</span><span class="n">attrgetter</span><span class="p">(</span><span class="s">&#39;tmin&#39;</span><span class="p">),</span> <span class="n">reverse</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
                         <span class="n">t</span> <span class="o">=</span> <span class="n">marker</span><span class="o">.</span><span class="n">tmin</span>
                         <span class="k">if</span> <span class="n">t</span> <span class="o">&lt;</span> <span class="n">tmid</span> <span class="ow">and</span> <span class="n">marker</span><span class="o">.</span><span class="n">kind</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">visible_marker_kinds</span> \
                                     <span class="ow">and</span> <span class="p">(</span><span class="nb">dir</span> <span class="o">==</span> <span class="s">&#39;p&#39;</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">marker</span><span class="p">,</span> <span class="n">EventMarker</span><span class="p">)):</span>
@@ -2191,12 +1599,22 @@
             
             <span class="bp">self</span><span class="o">.</span><span class="n">ntracks_shown_max</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">shown_tracks_range</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">shown_tracks_range</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> 
             
-            <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>       
+            <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+
+        <span class="k">def</span> <span class="nf">content_time_range</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="n">pile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_pile</span><span class="p">()</span>
+            <span class="n">tmin</span><span class="p">,</span> <span class="n">tmax</span> <span class="o">=</span> <span class="n">pile</span><span class="o">.</span><span class="n">get_tmin</span><span class="p">(),</span> <span class="n">pile</span><span class="o">.</span><span class="n">get_tmax</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">tmin</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">tmin</span> <span class="o">=</span> <span class="n">working_system_time_range</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">tmax</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">tmax</span> <span class="o">=</span> <span class="n">working_system_time_range</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+            <span class="k">return</span> <span class="n">tmin</span><span class="p">,</span> <span class="n">tmax</span>
         
         <span class="k">def</span> <span class="nf">go_to_selection</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
             <span class="n">markers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">selected_markers</span><span class="p">()</span>
             <span class="n">pile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_pile</span><span class="p">()</span>
-            <span class="n">tmax</span><span class="p">,</span> <span class="n">tmin</span> <span class="o">=</span> <span class="n">pile</span><span class="o">.</span><span class="n">get_tmin</span><span class="p">(),</span> <span class="n">pile</span><span class="o">.</span><span class="n">get_tmax</span><span class="p">()</span>
+            <span class="n">tmax</span><span class="p">,</span> <span class="n">tmin</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">content_time_range</span><span class="p">()</span>
             <span class="k">for</span> <span class="n">marker</span> <span class="ow">in</span> <span class="n">markers</span><span class="p">:</span>
                 <span class="n">tmin</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">tmin</span><span class="p">,</span> <span class="n">marker</span><span class="o">.</span><span class="n">tmin</span><span class="p">)</span>
                 <span class="n">tmax</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">tmax</span><span class="p">,</span> <span class="n">marker</span><span class="o">.</span><span class="n">tmax</span><span class="p">)</span>
@@ -2278,7 +1696,7 @@
         <span class="k">def</span> <span class="nf">determine_box_styles</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
             
             <span class="n">traces</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pile</span><span class="o">.</span><span class="n">iter_traces</span><span class="p">())</span>
-            <span class="n">traces</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span> <span class="k">lambda</span> <span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">:</span> <span class="nb">cmp</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">full_id</span><span class="p">,</span> <span class="n">b</span><span class="o">.</span><span class="n">full_id</span><span class="p">))</span>
+            <span class="n">traces</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span> <span class="n">key</span><span class="o">=</span><span class="n">operator</span><span class="o">.</span><span class="n">attrgetter</span><span class="p">(</span><span class="s">&#39;full_id&#39;</span><span class="p">)</span> <span class="p">)</span> 
             <span class="n">istyle</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="n">trace_styles</span> <span class="o">=</span> <span class="p">{}</span>
             <span class="k">for</span> <span class="n">itr</span><span class="p">,</span> <span class="n">tr</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">traces</span><span class="p">):</span>
@@ -2286,7 +1704,7 @@
                     <span class="n">other</span> <span class="o">=</span> <span class="n">traces</span><span class="p">[</span><span class="n">itr</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
                     <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">nslc_id</span> <span class="o">==</span> <span class="n">tr</span><span class="o">.</span><span class="n">nslc_id</span> <span class="ow">and</span>
                         <span class="n">other</span><span class="o">.</span><span class="n">deltat</span> <span class="o">==</span> <span class="n">tr</span><span class="o">.</span><span class="n">deltat</span> <span class="ow">and</span>
-                        <span class="nb">abs</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">tmax</span> <span class="o">-</span> <span class="n">tr</span><span class="o">.</span><span class="n">tmin</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">gap_lap_tolerance</span><span class="p">):</span> <span class="n">istyle</span><span class="o">+=</span><span class="mi">1</span>
+                        <span class="nb">abs</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">tmax</span> <span class="o">-</span> <span class="n">tr</span><span class="o">.</span><span class="n">tmin</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">gap_lap_tolerance</span><span class="o">*</span><span class="n">tr</span><span class="o">.</span><span class="n">deltat</span><span class="p">):</span> <span class="n">istyle</span><span class="o">+=</span><span class="mi">1</span>
             
                 <span class="n">trace_styles</span><span class="p">[</span><span class="n">tr</span><span class="o">.</span><span class="n">full_id</span><span class="p">,</span> <span class="n">tr</span><span class="o">.</span><span class="n">deltat</span><span class="p">]</span> <span class="o">=</span> <span class="n">istyle</span>
             
@@ -2304,7 +1722,7 @@
                 <span class="n">tselector</span> <span class="o">=</span> <span class="n">selector</span>
 
             <span class="n">traces</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pile</span><span class="o">.</span><span class="n">iter_traces</span><span class="p">(</span><span class="n">group_selector</span><span class="o">=</span><span class="n">selector</span><span class="p">,</span> <span class="n">trace_selector</span><span class="o">=</span><span class="n">tselector</span><span class="p">))</span>
-            <span class="n">traces</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span> <span class="k">lambda</span> <span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">:</span> <span class="nb">cmp</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">full_id</span><span class="p">,</span> <span class="n">b</span><span class="o">.</span><span class="n">full_id</span><span class="p">))</span>
+            <span class="n">traces</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span> <span class="n">key</span><span class="o">=</span><span class="n">operator</span><span class="o">.</span><span class="n">attrgetter</span><span class="p">(</span><span class="s">&#39;full_id&#39;</span><span class="p">)</span> <span class="p">)</span> 
 
             <span class="k">def</span> <span class="nf">drawbox</span><span class="p">(</span><span class="n">itrack</span><span class="p">,</span> <span class="n">istyle</span><span class="p">,</span> <span class="n">traces</span><span class="p">):</span>
                 <span class="n">v_projection</span> <span class="o">=</span> <span class="n">track_projections</span><span class="p">[</span><span class="n">itrack</span><span class="p">]</span>
@@ -2883,6 +2301,9 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
      
         <span class="k">def</span> <span class="nf">myclose</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">timer</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">follow_timer</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">follow_timer</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">window</span><span class="p">()</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
             
         <span class="k">def</span> <span class="nf">set_error_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
