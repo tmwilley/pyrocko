@@ -175,7 +175,7 @@
 </div>
     <span class="nd">@staticmethod</span>
 <div class="viewcode-block" id="Event.unique"><a class="viewcode-back" href="../../model.html#pyrocko.model.Event.unique">[docs]</a>    <span class="k">def</span> <span class="nf">unique</span><span class="p">(</span><span class="n">events</span><span class="p">,</span> <span class="n">deltat</span><span class="o">=</span><span class="mf">10.</span><span class="p">,</span> <span class="n">group_cmp</span><span class="o">=</span><span class="p">(</span><span class="k">lambda</span> <span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">:</span> <span class="nb">cmp</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">catalog</span><span class="p">,</span> <span class="n">b</span><span class="o">.</span><span class="n">catalog</span><span class="p">))):</span>
-        <span class="n">groups</span> <span class="o">=</span> <span class="n">grouped</span><span class="p">(</span><span class="n">events</span><span class="p">,</span> <span class="n">deltat</span><span class="p">)</span>
+        <span class="n">groups</span> <span class="o">=</span> <span class="n">Event</span><span class="o">.</span><span class="n">grouped</span><span class="p">(</span><span class="n">events</span><span class="p">,</span> <span class="n">deltat</span><span class="p">)</span>
         
         <span class="n">events</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">groups</span><span class="p">:</span>

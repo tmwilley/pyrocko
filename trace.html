@@ -319,6 +319,11 @@ possible downsampling ratios.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="pyrocko.trace.Trace.resample">
+<tt class="descname">resample</tt><big>(</big><em>deltat</em><big>)</big><a class="reference internal" href="_modules/pyrocko/trace.html#Trace.resample"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.trace.Trace.resample" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
 <dt id="pyrocko.trace.Trace.nyquist_check">
 <tt class="descname">nyquist_check</tt><big>(</big><em>frequency</em>, <em>intro='Corner frequency'</em>, <em>warn=True</em>, <em>raise_exception=False</em><big>)</big><a class="reference internal" href="_modules/pyrocko/trace.html#Trace.nyquist_check"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.trace.Trace.nyquist_check" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if a given frequency is above the Nyquist frequency of the trace.</p>
@@ -406,9 +411,14 @@ possible downsampling ratios.</p>
 <dd></dd></dl>
 
 <dl class="method">
+<dt id="pyrocko.trace.Trace.taper">
+<tt class="descname">taper</tt><big>(</big><em>taperer</em><big>)</big><a class="reference internal" href="_modules/pyrocko/trace.html#Trace.taper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.trace.Trace.taper" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
 <dt id="pyrocko.trace.Trace.whiten">
 <tt class="descname">whiten</tt><big>(</big><em>order=6</em><big>)</big><a class="reference internal" href="_modules/pyrocko/trace.html#Trace.whiten"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.trace.Trace.whiten" title="Permalink to this definition">¶</a></dt>
-<dd><p>Whiten signal using autoregression and recursive filter.</p>
+<dd><p>Whiten signal in time domain using autoregression and recursive filter.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -425,9 +435,33 @@ possible downsampling ratios.</p>
 <dd></dd></dl>
 
 <dl class="method">
-<dt id="pyrocko.trace.Trace.amp_whitening">
-<tt class="descname">amp_whitening</tt><big>(</big><em>width_hz</em>, <em>hpcorner</em>, <em>lpcorner</em><big>)</big><a class="reference internal" href="_modules/pyrocko/trace.html#Trace.amp_whitening"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.trace.Trace.amp_whitening" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dt id="pyrocko.trace.Trace.ampspec_whiten">
+<tt class="descname">ampspec_whiten</tt><big>(</big><em>width</em>, <em>td_taper='auto'</em>, <em>fd_taper='auto'</em>, <em>pad_to_pow2=True</em>, <em>demean=True</em><big>)</big><a class="reference internal" href="_modules/pyrocko/trace.html#Trace.ampspec_whiten"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.trace.Trace.ampspec_whiten" title="Permalink to this definition">¶</a></dt>
+<dd><p>Whiten signal via frequency domain using moving average on amplitude spectra.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>width</strong> &#8211; width of smoothing kernel [Hz]</li>
+<li><strong>td_taper</strong> &#8211; time domain taper, object of type <a class="reference internal" href="#pyrocko.trace.Taper" title="pyrocko.trace.Taper"><tt class="xref py py-class docutils literal"><span class="pre">Taper</span></tt></a> or <tt class="xref docutils literal"><span class="pre">None</span></tt> or <tt class="docutils literal"><span class="pre">'auto'</span></tt>.</li>
+<li><strong>fd_taper</strong> &#8211; frequency domain taper, object of type <a class="reference internal" href="#pyrocko.trace.Taper" title="pyrocko.trace.Taper"><tt class="xref py py-class docutils literal"><span class="pre">Taper</span></tt></a> or <tt class="xref docutils literal"><span class="pre">None</span></tt> or <tt class="docutils literal"><span class="pre">'auto'</span></tt>.</li>
+<li><strong>pad_to_pow2</strong> &#8211; whether to pad the signal with zeros up to a length of 2^n</li>
+<li><strong>demean</strong> &#8211; whether to demean the signal before tapering</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>The signal is first demeaned and then tapered using <em>td_taper</em>. Then,
+the spectrum is calculated and inversely weighted with a smoothed
+version of its amplitude spectrum. A moving average is used for the
+smoothing. The smoothed spectrum is then tapered using <em>fd_taper</em>.
+Finally, the smoothed and tapered spectrum is back-transformed into the
+time domain.</p>
+<p>If <em>td_taper</em> is set to <tt class="docutils literal"><span class="pre">'auto'</span></tt>, <tt class="docutils literal"><span class="pre">CosFader(1.0/width)</span></tt> is used. If
+<em>fd_taper</em> is set to <tt class="docutils literal"><span class="pre">'auto'</span></tt>, <tt class="docutils literal"><span class="pre">CosFader(width)</span></tt> is used.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="pyrocko.trace.Trace.bandpass_fft">
@@ -827,8 +861,13 @@ versions of numpy.correlate.</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="pyrocko.trace.deconvolve">
+<tt class="descname">deconvolve</tt><big>(</big><em>a</em>, <em>b</em>, <em>waterlevel</em>, <em>fd_taper=None</em>, <em>pad_to_pow2=True</em><big>)</big><a class="reference internal" href="_modules/pyrocko/trace.html#deconvolve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.trace.deconvolve" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
 <dt id="pyrocko.trace.same_sampling_rate">
-<tt class="descname">same_sampling_rate</tt><big>(</big><em>a</em>, <em>b</em>, <em>eps=1e-06</em><big>)</big><a class="reference internal" href="_modules/pyrocko/trace.html#same_sampling_rate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.trace.same_sampling_rate" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">same_sampling_rate</tt><big>(</big><em>a</em>, <em>b</em>, <em>eps=9.9999999999999995e-07</em><big>)</big><a class="reference internal" href="_modules/pyrocko/trace.html#same_sampling_rate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.trace.same_sampling_rate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if two traces have the same sampling rate.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -849,6 +888,26 @@ versions of numpy.correlate.</p>
 <tt class="descname">merge_codes</tt><big>(</big><em>a</em>, <em>b</em>, <em>sep='-'</em><big>)</big><a class="reference internal" href="_modules/pyrocko/trace.html#merge_codes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.trace.merge_codes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Merge network-station-location-channel codes of a pair of traces.</p>
 </dd></dl>
+
+<dl class="class">
+<dt id="pyrocko.trace.Taper">
+<em class="property">class </em><tt class="descname">Taper</tt><a class="reference internal" href="_modules/pyrocko/trace.html#Taper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.trace.Taper" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="pyrocko.trace.CosTaper">
+<em class="property">class </em><tt class="descname">CosTaper</tt><big>(</big><em>a</em>, <em>b</em>, <em>c</em>, <em>d</em><big>)</big><a class="reference internal" href="_modules/pyrocko/trace.html#CosTaper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.trace.CosTaper" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="pyrocko.trace.CosFader">
+<em class="property">class </em><tt class="descname">CosFader</tt><big>(</big><em>xfade=None</em>, <em>xfrac=None</em><big>)</big><a class="reference internal" href="_modules/pyrocko/trace.html#CosFader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.trace.CosFader" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="pyrocko.trace.GaussTaper">
+<em class="property">class </em><tt class="descname">GaussTaper</tt><big>(</big><em>alpha</em><big>)</big><a class="reference internal" href="_modules/pyrocko/trace.html#GaussTaper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.trace.GaussTaper" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="class">
 <dt id="pyrocko.trace.FrequencyResponse">
@@ -1054,8 +1113,18 @@ recursion which is normally used.</p>
 <dd></dd></dl>
 
 <dl class="function">
+<dt id="pyrocko.trace.snapper_w_offset">
+<tt class="descname">snapper_w_offset</tt><big>(</big><em>nmax</em>, <em>offset</em>, <em>delta</em>, <em>snapfun=&lt;built-in function ceil&gt;</em><big>)</big><a class="reference internal" href="_modules/pyrocko/trace.html#snapper_w_offset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.trace.snapper_w_offset" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
 <dt id="pyrocko.trace.snapper">
 <tt class="descname">snapper</tt><big>(</big><em>nmax</em>, <em>delta</em>, <em>snapfun=&lt;built-in function ceil&gt;</em><big>)</big><a class="reference internal" href="_modules/pyrocko/trace.html#snapper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.trace.snapper" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pyrocko.trace.apply_costaper">
+<tt class="descname">apply_costaper</tt><big>(</big><em>a</em>, <em>b</em>, <em>c</em>, <em>d</em>, <em>y</em>, <em>x0</em>, <em>dx</em><big>)</big><a class="reference internal" href="_modules/pyrocko/trace.html#apply_costaper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.trace.apply_costaper" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">

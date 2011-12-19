@@ -54,9 +54,21 @@
 <h2 id="Symbols">Symbols</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%" valign="top"><dl>
+    <dt>--crust2loc=LAT,LON</dt>
+    <dd><dl>
+      <dt><a href="cake_doc.html#cmdoption-cake--crust2loc">cake command line option</a></dt>
+  </dl></dd>
     <dt>--debug</dt>
     <dd><dl>
       <dt><a href="snuffler.html#cmdoption-snuffler--debug">snuffler command line option</a></dt>
+  </dl></dd>
+    <dt>--degrees</dt>
+    <dd><dl>
+      <dt><a href="cake_doc.html#cmdoption-cake--degrees">cake command line option</a></dt>
+  </dl></dd>
+    <dt>--distances=DISTANCES</dt>
+    <dd><dl>
+      <dt><a href="cake_doc.html#cmdoption-cake--distances">cake command line option</a></dt>
   </dl></dd>
     <dt>--event=EVENT, --events=EVENT</dt>
     <dd><dl>
@@ -72,11 +84,16 @@
   </dl></dd>
     <dt>--format=FORMAT</dt>
     <dd><dl>
+      <dt><a href="cake_doc.html#cmdoption-cake--format">cake command line option</a></dt>
       <dt><a href="snuffler.html#cmdoption-snuffler--format">snuffler command line option</a></dt>
   </dl></dd>
     <dt>--markers=MARKERS</dt>
     <dd><dl>
       <dt><a href="snuffler.html#cmdoption-snuffler--markers">snuffler command line option</a></dt>
+  </dl></dd>
+    <dt>--model=FILENAME</dt>
+    <dd><dl>
+      <dt><a href="cake_doc.html#cmdoption-cake--model">cake command line option</a></dt>
   </dl></dd>
 </dl></td>
   <td style="width: 33%" valign="top"><dl>
@@ -92,16 +109,33 @@
     <dd><dl>
       <dt><a href="snuffler.html#cmdoption-snuffler--pattern">snuffler command line option</a></dt>
   </dl></dd>
+    <dt>--phases=PHASE1,PHASE2,...</dt>
+    <dd><dl>
+      <dt><a href="cake_doc.html#cmdoption-cake--phases">cake command line option</a></dt>
+  </dl></dd>
     <dt>--progressive</dt>
     <dd><dl>
       <dt><a href="snuffler.html#cmdoption-snuffler--progressive">snuffler command line option</a></dt>
+  </dl></dd>
+    <dt>--rdepth=FLOAT</dt>
+    <dd><dl>
+      <dt><a href="cake_doc.html#cmdoption-cake--rdepth">cake command line option</a></dt>
+  </dl></dd>
+    <dt>--sdepth=FLOAT</dt>
+    <dd><dl>
+      <dt><a href="cake_doc.html#cmdoption-cake--sdepth">cake command line option</a></dt>
   </dl></dd>
     <dt>--stations=STATIONS</dt>
     <dd><dl>
       <dt><a href="snuffler.html#cmdoption-snuffler--stations">snuffler command line option</a></dt>
   </dl></dd>
+    <dt>--vred=FLOAT</dt>
+    <dd><dl>
+      <dt><a href="cake_doc.html#cmdoption-cake--vred">cake command line option</a></dt>
+  </dl></dd>
     <dt>-h, --help</dt>
     <dd><dl>
+      <dt><a href="cake_doc.html#cmdoption-cake-h">cake command line option</a></dt>
       <dt><a href="snuffler.html#cmdoption-snuffler-h">snuffler command line option</a></dt>
   </dl></dd>
 </dl></td>
@@ -157,7 +191,7 @@
       <dt><a href="snuffling.html#pyrocko.snuffling.Snuffling.add_traces">(Snuffling method)</a></dt>
   </dl></dd>
     <dt><a href="pile.html#pyrocko.pile.Pile.all">all() (Pile method)</a></dt>
-    <dt><a href="trace.html#pyrocko.trace.Trace.amp_whitening">amp_whitening() (Trace method)</a></dt>
+    <dt><a href="trace.html#pyrocko.trace.Trace.ampspec_whiten">ampspec_whiten() (Trace method)</a></dt>
     <dt><a href="trace.html#pyrocko.trace.AnalogFilterResponse">AnalogFilterResponse (class in pyrocko.trace)</a></dt>
     <dt><a href="pile_viewer.html#pyrocko.pile_viewer.PileOverview.animate_picking">animate_picking() (PileOverview method)</a></dt>
     <dt><a href="catalog.html#pyrocko.catalog.Anon">Anon (class in pyrocko.catalog)</a></dt>
@@ -168,6 +202,7 @@
     <dd><dl>
       <dt><a href="trace.html#pyrocko.trace.Trace.append">(Trace method)</a></dt>
   </dl></dd>
+    <dt><a href="trace.html#pyrocko.trace.apply_costaper">apply_costaper() (in module pyrocko.trace)</a></dt>
     <dt><a href="pile_viewer.html#pyrocko.pile_viewer.PileOverview.apply_scaling_hooks">apply_scaling_hooks() (PileOverview method)</a></dt>
     <dt><a href="cake.html#pyrocko.cake.LayeredModel.arrivals">arrivals() (LayeredModel method)</a></dt>
     <dt><a href="moment_tensor.html#pyrocko.moment_tensor.MomentTensorTestCase.assertAnglesSame">assertAnglesSame() (MomentTensorTestCase method)</a></dt>
@@ -209,6 +244,19 @@
 <h2 id="C">C</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%" valign="top"><dl>
+    <dt>cake command line option</dt>
+    <dd><dl>
+      <dt><a href="cake_doc.html#cmdoption-cake--crust2loc">--crust2loc=LAT,LON</a></dt>
+      <dt><a href="cake_doc.html#cmdoption-cake--degrees">--degrees</a></dt>
+      <dt><a href="cake_doc.html#cmdoption-cake--distances">--distances=DISTANCES</a></dt>
+      <dt><a href="cake_doc.html#cmdoption-cake--format">--format=FORMAT</a></dt>
+      <dt><a href="cake_doc.html#cmdoption-cake--model">--model=FILENAME</a></dt>
+      <dt><a href="cake_doc.html#cmdoption-cake--phases">--phases=PHASE1,PHASE2,...</a></dt>
+      <dt><a href="cake_doc.html#cmdoption-cake--rdepth">--rdepth=FLOAT</a></dt>
+      <dt><a href="cake_doc.html#cmdoption-cake--sdepth">--sdepth=FLOAT</a></dt>
+      <dt><a href="cake_doc.html#cmdoption-cake--vred">--vred=FLOAT</a></dt>
+      <dt><a href="cake_doc.html#cmdoption-cake-h">-h, --help</a></dt>
+  </dl></dd>
     <dt><a href="snuffling.html#pyrocko.snuffling.Snuffling.call">call() (Snuffling method)</a></dt>
     <dt><a href="snuffling.html#pyrocko.snuffling.Snuffling.call_button_triggered">call_button_triggered() (Snuffling method)</a></dt>
     <dt><a href="cake.html#pyrocko.cake.castagna_vs_to_vp">castagna_vs_to_vp() (in module pyrocko.cake)</a></dt>
@@ -250,6 +298,8 @@
     <dt><a href="trace.html#pyrocko.trace.correlate">correlate() (in module pyrocko.trace)</a></dt>
     <dt><a href="orthodrome.html#pyrocko.orthodrome.cosdelta">cosdelta() (in module pyrocko.orthodrome)</a></dt>
     <dt><a href="orthodrome.html#pyrocko.orthodrome.cosdelta_numpy">cosdelta_numpy() (in module pyrocko.orthodrome)</a></dt>
+    <dt><a href="trace.html#pyrocko.trace.CosFader">CosFader (class in pyrocko.trace)</a></dt>
+    <dt><a href="trace.html#pyrocko.trace.CosTaper">CosTaper (class in pyrocko.trace)</a></dt>
     <dt><a href="trace.html#pyrocko.trace.costaper">costaper() (in module pyrocko.trace)</a></dt>
     <dt><a href="trace.html#pyrocko.trace.Trace.crop_zeros">crop_zeros() (Trace method)</a></dt>
     <dt><a href="crust2x2.html#pyrocko.crust2x2.Crust2">Crust2 (class in pyrocko.crust2x2)</a></dt>
@@ -271,6 +321,7 @@
     <dt><a href="util.html#pyrocko.util.decimate">decimate() (in module pyrocko.util)</a></dt>
     <dt><a href="util.html#pyrocko.util.decimate_coeffs">decimate_coeffs() (in module pyrocko.util)</a></dt>
     <dt><a href="util.html#pyrocko.util.decitab">decitab() (in module pyrocko.util)</a></dt>
+    <dt><a href="trace.html#pyrocko.trace.deconvolve">deconvolve() (in module pyrocko.trace)</a></dt>
     <dt><a href="pile_viewer.html#pyrocko.pile_viewer.deg_float">deg_float (class in pyrocko.pile_viewer)</a></dt>
     <dt><a href="pile_viewer.html#pyrocko.pile_viewer.deg_float_or_none">deg_float_or_none() (in module pyrocko.pile_viewer)</a></dt>
     <dt><a href="trace.html#pyrocko.trace.degapper">degapper() (in module pyrocko.trace)</a></dt>
@@ -286,9 +337,9 @@
     <dt><a href="cake.html#pyrocko.cake.Knee.direction">direction (Knee attribute)</a></dt>
     <dt><a href="cake.html#pyrocko.cake.LayeredModel.discontinuities">discontinuities() (LayeredModel method)</a></dt>
     <dt><a href="cake.html#pyrocko.cake.Discontinuity">Discontinuity (class in pyrocko.cake)</a></dt>
-    <dt><a href="cake.html#pyrocko.cake.LayeredModel.discontinuity">discontinuity() (LayeredModel method)</a></dt>
 </dl></td>
   <td style="width: 33%" valign="top"><dl>
+    <dt><a href="cake.html#pyrocko.cake.LayeredModel.discontinuity">discontinuity() (LayeredModel method)</a></dt>
     <dt><a href="pile.html#pyrocko.pile.Pile.dispatch">dispatch() (Pile method)</a></dt>
     <dd><dl>
       <dt><a href="pile_viewer.html#pyrocko.pile_viewer.SnufflerOnDemand.dispatch">(SnufflerOnDemand method)</a></dt>
@@ -405,6 +456,7 @@
       <dt><a href="pile.html#pyrocko.pile.TracesFile.gather_keys">(TracesFile method)</a></dt>
   </dl></dd>
     <dt><a href="cake.html#pyrocko.cake.LayeredModel.gather_pathes">gather_pathes() (LayeredModel method)</a></dt>
+    <dt><a href="trace.html#pyrocko.trace.GaussTaper">GaussTaper (class in pyrocko.trace)</a></dt>
     <dt><a href="util.html#pyrocko.util.gcd">gcd() (in module pyrocko.util)</a></dt>
     <dt><a href="catalog.html#pyrocko.catalog.Geofon">Geofon (class in pyrocko.catalog)</a></dt>
     <dt><a href="pile_viewer.html#pyrocko.pile_viewer.Timer.get">get() (Timer method)</a></dt>
@@ -459,9 +511,9 @@
     <dd><dl>
       <dt><a href="crust2x2.html#pyrocko.crust2x2.get_profile">(in module pyrocko.crust2x2)</a></dt>
   </dl></dd>
-    <dt><a href="pile_viewer.html#pyrocko.pile_viewer.PileOverview.get_quick_filter_pattern">get_quick_filter_pattern() (PileOverview method)</a></dt>
 </dl></td>
   <td style="width: 33%" valign="top"><dl>
+    <dt><a href="pile_viewer.html#pyrocko.pile_viewer.PileOverview.get_quick_filter_pattern">get_quick_filter_pattern() (PileOverview method)</a></dt>
     <dt><a href="rdseed.html#pyrocko.rdseed.SeedVolumeAccess.get_restitution">get_restitution() (SeedVolumeAccess method)</a></dt>
     <dt><a href="snuffling.html#pyrocko.snuffling.Snuffling.get_selected_time_range">get_selected_time_range() (Snuffling method)</a></dt>
     <dt><a href="snuffling.html#pyrocko.snuffling.Snuffling.get_settings">get_settings() (Snuffling method)</a></dt>
@@ -668,12 +720,12 @@
     <dt><a href="pile.html#pyrocko.pile.MemTracesFile">MemTracesFile (class in pyrocko.pile)</a></dt>
     <dt><a href="snuffling.html#pyrocko.snuffling.Snuffling.menuitem_triggered">menuitem_triggered() (Snuffling method)</a></dt>
     <dt><a href="trace.html#pyrocko.trace.merge_codes">merge_codes() (in module pyrocko.trace)</a></dt>
-</dl></td>
-  <td style="width: 33%" valign="top"><dl>
     <dt><a href="cake.html#pyrocko.cake.LayeredModel.min">min() (LayeredModel method)</a></dt>
     <dd><dl>
       <dt><a href="trace.html#pyrocko.trace.Trace.min">(Trace method)</a></dt>
   </dl></dd>
+</dl></td>
+  <td style="width: 33%" valign="top"><dl>
     <dt><a href="trace.html#pyrocko.trace.minmax">minmax() (in module pyrocko.trace)</a></dt>
     <dt><a href="trace.html#pyrocko.trace.minmaxtime">minmaxtime() (in module pyrocko.trace)</a></dt>
     <dt><a href="util.html#pyrocko.util.mk_decitab">mk_decitab() (in module pyrocko.util)</a></dt>
@@ -696,6 +748,7 @@
     <dt><a href="trace.html#pyrocko.trace.moving_avg">moving_avg() (in module pyrocko.trace)</a></dt>
     <dt><a href="trace.html#pyrocko.trace.moving_sum">moving_sum() (in module pyrocko.trace)</a></dt>
     <dt><a href="trace.html#pyrocko.trace.Trace.mult">mult() (Trace method)</a></dt>
+    <dt><a href="cake.html#pyrocko.cake.LayeredModel.multi_path">multi_path() (LayeredModel method)</a></dt>
     <dt><a href="trace.html#pyrocko.trace.MultiplyResponse">MultiplyResponse (class in pyrocko.trace)</a></dt>
     <dt><a href="pile_viewer.html#pyrocko.pile_viewer.PileOverview.myclose">myclose() (PileOverview method)</a></dt>
     <dt><a href="snuffling.html#pyrocko.snuffling.MyScrollArea">MyScrollArea (class in pyrocko.snuffling)</a></dt>
@@ -905,6 +958,7 @@
     <dt><a href="pile_viewer.html#pyrocko.pile_viewer.PileOverview.remove_snuffling_menuitem">remove_snuffling_menuitem() (PileOverview method)</a></dt>
     <dt><a href="snuffling.html#pyrocko.snuffling.SnufflingModule.remove_snufflings">remove_snufflings() (SnufflingModule method)</a></dt>
     <dt><a href="hamster_pile.html#pyrocko.hamster_pile.Renamer">Renamer (class in pyrocko.hamster_pile)</a></dt>
+    <dt><a href="trace.html#pyrocko.trace.Trace.resample">resample() (Trace method)</a></dt>
     <dt><a href="util.html#pyrocko.util.reuse">reuse() (in module pyrocko.util)</a></dt>
     <dt><a href="pile_viewer.html#pyrocko.pile_viewer.Projection.rev">rev() (Projection method)</a></dt>
     <dt><a href="pile_viewer.html#pyrocko.pile_viewer.PileOverview.rot_change">rot_change() (PileOverview method)</a></dt>
@@ -973,9 +1027,9 @@
     <dt><a href="pile_viewer.html#pyrocko.pile_viewer.PileOverview.set_sortingmode_change_delay_time">set_sortingmode_change_delay_time() (PileOverview method)</a></dt>
     <dt><a href="trace.html#pyrocko.trace.Trace.set_station">set_station() (Trace method)</a></dt>
     <dt><a href="pile_viewer.html#pyrocko.pile_viewer.PileOverview.set_stations">set_stations() (PileOverview method)</a></dt>
+    <dt><a href="pile_viewer.html#pyrocko.pile_viewer.PileOverview.set_time_range">set_time_range() (PileOverview method)</a></dt>
 </dl></td>
   <td style="width: 33%" valign="top"><dl>
-    <dt><a href="pile_viewer.html#pyrocko.pile_viewer.PileOverview.set_time_range">set_time_range() (PileOverview method)</a></dt>
     <dt><a href="pile_viewer.html#pyrocko.pile_viewer.PileOverview.set_trace_filter">set_trace_filter() (PileOverview method)</a></dt>
     <dt><a href="pile_viewer.html#pyrocko.pile_viewer.PileOverview.set_tracks_range">set_tracks_range() (PileOverview method)</a></dt>
     <dt><a href="snuffling.html#pyrocko.snuffling.ChoiceControl.set_value">set_value() (ChoiceControl method)</a></dt>
@@ -999,6 +1053,7 @@
     <dt><a href="moment_tensor.html#pyrocko.moment_tensor.sm">sm() (in module pyrocko.moment_tensor)</a></dt>
     <dt><a href="trace.html#pyrocko.trace.Trace.snap">snap() (Trace method)</a></dt>
     <dt><a href="trace.html#pyrocko.trace.snapper">snapper() (in module pyrocko.trace)</a></dt>
+    <dt><a href="trace.html#pyrocko.trace.snapper_w_offset">snapper_w_offset() (in module pyrocko.trace)</a></dt>
     <dt><a href="pile_viewer.html#pyrocko.pile_viewer.snuffle">snuffle() (in module pyrocko.pile_viewer)</a></dt>
     <dd><dl>
       <dt><a href="pile.html#pyrocko.pile.Pile.snuffle">(Pile method)</a></dt>
@@ -1063,6 +1118,8 @@
     <dt><a href="moment_tensor.html#pyrocko.moment_tensor.MomentTensor.t_axis">t_axis() (MomentTensor method)</a></dt>
     <dt><a href="util.html#pyrocko.util.TableReader">TableReader (class in pyrocko.util)</a></dt>
     <dt><a href="util.html#pyrocko.util.TableWriter">TableWriter (class in pyrocko.util)</a></dt>
+    <dt><a href="trace.html#pyrocko.trace.Taper">Taper (class in pyrocko.trace)</a></dt>
+    <dt><a href="trace.html#pyrocko.trace.Trace.taper">taper() (Trace method)</a></dt>
     <dt><a href="snuffling.html#pyrocko.snuffling.Snuffling.tempdir">tempdir() (Snuffling method)</a></dt>
     <dt><a href="cake.html#pyrocko.cake.Layer.test">test() (Layer method)</a></dt>
     <dt><a href="moment_tensor.html#pyrocko.moment_tensor.MomentTensorTestCase.testAnyAngles">testAnyAngles() (MomentTensorTestCase method)</a></dt>
@@ -1071,9 +1128,9 @@
     <dt><a href="moment_tensor.html#pyrocko.moment_tensor.MomentTensorTestCase.testNonPlainDoubleCouples">testNonPlainDoubleCouples() (MomentTensorTestCase method)</a></dt>
     <dt><a href="moment_tensor.html#pyrocko.moment_tensor.MomentTensorTestCase.testProblematicAngles">testProblematicAngles() (MomentTensorTestCase method)</a></dt>
     <dt><a href="pile_viewer.html#pyrocko.pile_viewer.tick_to_labels">tick_to_labels() (in module pyrocko.pile_viewer)</a></dt>
-    <dt><a href="model.html#pyrocko.model.Event.time_as_string">time_as_string() (Event method)</a></dt>
 </dl></td>
   <td style="width: 33%" valign="top"><dl>
+    <dt><a href="model.html#pyrocko.model.Event.time_as_string">time_as_string() (Event method)</a></dt>
     <dt><a href="pile_viewer.html#pyrocko.pile_viewer.time_nice_value">time_nice_value() (in module pyrocko.pile_viewer)</a></dt>
     <dt><a href="util.html#pyrocko.util.time_to_str">time_to_str() (in module pyrocko.util)</a></dt>
     <dt><a href="pile_viewer.html#pyrocko.pile_viewer.TimeAx">TimeAx (class in pyrocko.pile_viewer)</a></dt>

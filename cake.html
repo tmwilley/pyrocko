@@ -917,8 +917,31 @@ with the actual depth of these, as defined in the model.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="pyrocko.cake.LayeredModel.multi_path">
+<tt class="descname">multi_path</tt><big>(</big><em>p, phase=PhaseDef('P'), zstart=0.0, zstops=[0.0]</em><big>)</big><a class="reference internal" href="_modules/pyrocko/cake.html#LayeredModel.multi_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.cake.LayeredModel.multi_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterate ray paths for given ray parameter, phase definition and fixed source and multiple receiver depths.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>p</strong> &#8211; ray parameter (spherical) [s/deg]</li>
+<li><strong>phase</strong> &#8211; phase definition (<a class="reference internal" href="#pyrocko.cake.PhaseDef" title="pyrocko.cake.PhaseDef"><tt class="xref py py-class docutils literal"><span class="pre">PhaseDef</span></tt></a> object)</li>
+<li><strong>zstart</strong> &#8211; source depth [m]</li>
+<li><strong>zstop</strong> &#8211; list of receiver depths [m]</li>
+</ul>
+</td>
+</tr>
+<tr class="field"><th class="field-name">Yields :</th><td class="field-body"><p class="first last"><a class="reference internal" href="#pyrocko.cake.RayPath" title="pyrocko.cake.RayPath"><tt class="xref py py-class docutils literal"><span class="pre">RayPath</span></tt></a> objects</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="pyrocko.cake.LayeredModel.gather_pathes">
-<tt class="descname">gather_pathes</tt><big>(</big><em>phases=PhaseDef('P')</em>, <em>zstart=0.0</em>, <em>zstop=0.0</em>, <em>np=1000</em><big>)</big><a class="reference internal" href="_modules/pyrocko/cake.html#LayeredModel.gather_pathes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.cake.LayeredModel.gather_pathes" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">gather_pathes</tt><big>(</big><em>phases=PhaseDef('P')</em>, <em>zstart=0.0</em>, <em>zstop=0.0</em>, <em>np=1000</em>, <em>pdepth=18</em><big>)</big><a class="reference internal" href="_modules/pyrocko/cake.html#LayeredModel.gather_pathes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.cake.LayeredModel.gather_pathes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get all possible ray pathes for fixed source and receiver depth for one or more phase definitions.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -941,7 +964,7 @@ with the actual depth of these, as defined in the model.</p>
 
 <dl class="method">
 <dt id="pyrocko.cake.LayeredModel.arrivals">
-<tt class="descname">arrivals</tt><big>(</big><em>distances=</em><span class="optional">[</span><span class="optional">]</span>, <em>phases=PhaseDef('P')</em>, <em>zstart=0.0</em>, <em>zstop=0.0</em>, <em>np=1000</em>, <em>refine=True</em>, <em>interpolation='linear'</em><big>)</big><a class="reference internal" href="_modules/pyrocko/cake.html#LayeredModel.arrivals"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.cake.LayeredModel.arrivals" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">arrivals</tt><big>(</big><em>distances=</em><span class="optional">[</span><span class="optional">]</span>, <em>phases=PhaseDef('P')</em>, <em>zstart=0.0</em>, <em>zstop=0.0</em>, <em>np=1000</em>, <em>refine=True</em>, <em>interpolation='linear'</em>, <em>pdepth=18</em><big>)</big><a class="reference internal" href="_modules/pyrocko/cake.html#LayeredModel.arrivals"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.cake.LayeredModel.arrivals" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute rays and traveltimes for given distances.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
