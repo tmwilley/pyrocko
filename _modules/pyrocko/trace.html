@@ -1020,8 +1020,9 @@
 
     <span class="kn">from</span> <span class="nn">pyrocko</span> <span class="kn">import</span> <span class="n">pile</span><span class="p">,</span> <span class="n">snuffler</span>
     <span class="n">p</span> <span class="o">=</span> <span class="n">pile</span><span class="o">.</span><span class="n">Pile</span><span class="p">()</span>
-    <span class="n">trf</span> <span class="o">=</span> <span class="n">pile</span><span class="o">.</span><span class="n">MemTracesFile</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">traces</span><span class="p">)</span>
-    <span class="n">p</span><span class="o">.</span><span class="n">add_file</span><span class="p">(</span><span class="n">trf</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">traces</span><span class="p">:</span>
+        <span class="n">trf</span> <span class="o">=</span> <span class="n">pile</span><span class="o">.</span><span class="n">MemTracesFile</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">traces</span><span class="p">)</span>
+        <span class="n">p</span><span class="o">.</span><span class="n">add_file</span><span class="p">(</span><span class="n">trf</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">snuffler</span><span class="o">.</span><span class="n">snuffle</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="NoData"><a class="viewcode-back" href="../../trace.html#pyrocko.trace.NoData">[docs]</a><span class="k">class</span> <span class="nc">NoData</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
@@ -1502,7 +1503,7 @@
 
 <span class="sd">    &#39;&#39;&#39;</span>
 
-    <span class="k">assert</span> <span class="n">same_sampling_rate</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">)</span>
+    <span class="n">assert_same_sampling_rate</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">)</span>
 
     <span class="n">ya</span><span class="p">,</span> <span class="n">yb</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">ydata</span><span class="p">,</span> <span class="n">b</span><span class="o">.</span><span class="n">ydata</span>
 
@@ -1556,37 +1557,43 @@
 
     <span class="k">return</span> <span class="n">c</span>
 </div>
-<div class="viewcode-block" id="deconvolve"><a class="viewcode-back" href="../../trace.html#pyrocko.trace.deconvolve">[docs]</a><span class="k">def</span> <span class="nf">deconvolve</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">waterlevel</span><span class="p">,</span> <span class="n">fd_taper</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">pad_to_pow2</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
-
-    <span class="k">assert</span> <span class="nb">abs</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">tmin</span> <span class="o">-</span> <span class="n">b</span><span class="o">.</span><span class="n">tmin</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">a</span><span class="o">.</span><span class="n">deltat</span> <span class="o">*</span> <span class="mf">0.001</span>
+<div class="viewcode-block" id="deconvolve"><a class="viewcode-back" href="../../trace.html#pyrocko.trace.deconvolve">[docs]</a><span class="k">def</span> <span class="nf">deconvolve</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">waterlevel</span><span class="p">,</span> <span class="n">tshift</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">pad</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">fd_taper</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">pad_to_pow2</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+    
     <span class="n">same_sampling_rate</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">)</span>
-
+    <span class="k">assert</span> <span class="nb">abs</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">tmin</span> <span class="o">-</span> <span class="n">b</span><span class="o">.</span><span class="n">tmin</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">a</span><span class="o">.</span><span class="n">deltat</span> <span class="o">*</span> <span class="mf">0.001</span>
+    <span class="n">deltat</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">deltat</span>
+    <span class="n">npad</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">data_len</span><span class="p">()</span><span class="o">*</span><span class="n">pad</span> <span class="o">+</span> <span class="n">tshift</span> <span class="o">/</span> <span class="n">deltat</span><span class="p">))</span>
+    
     <span class="n">ndata</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">data_len</span><span class="p">(),</span> <span class="n">b</span><span class="o">.</span><span class="n">data_len</span><span class="p">())</span>
+    <span class="n">ndata_pad</span> <span class="o">=</span> <span class="n">ndata</span> <span class="o">+</span> <span class="n">npad</span>
+    
     <span class="k">if</span> <span class="n">pad_to_pow2</span><span class="p">:</span>
-        <span class="n">ntrans</span> <span class="o">=</span> <span class="n">nextpow2</span><span class="p">(</span><span class="n">ndata</span><span class="p">)</span>
+        <span class="n">ntrans</span> <span class="o">=</span> <span class="n">nextpow2</span><span class="p">(</span><span class="n">ndata_pad</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">ntrans</span> <span class="o">=</span> <span class="n">ndata</span>
-        
+    
     <span class="n">aspec</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">rfft</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">ydata</span><span class="p">,</span> <span class="n">ntrans</span><span class="p">)</span>
     <span class="n">bspec</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">rfft</span><span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">ydata</span><span class="p">,</span> <span class="n">ntrans</span><span class="p">)</span>
-    
+
     <span class="n">out</span> <span class="o">=</span> <span class="n">aspec</span> <span class="o">*</span> <span class="n">num</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">bspec</span><span class="p">)</span>
-    
+
     <span class="n">bautocorr</span> <span class="o">=</span> <span class="n">bspec</span><span class="o">*</span><span class="n">num</span><span class="o">.</span><span class="n">conj</span><span class="p">(</span><span class="n">bspec</span><span class="p">)</span>
     <span class="n">denom</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span> <span class="n">bautocorr</span><span class="p">,</span> <span class="n">waterlevel</span> <span class="o">*</span> <span class="n">bautocorr</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="p">)</span>
-
-    <span class="n">out</span> <span class="o">/=</span> <span class="n">denom</span>
-    <span class="n">df</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="n">ndata</span><span class="o">*</span><span class="n">a</span><span class="o">.</span><span class="n">deltat</span><span class="p">)</span>
     
+    <span class="n">out</span> <span class="o">/=</span> <span class="n">denom</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="n">ntrans</span><span class="o">*</span><span class="n">deltat</span><span class="p">)</span>
+
     <span class="k">if</span> <span class="n">fd_taper</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
         <span class="n">fd_taper</span><span class="p">(</span> <span class="n">out</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">df</span> <span class="p">)</span>
 
-    <span class="n">ydata</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">irfft</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
-    
+    <span class="n">ydata</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">roll</span><span class="p">(</span><span class="n">num</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">irfft</span><span class="p">(</span><span class="n">out</span><span class="p">),</span><span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">tshift</span><span class="o">/</span><span class="n">deltat</span><span class="p">)))</span>
     <span class="n">c</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
     <span class="n">c</span><span class="o">.</span><span class="n">set_ydata</span><span class="p">(</span><span class="n">ydata</span><span class="p">[:</span><span class="n">ndata</span><span class="p">])</span>
     <span class="n">c</span><span class="o">.</span><span class="n">set_codes</span><span class="p">(</span><span class="o">*</span><span class="n">merge_codes</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="s">&#39;/&#39;</span><span class="p">))</span>
-    <span class="k">return</span> <span class="n">c</span> 
+    <span class="k">return</span> <span class="n">c</span>
+</div>
+<div class="viewcode-block" id="assert_same_sampling_rate"><a class="viewcode-back" href="../../trace.html#pyrocko.trace.assert_same_sampling_rate">[docs]</a><span class="k">def</span> <span class="nf">assert_same_sampling_rate</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="mf">1.0e-6</span><span class="p">):</span>
+    <span class="k">assert</span> <span class="n">same_sampling_rate</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">eps</span><span class="p">),</span> <span class="s">&#39;Sampling rates differ: </span><span class="si">%g</span><span class="s"> != </span><span class="si">%g</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">deltat</span><span class="p">,</span> <span class="n">b</span><span class="o">.</span><span class="n">deltat</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="same_sampling_rate"><a class="viewcode-back" href="../../trace.html#pyrocko.trace.same_sampling_rate">[docs]</a><span class="k">def</span> <span class="nf">same_sampling_rate</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="mf">1.0e-6</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Check if two traces have the same sampling rate.</span>
@@ -1594,7 +1601,7 @@
 <span class="sd">    :param a,b: input traces</span>
 <span class="sd">    :param eps: relative tolerance</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    <span class="k">return</span> <span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">deltat</span> <span class="o">-</span> <span class="n">b</span><span class="o">.</span><span class="n">deltat</span><span class="p">)</span> <span class="o">&lt;</span> <span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">deltat</span> <span class="o">+</span> <span class="n">b</span><span class="o">.</span><span class="n">deltat</span><span class="p">)</span><span class="o">*</span><span class="n">eps</span>
+    <span class="k">return</span> <span class="nb">abs</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">deltat</span> <span class="o">-</span> <span class="n">b</span><span class="o">.</span><span class="n">deltat</span><span class="p">)</span> <span class="o">&lt;</span> <span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">deltat</span> <span class="o">+</span> <span class="n">b</span><span class="o">.</span><span class="n">deltat</span><span class="p">)</span><span class="o">*</span><span class="n">eps</span>
 </div>
 <div class="viewcode-block" id="merge_codes"><a class="viewcode-back" href="../../trace.html#pyrocko.trace.merge_codes">[docs]</a><span class="k">def</span> <span class="nf">merge_codes</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s">&#39;-&#39;</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Merge network-station-location-channel codes of a pair of traces.&#39;&#39;&#39;</span>

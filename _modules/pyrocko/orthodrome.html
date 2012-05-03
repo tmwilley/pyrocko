@@ -60,6 +60,11 @@
 <span class="n">d2m</span> <span class="o">=</span> <span class="n">earthradius_equator</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mf">180.</span>
 <span class="n">m2d</span> <span class="o">=</span> <span class="mf">1.</span><span class="o">/</span><span class="n">d2m</span>
 
+<div class="viewcode-block" id="Loc"><a class="viewcode-back" href="../../orthodrome.html#pyrocko.orthodrome.Loc">[docs]</a><span class="k">class</span> <span class="nc">Loc</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lat</span> <span class="o">=</span> <span class="n">lat</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lon</span> <span class="o">=</span> <span class="n">lon</span>
+</div>
 <div class="viewcode-block" id="clip"><a class="viewcode-back" href="../../orthodrome.html#pyrocko.orthodrome.clip">[docs]</a><span class="k">def</span> <span class="nf">clip</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mi</span><span class="p">,</span> <span class="n">ma</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">num</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">num</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">mi</span><span class="p">,</span><span class="n">x</span><span class="p">),</span><span class="n">ma</span><span class="p">)</span>
         </div>
@@ -219,6 +224,12 @@
     <span class="n">lat</span> <span class="o">=</span> <span class="n">r2d</span> <span class="o">*</span> <span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mf">2.</span> <span class="o">-</span> <span class="n">c</span><span class="p">)</span>
     <span class="n">lon</span> <span class="o">=</span> <span class="n">wrap</span><span class="p">(</span><span class="n">lon0</span> <span class="o">+</span> <span class="n">r2d</span><span class="o">*</span><span class="n">alpha</span><span class="o">*</span><span class="n">alphasign</span><span class="p">,</span><span class="o">-</span><span class="mf">180.</span><span class="p">,</span><span class="mf">180.</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">lat</span><span class="p">,</span> <span class="n">lon</span>
+</div>
+<div class="viewcode-block" id="latlon_to_ne"><a class="viewcode-back" href="../../orthodrome.html#pyrocko.orthodrome.latlon_to_ne">[docs]</a><span class="k">def</span> <span class="nf">latlon_to_ne</span><span class="p">(</span><span class="n">refloc</span><span class="p">,</span> <span class="n">loc</span><span class="p">):</span>
+    <span class="n">azi</span> <span class="o">=</span> <span class="n">azimuth</span><span class="p">(</span><span class="n">refloc</span><span class="p">,</span> <span class="n">loc</span><span class="p">)</span>
+    <span class="n">dist</span> <span class="o">=</span> <span class="n">distance_accurate50m</span><span class="p">(</span><span class="n">refloc</span><span class="p">,</span> <span class="n">loc</span><span class="p">)</span>
+    <span class="n">n</span><span class="p">,</span> <span class="n">e</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">azi</span><span class="o">*</span><span class="n">d2r</span><span class="p">)</span><span class="o">*</span><span class="n">dist</span><span class="p">,</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">azi</span><span class="o">*</span><span class="n">d2r</span><span class="p">)</span><span class="o">*</span><span class="n">dist</span>
+    <span class="k">return</span> <span class="n">n</span><span class="p">,</span><span class="n">e</span>
 </pre></div></div>
 
           </div>

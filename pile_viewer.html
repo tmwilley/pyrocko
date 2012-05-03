@@ -242,6 +242,11 @@
 <tt class="descname">add_radiobuttongroup</tt><big>(</big><em>menu</em>, <em>menudef</em>, <em>obj</em>, <em>target</em><big>)</big><a class="reference internal" href="_modules/pyrocko/pile_viewer.html#add_radiobuttongroup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile_viewer.add_radiobuttongroup" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+<dl class="function">
+<dt id="pyrocko.pile_viewer.sort_actions">
+<tt class="descname">sort_actions</tt><big>(</big><em>menu</em><big>)</big><a class="reference internal" href="_modules/pyrocko/pile_viewer.html#sort_actions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile_viewer.sort_actions" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="exception">
 <dt id="pyrocko.pile_viewer.PileOverviewException">
 <em class="property">exception </em><tt class="descname">PileOverviewException</tt><a class="reference internal" href="_modules/pyrocko/pile_viewer.html#PileOverviewException"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile_viewer.PileOverviewException" title="Permalink to this definition">¶</a></dt>
@@ -256,6 +261,11 @@
 <dt id="pyrocko.pile_viewer.PileOverview">
 <em class="property">class </em><tt class="descname">PileOverview</tt><big>(</big><em>pile</em>, <em>ntracks_shown_max</em>, <em>panel_parent</em>, <em>*args</em><big>)</big><a class="headerlink" href="#pyrocko.pile_viewer.PileOverview" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="method">
+<dt id="pyrocko.pile_viewer.PileOverview.about">
+<tt class="descname">about</tt><big>(</big><big>)</big><a class="headerlink" href="#pyrocko.pile_viewer.PileOverview.about" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
 <dt id="pyrocko.pile_viewer.PileOverview.add_blacklist_pattern">
 <tt class="descname">add_blacklist_pattern</tt><big>(</big><em>pattern</em><big>)</big><a class="headerlink" href="#pyrocko.pile_viewer.PileOverview.add_blacklist_pattern" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -318,6 +328,11 @@
 <dl class="method">
 <dt id="pyrocko.pile_viewer.PileOverview.associate_phases_to_events">
 <tt class="descname">associate_phases_to_events</tt><big>(</big><big>)</big><a class="headerlink" href="#pyrocko.pile_viewer.PileOverview.associate_phases_to_events" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.pile_viewer.PileOverview.clean_update">
+<tt class="descname">clean_update</tt><big>(</big><big>)</big><a class="headerlink" href="#pyrocko.pile_viewer.PileOverview.clean_update" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -437,13 +452,28 @@
 <dd></dd></dl>
 
 <dl class="method">
+<dt id="pyrocko.pile_viewer.PileOverview.go_to_event_by_name">
+<tt class="descname">go_to_event_by_name</tt><big>(</big><em>name</em><big>)</big><a class="headerlink" href="#pyrocko.pile_viewer.PileOverview.go_to_event_by_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
 <dt id="pyrocko.pile_viewer.PileOverview.go_to_selection">
 <tt class="descname">go_to_selection</tt><big>(</big><big>)</big><a class="headerlink" href="#pyrocko.pile_viewer.PileOverview.go_to_selection" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
+<dt id="pyrocko.pile_viewer.PileOverview.go_to_time">
+<tt class="descname">go_to_time</tt><big>(</big><em>t</em><big>)</big><a class="headerlink" href="#pyrocko.pile_viewer.PileOverview.go_to_time" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
 <dt id="pyrocko.pile_viewer.PileOverview.has_station">
 <tt class="descname">has_station</tt><big>(</big><em>station</em><big>)</big><a class="headerlink" href="#pyrocko.pile_viewer.PileOverview.has_station" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.pile_viewer.PileOverview.help">
+<tt class="descname">help</tt><big>(</big><big>)</big><a class="headerlink" href="#pyrocko.pile_viewer.PileOverview.help" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -482,6 +512,11 @@
 <dd></dd></dl>
 
 <dl class="method">
+<dt id="pyrocko.pile_viewer.PileOverview.make_good_looking_time_range">
+<tt class="descname">make_good_looking_time_range</tt><big>(</big><em>tmin</em>, <em>tmax</em><big>)</big><a class="headerlink" href="#pyrocko.pile_viewer.PileOverview.make_good_looking_time_range" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
 <dt id="pyrocko.pile_viewer.PileOverview.marker_under_cursor">
 <tt class="descname">marker_under_cursor</tt><big>(</big><em>x</em>, <em>y</em><big>)</big><a class="headerlink" href="#pyrocko.pile_viewer.PileOverview.marker_under_cursor" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -508,12 +543,17 @@
 
 <dl class="method">
 <dt id="pyrocko.pile_viewer.PileOverview.myclose">
-<tt class="descname">myclose</tt><big>(</big><big>)</big><a class="headerlink" href="#pyrocko.pile_viewer.PileOverview.myclose" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">myclose</tt><big>(</big><em>return_tag=''</em><big>)</big><a class="headerlink" href="#pyrocko.pile_viewer.PileOverview.myclose" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="pyrocko.pile_viewer.PileOverview.nslc_ids_under_cursor">
 <tt class="descname">nslc_ids_under_cursor</tt><big>(</big><em>x</em>, <em>y</em><big>)</big><a class="headerlink" href="#pyrocko.pile_viewer.PileOverview.nslc_ids_under_cursor" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.pile_viewer.PileOverview.open_link">
+<tt class="descname">open_link</tt><big>(</big><em>link</em><big>)</big><a class="headerlink" href="#pyrocko.pile_viewer.PileOverview.open_link" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -535,6 +575,16 @@
 <dl class="method">
 <dt id="pyrocko.pile_viewer.PileOverview.pile_changed">
 <tt class="descname">pile_changed</tt><big>(</big><em>what</em><big>)</big><a class="headerlink" href="#pyrocko.pile_viewer.PileOverview.pile_changed" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.pile_viewer.PileOverview.post_process_hooks">
+<tt class="descname">post_process_hooks</tt><big>(</big><em>traces</em><big>)</big><a class="headerlink" href="#pyrocko.pile_viewer.PileOverview.post_process_hooks" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.pile_viewer.PileOverview.pre_process_hooks">
+<tt class="descname">pre_process_hooks</tt><big>(</big><em>traces</em><big>)</big><a class="headerlink" href="#pyrocko.pile_viewer.PileOverview.pre_process_hooks" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -738,6 +788,16 @@
 <dd></dd></dl>
 
 <dl class="method">
+<dt id="pyrocko.pile_viewer.PileOverview.show_doc">
+<tt class="descname">show_doc</tt><big>(</big><em>name</em>, <em>labels</em>, <em>target='panel'</em><big>)</big><a class="headerlink" href="#pyrocko.pile_viewer.PileOverview.show_doc" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.pile_viewer.PileOverview.sizeHint">
+<tt class="descname">sizeHint</tt><big>(</big><big>)</big><a class="headerlink" href="#pyrocko.pile_viewer.PileOverview.sizeHint" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
 <dt id="pyrocko.pile_viewer.PileOverview.sortingmode_change">
 <tt class="descname">sortingmode_change</tt><big>(</big><em>ignore=None</em><big>)</big><a class="headerlink" href="#pyrocko.pile_viewer.PileOverview.sortingmode_change" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -769,7 +829,7 @@
 
 <dl class="method">
 <dt id="pyrocko.pile_viewer.PileOverview.station_latlon">
-<tt class="descname">station_latlon</tt><big>(</big><em>tr</em>, <em>default_getter=&lt;function &lt;lambda&gt; at 0x475c140&gt;</em><big>)</big><a class="headerlink" href="#pyrocko.pile_viewer.PileOverview.station_latlon" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">station_latlon</tt><big>(</big><em>tr</em>, <em>default_getter=&lt;function &lt;lambda&gt; at 0x59e1aa0&gt;</em><big>)</big><a class="headerlink" href="#pyrocko.pile_viewer.PileOverview.station_latlon" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -831,6 +891,16 @@
 </dd></dl>
 
 <dl class="class">
+<dt id="pyrocko.pile_viewer.LineEditWithAbort">
+<em class="property">class </em><tt class="descname">LineEditWithAbort</tt><a class="reference internal" href="_modules/pyrocko/pile_viewer.html#LineEditWithAbort"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile_viewer.LineEditWithAbort" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="pyrocko.pile_viewer.LineEditWithAbort.keyPressEvent">
+<tt class="descname">keyPressEvent</tt><big>(</big><em>key_event</em><big>)</big><a class="reference internal" href="_modules/pyrocko/pile_viewer.html#LineEditWithAbort.keyPressEvent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile_viewer.LineEditWithAbort.keyPressEvent" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
 <dt id="pyrocko.pile_viewer.PileViewer">
 <em class="property">class </em><tt class="descname">PileViewer</tt><big>(</big><em>pile</em>, <em>ntracks_shown_max=20</em>, <em>use_opengl=False</em>, <em>panel_parent=None</em>, <em>*args</em><big>)</big><a class="reference internal" href="_modules/pyrocko/pile_viewer.html#PileViewer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile_viewer.PileViewer" title="Permalink to this definition">¶</a></dt>
 <dd><p>PileOverview + Controls</p>
@@ -860,8 +930,13 @@
 <dd></dd></dl>
 
 <dl class="method">
+<dt id="pyrocko.pile_viewer.PileViewer.inputline_aborted">
+<tt class="descname">inputline_aborted</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/pile_viewer.html#PileViewer.inputline_aborted"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile_viewer.PileViewer.inputline_aborted" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
 <dt id="pyrocko.pile_viewer.PileViewer.inputline_finished">
-<tt class="descname">inputline_finished</tt><big>(</big><em>returnpressed=False</em><big>)</big><a class="reference internal" href="_modules/pyrocko/pile_viewer.html#PileViewer.inputline_finished"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile_viewer.PileViewer.inputline_finished" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">inputline_finished</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/pile_viewer.html#PileViewer.inputline_finished"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile_viewer.PileViewer.inputline_finished" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">

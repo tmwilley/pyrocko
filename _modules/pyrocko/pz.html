@@ -52,19 +52,28 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">num</span>
 <span class="kn">import</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">math</span>
 <span class="kn">import</span> <span class="nn">trace</span>
+<span class="kn">from</span> <span class="nn">cStringIO</span> <span class="kn">import</span> <span class="n">StringIO</span>
 
 <span class="n">d2r</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mf">180.</span>
 
 <div class="viewcode-block" id="SacPoleZeroError"><a class="viewcode-back" href="../../pz.html#pyrocko.pz.SacPoleZeroError">[docs]</a><span class="k">class</span> <span class="nc">SacPoleZeroError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
     <span class="k">pass</span>
 </div>
-<div class="viewcode-block" id="read_sac_zpk"><a class="viewcode-back" href="../../pz.html#pyrocko.pz.read_sac_zpk">[docs]</a><span class="k">def</span> <span class="nf">read_sac_zpk</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+<div class="viewcode-block" id="read_sac_zpk"><a class="viewcode-back" href="../../pz.html#pyrocko.pz.read_sac_zpk">[docs]</a><span class="k">def</span> <span class="nf">read_sac_zpk</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="nb">file</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">string</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Read SAC Pole-Zero file.</span>
 <span class="sd">    </span>
 <span class="sd">       Returns (zeros, poles, constant).</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     
-    <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">filename</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">)</span>
+    
+    <span class="k">elif</span> <span class="nb">file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="nb">file</span>
+
+    <span class="k">elif</span> <span class="n">string</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">StringIO</span><span class="p">(</span><span class="n">string</span><span class="p">)</span>
+
     <span class="n">sects</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;ZEROS&#39;</span><span class="p">,</span> <span class="s">&#39;POLES&#39;</span><span class="p">,</span> <span class="s">&#39;CONSTANT&#39;</span><span class="p">)</span>
     <span class="n">sectdata</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;ZEROS&#39;</span><span class="p">:</span> <span class="p">[],</span> <span class="s">&#39;POLES&#39;</span><span class="p">:</span> <span class="p">[]}</span>
     <span class="n">npoles</span> <span class="o">=</span> <span class="mi">0</span>
@@ -93,7 +102,9 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">atsect</span><span class="p">:</span>
                 <span class="n">sectdata</span><span class="p">[</span><span class="n">atsect</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">complex</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">toks</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">toks</span><span class="p">[</span><span class="mi">1</span><span class="p">])))</span>
-    <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    
+    <span class="k">if</span> <span class="n">f</span> <span class="o">!=</span> <span class="nb">file</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
     
     <span class="n">poles</span> <span class="o">=</span> <span class="n">sectdata</span><span class="p">[</span><span class="s">&#39;POLES&#39;</span><span class="p">]</span>
     <span class="n">zeros</span> <span class="o">=</span> <span class="n">sectdata</span><span class="p">[</span><span class="s">&#39;ZEROS&#39;</span><span class="p">]</span>

@@ -518,6 +518,7 @@ needed.</li>
 </tr>
 </tbody>
 </table>
+<p>Subclasses are: <a class="reference internal" href="#pyrocko.cake.HomogeneousLayer" title="pyrocko.cake.HomogeneousLayer"><tt class="xref py py-class docutils literal"><span class="pre">HomogeneousLayer</span></tt></a> and <a class="reference internal" href="#pyrocko.cake.GradientLayer" title="pyrocko.cake.GradientLayer"><tt class="xref py py-class docutils literal"><span class="pre">GradientLayer</span></tt></a>.</p>
 <dl class="method">
 <dt id="pyrocko.cake.Layer.potint_coefs">
 <tt class="descname">potint_coefs</tt><big>(</big><em>mode</em><big>)</big><a class="reference internal" href="_modules/pyrocko/cake.html#Layer.potint_coefs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.cake.Layer.potint_coefs" title="Permalink to this definition">¶</a></dt>
@@ -639,30 +640,35 @@ interpolation of the form</p>
 <dt id="pyrocko.cake.HomogeneousLayer">
 <em class="property">class </em><tt class="descname">HomogeneousLayer</tt><big>(</big><em>ztop</em>, <em>zbot</em>, <em>m</em>, <em>name=None</em><big>)</big><a class="reference internal" href="_modules/pyrocko/cake.html#HomogeneousLayer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.cake.HomogeneousLayer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Representation of a homogeneous layer in a layered earth model.</p>
+<p>Base class: <a class="reference internal" href="#pyrocko.cake.Layer" title="pyrocko.cake.Layer"><tt class="xref py py-class docutils literal"><span class="pre">Layer</span></tt></a>.</p>
 </dd></dl>
 
 <dl class="class">
 <dt id="pyrocko.cake.GradientLayer">
 <em class="property">class </em><tt class="descname">GradientLayer</tt><big>(</big><em>ztop</em>, <em>zbot</em>, <em>mtop</em>, <em>mbot</em>, <em>name=None</em><big>)</big><a class="reference internal" href="_modules/pyrocko/cake.html#GradientLayer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.cake.GradientLayer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Representation of a gradient layer in a layered earth model.</p>
+<p>Base class: <a class="reference internal" href="#pyrocko.cake.Layer" title="pyrocko.cake.Layer"><tt class="xref py py-class docutils literal"><span class="pre">Layer</span></tt></a>.</p>
 </dd></dl>
 
 <dl class="class">
 <dt id="pyrocko.cake.Discontinuity">
 <em class="property">class </em><tt class="descname">Discontinuity</tt><big>(</big><em>z</em>, <em>name=None</em><big>)</big><a class="reference internal" href="_modules/pyrocko/cake.html#Discontinuity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.cake.Discontinuity" title="Permalink to this definition">¶</a></dt>
 <dd><p>Base class for discontinuities in layered earth model.</p>
+<p>Subclasses are: <a class="reference internal" href="#pyrocko.cake.Interface" title="pyrocko.cake.Interface"><tt class="xref py py-class docutils literal"><span class="pre">Interface</span></tt></a> and <a class="reference internal" href="#pyrocko.cake.Surface" title="pyrocko.cake.Surface"><tt class="xref py py-class docutils literal"><span class="pre">Surface</span></tt></a>.</p>
 </dd></dl>
 
 <dl class="class">
 <dt id="pyrocko.cake.Interface">
 <em class="property">class </em><tt class="descname">Interface</tt><big>(</big><em>z</em>, <em>mabove</em>, <em>mbelow</em>, <em>name=None</em><big>)</big><a class="reference internal" href="_modules/pyrocko/cake.html#Interface"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.cake.Interface" title="Permalink to this definition">¶</a></dt>
 <dd><p>Representation of an interface in a layered earth model.</p>
+<p>Base class: <a class="reference internal" href="#pyrocko.cake.Discontinuity" title="pyrocko.cake.Discontinuity"><tt class="xref py py-class docutils literal"><span class="pre">Discontinuity</span></tt></a>.</p>
 </dd></dl>
 
 <dl class="class">
 <dt id="pyrocko.cake.Surface">
 <em class="property">class </em><tt class="descname">Surface</tt><big>(</big><em>z</em>, <em>mbelow</em><big>)</big><a class="reference internal" href="_modules/pyrocko/cake.html#Surface"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.cake.Surface" title="Permalink to this definition">¶</a></dt>
 <dd><p>Representation of the surface discontinuity in a layered earth model.</p>
+<p>Base class: <a class="reference internal" href="#pyrocko.cake.Discontinuity" title="pyrocko.cake.Discontinuity"><tt class="xref py py-class docutils literal"><span class="pre">Discontinuity</span></tt></a>.</p>
 </dd></dl>
 
 <dl class="class">
@@ -685,8 +691,26 @@ interpolation of the form</p>
 
 <dl class="class">
 <dt id="pyrocko.cake.RayPath">
-<em class="property">class </em><tt class="descname">RayPath</tt><big>(</big><em>phase</em>, <em>zstart</em>, <em>zstop</em>, <em>redistribute_p=False</em><big>)</big><a class="reference internal" href="_modules/pyrocko/cake.html#RayPath"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.cake.RayPath" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descname">RayPath</tt><big>(</big><em>phase</em><big>)</big><a class="reference internal" href="_modules/pyrocko/cake.html#RayPath"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.cake.RayPath" title="Permalink to this definition">¶</a></dt>
 <dd><p>Representation of a fan of rays running through a common sequence of layers / interfaces.</p>
+<dl class="method">
+<dt id="pyrocko.cake.RayPath.copy">
+<tt class="descname">copy</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/cake.html#RayPath.copy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.cake.RayPath.copy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a copy of it.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.cake.RayPath.endgaps">
+<tt class="descname">endgaps</tt><big>(</big><em>zstart</em>, <em>zstop</em><big>)</big><a class="reference internal" href="_modules/pyrocko/cake.html#RayPath.endgaps"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.cake.RayPath.endgaps" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get information needed for end point adjustments.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.cake.RayPath.used_phase">
+<tt class="descname">used_phase</tt><big>(</big><em>p=None</em>, <em>eps=1.0</em><big>)</big><a class="reference internal" href="_modules/pyrocko/cake.html#RayPath.used_phase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.cake.RayPath.used_phase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate phase definition from ray path.</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="pyrocko.cake.RayPath.pmax">
 <tt class="descname">pmax</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/cake.html#RayPath.pmax"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.cake.RayPath.pmax" title="Permalink to this definition">¶</a></dt>
@@ -743,22 +767,100 @@ interpolation of the form</p>
 
 <dl class="method">
 <dt id="pyrocko.cake.RayPath.spreading">
-<tt class="descname">spreading</tt><big>(</big><em>p</em><big>)</big><a class="reference internal" href="_modules/pyrocko/cake.html#RayPath.spreading"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.cake.RayPath.spreading" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">spreading</tt><big>(</big><em>p</em>, <em>endgaps</em><big>)</big><a class="reference internal" href="_modules/pyrocko/cake.html#RayPath.spreading"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.cake.RayPath.spreading" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get geometrical spreading factor.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="pyrocko.cake.RayPath.xt_endgaps">
+<tt class="descname">xt_endgaps</tt><big>(</big><em>p</em>, <em>endgaps</em>, <em>which='both'</em><big>)</big><a class="reference internal" href="_modules/pyrocko/cake.html#RayPath.xt_endgaps"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.cake.RayPath.xt_endgaps" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get amount of distance/traveltime to be subtracted at the generic ray path&#8217;s ends.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.cake.RayPath.xt_endgaps_ptest">
+<tt class="descname">xt_endgaps_ptest</tt><big>(</big><em>p</em>, <em>endgaps</em><big>)</big><a class="reference internal" href="_modules/pyrocko/cake.html#RayPath.xt_endgaps_ptest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.cake.RayPath.xt_endgaps_ptest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if ray parameter is valid at source and receiver.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="pyrocko.cake.RayPath.xt">
-<tt class="descname">xt</tt><big>(</big><em>p</em><big>)</big><a class="reference internal" href="_modules/pyrocko/cake.html#RayPath.xt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.cake.RayPath.xt" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">xt</tt><big>(</big><em>p</em>, <em>endgaps</em><big>)</big><a class="reference internal" href="_modules/pyrocko/cake.html#RayPath.xt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.cake.RayPath.xt" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate distance and traveltime for given ray parameter.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.cake.RayPath.xt_limits">
+<tt class="descname">xt_limits</tt><big>(</big><em>p</em><big>)</big><a class="reference internal" href="_modules/pyrocko/cake.html#RayPath.xt_limits"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.cake.RayPath.xt_limits" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate limits of distance and traveltime for given ray parameter.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.cake.RayPath.iter_zxt">
+<tt class="descname">iter_zxt</tt><big>(</big><em>p</em><big>)</big><a class="reference internal" href="_modules/pyrocko/cake.html#RayPath.iter_zxt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.cake.RayPath.iter_zxt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterate over (depth, distance, traveltime) at each layer interface on ray path.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.cake.RayPath.zxt_path_subdivided">
+<tt class="descname">zxt_path_subdivided</tt><big>(</big><em>p</em>, <em>endgaps</em>, <em>points_per_straight=20</em><big>)</big><a class="reference internal" href="_modules/pyrocko/cake.html#RayPath.zxt_path_subdivided"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.cake.RayPath.zxt_path_subdivided" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get geometrical representation of ray path.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.cake.RayPath.interpolate_t2x_linear">
+<tt class="descname">interpolate_t2x_linear</tt><big>(</big><em>t</em>, <em>endgaps</em><big>)</big><a class="reference internal" href="_modules/pyrocko/cake.html#RayPath.interpolate_t2x_linear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.cake.RayPath.interpolate_t2x_linear" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get approximate distance for arrival time.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.cake.RayPath.interpolate_x2t_linear">
+<tt class="descname">interpolate_x2t_linear</tt><big>(</big><em>x</em>, <em>endgaps</em><big>)</big><a class="reference internal" href="_modules/pyrocko/cake.html#RayPath.interpolate_x2t_linear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.cake.RayPath.interpolate_x2t_linear" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get approximate arrival time for distance.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.cake.RayPath.interpolate_t2px_linear">
+<tt class="descname">interpolate_t2px_linear</tt><big>(</big><em>t</em>, <em>endgaps</em><big>)</big><a class="reference internal" href="_modules/pyrocko/cake.html#RayPath.interpolate_t2px_linear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.cake.RayPath.interpolate_t2px_linear" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get approximate ray parameter and distance for arrivaltime.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.cake.RayPath.interpolate_x2pt_linear">
+<tt class="descname">interpolate_x2pt_linear</tt><big>(</big><em>x</em>, <em>endgaps</em><big>)</big><a class="reference internal" href="_modules/pyrocko/cake.html#RayPath.interpolate_x2pt_linear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.cake.RayPath.interpolate_x2pt_linear" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get approximate ray parameter and traveltime for distance.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.cake.RayPath.critical_pstart">
+<tt class="descname">critical_pstart</tt><big>(</big><em>endgaps</em><big>)</big><a class="reference internal" href="_modules/pyrocko/cake.html#RayPath.critical_pstart"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.cake.RayPath.critical_pstart" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get critical ray parameter for source depth choice.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.cake.RayPath.critical_pstop">
+<tt class="descname">critical_pstop</tt><big>(</big><em>endgaps</em><big>)</big><a class="reference internal" href="_modules/pyrocko/cake.html#RayPath.critical_pstop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.cake.RayPath.critical_pstop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get critical ray parameter for receiver depth choice.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.cake.RayPath.ranges">
+<tt class="descname">ranges</tt><big>(</big><em>endgaps</em><big>)</big><a class="reference internal" href="_modules/pyrocko/cake.html#RayPath.ranges"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.cake.RayPath.ranges" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get valid ranges of ray parameter, distance, and traveltime.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.cake.RayPath.describe">
+<tt class="descname">describe</tt><big>(</big><em>endgaps=None</em>, <em>as_degrees=False</em><big>)</big><a class="reference internal" href="_modules/pyrocko/cake.html#RayPath.describe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.cake.RayPath.describe" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get textual representation.</p>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="pyrocko.cake.Ray">
-<em class="property">class </em><tt class="descname">Ray</tt><big>(</big><em>path</em>, <em>p</em>, <em>x</em>, <em>t</em><big>)</big><a class="reference internal" href="_modules/pyrocko/cake.html#Ray"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.cake.Ray" title="Permalink to this definition">¶</a></dt>
-<dd><p>Representation of a specific ray with a specific (ray parameter, distance, arrival time) choice.</p>
+<em class="property">class </em><tt class="descname">Ray</tt><big>(</big><em>path</em>, <em>p</em>, <em>x</em>, <em>t</em>, <em>endgaps</em><big>)</big><a class="reference internal" href="_modules/pyrocko/cake.html#Ray"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.cake.Ray" title="Permalink to this definition">¶</a></dt>
+<dd><p>Representation of a ray with a specific (path, ray parameter, distance, arrival time) choice.</p>
 <p><strong>Attributes:</strong></p>
 <blockquote>
 <div><dl class="attribute">
@@ -785,7 +887,49 @@ interpolation of the form</p>
 <dd><p>Traveltime [s]</p>
 </dd></dl>
 
+<dl class="attribute">
+<dt id="pyrocko.cake.Ray.endgaps">
+<tt class="descname">endgaps</tt><a class="headerlink" href="#pyrocko.cake.Ray.endgaps" title="Permalink to this definition">¶</a></dt>
+<dd><p>Needed for source/receiver depth adjustments in many <a class="reference internal" href="#pyrocko.cake.RayPath" title="pyrocko.cake.RayPath"><tt class="xref py py-class docutils literal"><span class="pre">RayPath</span></tt></a> methods.</p>
+</dd></dl>
+
 </div></blockquote>
+<dl class="method">
+<dt id="pyrocko.cake.Ray.takeoff_angle">
+<tt class="descname">takeoff_angle</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/cake.html#Ray.takeoff_angle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.cake.Ray.takeoff_angle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get takeoff angle of ray.</p>
+<p>The angle is returned in [degrees].</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.cake.Ray.incidence_angle">
+<tt class="descname">incidence_angle</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/cake.html#Ray.incidence_angle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.cake.Ray.incidence_angle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get incidence angle of ray.</p>
+<p>The angle is returned in [degrees].</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.cake.Ray.efficiency">
+<tt class="descname">efficiency</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/cake.html#Ray.efficiency"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.cake.Ray.efficiency" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get conversion/reflection efficiency of the ray.</p>
+<p>A value between 0 and 1 is returned, reflecting the relative amount of energy
+which is transmitted along the ray and not lost by reflections or conversions.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.cake.Ray.spreading">
+<tt class="descname">spreading</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/cake.html#Ray.spreading"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.cake.Ray.spreading" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get geometrical spreading factor.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.cake.Ray.zxt_path_subdivided">
+<tt class="descname">zxt_path_subdivided</tt><big>(</big><em>points_per_straight=20</em><big>)</big><a class="reference internal" href="_modules/pyrocko/cake.html#Ray.zxt_path_subdivided"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.cake.Ray.zxt_path_subdivided" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get geometrical representation of ray path.</p>
+<p>Three arrays (depth, distance, time) with points on the ray&#8217;s path of propagation are returned. The number of points which
+are used in each ray segment (passage through one layer) may be controlled by the <cite>points_per_straight</cite> parameter.</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="class">
@@ -800,10 +944,41 @@ interpolation of the form</p>
 <li>Use the constructor <a class="reference internal" href="#pyrocko.cake.LayeredModel.from_scanlines" title="pyrocko.cake.LayeredModel.from_scanlines"><tt class="xref py py-meth docutils literal"><span class="pre">LayeredModel.from_scanlines()</span></tt></a>, to automatically create the
 <a class="reference internal" href="#pyrocko.cake.Layer" title="pyrocko.cake.Layer"><tt class="xref py py-class docutils literal"><span class="pre">Layer</span></tt></a> and <a class="reference internal" href="#pyrocko.cake.Discontinuity" title="pyrocko.cake.Discontinuity"><tt class="xref py py-class docutils literal"><span class="pre">Discontinuity</span></tt></a> objects from a given velocity profile.</li>
 </ol>
+<p>An earth model is represented by as stack of <a class="reference internal" href="#pyrocko.cake.Layer" title="pyrocko.cake.Layer"><tt class="xref py py-class docutils literal"><span class="pre">Layer</span></tt></a> and
+<a class="reference internal" href="#pyrocko.cake.Discontinuity" title="pyrocko.cake.Discontinuity"><tt class="xref py py-class docutils literal"><span class="pre">Discontinuity</span></tt></a> objects.  The method <a class="reference internal" href="#pyrocko.cake.LayeredModel.arrivals" title="pyrocko.cake.LayeredModel.arrivals"><tt class="xref py py-meth docutils literal"><span class="pre">arrivals()</span></tt></a> returns
+<a class="reference internal" href="#pyrocko.cake.Ray" title="pyrocko.cake.Ray"><tt class="xref py py-class docutils literal"><span class="pre">Ray</span></tt></a> objects which may be e.g. queried for arrival times of
+specific phases. Each ray is associated with a <a class="reference internal" href="#pyrocko.cake.RayPath" title="pyrocko.cake.RayPath"><tt class="xref py py-class docutils literal"><span class="pre">RayPath</span></tt></a> object.
+Ray objects share common ray paths if they have the same
+conversion/reflection/propagation history. Creating the ray path objects is
+relatively expensive (this is done in <a class="reference internal" href="#pyrocko.cake.LayeredModel.gather_paths" title="pyrocko.cake.LayeredModel.gather_paths"><tt class="xref py py-meth docutils literal"><span class="pre">gather_paths()</span></tt></a>), but they are cached for reuse in successive
+invocations.</p>
+<dl class="method">
+<dt id="pyrocko.cake.LayeredModel.copy_with_elevation">
+<tt class="descname">copy_with_elevation</tt><big>(</big><em>elevation</em><big>)</big><a class="reference internal" href="_modules/pyrocko/cake.html#LayeredModel.copy_with_elevation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.cake.LayeredModel.copy_with_elevation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a copy of the model with surface layer stretched to given elevation.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>elevation</strong> &#8211; new surface elevation in [m]</td>
+</tr>
+</tbody>
+</table>
+<p>Elevation is positiv upward, contrary to the layered models downward <cite>z</cite> axis.</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="pyrocko.cake.LayeredModel.append">
 <tt class="descname">append</tt><big>(</big><em>element</em><big>)</big><a class="reference internal" href="_modules/pyrocko/cake.html#LayeredModel.append"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.cake.LayeredModel.append" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add a layer or discontinuity at bottom of model.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>element</strong> &#8211; object of subclass of  <a class="reference internal" href="#pyrocko.cake.Layer" title="pyrocko.cake.Layer"><tt class="xref py py-class docutils literal"><span class="pre">Layer</span></tt></a> or <a class="reference internal" href="#pyrocko.cake.Discontinuity" title="pyrocko.cake.Discontinuity"><tt class="xref py py-class docutils literal"><span class="pre">Discontinuity</span></tt></a>.</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -818,6 +993,7 @@ interpolation of the form</p>
 </tr>
 </tbody>
 </table>
+<p>Objects derived from the <a class="reference internal" href="#pyrocko.cake.Layer" title="pyrocko.cake.Layer"><tt class="xref py py-class docutils literal"><span class="pre">Layer</span></tt></a> class are yielded.</p>
 </dd></dl>
 
 <dl class="method">
@@ -892,8 +1068,8 @@ with the actual depth of these, as defined in the model.</p>
 
 <dl class="method">
 <dt id="pyrocko.cake.LayeredModel.path">
-<tt class="descname">path</tt><big>(</big><em>p</em>, <em>phase=PhaseDef('P')</em>, <em>zstart=0.0</em>, <em>zstop=0.0</em><big>)</big><a class="reference internal" href="_modules/pyrocko/cake.html#LayeredModel.path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.cake.LayeredModel.path" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get ray path for given ray parameter, phase definition and fixed source and receiver depths.</p>
+<tt class="descname">path</tt><big>(</big><em>p</em>, <em>phase</em>, <em>layer_start</em>, <em>layer_stop</em><big>)</big><a class="reference internal" href="_modules/pyrocko/cake.html#LayeredModel.path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.cake.LayeredModel.path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get ray path for given combination of ray parameter, phase definition, source and receiver layers.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -901,8 +1077,8 @@ with the actual depth of these, as defined in the model.</p>
 <tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>p</strong> &#8211; ray parameter (spherical) [s/deg]</li>
 <li><strong>phase</strong> &#8211; phase definition (<a class="reference internal" href="#pyrocko.cake.PhaseDef" title="pyrocko.cake.PhaseDef"><tt class="xref py py-class docutils literal"><span class="pre">PhaseDef</span></tt></a> object)</li>
-<li><strong>zstart</strong> &#8211; source depth [m]</li>
-<li><strong>zstop</strong> &#8211; receiver depth [m]</li>
+<li><strong>layer_start</strong> &#8211; layer with source</li>
+<li><strong>layer_stop</strong> &#8211; layer with receiver</li>
 </ul>
 </td>
 </tr>
@@ -917,32 +1093,9 @@ with the actual depth of these, as defined in the model.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pyrocko.cake.LayeredModel.multi_path">
-<tt class="descname">multi_path</tt><big>(</big><em>p, phase=PhaseDef('P'), zstart=0.0, zstops=[0.0]</em><big>)</big><a class="reference internal" href="_modules/pyrocko/cake.html#LayeredModel.multi_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.cake.LayeredModel.multi_path" title="Permalink to this definition">¶</a></dt>
-<dd><p>Iterate ray paths for given ray parameter, phase definition and fixed source and multiple receiver depths.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>p</strong> &#8211; ray parameter (spherical) [s/deg]</li>
-<li><strong>phase</strong> &#8211; phase definition (<a class="reference internal" href="#pyrocko.cake.PhaseDef" title="pyrocko.cake.PhaseDef"><tt class="xref py py-class docutils literal"><span class="pre">PhaseDef</span></tt></a> object)</li>
-<li><strong>zstart</strong> &#8211; source depth [m]</li>
-<li><strong>zstop</strong> &#8211; list of receiver depths [m]</li>
-</ul>
-</td>
-</tr>
-<tr class="field"><th class="field-name">Yields :</th><td class="field-body"><p class="first last"><a class="reference internal" href="#pyrocko.cake.RayPath" title="pyrocko.cake.RayPath"><tt class="xref py py-class docutils literal"><span class="pre">RayPath</span></tt></a> objects</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.cake.LayeredModel.gather_pathes">
-<tt class="descname">gather_pathes</tt><big>(</big><em>phases=PhaseDef('P')</em>, <em>zstart=0.0</em>, <em>zstop=0.0</em>, <em>np=1000</em>, <em>pdepth=18</em><big>)</big><a class="reference internal" href="_modules/pyrocko/cake.html#LayeredModel.gather_pathes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.cake.LayeredModel.gather_pathes" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get all possible ray pathes for fixed source and receiver depth for one or more phase definitions.</p>
+<dt id="pyrocko.cake.LayeredModel.gather_paths">
+<tt class="descname">gather_paths</tt><big>(</big><em>phases=PhaseDef('P')</em>, <em>zstart=0.0</em>, <em>zstop=0.0</em><big>)</big><a class="reference internal" href="_modules/pyrocko/cake.html#LayeredModel.gather_paths"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.cake.LayeredModel.gather_paths" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get all possible ray paths for given source and receiver depths for one or more phase definitions.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -951,7 +1104,6 @@ with the actual depth of these, as defined in the model.</p>
 <li><strong>phases</strong> &#8211; a <a class="reference internal" href="#pyrocko.cake.PhaseDef" title="pyrocko.cake.PhaseDef"><tt class="xref py py-class docutils literal"><span class="pre">PhaseDef</span></tt></a> object or a list of such objects</li>
 <li><strong>zstart</strong> &#8211; source depth [m]</li>
 <li><strong>zstop</strong> &#8211; receiver depth [m]</li>
-<li><strong>np</strong> &#8211; controls granularity of ray path fan drafting</li>
 </ul>
 </td>
 </tr>
@@ -960,11 +1112,14 @@ with the actual depth of these, as defined in the model.</p>
 </tr>
 </tbody>
 </table>
+<p>Results of this method are cached internally. Cached results are
+returned, when a given combination of source layer, receiver layer and
+phase definition has been used before.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyrocko.cake.LayeredModel.arrivals">
-<tt class="descname">arrivals</tt><big>(</big><em>distances=</em><span class="optional">[</span><span class="optional">]</span>, <em>phases=PhaseDef('P')</em>, <em>zstart=0.0</em>, <em>zstop=0.0</em>, <em>np=1000</em>, <em>refine=True</em>, <em>interpolation='linear'</em>, <em>pdepth=18</em><big>)</big><a class="reference internal" href="_modules/pyrocko/cake.html#LayeredModel.arrivals"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.cake.LayeredModel.arrivals" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">arrivals</tt><big>(</big><em>distances=</em><span class="optional">[</span><span class="optional">]</span>, <em>phases=PhaseDef('P')</em>, <em>zstart=0.0</em>, <em>zstop=0.0</em>, <em>refine=True</em><big>)</big><a class="reference internal" href="_modules/pyrocko/cake.html#LayeredModel.arrivals"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.cake.LayeredModel.arrivals" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute rays and traveltimes for given distances.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -975,13 +1130,11 @@ with the actual depth of these, as defined in the model.</p>
 <li><strong>phases</strong> &#8211; a <a class="reference internal" href="#pyrocko.cake.PhaseDef" title="pyrocko.cake.PhaseDef"><tt class="xref py py-class docutils literal"><span class="pre">PhaseDef</span></tt></a> object or a list of such objects</li>
 <li><strong>zstart</strong> &#8211; source depth [m]</li>
 <li><strong>zstop</strong> &#8211; receiver depth [m]</li>
-<li><strong>np</strong> &#8211; controls granularity of ray path fan drafting</li>
 <li><strong>refine</strong> &#8211; bool flag, whether to use bisectioning to improve (p,x,t) estimated from interpolation</li>
-<li><strong>interpolation</strong> &#8211; string key, type of interpolation to be used (<tt class="docutils literal"><span class="pre">'linear'</span></tt> or <tt class="docutils literal"><span class="pre">'spline'</span></tt>)</li>
 </ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">a list of <a class="reference internal" href="#pyrocko.cake.Ray" title="pyrocko.cake.Ray"><tt class="xref py py-class docutils literal"><span class="pre">Ray</span></tt></a> objects, sorted by distance</p>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">a list of <a class="reference internal" href="#pyrocko.cake.Ray" title="pyrocko.cake.Ray"><tt class="xref py py-class docutils literal"><span class="pre">Ray</span></tt></a> objects, sorted by (distance, arrival time)</p>
 </td>
 </tr>
 </tbody>
@@ -1007,12 +1160,12 @@ to add layers and discontinuities as needed.</p>
 <dl class="method">
 <dt id="pyrocko.cake.LayeredModel.min">
 <tt class="descname">min</tt><big>(</big><em>get='vp'</em><big>)</big><a class="reference internal" href="_modules/pyrocko/cake.html#LayeredModel.min"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.cake.LayeredModel.min" title="Permalink to this definition">¶</a></dt>
-<dd><p>Find minimum value of a material property defined in the model.</p>
+<dd><p>Find minimum value of a material property or depth defined in the model.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>get</strong> &#8211; property to be querried (<tt class="docutils literal"><span class="pre">`'vp'</span></tt>, <tt class="docutils literal"><span class="pre">'vs'</span></tt>, <tt class="docutils literal"><span class="pre">'rho'</span></tt>, <tt class="docutils literal"><span class="pre">'qp'</span></tt>, or <tt class="docutils literal"><span class="pre">'qs'</span></tt>)</td>
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>get</strong> &#8211; property to be queried (<tt class="docutils literal"><span class="pre">`'vp'</span></tt>, <tt class="docutils literal"><span class="pre">'vs'</span></tt>, <tt class="docutils literal"><span class="pre">'rho'</span></tt>, <tt class="docutils literal"><span class="pre">'qp'</span></tt>, or <tt class="docutils literal"><span class="pre">'qs'</span></tt>, or <tt class="docutils literal"><span class="pre">'z'</span></tt>)</td>
 </tr>
 </tbody>
 </table>
@@ -1021,12 +1174,12 @@ to add layers and discontinuities as needed.</p>
 <dl class="method">
 <dt id="pyrocko.cake.LayeredModel.max">
 <tt class="descname">max</tt><big>(</big><em>get='vp'</em><big>)</big><a class="reference internal" href="_modules/pyrocko/cake.html#LayeredModel.max"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.cake.LayeredModel.max" title="Permalink to this definition">¶</a></dt>
-<dd><p>Find maximum value of a material property defined in the model.</p>
+<dd><p>Find maximum value of a material property or depth defined in the model.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>get</strong> &#8211; property to be querried (<tt class="docutils literal"><span class="pre">`'vp'</span></tt>, <tt class="docutils literal"><span class="pre">'vs'</span></tt>, <tt class="docutils literal"><span class="pre">'rho'</span></tt>, <tt class="docutils literal"><span class="pre">'qp'</span></tt>, or <tt class="docutils literal"><span class="pre">'qs'</span></tt>)</td>
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>get</strong> &#8211; property to be queried (<tt class="docutils literal"><span class="pre">`'vp'</span></tt>, <tt class="docutils literal"><span class="pre">'vs'</span></tt>, <tt class="docutils literal"><span class="pre">'rho'</span></tt>, <tt class="docutils literal"><span class="pre">'qp'</span></tt>, <tt class="docutils literal"><span class="pre">'qs'</span></tt>, or <tt class="docutils literal"><span class="pre">'z'</span></tt>)</td>
 </tr>
 </tbody>
 </table>
@@ -1039,6 +1192,7 @@ to add layers and discontinuities as needed.</p>
 <tt class="descname">read_hyposat_model</tt><big>(</big><em>fn</em><big>)</big><a class="reference internal" href="_modules/pyrocko/cake.html#read_hyposat_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.cake.read_hyposat_model" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reader for HYPOSAT earth model files.</p>
 <p>To be used as producer in <a class="reference internal" href="#pyrocko.cake.LayeredModel.from_scanlines" title="pyrocko.cake.LayeredModel.from_scanlines"><tt class="xref py py-meth docutils literal"><span class="pre">LayeredModel.from_scanlines()</span></tt></a>.</p>
+<p>Interface names are translated as follows: <tt class="docutils literal"><span class="pre">'MOHO'</span></tt> -&gt; <tt class="docutils literal"><span class="pre">'moho'</span></tt>, <tt class="docutils literal"><span class="pre">'CONR'</span></tt> -&gt; <tt class="docutils literal"><span class="pre">'conrad'</span></tt></p>
 </dd></dl>
 
 <dl class="function">
@@ -1046,6 +1200,8 @@ to add layers and discontinuities as needed.</p>
 <tt class="descname">read_nd_model</tt><big>(</big><em>fn</em><big>)</big><a class="reference internal" href="_modules/pyrocko/cake.html#read_nd_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.cake.read_nd_model" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reader for TauP style &#8216;.nd&#8217; (named discontinuity) files.</p>
 <p>To be used as producer in <a class="reference internal" href="#pyrocko.cake.LayeredModel.from_scanlines" title="pyrocko.cake.LayeredModel.from_scanlines"><tt class="xref py py-meth docutils literal"><span class="pre">LayeredModel.from_scanlines()</span></tt></a>.</p>
+<p>Interface names are translated as follows: <tt class="docutils literal"><span class="pre">'mantle'</span></tt> -&gt; <tt class="docutils literal"><span class="pre">'moho'</span></tt>, 
+<tt class="docutils literal"><span class="pre">'outer-core'</span></tt> -&gt; <tt class="docutils literal"><span class="pre">'cmb'</span></tt>, <tt class="docutils literal"><span class="pre">'inner-core'</span></tt> -&gt; <tt class="docutils literal"><span class="pre">'icb'</span></tt>.</p>
 </dd></dl>
 
 <dl class="function">
@@ -1087,6 +1243,10 @@ to add layers and discontinuities as needed.</p>
 </tr>
 </tbody>
 </table>
+<p>The naming of interfaces is translated from the file format&#8217;s native naming to
+Cake&#8217;s own convention (See <a class="reference internal" href="#pyrocko.cake.read_nd_model" title="pyrocko.cake.read_nd_model"><tt class="xref py py-func docutils literal"><span class="pre">read_nd_model()</span></tt></a> and
+<a class="reference internal" href="#pyrocko.cake.read_hyposat_model" title="pyrocko.cake.read_hyposat_model"><tt class="xref py py-func docutils literal"><span class="pre">read_hyposat_model()</span></tt></a> for details).  Cake likes the following internal names:
+<tt class="docutils literal"><span class="pre">'conrad'</span></tt>, <tt class="docutils literal"><span class="pre">'moho'</span></tt>, <tt class="docutils literal"><span class="pre">'cmb'</span></tt> (core-mantle boundary), <tt class="docutils literal"><span class="pre">'icb'</span></tt> (inner core boundary).</p>
 </dd></dl>
 
 <dl class="function">

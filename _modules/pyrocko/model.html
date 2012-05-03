@@ -412,7 +412,10 @@
         </div>
 <div class="viewcode-block" id="Station.nsl_string"><a class="viewcode-back" href="../../model.html#pyrocko.model.Station.nsl_string">[docs]</a>    <span class="k">def</span> <span class="nf">nsl_string</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">network</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">station</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">location</span><span class="p">))</span>
-        </div>
+    </div>
+<div class="viewcode-block" id="Station.nsl"><a class="viewcode-back" href="../../model.html#pyrocko.model.Station.nsl">[docs]</a>    <span class="k">def</span> <span class="nf">nsl</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">network</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">station</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">location</span>
+</div>
     <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">sta</span> <span class="o">=</span> <span class="bp">self</span>
         <span class="n">elevation</span> <span class="o">=</span> <span class="mf">0.0</span>

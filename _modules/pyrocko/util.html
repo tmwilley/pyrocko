@@ -81,6 +81,9 @@
         <span class="n">level</span><span class="o">=</span><span class="n">levels</span><span class="p">[</span><span class="n">levelname</span><span class="p">],</span>
         <span class="n">format</span> <span class="o">=</span> <span class="n">programname</span><span class="o">+</span><span class="s">&#39;:</span><span class="si">%(name)-20s</span><span class="s"> - </span><span class="si">%(levelname)-8s</span><span class="s"> - </span><span class="si">%(message)s</span><span class="s">&#39;</span> <span class="p">)</span>
 </div>
+<div class="viewcode-block" id="data_file"><a class="viewcode-back" href="../../util.html#pyrocko.util.data_file">[docs]</a><span class="k">def</span> <span class="nf">data_file</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">__file__</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="s">&#39;data&#39;</span><span class="p">,</span> <span class="n">fn</span><span class="p">)</span>
+</div>
 <div class="viewcode-block" id="Stopwatch"><a class="viewcode-back" href="../../util.html#pyrocko.util.Stopwatch">[docs]</a><span class="k">class</span> <span class="nc">Stopwatch</span><span class="p">:</span>
     <span class="sd">&#39;&#39;&#39;Simple stopwatch to measure elapsed wall clock time.</span>
 <span class="sd">    </span>
