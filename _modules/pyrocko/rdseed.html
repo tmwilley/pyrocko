@@ -57,6 +57,94 @@
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s">&#39;pyrocko.rdseed&#39;</span><span class="p">)</span>
 
+<div class="viewcode-block" id="read_station_header_file"><a class="viewcode-back" href="../../rdseed.html#pyrocko.rdseed.read_station_header_file">[docs]</a><span class="k">def</span> <span class="nf">read_station_header_file</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">m</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ltoks</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">i</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">ltoks</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)])</span> <span class="o">==</span> <span class="n">args</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">True</span>
+        <span class="k">return</span> <span class="bp">False</span>
+    
+    <span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">toks</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+   
+    <span class="k">def</span> <span class="nf">s</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">toks</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">i</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">toks</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s">&#39;&#39;</span>
+
+    <span class="n">fi</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">)</span>
+    
+    <span class="n">stations</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">atsec</span><span class="p">,</span> <span class="n">station</span><span class="p">,</span> <span class="n">channel</span> <span class="o">=</span> <span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="bp">None</span>
+
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">fi</span><span class="p">:</span>
+        <span class="n">toks</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+        <span class="n">ltoks</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">m</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s">&#39;station&#39;</span><span class="p">,</span> <span class="s">&#39;header&#39;</span><span class="p">):</span>
+            <span class="n">atsec</span> <span class="o">=</span> <span class="s">&#39;station&#39;</span>
+            <span class="n">station</span>  <span class="o">=</span> <span class="p">{</span><span class="s">&#39;channels&#39;</span><span class="p">:</span> <span class="p">[]}</span>
+            <span class="n">stations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">station</span><span class="p">)</span>
+            <span class="k">continue</span>
+
+        <span class="k">if</span> <span class="n">m</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s">&#39;station&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">m</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="s">&#39;channel&#39;</span><span class="p">):</span>
+            <span class="n">atsec</span> <span class="o">=</span> <span class="s">&#39;channel&#39;</span>
+            <span class="n">channel</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">station</span><span class="p">[</span><span class="s">&#39;channels&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">channel</span><span class="p">)</span>
+            <span class="k">continue</span>
+
+        <span class="k">if</span> <span class="n">atsec</span> <span class="o">==</span> <span class="s">&#39;station&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">m</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s">&#39;station&#39;</span><span class="p">,</span> <span class="s">&#39;code:&#39;</span><span class="p">):</span>
+                <span class="n">station</span><span class="p">[</span><span class="s">&#39;station&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">s</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+
+            <span class="k">elif</span> <span class="n">m</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s">&#39;network&#39;</span><span class="p">,</span> <span class="s">&#39;code:&#39;</span><span class="p">):</span>
+                <span class="n">station</span><span class="p">[</span><span class="s">&#39;network&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">s</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+
+            <span class="k">elif</span> <span class="n">m</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s">&#39;name:&#39;</span><span class="p">):</span>
+                <span class="n">station</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span> <span class="n">toks</span><span class="p">[</span><span class="mi">2</span><span class="p">:])</span>
+
+        <span class="k">if</span> <span class="n">atsec</span> <span class="o">==</span> <span class="s">&#39;channel&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">m</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s">&#39;channel:&#39;</span><span class="p">):</span>
+                <span class="n">channel</span><span class="p">[</span><span class="s">&#39;channel&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">s</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+
+            <span class="k">elif</span> <span class="n">m</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s">&#39;location:&#39;</span><span class="p">):</span>
+                <span class="n">channel</span><span class="p">[</span><span class="s">&#39;location&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">s</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+            
+            <span class="k">elif</span> <span class="n">m</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s">&#39;latitude:&#39;</span><span class="p">):</span>
+                <span class="n">station</span><span class="p">[</span><span class="s">&#39;lat&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+            
+            <span class="k">elif</span> <span class="n">m</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s">&#39;longitude:&#39;</span><span class="p">):</span>
+                <span class="n">station</span><span class="p">[</span><span class="s">&#39;lon&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+
+            <span class="k">elif</span> <span class="n">m</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s">&#39;elevation:&#39;</span><span class="p">):</span>
+                <span class="n">station</span><span class="p">[</span><span class="s">&#39;elevation&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+
+            <span class="k">elif</span> <span class="n">m</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s">&#39;local&#39;</span><span class="p">,</span> <span class="s">&#39;depth:&#39;</span><span class="p">):</span>
+                <span class="n">channel</span><span class="p">[</span><span class="s">&#39;depth&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+            
+            <span class="k">elif</span> <span class="n">m</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s">&#39;azimuth:&#39;</span><span class="p">):</span>
+                <span class="n">channel</span><span class="p">[</span><span class="s">&#39;azimuth&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+
+            <span class="k">elif</span> <span class="n">m</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s">&#39;dip:&#39;</span><span class="p">):</span>
+                <span class="n">channel</span><span class="p">[</span><span class="s">&#39;dip&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">f</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+    
+    <span class="n">fi</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    
+    <span class="n">nsl_stations</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">station</span> <span class="ow">in</span> <span class="n">stations</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">channel</span> <span class="ow">in</span> <span class="n">station</span><span class="p">[</span><span class="s">&#39;channels&#39;</span><span class="p">]:</span>
+            <span class="k">def</span> <span class="nf">cs</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">channel</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">station</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">default</span><span class="p">))</span>
+
+            <span class="n">nsl</span> <span class="o">=</span> <span class="n">station</span><span class="p">[</span><span class="s">&#39;network&#39;</span><span class="p">],</span> <span class="n">station</span><span class="p">[</span><span class="s">&#39;station&#39;</span><span class="p">],</span> <span class="n">channel</span><span class="p">[</span><span class="s">&#39;location&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">nsl</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">nsl_stations</span><span class="p">:</span>
+                <span class="n">nsl_stations</span><span class="p">[</span><span class="n">nsl</span><span class="p">]</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">Station</span><span class="p">(</span><span class="n">network</span><span class="o">=</span><span class="n">station</span><span class="p">[</span><span class="s">&#39;network&#39;</span><span class="p">],</span> <span class="n">station</span><span class="o">=</span><span class="n">station</span><span class="p">[</span><span class="s">&#39;station&#39;</span><span class="p">],</span> <span class="n">location</span><span class="o">=</span><span class="n">channel</span><span class="p">[</span><span class="s">&#39;location&#39;</span><span class="p">],</span> 
+                            <span class="n">lat</span><span class="o">=</span><span class="n">cs</span><span class="p">(</span><span class="s">&#39;lat&#39;</span><span class="p">),</span> <span class="n">lon</span><span class="o">=</span><span class="n">cs</span><span class="p">(</span><span class="s">&#39;lon&#39;</span><span class="p">),</span> <span class="n">elevation</span><span class="o">=</span><span class="n">cs</span><span class="p">(</span><span class="s">&#39;elevation&#39;</span><span class="p">),</span> <span class="n">depth</span><span class="o">=</span><span class="n">cs</span><span class="p">(</span><span class="s">&#39;depth&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="n">station</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">])</span>
+
+            <span class="n">nsl_stations</span><span class="p">[</span><span class="n">nsl</span><span class="p">]</span><span class="o">.</span><span class="n">add_channel</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">Channel</span><span class="p">(</span><span class="n">channel</span><span class="p">[</span><span class="s">&#39;channel&#39;</span><span class="p">],</span> <span class="n">azimuth</span><span class="o">=</span><span class="n">channel</span><span class="p">[</span><span class="s">&#39;azimuth&#39;</span><span class="p">],</span> <span class="n">dip</span><span class="o">=</span><span class="n">channel</span><span class="p">[</span><span class="s">&#39;dip&#39;</span><span class="p">]))</span>
+        
+    <span class="k">return</span> <span class="n">nsl_stations</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+</div>
 <div class="viewcode-block" id="cmp_version"><a class="viewcode-back" href="../../rdseed.html#pyrocko.rdseed.cmp_version">[docs]</a><span class="k">def</span> <span class="nf">cmp_version</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">):</span>
     <span class="n">ai</span> <span class="o">=</span> <span class="p">[</span> <span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">a</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;.&#39;</span><span class="p">)</span> <span class="p">]</span>
     <span class="n">bi</span> <span class="o">=</span> <span class="p">[</span> <span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">b</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;.&#39;</span><span class="p">)</span> <span class="p">]</span>
@@ -187,8 +275,12 @@
         </div>
 <div class="viewcode-block" id="SeedVolumeAccess.get_restitution"><a class="viewcode-back" href="../../rdseed.html#pyrocko.rdseed.SeedVolumeAccess.get_restitution">[docs]</a>    <span class="k">def</span> <span class="nf">get_restitution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tr</span><span class="p">,</span> <span class="n">allowed_methods</span><span class="p">):</span>
         
+
         <span class="k">if</span> <span class="s">&#39;evalresp&#39;</span> <span class="ow">in</span> <span class="n">allowed_methods</span><span class="p">:</span>
             <span class="n">respfile</span> <span class="o">=</span> <span class="n">pjoin</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tempdir</span><span class="p">,</span> <span class="s">&#39;RESP.</span><span class="si">%s</span><span class="s">.</span><span class="si">%s</span><span class="s">.</span><span class="si">%s</span><span class="s">.</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">tr</span><span class="o">.</span><span class="n">nslc_id</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">respfile</span><span class="p">):</span>
+               <span class="k">raise</span> <span class="n">eventdata</span><span class="o">.</span><span class="n">NoRestitution</span><span class="p">(</span><span class="s">&#39;no response information available for trace </span><span class="si">%s</span><span class="s">.</span><span class="si">%s</span><span class="s">.</span><span class="si">%s</span><span class="s">.</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">tr</span><span class="o">.</span><span class="n">nslc_id</span><span class="p">)</span>
+
             <span class="n">trans</span> <span class="o">=</span> <span class="n">trace</span><span class="o">.</span><span class="n">InverseEvalresp</span><span class="p">(</span><span class="n">respfile</span><span class="p">,</span> <span class="n">tr</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">trans</span>
         <span class="k">else</span><span class="p">:</span>
@@ -205,6 +297,11 @@
             <span class="c"># seismograms:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pile</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
                 <span class="n">rdseed_proc</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">([</span><span class="n">Programs</span><span class="o">.</span><span class="n">rdseed</span><span class="p">,</span> <span class="s">&#39;-f&#39;</span><span class="p">,</span> <span class="n">input_fn</span><span class="p">,</span> <span class="s">&#39;-d&#39;</span><span class="p">,</span> <span class="s">&#39;-z&#39;</span><span class="p">,</span> <span class="s">&#39;3&#39;</span><span class="p">,</span> <span class="s">&#39;-o&#39;</span><span class="p">,</span> <span class="s">&#39;1&#39;</span><span class="p">,</span> <span class="s">&#39;-p&#39;</span><span class="p">,</span> <span class="s">&#39;-R&#39;</span><span class="p">,</span> <span class="s">&#39;-q&#39;</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">],</span> 
+                                         <span class="n">stdin</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">)</span>
+                <span class="p">(</span><span class="n">out</span><span class="p">,</span><span class="n">err</span><span class="p">)</span> <span class="o">=</span> <span class="n">rdseed_proc</span><span class="o">.</span><span class="n">communicate</span><span class="p">()</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">strerr</span><span class="p">(</span><span class="n">err</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">rdseed_proc</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">([</span><span class="n">Programs</span><span class="o">.</span><span class="n">rdseed</span><span class="p">,</span> <span class="s">&#39;-f&#39;</span><span class="p">,</span> <span class="n">input_fn</span><span class="p">,</span> <span class="s">&#39;-z&#39;</span><span class="p">,</span> <span class="s">&#39;3&#39;</span><span class="p">,</span> <span class="s">&#39;-p&#39;</span><span class="p">,</span> <span class="s">&#39;-R&#39;</span><span class="p">,</span> <span class="s">&#39;-q&#39;</span><span class="p">,</span> <span class="n">output_dir</span><span class="p">],</span> 
                                          <span class="n">stdin</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">)</span>
                 <span class="p">(</span><span class="n">out</span><span class="p">,</span><span class="n">err</span><span class="p">)</span> <span class="o">=</span> <span class="n">rdseed_proc</span><span class="o">.</span><span class="n">communicate</span><span class="p">()</span>
                 <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">strerr</span><span class="p">(</span><span class="n">err</span><span class="p">))</span>
@@ -268,78 +365,10 @@
             
         <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">events</span>
-    
-    <span class="k">def</span> <span class="nf">_get_channel_orientations</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        
-        <span class="n">orientations</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="n">pile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_pile</span><span class="p">()</span>
-        
-        <span class="k">for</span> <span class="n">trace</span> <span class="ow">in</span> <span class="n">pile</span><span class="o">.</span><span class="n">iter_all</span><span class="p">():</span>
-            <span class="n">dip</span> <span class="o">=</span> <span class="n">trace</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="s">&#39;cmpinc&#39;</span><span class="p">]</span><span class="o">-</span><span class="mf">90.</span>
-            <span class="n">azimuth</span> <span class="o">=</span> <span class="n">trace</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="s">&#39;cmpaz&#39;</span><span class="p">]</span>
-            <span class="n">orientations</span><span class="p">[</span><span class="n">trace</span><span class="o">.</span><span class="n">nslc_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">azimuth</span><span class="p">,</span> <span class="n">dip</span>
-        <span class="k">return</span> <span class="n">orientations</span>
         
     <span class="k">def</span> <span class="nf">_get_stations_from_file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        
-        <span class="n">orientations</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_channel_orientations</span><span class="p">()</span>
-        
-        <span class="c"># make station to locations map, cause these are not included in the </span>
-        <span class="c"># rdseed.stations file</span>
-        
-        <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_pile</span><span class="p">()</span>
-        <span class="n">ns_to_l</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">for</span> <span class="n">nslc</span> <span class="ow">in</span> <span class="n">p</span><span class="o">.</span><span class="n">nslc_ids</span><span class="p">:</span>
-            <span class="n">ns</span> <span class="o">=</span> <span class="n">nslc</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span>
-            <span class="k">if</span> <span class="n">ns</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ns_to_l</span><span class="p">:</span>
-                <span class="n">ns_to_l</span><span class="p">[</span><span class="n">ns</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
-            
-            <span class="n">ns_to_l</span><span class="p">[</span><span class="n">ns</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">nslc</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
-        
-        
-        <span class="c"># make</span>
-        
-        <span class="n">rdseed_station_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tempdir</span><span class="p">,</span> <span class="s">&#39;rdseed.stations&#39;</span><span class="p">)</span>
-        
-        <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">rdseed_station_file</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">)</span>
-        
-        <span class="c"># sometimes there are line breaks in the station description strings</span>
-        
-        <span class="n">txt</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
-        <span class="n">rows</span> <span class="o">=</span> <span class="n">dumb_parser</span><span class="p">(</span> <span class="n">txt</span> <span class="p">)</span>
-        <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-        
-        <span class="n">icolname</span> <span class="o">=</span> <span class="mi">6</span>
-        <span class="n">icolcomp</span> <span class="o">=</span> <span class="mi">5</span>
-        
-        <span class="n">stations</span> <span class="o">=</span> <span class="p">[]</span>
-        
-        <span class="k">for</span> <span class="n">cols</span> <span class="ow">in</span> <span class="n">rows</span><span class="p">:</span>
-            <span class="n">network</span><span class="p">,</span> <span class="n">station</span> <span class="o">=</span> <span class="n">cols</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">cols</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="k">for</span> <span class="n">location</span> <span class="ow">in</span> <span class="n">ns_to_l</span><span class="p">[</span><span class="n">network</span><span class="p">,</span> <span class="n">station</span><span class="p">]:</span>
-                
-                <span class="n">channels</span> <span class="o">=</span> <span class="p">[]</span>
-                <span class="k">for</span> <span class="n">channel</span> <span class="ow">in</span>  <span class="n">cols</span><span class="p">[</span><span class="n">icolcomp</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">():</span>
-                    <span class="k">if</span> <span class="p">(</span><span class="n">network</span><span class="p">,</span> <span class="n">station</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">channel</span><span class="p">)</span> <span class="ow">in</span> <span class="n">orientations</span><span class="p">:</span>
-                        <span class="n">azimuth</span><span class="p">,</span> <span class="n">dip</span> <span class="o">=</span> <span class="n">orientations</span><span class="p">[</span><span class="n">network</span><span class="p">,</span> <span class="n">station</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">channel</span><span class="p">]</span>
-                    <span class="k">else</span><span class="p">:</span>
-                        <span class="n">azimuth</span><span class="p">,</span> <span class="n">dip</span> <span class="o">=</span> <span class="bp">None</span><span class="p">,</span> <span class="bp">None</span> <span class="c"># let Channel guess from name</span>
-                    <span class="n">channels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">Channel</span><span class="p">(</span><span class="n">channel</span><span class="p">,</span> <span class="n">azimuth</span><span class="p">,</span> <span class="n">dip</span><span class="p">))</span>
-                    
-                <span class="n">s</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">Station</span><span class="p">(</span>
-                    <span class="n">network</span> <span class="o">=</span> <span class="n">cols</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
-                    <span class="n">station</span> <span class="o">=</span> <span class="n">cols</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-                    <span class="n">location</span> <span class="o">=</span> <span class="n">location</span><span class="p">,</span>
-                    <span class="n">lat</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">cols</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span>
-                    <span class="n">lon</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">cols</span><span class="p">[</span><span class="mi">3</span><span class="p">]),</span>
-                    <span class="n">elevation</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">cols</span><span class="p">[</span><span class="mi">4</span><span class="p">]),</span>
-                    <span class="n">name</span> <span class="o">=</span> <span class="n">cols</span><span class="p">[</span><span class="n">icolname</span><span class="p">],</span>
-                    <span class="n">channels</span> <span class="o">=</span> <span class="n">channels</span>
-                <span class="p">)</span>
-                <span class="n">stations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
-                
+        <span class="n">stations</span> <span class="o">=</span> <span class="n">read_station_header_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">station_headers_file</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">stations</span>
-        
         
     <span class="k">def</span> <span class="nf">_insert_channel_descriptions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stations</span><span class="p">):</span>
         <span class="c"># this is done beforehand in this class</span>

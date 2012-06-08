@@ -827,22 +827,16 @@ compontent is missing, horizontal components can still be rotated.</p>
 
 <dl class="function">
 <dt id="pyrocko.trace.correlate">
-<tt class="descname">correlate</tt><big>(</big><em>a</em>, <em>b</em>, <em>mode='valid'</em>, <em>normalization=None</em><big>)</big><a class="reference internal" href="_modules/pyrocko/trace.html#correlate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.trace.correlate" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">correlate</tt><big>(</big><em>a</em>, <em>b</em>, <em>mode='valid'</em>, <em>normalization=None</em>, <em>use_fft=False</em><big>)</big><a class="reference internal" href="_modules/pyrocko/trace.html#correlate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.trace.correlate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Cross correlation of two traces.</p>
-<p>This function computes the cross correlation with the NumPy function of the
-same name.  A trace containing the cross correlation coefficients is
-returned. The time information of the output trace is adjusted so that the
-returned cross correlation can be viewed directly as a function of time
-shift. This function tries to circumvent some problems caused by older
-versions of numpy.correlate.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>a,b</strong> &#8211; input traces</li>
-<li><strong>mode</strong> &#8211; &#8216;valid&#8217;, &#8216;full&#8217;, or &#8216;same&#8217;</li>
-<li><strong>normalization</strong> &#8211; &#8216;normal&#8217;, &#8216;gliding&#8217;, or None</li>
+<li><strong>mode</strong> &#8211; <tt class="docutils literal"><span class="pre">'valid'</span></tt>, <tt class="docutils literal"><span class="pre">'full'</span></tt>, or <tt class="docutils literal"><span class="pre">'same'</span></tt></li>
+<li><strong>normalization</strong> &#8211; <tt class="docutils literal"><span class="pre">'normal'</span></tt>, <tt class="docutils literal"><span class="pre">'gliding'</span></tt>, or <tt class="xref docutils literal"><span class="pre">None</span></tt></li>
 </ul>
 </td>
 </tr>
@@ -851,6 +845,17 @@ versions of numpy.correlate.</p>
 </tr>
 </tbody>
 </table>
+<p>This function computes the cross correlation between two traces. It
+evaluates the discrete equivalent of</p>
+<div class="math">
+<p><img src="_images/math/b0b28caa2b5b742f257e1960aba9f404d45697b5.png" alt="c(t) = \int_{-\infty}^{\infty} a^{\ast}(\tau) b(t+\tau) d\tau" /></p>
+</div><p>where the star denotes complex conjugate. Note, that the arguments here are
+swapped when compared with the <tt class="xref py py-func docutils literal"><span class="pre">numpy.correlate()</span></tt> function,
+which is internally called. This function should be safe even with older
+versions of NumPy, where the correlate function has some problems.</p>
+<p>A trace containing the cross correlation coefficients is returned. The time
+information of the output trace is set so that the returned cross
+correlation can be viewed directly as a function of time lag.</p>
 <p>Example:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="c"># align two traces a and b containing a time shifted similar signal:</span>
 <span class="n">c</span> <span class="o">=</span> <span class="n">pyrocko</span><span class="o">.</span><span class="n">trace</span><span class="o">.</span><span class="n">correlate</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">)</span>
@@ -867,12 +872,12 @@ versions of numpy.correlate.</p>
 
 <dl class="function">
 <dt id="pyrocko.trace.assert_same_sampling_rate">
-<tt class="descname">assert_same_sampling_rate</tt><big>(</big><em>a</em>, <em>b</em>, <em>eps=9.9999999999999995e-07</em><big>)</big><a class="reference internal" href="_modules/pyrocko/trace.html#assert_same_sampling_rate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.trace.assert_same_sampling_rate" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">assert_same_sampling_rate</tt><big>(</big><em>a</em>, <em>b</em>, <em>eps=1e-06</em><big>)</big><a class="reference internal" href="_modules/pyrocko/trace.html#assert_same_sampling_rate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.trace.assert_same_sampling_rate" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="pyrocko.trace.same_sampling_rate">
-<tt class="descname">same_sampling_rate</tt><big>(</big><em>a</em>, <em>b</em>, <em>eps=9.9999999999999995e-07</em><big>)</big><a class="reference internal" href="_modules/pyrocko/trace.html#same_sampling_rate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.trace.same_sampling_rate" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">same_sampling_rate</tt><big>(</big><em>a</em>, <em>b</em>, <em>eps=1e-06</em><big>)</big><a class="reference internal" href="_modules/pyrocko/trace.html#same_sampling_rate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.trace.same_sampling_rate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if two traces have the same sampling rate.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -1061,6 +1066,29 @@ T(f) = --------------
 <dt id="pyrocko.trace.numpy_has_correlate_flip_bug">
 <tt class="descname">numpy_has_correlate_flip_bug</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/trace.html#numpy_has_correlate_flip_bug"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.trace.numpy_has_correlate_flip_bug" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if NumPy&#8217;s correlate function reveals old behaviour</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyrocko.trace.numpy_correlate_fixed">
+<tt class="descname">numpy_correlate_fixed</tt><big>(</big><em>a</em>, <em>b</em>, <em>mode='valid'</em>, <em>use_fft=False</em><big>)</big><a class="reference internal" href="_modules/pyrocko/trace.html#numpy_correlate_fixed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.trace.numpy_correlate_fixed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Call <tt class="xref py py-func docutils literal"><span class="pre">numpy.correlate()</span></tt> with fixes.</p>
+<blockquote>
+<div>c[k] = sum_i a[i+k] * conj(b[i])</div></blockquote>
+<p>Note that the result produced by newer numpy.correlate is always flipped
+with respect to the formula given in its documentation
+(if ascending k assumed for the output).</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyrocko.trace.numpy_correlate_emulate">
+<tt class="descname">numpy_correlate_emulate</tt><big>(</big><em>a</em>, <em>b</em>, <em>mode='valid'</em><big>)</big><a class="reference internal" href="_modules/pyrocko/trace.html#numpy_correlate_emulate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.trace.numpy_correlate_emulate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Slow version of <tt class="xref py py-func docutils literal"><span class="pre">numpy.correlate()</span></tt> for comparison.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyrocko.trace.numpy_correlate_lag_range">
+<tt class="descname">numpy_correlate_lag_range</tt><big>(</big><em>a</em>, <em>b</em>, <em>mode='valid'</em>, <em>use_fft=False</em><big>)</big><a class="reference internal" href="_modules/pyrocko/trace.html#numpy_correlate_lag_range"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.trace.numpy_correlate_lag_range" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get range of lags for which <tt class="xref py py-func docutils literal"><span class="pre">numpy.correlate()</span></tt> produces values.</p>
 </dd></dl>
 
 <dl class="function">

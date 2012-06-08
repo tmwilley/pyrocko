@@ -2353,6 +2353,20 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_elements</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">element</span><span class="p">)</span>
 </div>
+<div class="viewcode-block" id="LayeredModel.elements"><a class="viewcode-back" href="../../cake.html#pyrocko.cake.LayeredModel.elements">[docs]</a>    <span class="k">def</span> <span class="nf">elements</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="n">DOWN</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Iterate over all elements of the model.</span>
+
+<span class="sd">        :param direction: direction of traversal :py:const:`DOWN` or :py:const:`UP`.</span>
+<span class="sd">        </span>
+<span class="sd">        Objects derived from the :py:class:`Discontinuity` and :py:class:`Layer` classes are yielded.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="k">if</span> <span class="n">direction</span> <span class="o">==</span> <span class="n">DOWN</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_elements</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">reversed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_elements</span><span class="p">)</span>
+        
+</div>
 <div class="viewcode-block" id="LayeredModel.layers"><a class="viewcode-back" href="../../cake.html#pyrocko.cake.LayeredModel.layers">[docs]</a>    <span class="k">def</span> <span class="nf">layers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="n">DOWN</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Iterate over all layers of model.</span>
 <span class="sd">        </span>
@@ -2478,12 +2492,12 @@
             <span class="n">at_layer</span> <span class="o">=</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">current</span><span class="p">,</span> <span class="n">Layer</span><span class="p">)</span>
             <span class="n">at_discontinuity</span> <span class="o">=</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">current</span><span class="p">,</span> <span class="n">Discontinuity</span><span class="p">)</span>
 
-            <span class="k">if</span> <span class="n">next_knee</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span> <span class="c"># detect trapped wave</span>
-                <span class="n">k</span> <span class="o">=</span> <span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">current</span><span class="p">),</span> <span class="n">direction</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">trapdetect</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="n">Trapped</span><span class="p">()</span>
-                
-                <span class="n">trapdetect</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+            <span class="c"># detect trapped wave</span>
+            <span class="n">k</span> <span class="o">=</span> <span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">next_knee</span><span class="p">),</span> <span class="nb">id</span><span class="p">(</span><span class="n">current</span><span class="p">),</span> <span class="n">direction</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">trapdetect</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">Trapped</span><span class="p">()</span>
+            
+            <span class="n">trapdetect</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
             
             <span class="k">if</span> <span class="n">at_discontinuity</span><span class="p">:</span>
                 <span class="n">oldmode</span><span class="p">,</span> <span class="n">olddirection</span> <span class="o">=</span> <span class="n">mode</span><span class="p">,</span> <span class="n">direction</span>
@@ -2833,10 +2847,24 @@
 <span class="sd">        vp = 1.16 * vs + 1360 [m/s]</span>
 
 <span class="sd">    :param vs: S-wave velocity [m/s]</span>
-<span class="sd">    :returns: vp in [m/s]</span>
+<span class="sd">    :returns: P-wave velocity [m/s]</span>
 <span class="sd">    &#39;&#39;&#39;</span>
 
     <span class="k">return</span> <span class="n">vs</span><span class="o">*</span><span class="mf">1.16</span> <span class="o">+</span> <span class="mf">1360.0</span>
+</div>
+<div class="viewcode-block" id="castagna_vp_to_vs"><a class="viewcode-back" href="../../cake.html#pyrocko.cake.castagna_vp_to_vs">[docs]</a><span class="k">def</span> <span class="nf">castagna_vp_to_vs</span><span class="p">(</span><span class="n">vp</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Calculate vp from vs using castagna&#39;s relation.</span>
+
+<span class="sd">    Castagna&#39;s relation (the mudrock line) is an empirical relation for vp/vs for </span>
+<span class="sd">    siliciclastic rocks (i.e. sandstones and shales). [Castagna et al., 1985]</span>
+
+<span class="sd">        vp = 1.16 * vs + 1360 [m/s]</span>
+
+<span class="sd">    :param vp: P-wave velocity [m/s]</span>
+<span class="sd">    :returns: S-wave velocity [m/s]</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="k">return</span>  <span class="p">(</span><span class="n">vp</span> <span class="o">-</span> <span class="mf">1360.0</span><span class="p">)</span> <span class="o">/</span> <span class="mf">1.16</span> 
 </div>
 <span class="k">def</span> <span class="nf">evenize</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span> <span class="n">minsize</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">size</span> <span class="o">&lt;</span> <span class="n">minsize</span><span class="p">:</span>

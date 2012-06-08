@@ -65,16 +65,6 @@ some utilities for their handling.</p>
 <em class="property">class </em><tt class="descname">Param</tt><big>(</big><em>name</em>, <em>ident</em>, <em>default</em>, <em>minimum</em>, <em>maximum</em>, <em>low_is_none=None</em>, <em>high_is_none=None</em><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#Param"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.Param" title="Permalink to this definition">¶</a></dt>
 <dd><p>Definition of an adjustable parameter for the snuffling. The snuffling
 may display controls for user input for such parameters.</p>
-<dl class="method">
-<dt id="pyrocko.snuffling.Param.set_range">
-<tt class="descname">set_range</tt><big>(</big><em>minimum</em>, <em>maximum</em><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#Param.set_range"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.Param.set_range" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.snuffling.Param.set_value">
-<tt class="descname">set_value</tt><big>(</big><em>value</em><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#Param.set_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.Param.set_value" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
 </dd></dl>
 
 <dl class="class">
@@ -128,8 +118,18 @@ has been changed.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pyrocko.snuffling.Snuffling.make_cli_parser">
-<tt class="descname">make_cli_parser</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#Snuffling.make_cli_parser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.Snuffling.make_cli_parser" title="Permalink to this definition">¶</a></dt>
+<dt id="pyrocko.snuffling.Snuffling.make_cli_parser1">
+<tt class="descname">make_cli_parser1</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#Snuffling.make_cli_parser1"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.Snuffling.make_cli_parser1" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.snuffling.Snuffling.configure_cli_parser">
+<tt class="descname">configure_cli_parser</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#Snuffling.configure_cli_parser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.Snuffling.configure_cli_parser" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.snuffling.Snuffling.cli_usage">
+<tt class="descname">cli_usage</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#Snuffling.cli_usage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.Snuffling.cli_usage" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -180,13 +180,23 @@ and <a class="reference internal" href="#pyrocko.snuffling.Snuffling.add_markers
 <dd></dd></dl>
 
 <dl class="method">
+<dt id="pyrocko.snuffling.Snuffling.show_message">
+<tt class="descname">show_message</tt><big>(</big><em>kind</em>, <em>message</em><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#Snuffling.show_message"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.Snuffling.show_message" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
 <dt id="pyrocko.snuffling.Snuffling.error">
-<tt class="descname">error</tt><big>(</big><em>reason</em><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#Snuffling.error"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.Snuffling.error" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">error</tt><big>(</big><em>message</em><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#Snuffling.error"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.Snuffling.error" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.snuffling.Snuffling.warn">
+<tt class="descname">warn</tt><big>(</big><em>message</em><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#Snuffling.warn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.Snuffling.warn" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="pyrocko.snuffling.Snuffling.fail">
-<tt class="descname">fail</tt><big>(</big><em>reason</em><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#Snuffling.fail"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.Snuffling.fail" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">fail</tt><big>(</big><em>message</em><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#Snuffling.fail"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.Snuffling.fail" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -258,8 +268,26 @@ so that the parameter can be adjusted from the gui.</p>
 </tr>
 </tbody>
 </table>
-<p>This is usually called when the parameter has been set via the gui 
-controls.</p>
+<p>Adjusts the control of a parameter without calling <a class="reference internal" href="#pyrocko.snuffling.Snuffling.call" title="pyrocko.snuffling.Snuffling.call"><tt class="xref py py-meth docutils literal"><span class="pre">call()</span></tt></a>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.snuffling.Snuffling.set_parameter_range">
+<tt class="descname">set_parameter_range</tt><big>(</big><em>ident</em>, <em>vmin</em>, <em>vmax</em><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#Snuffling.set_parameter_range"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.Snuffling.set_parameter_range" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the range of one of the snnuffling&#8217;s adjustable parameters.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>ident</strong> &#8211; identifier of the parameter</li>
+<li><strong>vmin,vmax</strong> &#8211; new minimum and maximum value for the parameter</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Adjusts the control of a parameter without calling <a class="reference internal" href="#pyrocko.snuffling.Snuffling.call" title="pyrocko.snuffling.Snuffling.call"><tt class="xref py py-meth docutils literal"><span class="pre">call()</span></tt></a>.</p>
 </dd></dl>
 
 <dl class="method">
@@ -487,6 +515,11 @@ subclass. The default implementation does nothing useful.</p>
 <dd></dd></dl>
 
 </dd></dl>
+
+<dl class="exception">
+<dt id="pyrocko.snuffling.SnufflingError">
+<em class="property">exception </em><tt class="descname">SnufflingError</tt><a class="reference internal" href="_modules/pyrocko/snuffling.html#SnufflingError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.SnufflingError" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="exception">
 <dt id="pyrocko.snuffling.NoViewerSet">

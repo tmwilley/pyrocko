@@ -860,9 +860,6 @@
             
             <span class="bp">self</span><span class="o">.</span><span class="n">error_messages</span> <span class="o">=</span> <span class="p">{}</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">return_tag</span> <span class="o">=</span> <span class="bp">None</span>
-    
-        <span class="k">def</span> <span class="nf">sizeHint</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">QSize</span><span class="p">(</span><span class="mi">1024</span><span class="p">,</span><span class="mi">768</span><span class="p">)</span>
 
         <span class="k">def</span> <span class="nf">fail</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reason</span><span class="p">):</span>
             <span class="n">box</span> <span class="o">=</span> <span class="n">QMessageBox</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
@@ -904,9 +901,23 @@
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">quick_filter_pattern</span>
             
         <span class="k">def</span> <span class="nf">add_blacklist_pattern</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pattern</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">pattern</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">blacklist</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">blacklist</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">pattern</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">blacklist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pattern</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">pattern</span> <span class="o">==</span> <span class="s">&#39;empty&#39;</span><span class="p">:</span>
+                <span class="n">keys</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pile</span><span class="o">.</span><span class="n">nslc_ids</span><span class="p">)</span>
+                <span class="n">trs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pile</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">tmin</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tmin</span><span class="p">,</span> <span class="n">tmax</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tmax</span><span class="p">,</span> <span class="n">load_data</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">degap</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">tr</span> <span class="ow">in</span> <span class="n">trs</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">tr</span><span class="o">.</span><span class="n">nslc_id</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+                        <span class="n">keys</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">tr</span><span class="o">.</span><span class="n">nslc_id</span><span class="p">)</span>
+
+                <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
+                    <span class="n">xpattern</span> <span class="o">=</span> <span class="s">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">xpattern</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">blacklist</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">blacklist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">xpattern</span><span class="p">)</span>
+
+            <span class="k">else</span><span class="p">:</span> 
+                <span class="k">if</span> <span class="n">pattern</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">blacklist</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">blacklist</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">pattern</span><span class="p">)</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">blacklist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pattern</span><span class="p">)</span>
             
             <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;Blacklist is [ </span><span class="si">%s</span><span class="s"> ]&#39;</span> <span class="o">%</span> <span class="s">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">blacklist</span><span class="p">))</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">update_trace_filter</span><span class="p">()</span>
@@ -985,6 +996,7 @@
             <span class="n">event_marker</span><span class="o">.</span><span class="n">set_active</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
             <span class="n">event</span> <span class="o">=</span> <span class="n">event_marker</span><span class="o">.</span><span class="n">get_event</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">set_origin</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">SIGNAL</span><span class="p">(</span><span class="s">&#39;active_event_changed()&#39;</span><span class="p">))</span>
         
         <span class="k">def</span> <span class="nf">get_active_event_marker</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">active_event_marker</span>
@@ -2198,8 +2210,8 @@
 
         <span class="k">def</span> <span class="nf">post_process_hooks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">traces</span><span class="p">):</span>
             <span class="k">for</span> <span class="n">snuffling</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">snufflings</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">snuffling</span><span class="o">.</span><span class="n">_pre_process_hook_enabled</span><span class="p">:</span>
-                    <span class="n">traces</span> <span class="o">=</span> <span class="n">snuffling</span><span class="o">.</span><span class="n">pre_process_hook</span><span class="p">(</span><span class="n">traces</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">snuffling</span><span class="o">.</span><span class="n">_post_process_hook_enabled</span><span class="p">:</span>
+                    <span class="n">traces</span> <span class="o">=</span> <span class="n">snuffling</span><span class="o">.</span><span class="n">post_process_hook</span><span class="p">(</span><span class="n">traces</span><span class="p">)</span>
 
             <span class="k">return</span> <span class="n">traces</span>
 

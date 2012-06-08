@@ -982,6 +982,21 @@ invocations.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="pyrocko.cake.LayeredModel.elements">
+<tt class="descname">elements</tt><big>(</big><em>direction=4</em><big>)</big><a class="reference internal" href="_modules/pyrocko/cake.html#LayeredModel.elements"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.cake.LayeredModel.elements" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterate over all elements of the model.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>direction</strong> &#8211; direction of traversal <tt class="xref py py-const docutils literal"><span class="pre">DOWN</span></tt> or <tt class="xref py py-const docutils literal"><span class="pre">UP</span></tt>.</td>
+</tr>
+</tbody>
+</table>
+<p>Objects derived from the <a class="reference internal" href="#pyrocko.cake.Discontinuity" title="pyrocko.cake.Discontinuity"><tt class="xref py py-class docutils literal"><span class="pre">Discontinuity</span></tt></a> and <a class="reference internal" href="#pyrocko.cake.Layer" title="pyrocko.cake.Layer"><tt class="xref py py-class docutils literal"><span class="pre">Layer</span></tt></a> classes are yielded.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="pyrocko.cake.LayeredModel.layers">
 <tt class="descname">layers</tt><big>(</big><em>direction=4</em><big>)</big><a class="reference internal" href="_modules/pyrocko/cake.html#LayeredModel.layers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.cake.LayeredModel.layers" title="Permalink to this definition">¶</a></dt>
 <dd><p>Iterate over all layers of model.</p>
@@ -1263,7 +1278,27 @@ siliciclastic rocks (i.e. sandstones and shales). [Castagna et al., 1985]</p>
 <tbody valign="top">
 <tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>vs</strong> &#8211; S-wave velocity [m/s]</td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body">vp in [m/s]</td>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">P-wave velocity [m/s]</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyrocko.cake.castagna_vp_to_vs">
+<tt class="descname">castagna_vp_to_vs</tt><big>(</big><em>vp</em><big>)</big><a class="reference internal" href="_modules/pyrocko/cake.html#castagna_vp_to_vs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.cake.castagna_vp_to_vs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate vp from vs using castagna&#8217;s relation.</p>
+<p>Castagna&#8217;s relation (the mudrock line) is an empirical relation for vp/vs for 
+siliciclastic rocks (i.e. sandstones and shales). [Castagna et al., 1985]</p>
+<blockquote>
+<div>vp = 1.16 * vs + 1360 [m/s]</div></blockquote>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>vp</strong> &#8211; P-wave velocity [m/s]</td>
+</tr>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">S-wave velocity [m/s]</td>
 </tr>
 </tbody>
 </table>
