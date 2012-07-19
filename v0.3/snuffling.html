@@ -3,16 +3,13 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
     <title>The snuffling Module &mdash; Pyrocko v0.3 Manual</title>
-    
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
@@ -230,7 +227,7 @@ or pressing the call button.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>param</strong> &#8211; object of type <a class="reference internal" href="#pyrocko.snuffling.Param" title="pyrocko.snuffling.Param"><tt class="xref py py-class docutils literal"><span class="pre">Param</span></tt></a></td>
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>param</strong> &#8211; object of type <a class="reference internal" href="#pyrocko.snuffling.Param" title="pyrocko.snuffling.Param"><tt class="xref py py-class docutils literal"><span class="pre">Param</span></tt></a></td>
 </tr>
 </tbody>
 </table>
@@ -263,7 +260,7 @@ so that the parameter can be adjusted from the gui.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>ident</strong> &#8211; identifier of the parameter</li>
 <li><strong>value</strong> &#8211; new value of the parameter</li>
 </ul>
@@ -282,7 +279,7 @@ so that the parameter can be adjusted from the gui.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>ident</strong> &#8211; identifier of the parameter</li>
 <li><strong>vmin,vmax</strong> &#8211; new minimum and maximum value for the parameter</li>
 </ul>
@@ -341,10 +338,10 @@ arguments to the chopper are handed over from <em>*args</em> and <em>**kwargs</e
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>fallback</strong> &#8211; if <tt class="docutils literal"><span class="pre">True</span></tt>, if no selection has been marked, use the content
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>fallback</strong> &#8211; if <tt class="xref docutils literal"><span class="pre">True</span></tt>, if no selection has been marked, use the content
 currently visible in the viewer.</li>
-<li><strong>marker_selector</strong> &#8211; if not <tt class="docutils literal"><span class="pre">None</span></tt> a callback to filter markers.</li>
+<li><strong>marker_selector</strong> &#8211; if not <tt class="xref docutils literal"><span class="pre">None</span></tt> a callback to filter markers.</li>
 </ul>
 </td>
 </tr>
@@ -370,7 +367,7 @@ currently visible in the viewer.</li>
 <dt id="pyrocko.snuffling.Snuffling.make_panel">
 <tt class="descname">make_panel</tt><big>(</big><em>parent</em><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#Snuffling.make_panel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.Snuffling.make_panel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a widget for the snuffling&#8217;s control panel.</p>
-<p>Normally called from the <a class="reference internal" href="#pyrocko.snuffling.Snuffling.setup_gui" title="pyrocko.snuffling.Snuffling.setup_gui"><tt class="xref py py-meth docutils literal"><span class="pre">setup_gui()</span></tt></a> method. Returns <tt class="docutils literal"><span class="pre">None</span></tt> if no panel
+<p>Normally called from the <a class="reference internal" href="#pyrocko.snuffling.Snuffling.setup_gui" title="pyrocko.snuffling.Snuffling.setup_gui"><tt class="xref py py-meth docutils literal"><span class="pre">setup_gui()</span></tt></a> method. Returns <tt class="xref docutils literal"><span class="pre">None</span></tt> if no panel
 is needed (e.g. if the snuffling has no adjustable parameters).</p>
 </dd></dl>
 
@@ -378,7 +375,7 @@ is needed (e.g. if the snuffling has no adjustable parameters).</p>
 <dt id="pyrocko.snuffling.Snuffling.make_menuitem">
 <tt class="descname">make_menuitem</tt><big>(</big><em>parent</em><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#Snuffling.make_menuitem"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.Snuffling.make_menuitem" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create the menu item for the snuffling.</p>
-<p>This method may be overloaded in subclass and return <tt class="docutils literal"><span class="pre">None</span></tt>, if no menu 
+<p>This method may be overloaded in subclass and return <tt class="xref docutils literal"><span class="pre">None</span></tt>, if no menu 
 entry is wanted.</p>
 </dd></dl>
 
@@ -456,7 +453,7 @@ widget.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>traces</strong> &#8211; list of objects of type <a class="reference internal" href="trace.html#pyrocko.trace.Trace" title="pyrocko.trace.Trace"><tt class="xref py py-class docutils literal"><span class="pre">pyrocko.trace.Trace</span></tt></a></td>
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>traces</strong> &#8211; list of objects of type <a class="reference internal" href="trace.html#pyrocko.trace.Trace" title="pyrocko.trace.Trace"><tt class="xref py py-class docutils literal"><span class="pre">pyrocko.trace.Trace</span></tt></a></td>
 </tr>
 </tbody>
 </table>
@@ -566,11 +563,6 @@ implement the methods <tt class="docutils literal"><span class="pre">add_snuffli
 as callbacks. The callbacks are utilized from the methods <a class="reference internal" href="#pyrocko.snuffling.SnufflingModule.load_if_needed" title="pyrocko.snuffling.SnufflingModule.load_if_needed"><tt class="xref py py-meth docutils literal"><span class="pre">load_if_needed()</span></tt></a>
 and <a class="reference internal" href="#pyrocko.snuffling.SnufflingModule.remove_snufflings" title="pyrocko.snuffling.SnufflingModule.remove_snufflings"><tt class="xref py py-meth docutils literal"><span class="pre">remove_snufflings()</span></tt></a> which may be called from the handler class, when
 needed.</p>
-<dl class="attribute">
-<dt id="pyrocko.snuffling.SnufflingModule.mtimes">
-<tt class="descname">mtimes</tt><em class="property"> = {}</em><a class="headerlink" href="#pyrocko.snuffling.SnufflingModule.mtimes" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
 <dl class="method">
 <dt id="pyrocko.snuffling.SnufflingModule.load_if_needed">
 <tt class="descname">load_if_needed</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#SnufflingModule.load_if_needed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.SnufflingModule.load_if_needed" title="Permalink to this definition">¶</a></dt>
@@ -635,18 +627,21 @@ needed.</p>
 
 <dl class="function">
 <dt id="pyrocko.snuffling.bin">
-<tt class="descname">bin</tt><big>(</big><em>QTextStream</em><big>)</big> &rarr; QTextStream<a class="headerlink" href="#pyrocko.snuffling.bin" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<tt class="descname">bin</tt><big>(</big><big>)</big><a class="headerlink" href="#pyrocko.snuffling.bin" title="Permalink to this definition">¶</a></dt>
+<dd><p>bin(QTextStream) -&gt; QTextStream</p>
+</dd></dl>
 
 <dl class="function">
 <dt id="pyrocko.snuffling.hex">
-<tt class="descname">hex</tt><big>(</big><em>QTextStream</em><big>)</big> &rarr; QTextStream<a class="headerlink" href="#pyrocko.snuffling.hex" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<tt class="descname">hex</tt><big>(</big><big>)</big><a class="headerlink" href="#pyrocko.snuffling.hex" title="Permalink to this definition">¶</a></dt>
+<dd><p>hex(QTextStream) -&gt; QTextStream</p>
+</dd></dl>
 
 <dl class="function">
 <dt id="pyrocko.snuffling.oct">
-<tt class="descname">oct</tt><big>(</big><em>QTextStream</em><big>)</big> &rarr; QTextStream<a class="headerlink" href="#pyrocko.snuffling.oct" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<tt class="descname">oct</tt><big>(</big><big>)</big><a class="headerlink" href="#pyrocko.snuffling.oct" title="Permalink to this definition">¶</a></dt>
+<dd><p>oct(QTextStream) -&gt; QTextStream</p>
+</dd></dl>
 
 </div>
 

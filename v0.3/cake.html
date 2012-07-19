@@ -3,16 +3,13 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
     <title>The cake Module &mdash; Pyrocko v0.3 Manual</title>
-    
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
@@ -114,7 +111,7 @@ spherical earth, even though the module name may suggests something flat.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>vp</strong> &#8211; P-wave velocity [m/s]</li>
 <li><strong>vs</strong> &#8211; S-wave velocity [m/s]</li>
 <li><strong>rho</strong> &#8211; density [kg/m^3]</li>
@@ -326,7 +323,7 @@ If no Q values are given, standard crustal values of qp = 1456 and qs = 600 are 
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>definition</strong> &#8211; string representation of the phase in cake phase syntax</td>
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>definition</strong> &#8211; string representation of the phase in cake phase syntax</td>
 </tr>
 </tbody>
 </table>
@@ -453,14 +450,14 @@ needed.</li>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>material</strong> &#8211; material, object of type <a class="reference internal" href="#pyrocko.cake.Material" title="pyrocko.cake.Material"><tt class="xref py py-class docutils literal"><span class="pre">Material</span></tt></a></li>
 <li><strong>p</strong> &#8211; flat ray parameter [s/m]</li>
-<li><strong>energy</strong> &#8211; bool, when <tt class="docutils literal"><span class="pre">True</span></tt> energy normalized coefficients are returned</li>
+<li><strong>energy</strong> &#8211; bool, when <tt class="xref docutils literal"><span class="pre">True</span></tt> energy normalized coefficients are returned</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Scatter matrix</p>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Scatter matrix</p>
 </td>
 </tr>
 </tbody>
@@ -487,15 +484,15 @@ needed.</li>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>material1</strong> &#8211; material above, object of type <a class="reference internal" href="#pyrocko.cake.Material" title="pyrocko.cake.Material"><tt class="xref py py-class docutils literal"><span class="pre">Material</span></tt></a></li>
 <li><strong>material2</strong> &#8211; material below, object of type <a class="reference internal" href="#pyrocko.cake.Material" title="pyrocko.cake.Material"><tt class="xref py py-class docutils literal"><span class="pre">Material</span></tt></a></li>
 <li><strong>p</strong> &#8211; flat ray parameter [s/m]</li>
-<li><strong>energy</strong> &#8211; bool, when <tt class="docutils literal"><span class="pre">True</span></tt> energy normalized coefficients are returned</li>
+<li><strong>energy</strong> &#8211; bool, when <tt class="xref docutils literal"><span class="pre">True</span></tt> energy normalized coefficients are returned</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Scatter matrix</p>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Scatter matrix</p>
 </td>
 </tr>
 </tbody>
@@ -518,7 +515,7 @@ needed.</li>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>ztop</strong> &#8211; depth of top of layer</li>
 <li><strong>zbot</strong> &#8211; depth of bottom of layer</li>
 <li><strong>name</strong> &#8211; name of layer (optional)</li>
@@ -536,9 +533,9 @@ needed.</li>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>mode</strong> &#8211; mode of wave propagation, <tt class="xref py py-const docutils literal"><span class="pre">P</span></tt> or <tt class="xref py py-const docutils literal"><span class="pre">S</span></tt></td>
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>mode</strong> &#8211; mode of wave propagation, <tt class="xref py py-const docutils literal"><span class="pre">P</span></tt> or <tt class="xref py py-const docutils literal"><span class="pre">S</span></tt></td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">coefficients <tt class="docutils literal"><span class="pre">(a,b)</span></tt></td>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">coefficients <tt class="docutils literal"><span class="pre">(a,b)</span></tt></td>
 </tr>
 </tbody>
 </table>
@@ -594,7 +591,7 @@ needed.</li>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>p</strong> &#8211; ray parameter (spherical)</li>
 <li><strong>mode</strong> &#8211; mode of propagation (<tt class="xref py py-const docutils literal"><span class="pre">P</span></tt> or <tt class="xref py py-const docutils literal"><span class="pre">S</span></tt>)</li>
 <li><strong>zpart</strong> &#8211; if given, tuple with two depths to restrict computation
@@ -632,7 +629,7 @@ interpolation of the form</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>p</strong> &#8211; ray parameter</li>
 <li><strong>mode</strong> &#8211; propagation mode</li>
 <li><strong>direction</strong> &#8211; in direction (<tt class="xref py py-const docutils literal"><span class="pre">UP</span></tt> or <tt class="xref py py-const docutils literal"><span class="pre">DOWN</span></tt></li>
@@ -911,7 +908,7 @@ interpolation of the form</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><a class="reference internal" href="#pyrocko.cake.PhaseDef" title="pyrocko.cake.PhaseDef"><tt class="xref py py-class docutils literal"><span class="pre">PhaseDef</span></tt></a> object</td>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><a class="reference internal" href="#pyrocko.cake.PhaseDef" title="pyrocko.cake.PhaseDef"><tt class="xref py py-class docutils literal"><span class="pre">PhaseDef</span></tt></a> object</td>
 </tr>
 </tbody>
 </table>
@@ -925,7 +922,7 @@ interpolation of the form</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><a class="reference internal" href="#pyrocko.cake.PhaseDef" title="pyrocko.cake.PhaseDef"><tt class="xref py py-class docutils literal"><span class="pre">PhaseDef</span></tt></a> object</td>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><a class="reference internal" href="#pyrocko.cake.PhaseDef" title="pyrocko.cake.PhaseDef"><tt class="xref py py-class docutils literal"><span class="pre">PhaseDef</span></tt></a> object</td>
 </tr>
 </tbody>
 </table>
@@ -997,7 +994,7 @@ invocations.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>elevation</strong> &#8211; new surface elevation in [m]</td>
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>elevation</strong> &#8211; new surface elevation in [m]</td>
 </tr>
 </tbody>
 </table>
@@ -1012,7 +1009,7 @@ invocations.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>element</strong> &#8211; object of subclass of  <a class="reference internal" href="#pyrocko.cake.Layer" title="pyrocko.cake.Layer"><tt class="xref py py-class docutils literal"><span class="pre">Layer</span></tt></a> or <a class="reference internal" href="#pyrocko.cake.Discontinuity" title="pyrocko.cake.Discontinuity"><tt class="xref py py-class docutils literal"><span class="pre">Discontinuity</span></tt></a>.</td>
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>element</strong> &#8211; object of subclass of  <a class="reference internal" href="#pyrocko.cake.Layer" title="pyrocko.cake.Layer"><tt class="xref py py-class docutils literal"><span class="pre">Layer</span></tt></a> or <a class="reference internal" href="#pyrocko.cake.Discontinuity" title="pyrocko.cake.Discontinuity"><tt class="xref py py-class docutils literal"><span class="pre">Discontinuity</span></tt></a>.</td>
 </tr>
 </tbody>
 </table>
@@ -1026,7 +1023,7 @@ invocations.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>direction</strong> &#8211; direction of traversal <tt class="xref py py-const docutils literal"><span class="pre">DOWN</span></tt> or <tt class="xref py py-const docutils literal"><span class="pre">UP</span></tt>.</td>
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>direction</strong> &#8211; direction of traversal <tt class="xref py py-const docutils literal"><span class="pre">DOWN</span></tt> or <tt class="xref py py-const docutils literal"><span class="pre">UP</span></tt>.</td>
 </tr>
 </tbody>
 </table>
@@ -1041,7 +1038,7 @@ invocations.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>direction</strong> &#8211; direction of traversal <tt class="xref py py-const docutils literal"><span class="pre">DOWN</span></tt> or <tt class="xref py py-const docutils literal"><span class="pre">UP</span></tt>.</td>
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>direction</strong> &#8211; direction of traversal <tt class="xref py py-const docutils literal"><span class="pre">DOWN</span></tt> or <tt class="xref py py-const docutils literal"><span class="pre">UP</span></tt>.</td>
 </tr>
 </tbody>
 </table>
@@ -1056,7 +1053,7 @@ invocations.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>z</strong> &#8211; depth [m]</li>
 <li><strong>direction</strong> &#8211; direction of traversal <tt class="xref py py-const docutils literal"><span class="pre">DOWN</span></tt> or <tt class="xref py py-const docutils literal"><span class="pre">UP</span></tt>.</li>
 </ul>
@@ -1075,13 +1072,13 @@ invocations.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>z</strong> &#8211; depth [m]</li>
 <li><strong>direction</strong> &#8211; direction of traversal <tt class="xref py py-const docutils literal"><span class="pre">DOWN</span></tt> or <tt class="xref py py-const docutils literal"><span class="pre">UP</span></tt></li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">object of type <a class="reference internal" href="#pyrocko.cake.Material" title="pyrocko.cake.Material"><tt class="xref py py-class docutils literal"><span class="pre">Material</span></tt></a></p>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">object of type <a class="reference internal" href="#pyrocko.cake.Material" title="pyrocko.cake.Material"><tt class="xref py py-class docutils literal"><span class="pre">Material</span></tt></a></p>
 </td>
 </tr>
 </tbody>
@@ -1104,7 +1101,7 @@ the traversal ordering is returned.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>name_or_z</strong> &#8211; name of discontinuity or depth [m] as float value</td>
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>name_or_z</strong> &#8211; name of discontinuity or depth [m] as float value</td>
 </tr>
 </tbody>
 </table>
@@ -1126,7 +1123,7 @@ with the actual depth of these, as defined in the model.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>p</strong> &#8211; ray parameter (spherical) [s/rad]</li>
 <li><strong>phase</strong> &#8211; phase definition (<a class="reference internal" href="#pyrocko.cake.PhaseDef" title="pyrocko.cake.PhaseDef"><tt class="xref py py-class docutils literal"><span class="pre">PhaseDef</span></tt></a> object)</li>
 <li><strong>layer_start</strong> &#8211; layer with source</li>
@@ -1134,7 +1131,7 @@ with the actual depth of these, as defined in the model.</p>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#pyrocko.cake.RayPath" title="pyrocko.cake.RayPath"><tt class="xref py py-class docutils literal"><span class="pre">RayPath</span></tt></a> object</p>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#pyrocko.cake.RayPath" title="pyrocko.cake.RayPath"><tt class="xref py py-class docutils literal"><span class="pre">RayPath</span></tt></a> object</p>
 </td>
 </tr>
 </tbody>
@@ -1152,14 +1149,14 @@ with the actual depth of these, as defined in the model.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>phases</strong> &#8211; a <a class="reference internal" href="#pyrocko.cake.PhaseDef" title="pyrocko.cake.PhaseDef"><tt class="xref py py-class docutils literal"><span class="pre">PhaseDef</span></tt></a> object or a list of such objects</li>
 <li><strong>zstart</strong> &#8211; source depth [m]</li>
 <li><strong>zstop</strong> &#8211; receiver depth [m]</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">a list of <a class="reference internal" href="#pyrocko.cake.RayPath" title="pyrocko.cake.RayPath"><tt class="xref py py-class docutils literal"><span class="pre">RayPath</span></tt></a> objects</p>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">a list of <a class="reference internal" href="#pyrocko.cake.RayPath" title="pyrocko.cake.RayPath"><tt class="xref py py-class docutils literal"><span class="pre">RayPath</span></tt></a> objects</p>
 </td>
 </tr>
 </tbody>
@@ -1177,7 +1174,7 @@ phase definition has been used before.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>distances</strong> &#8211; list or array of distances [deg]</li>
 <li><strong>phases</strong> &#8211; a <a class="reference internal" href="#pyrocko.cake.PhaseDef" title="pyrocko.cake.PhaseDef"><tt class="xref py py-class docutils literal"><span class="pre">PhaseDef</span></tt></a> object or a list of such objects</li>
 <li><strong>zstart</strong> &#8211; source depth [m]</li>
@@ -1186,7 +1183,7 @@ phase definition has been used before.</p>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">a list of <a class="reference internal" href="#pyrocko.cake.Ray" title="pyrocko.cake.Ray"><tt class="xref py py-class docutils literal"><span class="pre">Ray</span></tt></a> objects, sorted by (distance, arrival time)</p>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">a list of <a class="reference internal" href="#pyrocko.cake.Ray" title="pyrocko.cake.Ray"><tt class="xref py py-class docutils literal"><span class="pre">Ray</span></tt></a> objects, sorted by (distance, arrival time)</p>
 </td>
 </tr>
 </tbody>
@@ -1201,7 +1198,7 @@ phase definition has been used before.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>producer</strong> &#8211; iterable yielding (depth, material, name) tuples</td>
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>producer</strong> &#8211; iterable yielding (depth, material, name) tuples</td>
 </tr>
 </tbody>
 </table>
@@ -1217,7 +1214,7 @@ to add layers and discontinuities as needed.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>get</strong> &#8211; property to be queried (<tt class="docutils literal"><span class="pre">`'vp'</span></tt>, <tt class="docutils literal"><span class="pre">'vs'</span></tt>, <tt class="docutils literal"><span class="pre">'rho'</span></tt>, <tt class="docutils literal"><span class="pre">'qp'</span></tt>, or <tt class="docutils literal"><span class="pre">'qs'</span></tt>, or <tt class="docutils literal"><span class="pre">'z'</span></tt>)</td>
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>get</strong> &#8211; property to be queried (<tt class="docutils literal"><span class="pre">`'vp'</span></tt>, <tt class="docutils literal"><span class="pre">'vs'</span></tt>, <tt class="docutils literal"><span class="pre">'rho'</span></tt>, <tt class="docutils literal"><span class="pre">'qp'</span></tt>, or <tt class="docutils literal"><span class="pre">'qs'</span></tt>, or <tt class="docutils literal"><span class="pre">'z'</span></tt>)</td>
 </tr>
 </tbody>
 </table>
@@ -1231,7 +1228,7 @@ to add layers and discontinuities as needed.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>get</strong> &#8211; property to be queried (<tt class="docutils literal"><span class="pre">`'vp'</span></tt>, <tt class="docutils literal"><span class="pre">'vs'</span></tt>, <tt class="docutils literal"><span class="pre">'rho'</span></tt>, <tt class="docutils literal"><span class="pre">'qp'</span></tt>, <tt class="docutils literal"><span class="pre">'qs'</span></tt>, or <tt class="docutils literal"><span class="pre">'z'</span></tt>)</td>
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>get</strong> &#8211; property to be queried (<tt class="docutils literal"><span class="pre">`'vp'</span></tt>, <tt class="docutils literal"><span class="pre">'vs'</span></tt>, <tt class="docutils literal"><span class="pre">'rho'</span></tt>, <tt class="docutils literal"><span class="pre">'qp'</span></tt>, <tt class="docutils literal"><span class="pre">'qs'</span></tt>, or <tt class="docutils literal"><span class="pre">'z'</span></tt>)</td>
 </tr>
 </tbody>
 </table>
@@ -1264,13 +1261,13 @@ to add layers and discontinuities as needed.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>fn</strong> &#8211; filename</li>
 <li><strong>format</strong> &#8211; format</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">object of type <a class="reference internal" href="#pyrocko.cake.LayeredModel" title="pyrocko.cake.LayeredModel"><tt class="xref py py-class docutils literal"><span class="pre">LayeredModel</span></tt></a></p>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">object of type <a class="reference internal" href="#pyrocko.cake.LayeredModel" title="pyrocko.cake.LayeredModel"><tt class="xref py py-class docutils literal"><span class="pre">LayeredModel</span></tt></a></p>
 </td>
 </tr>
 </tbody>
@@ -1282,15 +1279,15 @@ to add layers and discontinuities as needed.</p>
 <col width="84%" />
 </colgroup>
 <thead valign="bottom">
-<tr class="row-odd"><th class="head">format</th>
+<tr><th class="head">format</th>
 <th class="head">description</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td><tt class="docutils literal"><span class="pre">'nd'</span></tt></td>
+<tr><td><tt class="docutils literal"><span class="pre">'nd'</span></tt></td>
 <td>&#8216;named discontinuity&#8217; format used by the TauP programs</td>
 </tr>
-<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">'hyposat'</span></tt></td>
+<tr><td><tt class="docutils literal"><span class="pre">'hyposat'</span></tt></td>
 <td>format used by the HYPOSAT location program</td>
 </tr>
 </tbody>
@@ -1313,9 +1310,9 @@ siliciclastic rocks (i.e. sandstones and shales). [Castagna et al., 1985]</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>vs</strong> &#8211; S-wave velocity [m/s]</td>
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>vs</strong> &#8211; S-wave velocity [m/s]</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">P-wave velocity [m/s]</td>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">P-wave velocity [m/s]</td>
 </tr>
 </tbody>
 </table>
@@ -1333,9 +1330,9 @@ siliciclastic rocks (i.e. sandstones and shales). [Castagna et al., 1985]</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>vp</strong> &#8211; P-wave velocity [m/s]</td>
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>vp</strong> &#8211; P-wave velocity [m/s]</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">S-wave velocity [m/s]</td>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">S-wave velocity [m/s]</td>
 </tr>
 </tbody>
 </table>

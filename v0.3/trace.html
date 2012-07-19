@@ -3,16 +3,13 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
     <title>The trace Module &mdash; Pyrocko v0.3 Manual</title>
-    
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
@@ -74,15 +71,15 @@ and channel code).</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>network</strong> &#8211; network code</li>
 <li><strong>station</strong> &#8211; station code</li>
 <li><strong>location</strong> &#8211; location code</li>
 <li><strong>channel</strong> &#8211; channel code</li>
 <li><strong>tmin</strong> &#8211; system time of first sample in [s]</li>
-<li><strong>tmax</strong> &#8211; system time of last sample in [s] (if set to <tt class="docutils literal"><span class="pre">None</span></tt> it is computed from length of <em>ydata</em>)</li>
+<li><strong>tmax</strong> &#8211; system time of last sample in [s] (if set to <tt class="xref docutils literal"><span class="pre">None</span></tt> it is computed from length of <em>ydata</em>)</li>
 <li><strong>deltat</strong> &#8211; sampling interval in [s]</li>
-<li><strong>ydata</strong> &#8211; 1D numpy array with data samples (can be <tt class="docutils literal"><span class="pre">None</span></tt> when <em>tmax</em> is not <tt class="docutils literal"><span class="pre">None</span></tt>)</li>
+<li><strong>ydata</strong> &#8211; 1D numpy array with data samples (can be <tt class="xref docutils literal"><span class="pre">None</span></tt> when <em>tmax</em> is not <tt class="xref docutils literal"><span class="pre">None</span></tt>)</li>
 <li><strong>mtime</strong> &#8211; optional modification time</li>
 <li><strong>meta</strong> &#8211; additional meta information (not used, but maintained by the library)</li>
 </ul>
@@ -93,11 +90,6 @@ and channel code).</p>
 <p>The length of the network, station, location and channel codes is not resricted by this software,
 but data formats like SAC, Mini-SEED or GSE have different limits on the lengths of these codes. The codes set here
 are silently truncated when the trace is stored</p>
-<dl class="attribute">
-<dt id="pyrocko.trace.Trace.cached_frequencies">
-<tt class="descname">cached_frequencies</tt><em class="property"> = {}</em><a class="headerlink" href="#pyrocko.trace.Trace.cached_frequencies" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
 <dl class="method">
 <dt id="pyrocko.trace.Trace.name">
 <tt class="descname">name</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/trace.html#Trace.name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.trace.Trace.name" title="Permalink to this definition">¶</a></dt>
@@ -112,7 +104,7 @@ are silently truncated when the trace is stored</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>t</strong> &#8211; time instant</li>
 <li><strong>clip</strong> &#8211; whether to clip indices to trace ends</li>
 </ul>
@@ -134,11 +126,11 @@ are silently truncated when the trace is stored</p>
 <dd><p>Add values of other trace (self += other).</p>
 <p>Add values of <em>other</em> trace to the values of <em>self</em>, where it
 intersects with <em>other</em>.  This method does not change the extent of
-<em>self</em>. If <em>interpolate</em> is <tt class="docutils literal"><span class="pre">True</span></tt> (the default), the values of
+<em>self</em>. If <em>interpolate</em> is <tt class="xref docutils literal"><span class="pre">True</span></tt> (the default), the values of
 <em>other</em> to be added are interpolated at sampling instants of <em>self</em>.
 Linear interpolation is performed. In this case the sampling rate of
 <em>other</em> must be equal to or lower than that of <em>self</em>.  If
-<em>interpolate</em> is <tt class="docutils literal"><span class="pre">False</span></tt>, the sampling rates of the two traces must
+<em>interpolate</em> is <tt class="xref docutils literal"><span class="pre">False</span></tt>, the sampling rates of the two traces must
 match.</p>
 </dd></dl>
 
@@ -148,11 +140,11 @@ match.</p>
 <dd><p>Muliply with values of other trace (self *= other).</p>
 <p>Multiply values of <em>other</em> trace to the values of <em>self</em>, where it
 intersects with <em>other</em>.  This method does not change the extent of
-<em>self</em>. If <em>interpolate</em> is <tt class="docutils literal"><span class="pre">True</span></tt> (the default), the values of
+<em>self</em>. If <em>interpolate</em> is <tt class="xref docutils literal"><span class="pre">True</span></tt> (the default), the values of
 <em>other</em> to be multiplied are interpolated at sampling instants of <em>self</em>.
 Linear interpolation is performed. In this case the sampling rate of
 <em>other</em> must be equal to or lower than that of <em>self</em>.  If
-<em>interpolate</em> is <tt class="docutils literal"><span class="pre">False</span></tt>, the sampling rates of the two traces must
+<em>interpolate</em> is <tt class="xref docutils literal"><span class="pre">False</span></tt>, the sampling rates of the two traces must
 match.</p>
 </dd></dl>
 
@@ -302,11 +294,11 @@ time span.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>ndecimate</strong> &#8211; decimation factor, avoid values larger than 8</li>
 <li><strong>snap</strong> &#8211; whether to put the new sampling instances closest to multiples of the sampling rate.</li>
-<li><strong>initials</strong> &#8211; <tt class="docutils literal"><span class="pre">None</span></tt>, <tt class="docutils literal"><span class="pre">True</span></tt>, or initial conditions for the anti-aliasing filter, obtained from a
-previous run. In the latter two cases the final state of the filter is returned instead of <tt class="docutils literal"><span class="pre">None</span></tt>.</li>
+<li><strong>initials</strong> &#8211; <tt class="xref docutils literal"><span class="pre">None</span></tt>, <tt class="xref docutils literal"><span class="pre">True</span></tt>, or initial conditions for the anti-aliasing filter, obtained from a
+previous run. In the latter two cases the final state of the filter is returned instead of <tt class="xref docutils literal"><span class="pre">None</span></tt>.</li>
 <li><strong>demean</strong> &#8211; whether to demean the signal before filtering.</li>
 </ul>
 </td>
@@ -339,7 +331,7 @@ possible downsampling ratios.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>intro</strong> &#8211; string used to introduce the warning/error message</li>
 <li><strong>warn</strong> &#8211; whether to emit a warning</li>
 <li><strong>raise_exception</strong> &#8211; whether to raise an <a class="reference internal" href="#pyrocko.trace.AboveNyquist" title="pyrocko.trace.AboveNyquist"><tt class="xref py py-exc docutils literal"><span class="pre">AboveNyquist</span></tt></a> exception.</li>
@@ -358,7 +350,7 @@ possible downsampling ratios.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>order</strong> &#8211; order of the filter</li>
 <li><strong>corner</strong> &#8211; corner frequency of the filter</li>
 </ul>
@@ -377,7 +369,7 @@ possible downsampling ratios.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>order</strong> &#8211; order of the filter</li>
 <li><strong>corner</strong> &#8211; corner frequency of the filter</li>
 </ul>
@@ -396,7 +388,7 @@ possible downsampling ratios.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>order</strong> &#8211; order of the filter</li>
 <li><strong>corner_hp</strong> &#8211; lower corner frequency of the filter</li>
 <li><strong>corner_lp</strong> &#8211; upper corner frequency of the filter</li>
@@ -431,7 +423,7 @@ possible downsampling ratios.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>order</strong> &#8211; order of the autoregression process</td>
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>order</strong> &#8211; order of the autoregression process</td>
 </tr>
 </tbody>
 </table>
@@ -450,10 +442,10 @@ possible downsampling ratios.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>width</strong> &#8211; width of smoothing kernel [Hz]</li>
-<li><strong>td_taper</strong> &#8211; time domain taper, object of type <a class="reference internal" href="#pyrocko.trace.Taper" title="pyrocko.trace.Taper"><tt class="xref py py-class docutils literal"><span class="pre">Taper</span></tt></a> or <tt class="docutils literal"><span class="pre">None</span></tt> or <tt class="docutils literal"><span class="pre">'auto'</span></tt>.</li>
-<li><strong>fd_taper</strong> &#8211; frequency domain taper, object of type <a class="reference internal" href="#pyrocko.trace.Taper" title="pyrocko.trace.Taper"><tt class="xref py py-class docutils literal"><span class="pre">Taper</span></tt></a> or <tt class="docutils literal"><span class="pre">None</span></tt> or <tt class="docutils literal"><span class="pre">'auto'</span></tt>.</li>
+<li><strong>td_taper</strong> &#8211; time domain taper, object of type <a class="reference internal" href="#pyrocko.trace.Taper" title="pyrocko.trace.Taper"><tt class="xref py py-class docutils literal"><span class="pre">Taper</span></tt></a> or <tt class="xref docutils literal"><span class="pre">None</span></tt> or <tt class="docutils literal"><span class="pre">'auto'</span></tt>.</li>
+<li><strong>fd_taper</strong> &#8211; frequency domain taper, object of type <a class="reference internal" href="#pyrocko.trace.Taper" title="pyrocko.trace.Taper"><tt class="xref py py-class docutils literal"><span class="pre">Taper</span></tt></a> or <tt class="xref docutils literal"><span class="pre">None</span></tt> or <tt class="docutils literal"><span class="pre">'auto'</span></tt>.</li>
 <li><strong>pad_to_pow2</strong> &#8211; whether to pad the signal with zeros up to a length of 2^n</li>
 <li><strong>demean</strong> &#8211; whether to demean the signal before tapering</li>
 </ul>
@@ -497,7 +489,7 @@ time domain.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>tshort</strong> &#8211; length of short time window in [s]</li>
 <li><strong>tlong</strong> &#8211; length of long time window in [s]</li>
 <li><strong>quad</strong> &#8211; whether to square the data prior to applying the STA/LTA filter</li>
@@ -514,21 +506,21 @@ time domain.</p>
 <col width="23%" />
 </colgroup>
 <thead valign="bottom">
-<tr class="row-odd"><th class="head">Scalingmethod</th>
+<tr><th class="head">Scalingmethod</th>
 <th class="head">Implementation</th>
 <th class="head">Range</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td><tt class="docutils literal"><span class="pre">1</span></tt></td>
+<tr><td><tt class="docutils literal"><span class="pre">1</span></tt></td>
 <td>As/Al* Tl/Ts</td>
 <td>[0,1]</td>
 </tr>
-<tr class="row-odd"><td><tt class="docutils literal"><span class="pre">2</span></tt></td>
+<tr><td><tt class="docutils literal"><span class="pre">2</span></tt></td>
 <td>(As/Al - 1) / (Tl/Ts - 1)</td>
 <td>[-Ts/Tl,1]</td>
 </tr>
-<tr class="row-even"><td><tt class="docutils literal"><span class="pre">3</span></tt></td>
+<tr><td><tt class="docutils literal"><span class="pre">3</span></tt></td>
 <td>Like <tt class="docutils literal"><span class="pre">2</span></tt> but clipping range at zero</td>
 <td>[0,1]</td>
 </tr>
@@ -555,7 +547,7 @@ in combination with recursive STA/LTA filters.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>tmin,tmax</strong> &#8211; new span</li>
 <li><strong>fillmethod</strong> &#8211; &#8216;zeros&#8217; or &#8216;repeat&#8217;</li>
 </ul>
@@ -573,7 +565,7 @@ in combination with recursive STA/LTA filters.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>tfade</strong> &#8211; rise/fall time in seconds of taper applied in timedomain at both ends of trace.</li>
 <li><strong>freqlimits</strong> &#8211; 4-tuple with corner frequencies in Hz.</li>
 <li><strong>transfer_function</strong> &#8211; FrequencyResponse object; must provide a method &#8216;evaluate(freqs)&#8217;, which returns the
@@ -594,13 +586,13 @@ transfer function coefficients at the frequencies &#8216;freqs&#8217;.</li>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>pad_to_pow2</strong> &#8211; whether to zero-pad the data to next larger power-of-two length</li>
-<li><strong>tfade</strong> &#8211; <tt class="docutils literal"><span class="pre">None</span></tt> or a time length in seconds, to apply cosine shaped tapers to both</li>
+<li><strong>tfade</strong> &#8211; <tt class="xref docutils literal"><span class="pre">None</span></tt> or a time length in seconds, to apply cosine shaped tapers to both</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">a tuple with (frequencies, values)</p>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">a tuple with (frequencies, values)</p>
 </td>
 </tr>
 </tbody>
@@ -634,14 +626,14 @@ include microseconds.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>stations</strong> &#8211; list of <cite>pyrocko.model.Station</cite> objects or <tt class="docutils literal"><span class="pre">None</span></tt></li>
-<li><strong>events</strong> &#8211; list of <cite>pyrocko.model.Event</cite> objects or <tt class="docutils literal"><span class="pre">None</span></tt></li>
-<li><strong>markers</strong> &#8211; list of <cite>pyrocko.gui_util.Marker</cite> objects or <tt class="docutils literal"><span class="pre">None</span></tt></li>
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>stations</strong> &#8211; list of <cite>pyrocko.model.Station</cite> objects or <tt class="xref docutils literal"><span class="pre">None</span></tt></li>
+<li><strong>events</strong> &#8211; list of <cite>pyrocko.model.Event</cite> objects or <tt class="xref docutils literal"><span class="pre">None</span></tt></li>
+<li><strong>markers</strong> &#8211; list of <cite>pyrocko.gui_util.Marker</cite> objects or <tt class="xref docutils literal"><span class="pre">None</span></tt></li>
 <li><strong>ntracks</strong> &#8211; float, number of tracks to be shown initially (default: 12)</li>
-<li><strong>follow</strong> &#8211; time interval (in seconds) for real time follow mode or <tt class="docutils literal"><span class="pre">None</span></tt></li>
-<li><strong>controls</strong> &#8211; bool, whether to show the main controls (default: <tt class="docutils literal"><span class="pre">True</span></tt>)</li>
-<li><strong>opengl</strong> &#8211; bool, whether to use opengl (default: <tt class="docutils literal"><span class="pre">False</span></tt>)</li>
+<li><strong>follow</strong> &#8211; time interval (in seconds) for real time follow mode or <tt class="xref docutils literal"><span class="pre">None</span></tt></li>
+<li><strong>controls</strong> &#8211; bool, whether to show the main controls (default: <tt class="xref docutils literal"><span class="pre">True</span></tt>)</li>
+<li><strong>opengl</strong> &#8211; bool, whether to use opengl (default: <tt class="xref docutils literal"><span class="pre">False</span></tt>)</li>
 </ul>
 </td>
 </tr>
@@ -659,14 +651,14 @@ include microseconds.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>stations</strong> &#8211; list of <cite>pyrocko.model.Station</cite> objects or <tt class="docutils literal"><span class="pre">None</span></tt></li>
-<li><strong>events</strong> &#8211; list of <cite>pyrocko.model.Event</cite> objects or <tt class="docutils literal"><span class="pre">None</span></tt></li>
-<li><strong>markers</strong> &#8211; list of <cite>pyrocko.gui_util.Marker</cite> objects or <tt class="docutils literal"><span class="pre">None</span></tt></li>
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>stations</strong> &#8211; list of <cite>pyrocko.model.Station</cite> objects or <tt class="xref docutils literal"><span class="pre">None</span></tt></li>
+<li><strong>events</strong> &#8211; list of <cite>pyrocko.model.Event</cite> objects or <tt class="xref docutils literal"><span class="pre">None</span></tt></li>
+<li><strong>markers</strong> &#8211; list of <cite>pyrocko.gui_util.Marker</cite> objects or <tt class="xref docutils literal"><span class="pre">None</span></tt></li>
 <li><strong>ntracks</strong> &#8211; float, number of tracks to be shown initially (default: 12)</li>
-<li><strong>follow</strong> &#8211; time interval (in seconds) for real time follow mode or <tt class="docutils literal"><span class="pre">None</span></tt></li>
-<li><strong>controls</strong> &#8211; bool, whether to show the main controls (default: <tt class="docutils literal"><span class="pre">True</span></tt>)</li>
-<li><strong>opengl</strong> &#8211; bool, whether to use opengl (default: <tt class="docutils literal"><span class="pre">False</span></tt>)</li>
+<li><strong>follow</strong> &#8211; time interval (in seconds) for real time follow mode or <tt class="xref docutils literal"><span class="pre">None</span></tt></li>
+<li><strong>controls</strong> &#8211; bool, whether to show the main controls (default: <tt class="xref docutils literal"><span class="pre">True</span></tt>)</li>
+<li><strong>opengl</strong> &#8211; bool, whether to use opengl (default: <tt class="xref docutils literal"><span class="pre">False</span></tt>)</li>
 </ul>
 </td>
 </tr>
@@ -700,15 +692,15 @@ include microseconds.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>key</strong> &#8211; a callable which takes as single argument a trace and returns a key for the grouping of the results.
-If this is <tt class="docutils literal"><span class="pre">None</span></tt>, the default, <tt class="docutils literal"><span class="pre">lambda</span> <span class="pre">tr:</span> <span class="pre">(tr.network,</span> <span class="pre">tr.station,</span> <span class="pre">tr.location,</span> <span class="pre">tr.channel)</span></tt> is used.</li>
+If this is <tt class="xref docutils literal"><span class="pre">None</span></tt>, the default, <tt class="docutils literal"><span class="pre">lambda</span> <span class="pre">tr:</span> <span class="pre">(tr.network,</span> <span class="pre">tr.station,</span> <span class="pre">tr.location,</span> <span class="pre">tr.channel)</span></tt> is used.</li>
 <li><strong>mode</strong> &#8211; &#8216;minmax&#8217; or floating point number. If this is &#8216;minmax&#8217;, minimum and maximum of the traces are used, 
 if it is a number, mean +- stdandard deviation times <em>mode</em> is used.</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">a dict with the combined data ranges.</p>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">a dict with the combined data ranges.</p>
 </td>
 </tr>
 </tbody>
@@ -736,10 +728,10 @@ if it is a number, mean +- stdandard deviation times <em>mode</em> is used.</li>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>key</strong> &#8211; a callable which takes as single argument a trace and returns a key for the grouping of the results.
-If this is <tt class="docutils literal"><span class="pre">None</span></tt>, the default, <tt class="docutils literal"><span class="pre">lambda</span> <span class="pre">tr:</span> <span class="pre">(tr.network,</span> <span class="pre">tr.station,</span> <span class="pre">tr.location,</span> <span class="pre">tr.channel)</span></tt> is used.</td>
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>key</strong> &#8211; a callable which takes as single argument a trace and returns a key for the grouping of the results.
+If this is <tt class="xref docutils literal"><span class="pre">None</span></tt>, the default, <tt class="docutils literal"><span class="pre">lambda</span> <span class="pre">tr:</span> <span class="pre">(tr.network,</span> <span class="pre">tr.station,</span> <span class="pre">tr.location,</span> <span class="pre">tr.channel)</span></tt> is used.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">a dict with the combined data ranges.</td>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body">a dict with the combined data ranges.</td>
 </tr>
 </tbody>
 </table>
@@ -756,7 +748,7 @@ according to the <cite>deoverlap</cite> argument.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>traces</strong> &#8211; input traces, must be sorted by their full_id attribute.</li>
 <li><strong>maxgap</strong> &#8211; maximum number of samples to interpolate.</li>
 <li><strong>fillmethod</strong> &#8211; what to put into the gaps: &#8216;interpolate&#8217; or &#8216;zeros&#8217;.</li>
@@ -766,7 +758,7 @@ trace, &#8216;crossfade_cos&#8217; to crossfade with cosine taper</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">list of traces</p>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">list of traces</p>
 </td>
 </tr>
 </tbody>
@@ -781,7 +773,7 @@ trace, &#8216;crossfade_cos&#8217; to crossfade with cosine taper</li>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>traces</strong> &#8211; list of input traces</li>
 <li><strong>azimuth</strong> &#8211; difference of the azimuths of the component directions
 (azimuth of out_channels[0]) - (azimuth of in_channels[0])</li>
@@ -790,7 +782,7 @@ trace, &#8216;crossfade_cos&#8217; to crossfade with cosine taper</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">list of rotated traces</p>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">list of rotated traces</p>
 </td>
 </tr>
 </tbody>
@@ -817,7 +809,7 @@ compontent is missing, horizontal components can still be rotated.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>traces</strong> &#8211; list of traces in arbitrary order</li>
 <li><strong>matrix</strong> &#8211; tranformation matrix</li>
 <li><strong>in_channels</strong> &#8211; input channel names</li>
@@ -825,7 +817,7 @@ compontent is missing, horizontal components can still be rotated.</p>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">list of transformed traces</p>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">list of transformed traces</p>
 </td>
 </tr>
 </tbody>
@@ -846,15 +838,15 @@ compontent is missing, horizontal components can still be rotated.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>a,b</strong> &#8211; input traces</li>
 <li><strong>mode</strong> &#8211; <tt class="docutils literal"><span class="pre">'valid'</span></tt>, <tt class="docutils literal"><span class="pre">'full'</span></tt>, or <tt class="docutils literal"><span class="pre">'same'</span></tt></li>
-<li><strong>normalization</strong> &#8211; <tt class="docutils literal"><span class="pre">'normal'</span></tt>, <tt class="docutils literal"><span class="pre">'gliding'</span></tt>, or <tt class="docutils literal"><span class="pre">None</span></tt></li>
+<li><strong>normalization</strong> &#8211; <tt class="docutils literal"><span class="pre">'normal'</span></tt>, <tt class="docutils literal"><span class="pre">'gliding'</span></tt>, or <tt class="xref docutils literal"><span class="pre">None</span></tt></li>
 <li><strong>use_fft</strong> &#8211; bool, whether to do cross correlation in spectral domain</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">trace containing cross correlation coefficients</p>
+<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">trace containing cross correlation coefficients</p>
 </td>
 </tr>
 </tbody>
@@ -862,7 +854,7 @@ compontent is missing, horizontal components can still be rotated.</p>
 <p>This function computes the cross correlation between two traces. It
 evaluates the discrete equivalent of</p>
 <div class="math">
-<p><img src="_images/math/b0b28caa2b5b742f257e1960aba9f404d45697b5.png" alt="c(t) = \int_{-\infty}^{\infty} a^{\ast}(\tau) b(t+\tau) d\tau"/></p>
+<p><img src="_images/math/b0b28caa2b5b742f257e1960aba9f404d45697b5.png" alt="c(t) = \int_{-\infty}^{\infty} a^{\ast}(\tau) b(t+\tau) d\tau" /></p>
 </div><p>where the star denotes complex conjugate. Note, that the arguments here are
 swapped when compared with the <tt class="xref py py-func docutils literal"><span class="pre">numpy.correlate()</span></tt> function,
 which is internally called. This function should be safe even with older
@@ -897,7 +889,7 @@ correlation can be viewed directly as a function of time lag.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>a,b</strong> &#8211; input traces</li>
 <li><strong>eps</strong> &#8211; relative tolerance</li>
 </ul>
@@ -953,7 +945,7 @@ deconvolution of instrument response.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>respfile</strong> &#8211; response file in evalresp format</li>
 <li><strong>trace</strong> &#8211; trace for which the response is to be extracted from the file</li>
 <li><strong>target</strong> &#8211; <tt class="docutils literal"><span class="pre">'dis'</span></tt> for displacement or <tt class="docutils literal"><span class="pre">'vel'</span></tt> for velocity</li>
@@ -993,9 +985,9 @@ T(f) = constant * -------------------------------------------------------
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>freqs,vals</strong> &#8211; frequencies and values of the sampled response function.</li>
-<li><strong>left,right</strong> &#8211; values to return when input is out of range. If set to <tt class="docutils literal"><span class="pre">None</span></tt> (the default) the endpoints are returned.</li>
+<li><strong>left,right</strong> &#8211; values to return when input is out of range. If set to <tt class="xref docutils literal"><span class="pre">None</span></tt> (the default) the endpoints are returned.</li>
 </ul>
 </td>
 </tr>
@@ -1113,7 +1105,7 @@ with respect to the formula given in its documentation
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>x</strong> &#8211; input array</li>
 <li><strong>nshifts</strong> &#8211; number of coefficients to calculate</li>
 </ul>
@@ -1131,7 +1123,7 @@ with respect to the formula given in its documentation
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>x</strong> &#8211; input array</li>
 <li><strong>order</strong> &#8211; number of coefficients to produce</li>
 </ul>

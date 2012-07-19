@@ -3,16 +3,13 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
     <title>pyrocko.trace &mdash; Pyrocko v0.3 Manual</title>
-    
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
@@ -1729,7 +1726,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">constant</span> <span class="o">=</span> <span class="n">constant</span>
         
 <div class="viewcode-block" id="PoleZeroResponse.evaluate"><a class="viewcode-back" href="../../trace.html#pyrocko.trace.PoleZeroResponse.evaluate">[docs]</a>    <span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">freqs</span><span class="p">):</span>
-        <span class="n">jomeg</span> <span class="o">=</span> <span class="mf">1.0j</span><span class="o">*</span> <span class="mf">2.</span><span class="o">*</span><span class="n">num</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">freqs</span>
+        <span class="n">jomeg</span> <span class="o">=</span> <span class="mf">1.0</span><span class="n">j</span><span class="o">*</span> <span class="mf">2.</span><span class="o">*</span><span class="n">num</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">freqs</span>
         
         <span class="n">a</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">freqs</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">num</span><span class="o">.</span><span class="n">complex</span><span class="p">)</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">constant</span>
         <span class="k">for</span> <span class="n">z</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">zeros</span><span class="p">:</span>
@@ -1755,7 +1752,7 @@
 <div class="viewcode-block" id="SampledResponse.evaluate"><a class="viewcode-back" href="../../trace.html#pyrocko.trace.SampledResponse.evaluate">[docs]</a>    <span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">freqs</span><span class="p">):</span>
         <span class="n">ereal</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="n">freqs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">freqs</span><span class="p">,</span> <span class="n">num</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vals</span><span class="p">),</span> <span class="n">left</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">right</span><span class="p">)</span>
         <span class="n">eimag</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="n">freqs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">freqs</span><span class="p">,</span> <span class="n">num</span><span class="o">.</span><span class="n">imag</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vals</span><span class="p">),</span> <span class="n">left</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">right</span><span class="p">)</span>
-        <span class="n">transfer</span> <span class="o">=</span> <span class="n">ereal</span> <span class="o">+</span> <span class="mf">1.0j</span><span class="o">*</span><span class="n">eimag</span>
+        <span class="n">transfer</span> <span class="o">=</span> <span class="n">ereal</span> <span class="o">+</span> <span class="mf">1.0</span><span class="n">j</span><span class="o">*</span><span class="n">eimag</span>
         <span class="k">return</span> <span class="n">transfer</span>
     </div>
 <div class="viewcode-block" id="SampledResponse.inverse"><a class="viewcode-back" href="../../trace.html#pyrocko.trace.SampledResponse.inverse">[docs]</a>    <span class="k">def</span> <span class="nf">inverse</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -1788,7 +1785,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_gain</span> <span class="o">=</span> <span class="n">gain</span>
         
 <div class="viewcode-block" id="IntegrationResponse.evaluate"><a class="viewcode-back" href="../../trace.html#pyrocko.trace.IntegrationResponse.evaluate">[docs]</a>    <span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">freqs</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gain</span> <span class="o">/</span> <span class="p">(</span><span class="mf">1.0j</span> <span class="o">*</span> <span class="mf">2.</span> <span class="o">*</span> <span class="n">num</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">freqs</span><span class="p">)</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_n</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gain</span> <span class="o">/</span> <span class="p">(</span><span class="mf">1.0</span><span class="n">j</span> <span class="o">*</span> <span class="mf">2.</span> <span class="o">*</span> <span class="n">num</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">freqs</span><span class="p">)</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_n</span>
 </div></div>
 <div class="viewcode-block" id="DifferentiationResponse"><a class="viewcode-back" href="../../trace.html#pyrocko.trace.DifferentiationResponse">[docs]</a><span class="k">class</span> <span class="nc">DifferentiationResponse</span><span class="p">(</span><span class="n">FrequencyResponse</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;The differentiation response, optionally multiplied by a constant gain.</span>
@@ -1803,7 +1800,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_gain</span> <span class="o">=</span> <span class="n">gain</span>
         
 <div class="viewcode-block" id="DifferentiationResponse.evaluate"><a class="viewcode-back" href="../../trace.html#pyrocko.trace.DifferentiationResponse.evaluate">[docs]</a>    <span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">freqs</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gain</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.0j</span> <span class="o">*</span> <span class="mf">2.</span> <span class="o">*</span> <span class="n">num</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">freqs</span><span class="p">)</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_n</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gain</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.0</span><span class="n">j</span> <span class="o">*</span> <span class="mf">2.</span> <span class="o">*</span> <span class="n">num</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">freqs</span><span class="p">)</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_n</span>
 </div></div>
 <div class="viewcode-block" id="AnalogFilterResponse"><a class="viewcode-back" href="../../trace.html#pyrocko.trace.AnalogFilterResponse">[docs]</a><span class="k">class</span> <span class="nc">AnalogFilterResponse</span><span class="p">(</span><span class="n">FrequencyResponse</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Frequency response of an analog filter.</span>
