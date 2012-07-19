@@ -1,0 +1,237 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Cake &mdash; Pyrocko v0.3 Manual</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within Pyrocko v0.3 Manual"
+          href="_static/opensearch.xml"/>
+    <link rel="top" title="Pyrocko v0.3 Manual" href="index.html" />
+    <link rel="next" title="Library Reference" href="reference.html" />
+    <link rel="prev" title="Programming Examples" href="examples.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="reference.html" title="Library Reference"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="examples.html" title="Programming Examples"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Pyrocko v0.3 Manual</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body">
+            
+  <div class="section" id="cake">
+<h1>Cake<a class="headerlink" href="#cake" title="Permalink to this headline">¶</a></h1>
+<p>Cake is a module which can be used to solve classical seismic ray theory problems for layered earth models (layer cake models).</p>
+<p>For various seismic phases it can calculate:</p>
+<ul class="simple">
+<li>arrival times</li>
+<li>ray paths</li>
+<li>reflection and transmission coefficients</li>
+<li>take-off and incidence angles</li>
+<li>geometrical spreading factors</li>
+</ul>
+<p>Computations are done for a spherical earth.
+Cake can either be run as a command line tool or used as a Python module. Both is demonstrated in the examples below.</p>
+<div class="section" id="invocation">
+<h2>Invocation<a class="headerlink" href="#invocation" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">cake</span> <span class="o">&lt;</span><span class="n">command</span><span class="o">&gt;</span> <span class="p">[</span><span class="n">options</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>where <tt class="docutils literal"><span class="pre">&lt;command&gt;</span></tt> is one of the following subcommands:</p>
+<p><strong>print</strong></p>
+<blockquote>
+<div>print detailed description of earth model, seismic phase definition, or material parameters.</div></blockquote>
+<p><strong>arrivals</strong></p>
+<blockquote>
+<div>calculate and print travel times and and propation path information.</div></blockquote>
+<p><strong>plot-xt</strong></p>
+<blockquote>
+<div>plot arrival times over epicentral distance.</div></blockquote>
+<p><strong>plot-xp</strong></p>
+<blockquote>
+<div>plot ray parameter over epicentral distance.</div></blockquote>
+<p><strong>plot-rays</strong></p>
+<blockquote>
+<div>plot ray propagation paths.</div></blockquote>
+<p><strong>plot</strong></p>
+<blockquote>
+<div>plot arrival times over epicentral distance together with ray propagation paths.</div></blockquote>
+<p>For further help on any of these commands and a list of the available options, run <tt class="docutils literal"><span class="pre">cake</span> <span class="pre">&lt;command&gt;</span> <span class="pre">--help</span></tt>.</p>
+<div class="section" id="options">
+<h3>Options<a class="headerlink" href="#options" title="Permalink to this headline">¶</a></h3>
+<dl class="option">
+<dt id="cmdoption-cake-h">
+<tt class="descname">-h</tt><tt class="descclassname"></tt><tt class="descclassname">, </tt><tt class="descname">--help</tt><tt class="descclassname"></tt><a class="headerlink" href="#cmdoption-cake-h" title="Permalink to this definition">¶</a></dt>
+<dd><p>show help message and exit</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-cake--phases">
+<tt class="descname">--phases</tt><tt class="descclassname">=PHASE1,PHASE2,...</tt><a class="headerlink" href="#cmdoption-cake--phases" title="Permalink to this definition">¶</a></dt>
+<dd><p>comma separated list of seismic phase definition(s) in cake syntax</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-cake--model">
+<tt class="descname">--model</tt><tt class="descclassname">=FILENAME</tt><a class="headerlink" href="#cmdoption-cake--model" title="Permalink to this definition">¶</a></dt>
+<dd><p>load model from file named FILENAME</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-cake--format">
+<tt class="descname">--format</tt><tt class="descclassname">=FORMAT</tt><a class="headerlink" href="#cmdoption-cake--format" title="Permalink to this definition">¶</a></dt>
+<dd><p>set model file format (available: <tt class="docutils literal"><span class="pre">nd</span></tt>, <tt class="docutils literal"><span class="pre">hyposat</span></tt>; default: <tt class="docutils literal"><span class="pre">nd</span></tt>)</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-cake--crust2loc">
+<tt class="descname">--crust2loc</tt><tt class="descclassname">=LAT,LON</tt><a class="headerlink" href="#cmdoption-cake--crust2loc" title="Permalink to this definition">¶</a></dt>
+<dd><p>set model from CRUST2.0 profile at location (LAT,LON)</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-cake--sdepth">
+<tt class="descname">--sdepth</tt><tt class="descclassname">=FLOAT</tt><a class="headerlink" href="#cmdoption-cake--sdepth" title="Permalink to this definition">¶</a></dt>
+<dd><p>source depth [km] (default: 0)</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-cake--rdepth">
+<tt class="descname">--rdepth</tt><tt class="descclassname">=FLOAT</tt><a class="headerlink" href="#cmdoption-cake--rdepth" title="Permalink to this definition">¶</a></dt>
+<dd><p>receiver depth [km] (default: 0)</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-cake--distances">
+<tt class="descname">--distances</tt><tt class="descclassname">=DISTANCES</tt><a class="headerlink" href="#cmdoption-cake--distances" title="Permalink to this definition">¶</a></dt>
+<dd><p>surface distances as <tt class="docutils literal"><span class="pre">start:stop:n</span></tt> or <tt class="docutils literal"><span class="pre">dist1,dist2,...</span></tt> [km]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-cake--degrees">
+<tt class="descname">--degrees</tt><tt class="descclassname"></tt><a class="headerlink" href="#cmdoption-cake--degrees" title="Permalink to this definition">¶</a></dt>
+<dd><p>distances are in [deg] instead of [km], velocities in [deg/s] instead of [km/s]</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-cake--vred">
+<tt class="descname">--vred</tt><tt class="descclassname">=FLOAT</tt><a class="headerlink" href="#cmdoption-cake--vred" title="Permalink to this definition">¶</a></dt>
+<dd><p>velocity for time reduction in plot [km/s]</p>
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="command-line-examples">
+<h2>Command Line Examples<a class="headerlink" href="#command-line-examples" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="plot-p-and-p-phases">
+<h3>Plot P and p Phases<a class="headerlink" href="#plot-p-and-p-phases" title="Permalink to this headline">¶</a></h3>
+<p>Ten receiver distances ranging from 100 km to 1000 km and a source depth of 10km.</p>
+<div class="highlight-python"><pre>cake plot-rays --crust2loc=45,10 --phases=P,p --sdepth=10 --distances=100:1000:10</pre>
+</div>
+<p>This command will produce the following image:</p>
+<div class="figure">
+<a class="reference internal image-reference" href="_images/cake_plot_example.png"><img alt="_images/cake_plot_example.png" src="_images/cake_plot_example.png" style="width: 640.0px; height: 480.0px;" /></a>
+</div>
+<p>The option <tt class="docutils literal"><span class="pre">--crust2loc</span></tt> refers to the <a class="reference internal" href="crust2x2.html#module-pyrocko.crust2x2" title="pyrocko.crust2x2"><tt class="xref py py-mod docutils literal"><span class="pre">pyrocko.crust2x2</span></tt></a> module and expects latitude and longitude of the source location.</p>
+</div>
+</div>
+<div class="section" id="python-script-examples">
+<h2>Python Script Examples<a class="headerlink" href="#python-script-examples" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="calculate-p-phase-arrivals">
+<h3>Calculate P-phase arrivals<a class="headerlink" href="#calculate-p-phase-arrivals" title="Permalink to this headline">¶</a></h3>
+<p>The following Python script calculates arrival times for the P-phase emitted by an event in a depth of 300km.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">Calculate P-phase arrivals.</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="kn">from</span> <span class="nn">pyrocko</span> <span class="kn">import</span> <span class="n">cake</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">num</span>
+<span class="n">km</span> <span class="o">=</span> <span class="mf">1000.</span>
+
+<span class="c"># Load &#39;nd&#39;-format earth model.</span>
+<span class="n">cake</span><span class="o">.</span><span class="n">mod</span> <span class="o">=</span> <span class="n">cake</span><span class="o">.</span><span class="n">load_model</span><span class="p">(</span><span class="s">&#39;prem.nd&#39;</span><span class="p">,</span><span class="s">&#39;nd&#39;</span><span class="p">)</span>
+
+<span class="c"># Source depth [m].</span>
+<span class="n">source_depth</span> <span class="o">=</span> <span class="mf">300.</span> <span class="o">*</span> <span class="n">km</span>
+
+<span class="c"># Distances as a numpy array [deg].</span>
+<span class="n">distances</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">1500</span><span class="p">,</span><span class="mi">3000</span><span class="p">,</span><span class="mi">16</span><span class="p">)</span><span class="o">*</span><span class="n">km</span> <span class="o">*</span> <span class="n">cake</span><span class="o">.</span><span class="n">m2d</span>
+
+<span class="c"># Define the phase to use.</span>
+<span class="n">Phase</span> <span class="o">=</span> <span class="n">cake</span><span class="o">.</span><span class="n">PhaseDef</span><span class="p">(</span><span class="s">&#39;P&#39;</span><span class="p">)</span>
+
+<span class="c"># calculate distances and arrivals and print them:</span>
+<span class="k">print</span> <span class="s">&#39;distance [km]      time [s]&#39;</span>
+<span class="k">for</span> <span class="n">arrival</span> <span class="ow">in</span> <span class="n">cake</span><span class="o">.</span><span class="n">mod</span><span class="o">.</span><span class="n">arrivals</span><span class="p">(</span><span class="n">distances</span><span class="p">,</span> <span class="n">phases</span><span class="o">=</span><span class="n">Phase</span><span class="p">,</span> <span class="n">zstart</span><span class="o">=</span><span class="n">source_depth</span><span class="p">):</span>
+    <span class="k">print</span> <span class="s">&#39;</span><span class="si">%13g</span><span class="s"> </span><span class="si">%13g</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">arrival</span><span class="o">.</span><span class="n">x</span><span class="o">*</span><span class="n">cake</span><span class="o">.</span><span class="n">d2m</span><span class="o">/</span><span class="n">km</span><span class="p">,</span> <span class="n">arrival</span><span class="o">.</span><span class="n">t</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="reference.html" title="Library Reference"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="examples.html" title="Programming Examples"
+             >previous</a> |</li>
+        <li><a href="index.html">Pyrocko v0.3 Manual</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, Sebastian Heimann.
+    </div>
+  </body>
+</html>

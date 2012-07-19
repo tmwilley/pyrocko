@@ -1,0 +1,179 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Installation &mdash; Pyrocko v0.3 Manual</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within Pyrocko v0.3 Manual"
+          href="_static/opensearch.xml"/>
+    <link rel="top" title="Pyrocko v0.3 Manual" href="index.html" />
+    <link rel="next" title="Snuffler" href="snuffler.html" />
+    <link rel="prev" title="Pyrocko Manual" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="snuffler.html" title="Snuffler"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Pyrocko Manual"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Pyrocko v0.3 Manual</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body">
+            
+  <div class="section" id="installation">
+<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h2>
+<p>The following software packages are required to use Pyrocko. The more important ones might be available through the package manager on your system (see below).</p>
+<ul class="simple">
+<li><a class="reference external" href="http://www.python.org/">Python</a> including development headers</li>
+<li><a class="reference external" href="http://numpy.scipy.org/">NumPy</a> including development headers</li>
+<li><a class="reference external" href="http://scipy.org/">SciPy</a></li>
+<li><a class="reference external" href="http://www.riverbankcomputing.co.uk/software/pyqt/intro">PyQt4</a> (&gt;= v4.4.4, Only needed for the GUI apps)</li>
+<li><a class="reference external" href="http://pypi.python.org/pypi/pyavl/">pyavl</a></li>
+<li>libmseed (tarball is included)</li>
+<li>evalresp (only libevresp from this package, tarball is included, could be made optional)</li>
+<li><a class="reference external" href="http://pypi.python.org/pypi/progressbar">progressbar</a> (optional)</li>
+<li><a class="reference external" href="http://www.iris.edu/data/dmc-seedlink.htm">slinktool</a> (optionally, if you want to use the <a class="reference internal" href="slink.html#module-pyrocko.slink" title="pyrocko.slink"><tt class="xref py py-mod docutils literal"><span class="pre">pyrocko.slink</span></tt></a> module)</li>
+<li><a class="reference external" href="http://www.iris.edu/software/downloads/rdseed_request.htm">rdseed</a> (optionally, if you want to use the <a class="reference internal" href="rdseed.html#module-pyrocko.rdseed" title="pyrocko.rdseed"><tt class="xref py py-mod docutils literal"><span class="pre">pyrocko.rdseed</span></tt></a> module)</li>
+</ul>
+<div class="section" id="how-to-install-prerequisites-available-through-the-package-manager-of-your-system">
+<h3>How to install prerequisites available through the package manager of your system<a class="headerlink" href="#how-to-install-prerequisites-available-through-the-package-manager-of-your-system" title="Permalink to this headline">¶</a></h3>
+<p>The exact package names may differ from system to system. Whether there are
+separate packages for the development headers of NumPy and Python (the *-dev
+packages) is also system specific.</p>
+<ul>
+<li><p class="first">Debian GNU/Linux:</p>
+<div class="highlight-python"><pre>apt-get install python-dev python-numpy python-numpy-dev python-scipy python-qt4 python-qt4-opengl</pre>
+</div>
+</li>
+<li><p class="first">Fedora:</p>
+<div class="highlight-python"><pre>yum install python numpy scipy PyQt4</pre>
+</div>
+</li>
+<li><p class="first">Ubuntu:</p>
+<div class="highlight-python"><pre>sudo apt-get install python-dev python-numpy python-scipy python-qt4 python-qt4-gl python-progressbar</pre>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="getting-pyrocko">
+<h2>Getting Pyrocko<a class="headerlink" href="#getting-pyrocko" title="Permalink to this headline">¶</a></h2>
+<p>The simplest way of downloading Pyrocko is by using Git:</p>
+<div class="highlight-python"><pre>cd ~/src/   # or wherever you keep your source packages
+git clone git://github.com/emolch/pyrocko.git pyrocko</pre>
+</div>
+<p>Alternatively, you may download Pyrocko as a <a class="reference external" href="http://github.com/emolch/pyrocko/tarball/master">tar archive</a>, but updating is easier
+with the method described above.</p>
+</div>
+<div class="section" id="installing-the-included-prerequisites-libmseed-and-libevresp">
+<h2>Installing the included prerequisites (libmseed and libevresp)<a class="headerlink" href="#installing-the-included-prerequisites-libmseed-and-libevresp" title="Permalink to this headline">¶</a></h2>
+<p>If you already have these libraries installed, these steps might not be necessary.</p>
+<p>First compile libmseed. Its tarball is included in the top directory of Pyrocko:</p>
+<div class="highlight-python"><pre>cd pyrocko/
+tar -xzvf libmseed-2.5.1.tar.gz
+cd libmseed/
+make gcc
+cd ..</pre>
+</div>
+<p>Next, compile and install the evalresp library. Its tarball is also included in
+the top directory of Pyrocko. You may install it as a shared library (see
+below), or try with a static library (if you don&#8217;t want to install evalresp):</p>
+<div class="highlight-python"><pre>tar -xzvf evalresp-3.3.0.tar.gz
+cd evalresp-3.3.0/
+./configure --enable-shared
+make
+sudo make install
+cd ..
+
+# now check that $LD_LIBRARY_PATH contains /usr/local/lib
+echo $LD_LIBRARY_PATH
+# if it is not in there you have to adjust your environment variables</pre>
+</div>
+</div>
+<div class="section" id="installing-pyrocko">
+<h2>Installing Pyrocko<a class="headerlink" href="#installing-pyrocko" title="Permalink to this headline">¶</a></h2>
+<p>Now compile and install Pyrocko itself:</p>
+<div class="highlight-python"><pre>sudo python setup.py install</pre>
+</div>
+</div>
+<div class="section" id="installing-pyrocko-to-a-custom-location">
+<h2>Installing Pyrocko to a custom location<a class="headerlink" href="#installing-pyrocko-to-a-custom-location" title="Permalink to this headline">¶</a></h2>
+<p>If you would like to install it to a different location than <tt class="docutils literal"><span class="pre">/usr/local</span></tt> (or whatever Python thinks it should be), you may use the <tt class="docutils literal"><span class="pre">--prefix</span></tt> option of <tt class="docutils literal"><span class="pre">setup.py</span></tt>. You will, of course,  have to adjust the environment variables <tt class="docutils literal"><span class="pre">$PATH</span></tt>, <tt class="docutils literal"><span class="pre">$PYTHONPATH</span></tt>, and <tt class="docutils literal"><span class="pre">$LD_LIBRARY_PATH</span></tt> to use your custom installation:</p>
+<div class="highlight-python"><pre>python setup.py install --prefix=/bonus</pre>
+</div>
+</div>
+<div class="section" id="updating">
+<h2>Updating<a class="headerlink" href="#updating" title="Permalink to this headline">¶</a></h2>
+<p>If you later want to update Pyrocko, run the following from within Pyrocko&#8217;s top directory:</p>
+<div class="highlight-python"><pre>git pull origin master
+sudo python setup.py install</pre>
+</div>
+</div>
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="snuffler.html" title="Snuffler"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Pyrocko Manual"
+             >previous</a> |</li>
+        <li><a href="index.html">Pyrocko v0.3 Manual</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, Sebastian Heimann.
+    </div>
+  </body>
+</html>
