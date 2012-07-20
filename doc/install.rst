@@ -44,10 +44,11 @@ Getting Pyrocko
 The simplest way of downloading Pyrocko is by using Git::
 
     cd ~/src/   # or wherever you keep your source packages
-    git clone git://github.com/emolch/pyrocko.git pyrocko
+    git clone git://github.com/emolch/pyrocko.git pyrocko -b master-0.2
 
+(The ``-b master-0.2`` part selects Pyrocko version 0.2; omit it to get the newest version).
 Alternatively, you may download Pyrocko as a `tar archive
-<http://github.com/emolch/pyrocko/tarball/master>`_, but updating is easier
+<http://github.com/emolch/pyrocko/tarball/master-0.2>`_, but updating is easier
 with the method described above.
 
 Installing the included prerequisites (libmseed and libevresp)
@@ -98,6 +99,6 @@ Updating
 
 If you later want to update Pyrocko, run the following from within Pyrocko's top directory:: 
 
-    git pull origin master 
+    git pull origin
     sudo python setup.py install  
 
