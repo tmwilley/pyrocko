@@ -3,13 +3,16 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
     <title>pyrocko.cake &mdash; Pyrocko v0.2 Manual</title>
+    
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
@@ -81,7 +84,7 @@
 <span class="sd">&#39;&#39;&#39;</span>
 
 
-<span class="kn">import</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">copy</span><span class="o">,</span> <span class="nn">inspect</span><span class="o">,</span> <span class="nn">math</span><span class="o">,</span> <span class="nn">cmath</span><span class="o">,</span> <span class="nn">operator</span>
+<span class="kn">import</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">copy</span><span class="o">,</span> <span class="nn">inspect</span><span class="o">,</span> <span class="nn">math</span><span class="o">,</span> <span class="nn">cmath</span><span class="o">,</span> <span class="nn">operator</span><span class="o">,</span> <span class="nn">StringIO</span>
 <span class="kn">from</span> <span class="nn">pyrocko</span> <span class="kn">import</span> <span class="n">util</span>
 <span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="kn">import</span> <span class="n">bisect</span>
 <span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="kn">import</span> <span class="n">fitpack</span>
@@ -790,9 +793,10 @@
         <span class="sd">&#39;&#39;&#39;Iterate over conversions and reflections (knees) defined within this phase definition.&#39;&#39;&#39;</span>
         <span class="k">return</span> <span class="p">(</span> <span class="n">knee</span> <span class="k">for</span> <span class="n">knee</span> <span class="ow">in</span> <span class="bp">self</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">knee</span><span class="p">,</span> <span class="n">Knee</span><span class="p">)</span> <span class="p">)</span>
 </div>
-    <span class="k">def</span> <span class="nf">definition</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="PhaseDef.definition"><a class="viewcode-back" href="../../cake.html#pyrocko.cake.PhaseDef.definition">[docs]</a>    <span class="k">def</span> <span class="nf">definition</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Get original definition of the phase.&#39;&#39;&#39;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_definition</span>
-
+</div>
     <span class="k">def</span> <span class="nf">direction_start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">first_leg</span><span class="p">()</span><span class="o">.</span><span class="n">departure</span>
 
@@ -1671,9 +1675,14 @@
     <span class="k">def</span> <span class="nf">conversion</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_mode</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_mode</span>
 
-    <span class="k">def</span> <span class="nf">efficiency</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">discontinuity</span><span class="o">.</span><span class="n">efficiency</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">in_direction</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_direction</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_mode</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_mode</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">efficiency</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">out_direction</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">out_mode</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">out_direction</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">out_direction</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_direction</span>
+        <span class="k">if</span> <span class="n">out_mode</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">out_mode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">out_mode</span>
 
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">discontinuity</span><span class="o">.</span><span class="n">efficiency</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">in_direction</span><span class="p">,</span> <span class="n">out_direction</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_mode</span><span class="p">,</span> <span class="n">out_mode</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
+                
     <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">r</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reflection</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">conversion</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">r</span> <span class="ow">and</span> <span class="n">c</span><span class="p">:</span>
@@ -2171,7 +2180,7 @@
 
 <span class="sd">        .. py:attribute:: p</span>
 
-<span class="sd">           Ray parameter (spherical) [s/deg]</span>
+<span class="sd">           Ray parameter (spherical) [s/rad]</span>
 
 <span class="sd">        .. py:attribute:: x</span>
 
@@ -2193,6 +2202,22 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">t</span> <span class="o">=</span> <span class="n">t</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">endgaps</span> <span class="o">=</span> <span class="n">endgaps</span>
 
+<div class="viewcode-block" id="Ray.given_phase"><a class="viewcode-back" href="../../cake.html#pyrocko.cake.Ray.given_phase">[docs]</a>    <span class="k">def</span> <span class="nf">given_phase</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Get phase definition which was used to create the ray.</span>
+<span class="sd">        </span>
+<span class="sd">        :returns: :py:class:`PhaseDef` object</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">phase</span>
+</div>
+<div class="viewcode-block" id="Ray.used_phase"><a class="viewcode-back" href="../../cake.html#pyrocko.cake.Ray.used_phase">[docs]</a>    <span class="k">def</span> <span class="nf">used_phase</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Compute phase definition from propagation path.</span>
+<span class="sd">       </span>
+<span class="sd">        :returns: :py:class:`PhaseDef` object</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">used_phase</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="p">)</span>
+</div>
     <span class="k">def</span> <span class="nf">refine</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="mf">0.0001</span><span class="p">):</span>
         <span class="n">x</span><span class="p">,</span> <span class="n">t</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">xt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">p</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">endgaps</span><span class="p">)</span>
         <span class="n">xeps</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="o">*</span><span class="n">eps</span>
@@ -2451,7 +2476,7 @@
 <div class="viewcode-block" id="LayeredModel.path"><a class="viewcode-back" href="../../cake.html#pyrocko.cake.LayeredModel.path">[docs]</a>    <span class="k">def</span> <span class="nf">path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">phase</span><span class="p">,</span> <span class="n">layer_start</span><span class="p">,</span> <span class="n">layer_stop</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Get ray path for given combination of ray parameter, phase definition, source and receiver layers.</span>
 <span class="sd">        </span>
-<span class="sd">        :param p: ray parameter (spherical) [s/deg]</span>
+<span class="sd">        :param p: ray parameter (spherical) [s/rad]</span>
 <span class="sd">        :param phase: phase definition (:py:class:`PhaseDef` object)</span>
 <span class="sd">        :param layer_start: layer with source</span>
 <span class="sd">        :param layer_stop: layer with receiver</span>
@@ -2763,7 +2788,7 @@
         <span class="n">lname</span> <span class="o">=</span> <span class="n">name</span>
 
     <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-        </div>
+</div>
 <div class="viewcode-block" id="read_nd_model"><a class="viewcode-back" href="../../cake.html#pyrocko.cake.read_nd_model">[docs]</a><span class="k">def</span> <span class="nf">read_nd_model</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Reader for TauP style &#39;.nd&#39; (named discontinuity) files.</span>
 
@@ -2774,12 +2799,27 @@
 <span class="sd">    &#39;&#39;&#39;</span>
 
     <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">read_nd_model_fh</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+        <span class="k">yield</span> <span class="n">x</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</div>
+<span class="k">def</span> <span class="nf">read_nd_model_str</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">StringIO</span><span class="o">.</span><span class="n">StringIO</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">read_nd_model_fh</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+        <span class="k">yield</span> <span class="n">x</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+<span class="k">def</span> <span class="nf">read_nd_model_fh</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
     <span class="n">translate</span> <span class="o">=</span> <span class="p">{</span> <span class="s">&#39;mantle&#39;</span><span class="p">:</span> <span class="s">&#39;moho&#39;</span><span class="p">,</span> <span class="s">&#39;outer-core&#39;</span><span class="p">:</span> <span class="s">&#39;cmb&#39;</span><span class="p">,</span> <span class="s">&#39;inner-core&#39;</span><span class="p">:</span> <span class="s">&#39;icb&#39;</span> <span class="p">}</span>
     <span class="n">name</span> <span class="o">=</span> <span class="bp">None</span>
     <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
         <span class="n">toks</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">toks</span><span class="p">)</span> <span class="o">==</span> <span class="mi">6</span><span class="p">:</span>
-            <span class="n">z</span><span class="p">,</span> <span class="n">vp</span><span class="p">,</span> <span class="n">vs</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">qp</span><span class="p">,</span> <span class="n">qs</span> <span class="o">=</span> <span class="p">[</span> <span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">toks</span> <span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">toks</span><span class="p">)</span> <span class="o">==</span> <span class="mi">6</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">toks</span><span class="p">)</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+            <span class="n">z</span><span class="p">,</span> <span class="n">vp</span><span class="p">,</span> <span class="n">vs</span><span class="p">,</span> <span class="n">rho</span> <span class="o">=</span> <span class="p">[</span> <span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">toks</span><span class="p">[:</span><span class="mi">4</span><span class="p">]</span> <span class="p">]</span>
+            <span class="n">qp</span><span class="p">,</span> <span class="n">qs</span> <span class="o">=</span> <span class="bp">None</span><span class="p">,</span> <span class="bp">None</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">toks</span><span class="p">)</span> <span class="o">==</span> <span class="mi">6</span><span class="p">:</span>
+                <span class="n">qp</span><span class="p">,</span> <span class="n">qs</span> <span class="o">=</span> <span class="p">[</span> <span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">toks</span><span class="p">[</span><span class="mi">4</span><span class="p">:]</span> <span class="p">]</span>
+
             <span class="n">material</span> <span class="o">=</span> <span class="n">Material</span><span class="p">(</span><span class="n">vp</span><span class="o">*</span><span class="mf">1000.</span><span class="p">,</span> <span class="n">vs</span><span class="o">*</span><span class="mf">1000.</span><span class="p">,</span> <span class="n">rho</span><span class="o">*</span><span class="mf">1000.</span><span class="p">,</span> <span class="n">qp</span><span class="p">,</span> <span class="n">qs</span><span class="p">)</span>
             <span class="k">yield</span> <span class="n">z</span><span class="o">*</span><span class="mf">1000.</span><span class="p">,</span> <span class="n">material</span><span class="p">,</span> <span class="n">name</span>
             <span class="n">name</span> <span class="o">=</span> <span class="bp">None</span>
@@ -2787,7 +2827,7 @@
             <span class="n">name</span> <span class="o">=</span> <span class="n">translate</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">toks</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">toks</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 
     <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-</div>
+
 <span class="k">def</span> <span class="nf">from_crust2x2_profile</span><span class="p">(</span><span class="n">profile</span><span class="p">,</span> <span class="n">depthmantle</span><span class="o">=</span><span class="mi">50000</span><span class="p">):</span>
     <span class="kn">import</span> <span class="nn">crust2x2</span>
     <span class="n">z</span> <span class="o">=</span> <span class="mf">0.</span>

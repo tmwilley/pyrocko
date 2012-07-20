@@ -3,13 +3,16 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
     <title>Installation &mdash; Pyrocko v0.2 Manual</title>
+    
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
@@ -94,9 +97,10 @@ packages) is also system specific.</p>
 <h2>Getting Pyrocko<a class="headerlink" href="#getting-pyrocko" title="Permalink to this headline">¶</a></h2>
 <p>The simplest way of downloading Pyrocko is by using Git:</p>
 <div class="highlight-python"><pre>cd ~/src/   # or wherever you keep your source packages
-git clone git://github.com/emolch/pyrocko.git pyrocko</pre>
+git clone git://github.com/emolch/pyrocko.git pyrocko -b master-0.2</pre>
 </div>
-<p>Alternatively, you may download Pyrocko as a <a class="reference external" href="http://github.com/emolch/pyrocko/tarball/master">tar archive</a>, but updating is easier
+<p>(The <tt class="docutils literal"><span class="pre">-b</span> <span class="pre">master-0.2</span></tt> part selects Pyrocko version 0.2; omit it to get the newest version).
+Alternatively, you may download Pyrocko as a <a class="reference external" href="http://github.com/emolch/pyrocko/tarball/master-0.2">tar archive</a>, but updating is easier
 with the method described above.</p>
 </div>
 <div class="section" id="installing-the-included-prerequisites-libmseed-and-libevresp">
@@ -139,7 +143,7 @@ echo $LD_LIBRARY_PATH
 <div class="section" id="updating">
 <h2>Updating<a class="headerlink" href="#updating" title="Permalink to this headline">¶</a></h2>
 <p>If you later want to update Pyrocko, run the following from within Pyrocko&#8217;s top directory:</p>
-<div class="highlight-python"><pre>git pull origin master
+<div class="highlight-python"><pre>git pull origin
 sudo python setup.py install</pre>
 </div>
 </div>

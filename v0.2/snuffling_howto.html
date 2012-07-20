@@ -3,13 +3,16 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
     <title>Writing a Snuffling &mdash; Pyrocko v0.2 Manual</title>
+    
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
@@ -196,10 +199,10 @@ in the pyrocko source code.</p>
     <span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">freqs</span><span class="p">):</span>
 
         <span class="c"># transform the frequency to angular frequency.</span>
-        <span class="n">w</span> <span class="o">=</span> <span class="mi">2</span><span class="n">j</span><span class="o">*</span><span class="n">pi</span><span class="o">*</span><span class="n">freqs</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="mi">2j</span><span class="o">*</span><span class="n">pi</span><span class="o">*</span><span class="n">freqs</span>
 
-        <span class="n">Poles</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mf">3.7e-2</span><span class="o">+</span><span class="mf">3.7e-2</span><span class="n">j</span><span class="p">,</span> <span class="o">-</span><span class="mf">3.7e-2</span><span class="o">-</span><span class="mf">3.7e-2</span><span class="n">j</span><span class="p">,</span>
-                       <span class="o">-</span><span class="mf">2.51e2</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.31e2</span><span class="o">+</span><span class="mf">4.67e2</span><span class="n">j</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.31e2</span><span class="o">-</span><span class="mf">4.67e2</span><span class="p">])</span>
+        <span class="n">Poles</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mf">3.7e-2</span><span class="o">+</span><span class="mf">3.7e-2j</span><span class="p">,</span> <span class="o">-</span><span class="mf">3.7e-2</span><span class="o">-</span><span class="mf">3.7e-2j</span><span class="p">,</span>
+                       <span class="o">-</span><span class="mf">2.51e2</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.31e2</span><span class="o">+</span><span class="mf">4.67e2j</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.31e2</span><span class="o">-</span><span class="mf">4.67e2</span><span class="p">])</span>
         <span class="n">Zeros</span> <span class="o">=</span> <span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">])</span>
         <span class="n">K</span> <span class="o">=</span> <span class="mf">6.16817e7</span>
 

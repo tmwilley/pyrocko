@@ -3,13 +3,16 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
     <title>pyrocko.snuffling &mdash; Pyrocko v0.2 Manual</title>
+    
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
@@ -646,17 +649,19 @@
 
             <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">method</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_triggers</span><span class="p">:</span>
                 <span class="n">but</span> <span class="o">=</span> <span class="n">QPushButton</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
-                <span class="k">def</span> <span class="nf">call_and_update</span><span class="p">():</span>
-                    <span class="k">try</span><span class="p">:</span>
-                        <span class="n">method</span><span class="p">()</span>
-                    <span class="k">except</span> <span class="n">SnufflingError</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
-                        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">SnufflingCallFailed</span><span class="p">):</span>  <span class="c"># those have logged within error()</span>
-                            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span> <span class="n">e</span><span class="p">))</span>
-                        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">: Snuffling action failed&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">)</span>
+                <span class="k">def</span> <span class="nf">call_and_update</span><span class="p">(</span><span class="n">method</span><span class="p">):</span>
+                    <span class="k">def</span> <span class="nf">f</span><span class="p">():</span>
+                        <span class="k">try</span><span class="p">:</span>
+                            <span class="n">method</span><span class="p">()</span>
+                        <span class="k">except</span> <span class="n">SnufflingError</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">SnufflingCallFailed</span><span class="p">):</span>  <span class="c"># those have logged within error()</span>
+                                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span> <span class="n">e</span><span class="p">))</span>
+                            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">: Snuffling action failed&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">)</span>
 
-                    <span class="bp">self</span><span class="o">.</span><span class="n">get_viewer</span><span class="p">()</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">get_viewer</span><span class="p">()</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+                    <span class="k">return</span> <span class="n">f</span>
 
-                <span class="bp">self</span><span class="o">.</span><span class="n">get_viewer</span><span class="p">()</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span> <span class="n">but</span><span class="p">,</span> <span class="n">SIGNAL</span><span class="p">(</span><span class="s">&#39;clicked()&#39;</span><span class="p">),</span> <span class="n">call_and_update</span> <span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">get_viewer</span><span class="p">()</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span> <span class="n">but</span><span class="p">,</span> <span class="n">SIGNAL</span><span class="p">(</span><span class="s">&#39;clicked()&#39;</span><span class="p">),</span> <span class="n">call_and_update</span><span class="p">(</span><span class="n">method</span><span class="p">)</span> <span class="p">)</span>
                 <span class="n">butlayout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span> <span class="n">but</span> <span class="p">)</span>
 
             <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">butframe</span><span class="p">,</span> <span class="n">irow</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>

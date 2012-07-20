@@ -3,13 +3,16 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
     <title>The io Module &mdash; Pyrocko v0.2 Manual</title>
+    
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
@@ -73,7 +76,7 @@ characters, respectively.</p>
 <col width="10%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">format</th>
+<tr class="row-odd"><th class="head">format</th>
 <th class="head">format identifier</th>
 <th class="head">load</th>
 <th class="head">save</th>
@@ -81,43 +84,43 @@ characters, respectively.</p>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>Mini-SEED</td>
+<tr class="row-even"><td>Mini-SEED</td>
 <td>mseed</td>
 <td>yes</td>
 <td>yes</td>
 <td>&nbsp;</td>
 </tr>
-<tr><td>SAC</td>
+<tr class="row-odd"><td>SAC</td>
 <td>sac</td>
 <td>yes</td>
 <td>yes</td>
 <td><a class="footnote-reference" href="#f1" id="id1">[1]</a></td>
 </tr>
-<tr><td>SEG Y rev1</td>
+<tr class="row-even"><td>SEG Y rev1</td>
 <td>segy</td>
 <td>some</td>
 <td>&nbsp;</td>
 <td>&nbsp;</td>
 </tr>
-<tr><td>SEISAN</td>
+<tr class="row-odd"><td>SEISAN</td>
 <td>seisan, seisan_l, seisan_b</td>
 <td>yes</td>
 <td>&nbsp;</td>
 <td><a class="footnote-reference" href="#f2" id="id2">[2]</a></td>
 </tr>
-<tr><td>KAN</td>
+<tr class="row-even"><td>KAN</td>
 <td>kan</td>
 <td>yes</td>
 <td>&nbsp;</td>
 <td><a class="footnote-reference" href="#f3" id="id3">[3]</a></td>
 </tr>
-<tr><td>YAFF</td>
+<tr class="row-odd"><td>YAFF</td>
 <td>yaff</td>
 <td>yes</td>
 <td>yes</td>
 <td><a class="footnote-reference" href="#f4" id="id4">[4]</a></td>
 </tr>
-<tr><td>ASCII Table</td>
+<tr class="row-even"><td>ASCII Table</td>
 <td>text</td>
 <td>&nbsp;</td>
 <td>yes</td>
@@ -164,14 +167,14 @@ characters, respectively.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>format</strong> &#8211; format of the file (<tt class="docutils literal"><span class="pre">'mseed'</span></tt>, <tt class="docutils literal"><span class="pre">'sac'</span></tt>, <tt class="docutils literal"><span class="pre">'segy'</span></tt>, <tt class="docutils literal"><span class="pre">'seisan_l'</span></tt>, <tt class="docutils literal"><span class="pre">'seisan_b'</span></tt>, <tt class="docutils literal"><span class="pre">'kan'</span></tt>, <tt class="docutils literal"><span class="pre">'yaff'</span></tt>, <tt class="docutils literal"><span class="pre">'from_extension'</span></tt>, or <tt class="docutils literal"><span class="pre">'try'</span></tt>)</li>
-<li><strong>getdata</strong> &#8211; if <tt class="xref docutils literal"><span class="pre">True</span></tt> (the default), read data, otherwise only read traces metadata</li>
+<li><strong>getdata</strong> &#8211; if <tt class="docutils literal"><span class="pre">True</span></tt> (the default), read data, otherwise only read traces metadata</li>
 <li><strong>substitutions</strong> &#8211; dict with substitutions to be applied to the traces metadata</li>
 </ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">list of loaded traces</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">list of loaded traces</p>
 </td>
 </tr>
 </tbody>
@@ -197,7 +200,7 @@ considered are (matching is case insensitiv): <tt class="docutils literal"><span
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>traces</strong> &#8211; a trace or an iterable of traces to store</li>
 <li><strong>filename_template</strong> &#8211; filename template with placeholders for trace
 metadata. Uses normal python &#8216;%(placeholder)s&#8217; string templates. The following
@@ -211,7 +214,7 @@ include microseconds.</li>
 </ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">list of generated filenames</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">list of generated filenames</p>
 </td>
 </tr>
 </tbody>

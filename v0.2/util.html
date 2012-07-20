@@ -3,13 +3,16 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
     <title>The util Module &mdash; Pyrocko v0.2 Manual</title>
+    
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
@@ -66,7 +69,7 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>programname</strong> &#8211; program name to be written in log</li>
 <li><strong>levelname</strong> &#8211; string indicating the logging level (&#8216;debug&#8217;, &#8216;info&#8217;, 
 &#8216;warning&#8217;, &#8216;error&#8217;, &#8216;critical&#8217;)</li>
@@ -107,7 +110,7 @@ consistent logging format. This is simply a shortcut to a call to
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body">The progressbar module or <cite>None</cite>, if this module is not available.</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The progressbar module or <cite>None</cite>, if this module is not available.</td>
 </tr>
 </tbody>
 </table>
@@ -121,7 +124,7 @@ consistent logging format. This is simply a shortcut to a call to
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>label</strong> &#8211; name of the operation</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>label</strong> &#8211; name of the operation</td>
 </tr>
 </tbody>
 </table>
@@ -136,7 +139,7 @@ consistent logging format. This is simply a shortcut to a call to
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>label</strong> &#8211; name of the operation</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>label</strong> &#8211; name of the operation</td>
 </tr>
 </tbody>
 </table>
@@ -146,7 +149,37 @@ consistent logging format. This is simply a shortcut to a call to
 <dl class="class">
 <dt id="pyrocko.util.GlobalVars">
 <em class="property">class </em><tt class="descname">GlobalVars</tt><a class="reference internal" href="_modules/pyrocko/util.html#GlobalVars"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.util.GlobalVars" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="attribute">
+<dt id="pyrocko.util.GlobalVars.reuse_store">
+<tt class="descname">reuse_store</tt><em class="property"> = {}</em><a class="headerlink" href="#pyrocko.util.GlobalVars.reuse_store" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.util.GlobalVars.decitab_nmax">
+<tt class="descname">decitab_nmax</tt><em class="property"> = 0</em><a class="headerlink" href="#pyrocko.util.GlobalVars.decitab_nmax" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.util.GlobalVars.decitab">
+<tt class="descname">decitab</tt><em class="property"> = {}</em><a class="headerlink" href="#pyrocko.util.GlobalVars.decitab" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.util.GlobalVars.decimate_fir_coeffs">
+<tt class="descname">decimate_fir_coeffs</tt><em class="property"> = {}</em><a class="headerlink" href="#pyrocko.util.GlobalVars.decimate_fir_coeffs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.util.GlobalVars.decimate_iir_coeffs">
+<tt class="descname">decimate_iir_coeffs</tt><em class="property"> = {}</em><a class="headerlink" href="#pyrocko.util.GlobalVars.decimate_iir_coeffs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.util.GlobalVars.re_frac">
+<tt class="descname">re_frac</tt><em class="property"> = None</em><a class="headerlink" href="#pyrocko.util.GlobalVars.re_frac" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
 
 <dl class="function">
 <dt id="pyrocko.util.decimate_coeffs">
@@ -163,7 +196,7 @@ filter with hamming window if ftype is &#8216;fir&#8217;.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>x</strong> &#8211; the signal to be downsampled (1D NumPy array)</li>
 <li><strong>q</strong> &#8211; the downsampling factor</li>
 <li><strong>n</strong> &#8211; order of the filter (1 less than the length of the filter for a
@@ -172,7 +205,7 @@ filter with hamming window if ftype is &#8216;fir&#8217;.</p>
 </ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">the downsampled signal (1D NumPy array)</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">the downsampled signal (1D NumPy array)</p>
 </td>
 </tr>
 </tbody>
@@ -216,9 +249,9 @@ for factors up to <cite>nmax</cite>.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>timestamp</strong> &#8211; time instant as system timestamp (in seconds)</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>timestamp</strong> &#8211; time instant as system timestamp (in seconds)</td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body">instant of day start as system timestamp</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">instant of day start as system timestamp</td>
 </tr>
 </tbody>
 </table>
@@ -232,9 +265,9 @@ for factors up to <cite>nmax</cite>.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>timestamp</strong> &#8211; time instant as system timestamp (in seconds)</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>timestamp</strong> &#8211; time instant as system timestamp (in seconds)</td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body">instant of month start as system timestamp</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">instant of month start as system timestamp</td>
 </tr>
 </tbody>
 </table>
@@ -248,9 +281,9 @@ for factors up to <cite>nmax</cite>.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>timestamp</strong> &#8211; time instant as system timestamp (in seconds)</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>timestamp</strong> &#8211; time instant as system timestamp (in seconds)</td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body">instant of year start as system timestamp</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">instant of year start as system timestamp</td>
 </tr>
 </tbody>
 </table>
@@ -264,9 +297,9 @@ for factors up to <cite>nmax</cite>.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>tmin,tmax</strong> &#8211; input time span</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>tmin,tmax</strong> &#8211; input time span</td>
 </tr>
-<tr class="field"><th class="field-name">Yields :</th><td class="field-body">tuples with (begin, end) of days as system timestamps</td>
+<tr class="field-even field"><th class="field-name">Yields :</th><td class="field-body">tuples with (begin, end) of days as system timestamps</td>
 </tr>
 </tbody>
 </table>
@@ -280,9 +313,9 @@ for factors up to <cite>nmax</cite>.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>tmin,tmax</strong> &#8211; input time span</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>tmin,tmax</strong> &#8211; input time span</td>
 </tr>
-<tr class="field"><th class="field-name">Yields :</th><td class="field-body">tuples with (begin, end) of months as system timestamps</td>
+<tr class="field-even field"><th class="field-name">Yields :</th><td class="field-body">tuples with (begin, end) of months as system timestamps</td>
 </tr>
 </tbody>
 </table>
@@ -296,9 +329,9 @@ for factors up to <cite>nmax</cite>.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>tmin,tmax</strong> &#8211; input time span</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>tmin,tmax</strong> &#8211; input time span</td>
 </tr>
-<tr class="field"><th class="field-name">Yields :</th><td class="field-body">tuples with (begin, end) of years as system timestamps</td>
+<tr class="field-even field"><th class="field-name">Yields :</th><td class="field-body">tuples with (begin, end) of years as system timestamps</td>
 </tr>
 </tbody>
 </table>
@@ -312,9 +345,9 @@ for factors up to <cite>nmax</cite>.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>n</strong> &#8211; target decimation factor</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>n</strong> &#8211; target decimation factor</td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body">tuple with downsampling sequence</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">tuple with downsampling sequence</td>
 </tr>
 </tbody>
 </table>
@@ -328,13 +361,13 @@ for factors up to <cite>nmax</cite>.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>s</strong> &#8211; string to be interpreted</li>
 <li><strong>format</strong> &#8211; format string passed to <tt class="xref py py-func docutils literal"><span class="pre">strptime()</span></tt></li>
 </ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">system time stamp</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">system time stamp</p>
 </td>
 </tr>
 </tbody>
@@ -400,13 +433,13 @@ fractional seconds.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>s</strong> &#8211; string representing UTC time</li>
 <li><strong>format</strong> &#8211; time string format</li>
 </ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">system time stamp as floating point value</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">system time stamp as floating point value</p>
 </td>
 </tr>
 </tbody>
@@ -428,13 +461,13 @@ number of digits are present in the fractional seconds.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>t</strong> &#8211; floating point system time</li>
 <li><strong>format</strong> &#8211; time string format</li>
 </ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">string representing UTC time</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">string representing UTC time</p>
 </td>
 </tr>
 </tbody>
@@ -457,7 +490,7 @@ this is replaced with the fractional part of <em>t</em> with <tt class="docutils
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>dst</strong> &#8211; target path</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>dst</strong> &#8211; target path</td>
 </tr>
 </tbody>
 </table>
@@ -473,7 +506,7 @@ a the target path is a directory to be created).</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>dst</strong> &#8211; directory name</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>dst</strong> &#8211; directory name</td>
 </tr>
 </tbody>
 </table>
@@ -488,9 +521,9 @@ a the target path is a directory to be created).</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>x</strong> &#8211; hashable object</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>x</strong> &#8211; hashable object</td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body">reference to x or an equivalent object</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">reference to x or an equivalent object</td>
 </tr>
 </tbody>
 </table>
@@ -518,7 +551,7 @@ is in that dict, return a reference to it.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>paths</strong> &#8211; entry path names</li>
 <li><strong>selector</strong> &#8211; callback for conditional inclusion</li>
 <li><strong>regex</strong> &#8211; pattern for conditional inclusion</li>
@@ -526,7 +559,7 @@ is in that dict, return a reference to it.</p>
 </ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">list of path names</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">list of path names</p>
 </td>
 </tr>
 </tbody>
@@ -535,7 +568,7 @@ is in that dict, return a reference to it.</p>
 parameter <em>regex</em> is a regular expression, only files with matching path names
 are included. If additionally parameter <em>selector</em>
 is given a callback function, only files for which the callback returns 
-<tt class="xref docutils literal"><span class="pre">True</span></tt> are included. The callback should take a single argument. The callback
+<tt class="docutils literal"><span class="pre">True</span></tt> are included. The callback should take a single argument. The callback
 is called with a single argument, an object, having as attributes, any named
 groups given in <em>regex</em>.</p>
 <p>Examples</p>
@@ -579,7 +612,7 @@ the year:</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>format</strong> &#8211; format specification</li>
 <li><strong>line</strong> &#8211; string to be processed</li>
 <li><strong>callargs</strong> &#8211; callbacks for callback fields in the format</li>
@@ -592,7 +625,7 @@ the year:</p>
 is defined by a character for the field type followed by the field width. A 
 questionmark
 may be appended to the field description to allow the argument to be optional 
-(The data string is then allowed to be filled with blanks and <tt class="xref docutils literal"><span class="pre">None</span></tt> is 
+(The data string is then allowed to be filled with blanks and <tt class="docutils literal"><span class="pre">None</span></tt> is 
 returned in this case).</p>
 <p>The following field types are available:</p>
 <table border="1" class="docutils">
@@ -601,27 +634,27 @@ returned in this case).</p>
 <col width="94%" />
 </colgroup>
 <thead valign="bottom">
-<tr><th class="head">Type</th>
+<tr class="row-odd"><th class="head">Type</th>
 <th class="head">Description</th>
 </tr>
 </thead>
 <tbody valign="top">
-<tr><td>A</td>
+<tr class="row-even"><td>A</td>
 <td>string (full field width is extracted)</td>
 </tr>
-<tr><td>a</td>
+<tr class="row-odd"><td>a</td>
 <td>string (whitespace at the beginning and the end is removed)</td>
 </tr>
-<tr><td>i</td>
+<tr class="row-even"><td>i</td>
 <td>integer value</td>
 </tr>
-<tr><td>f</td>
+<tr class="row-odd"><td>f</td>
 <td>floating point value</td>
 </tr>
-<tr><td>&#64;</td>
+<tr class="row-even"><td>&#64;</td>
 <td>special type, a callback must be given for the conversion</td>
 </tr>
-<tr><td>x</td>
+<tr class="row-odd"><td>x</td>
 <td>special field type to skip parts of the string</td>
 </tr>
 </tbody>
@@ -636,13 +669,13 @@ returned in this case).</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>patterns</strong> &#8211; pattern or list of patterns</li>
 <li><strong>nslc</strong> &#8211; tuple with (network, station, location, channel) as strings</li>
 </ul>
 </td>
 </tr>
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><tt class="xref docutils literal"><span class="pre">True</span></tt> if the pattern matches or if any of the given patterns match; or <tt class="xref docutils literal"><span class="pre">False</span></tt>.</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><tt class="docutils literal"><span class="pre">True</span></tt> if the pattern matches or if any of the given patterns match; or <tt class="docutils literal"><span class="pre">False</span></tt>.</p>
 </td>
 </tr>
 </tbody>
@@ -662,7 +695,7 @@ returned in this case).</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>patterns</strong> &#8211; pattern or list of patterns</li>
 <li><strong>nslcs</strong> &#8211; list of (network, station, location, channel) tuples</li>
 </ul>
@@ -687,7 +720,7 @@ returned in this case).</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pid_path</strong> &#8211; path to lockfile to be used</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>pid_path</strong> &#8211; path to lockfile to be used</td>
 </tr>
 </tbody>
 </table>
@@ -721,7 +754,7 @@ returned in this case).</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>f</strong> &#8211; file like object</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>f</strong> &#8211; file like object</td>
 </tr>
 </tbody>
 </table>
@@ -734,7 +767,7 @@ returned in this case).</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>row</strong> &#8211; iterable of values</li>
 <li><strong>minfieldwidths</strong> &#8211; minimum field widths for the values</li>
 </ul>
@@ -757,7 +790,7 @@ they are quoted with single quotes, and any internal single quotes are backslash
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Parameters:</th><td class="field-body"><strong>f</strong> &#8211; file-like object</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>f</strong> &#8211; file-like object</td>
 </tr>
 </tbody>
 </table>
@@ -770,7 +803,7 @@ they are quoted with single quotes, and any internal single quotes are backslash
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field"><th class="field-name">Returns:</th><td class="field-body">tokenized line as a list of strings.</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">tokenized line as a list of strings.</td>
 </tr>
 </tbody>
 </table>
