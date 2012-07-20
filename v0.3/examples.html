@@ -3,13 +3,16 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
     <title>Programming Examples &mdash; Pyrocko v0.3 Manual</title>
+    
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '',
@@ -248,7 +251,7 @@ deconvolve the transfer function from an example seismogram:</p>
 <span class="c"># read poles and zeros from SAC format pole-zero file</span>
 <span class="n">zeros</span><span class="p">,</span> <span class="n">poles</span><span class="p">,</span> <span class="n">constant</span> <span class="o">=</span> <span class="n">pz</span><span class="o">.</span><span class="n">read_sac_zpk</span><span class="p">(</span><span class="s">&#39;STS2-Generic.polezero.txt&#39;</span><span class="p">)</span>
 
-<span class="n">zeros</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mf">0.0</span><span class="n">j</span><span class="p">)</span>  <span class="c"># one more for displacement</span>
+<span class="n">zeros</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mf">0.0j</span><span class="p">)</span>  <span class="c"># one more for displacement</span>
 
 <span class="c"># create pole-zero response function object for restitution, so poles and zeros</span>
 <span class="c"># from the response file are swapped here.</span>
