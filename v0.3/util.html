@@ -108,6 +108,28 @@ consistent logging format. This is simply a shortcut to a call to
 </dd></dl>
 
 <dl class="function">
+<dt id="pyrocko.util.wrap">
+<tt class="descname">wrap</tt><big>(</big><em>text</em>, <em>line_length=80</em><big>)</big><a class="reference internal" href="_modules/pyrocko/util.html#wrap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.util.wrap" title="Permalink to this definition">¶</a></dt>
+<dd><p>Paragraph and list-aware wrapping of text.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="pyrocko.util.BetterHelpFormatter">
+<em class="property">class </em><tt class="descname">BetterHelpFormatter</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/pyrocko/util.html#BetterHelpFormatter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.util.BetterHelpFormatter" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="pyrocko.util.BetterHelpFormatter.format_option">
+<tt class="descname">format_option</tt><big>(</big><em>option</em><big>)</big><a class="reference internal" href="_modules/pyrocko/util.html#BetterHelpFormatter.format_option"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.util.BetterHelpFormatter.format_option" title="Permalink to this definition">¶</a></dt>
+<dd><p>From IndentedHelpFormatter but using a different wrap method.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.util.BetterHelpFormatter.format_description">
+<tt class="descname">format_description</tt><big>(</big><em>description</em><big>)</big><a class="reference internal" href="_modules/pyrocko/util.html#BetterHelpFormatter.format_description"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.util.BetterHelpFormatter.format_description" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
 <dt id="pyrocko.util.progressbar">
 <tt class="descname">progressbar</tt><big>(</big><em>label</em>, <em>maxval</em><big>)</big><a class="reference internal" href="_modules/pyrocko/util.html#progressbar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.util.progressbar" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -140,6 +162,27 @@ consistent logging format. This is simply a shortcut to a call to
 </tbody>
 </table>
 <p>To be used in conjuction with <a class="reference internal" href="#pyrocko.util.progress_beg" title="pyrocko.util.progress_beg"><tt class="xref py py-func docutils literal"><span class="pre">progress_beg()</span></tt></a>.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyrocko.util.polylinefit">
+<tt class="descname">polylinefit</tt><big>(</big><em>x</em>, <em>y</em>, <em>n_or_xnodes</em><big>)</big><a class="reference internal" href="_modules/pyrocko/util.html#polylinefit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.util.polylinefit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fit piece-wise linear function to data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x,y</strong> &#8211; arrays with coordinates of data</li>
+<li><strong>n_or_xnodes</strong> &#8211; int, number of segments or x coordinates of polyline</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><cite>(xnodes, ynodes, rms_error)</cite> arrays with coordinates of polyline, root-mean-square error</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="class">
@@ -805,6 +848,24 @@ they are quoted with single quotes, and any internal single quotes are backslash
 </table>
 </dd></dl>
 
+</dd></dl>
+
+<dl class="function">
+<dt id="pyrocko.util.gform">
+<tt class="descname">gform</tt><big>(</big><em>number</em>, <em>significant_digits=3</em><big>)</big><a class="reference internal" href="_modules/pyrocko/util.html#gform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.util.gform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pretty print floating point numbers.</p>
+<p>Align floating point numbers at the decimal dot.</p>
+<div class="highlight-python"><pre>|  -d.dde+xxx|
+|  -d.dde+xx |
+|-ddd.       |
+| -dd.d      |
+|  -d.dd     |
+|  -0.ddd    |
+|  -0.0ddd   |
+|  -0.00ddd  |
+|  -d.dde-xx |
+|  -d.dde-xxx|</pre>
+</div>
 </dd></dl>
 
 </div>

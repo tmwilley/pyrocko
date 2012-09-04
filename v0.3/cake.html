@@ -296,6 +296,12 @@ If no Q values are given, standard crustal values of qp = 1456 and qs = 600 are 
 <dd><p>Boolean, whether there is a reflection involved.</p>
 </dd></dl>
 
+<dl class="attribute">
+<dt id="pyrocko.cake.Knee.headwave">
+<tt class="descname">headwave</tt><a class="headerlink" href="#pyrocko.cake.Knee.headwave" title="Permalink to this definition">¶</a></dt>
+<dd><p>Boolean, whether there is headwave propagation involved.</p>
+</dd></dl>
+
 </div></blockquote>
 <dl class="method">
 <dt id="pyrocko.cake.Knee.matches">
@@ -326,43 +332,52 @@ If no Q values are given, standard crustal values of qp = 1456 and qs = 600 are 
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>definition</strong> &#8211; string representation of the phase in cake phase syntax</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>definition</strong> &#8211; string representation of the phase in Cake&#8217;s phase syntax</td>
 </tr>
 </tbody>
 </table>
-<p>Seismic phases are conventionally named e.g. P, Pn, PP, PcP, etc. In this
-module a slightly different terminology is adapted, which allows to specify
-arbitrary conversion/reflection histories for seismic phases. The
+<p>Seismic phases are conventionally named e.g. P, Pn, PP, PcP, etc. In Cake,
+a slightly different terminology is adapted, which allows to specify
+arbitrary conversion/reflection histories for seismic ray paths. The
 conventions used here are inspired by those used in the TauP toolkit, but
 are not completely compatible with those.</p>
-<p>The definition of a seismic phase in the syntax implemented here is a
-string consisting of an alternating sequence of <em>legs</em> and <em>knees</em>. A <em>leg</em>
-here represents seismic wave propagation without any conversion,
+<p>The definition of a seismic ray propagation path in Cake&#8217;s phase syntax is
+a string consisting of an alternating sequence of <em>legs</em> and <em>knees</em>.</p>
+<p>A <em>leg</em> represents seismic wave propagation without any conversions,
 encountering only super-critical reflections. Legs are denoted by <tt class="docutils literal"><span class="pre">P</span></tt>,
-<tt class="docutils literal"><span class="pre">p</span></tt> or <tt class="docutils literal"><span class="pre">S</span></tt> or <tt class="docutils literal"><span class="pre">s</span></tt>. The capital letters are used when the take-off of
-the <em>leg</em> is in downward direction, while the lower case letter indicate a
-take-off in upward direction. A <em>knee</em> is denoted by a string of the form
-<tt class="docutils literal"><span class="pre">(INTERFACE)</span></tt> where INTERFACE is the name of an interface (which should
-be defined in the models which are used with this phase) or <tt class="docutils literal"><span class="pre">DEPTH</span></tt>,
-where DEPTH is a number, for mode conversions, <tt class="docutils literal"><span class="pre">v(INTERFACE)</span></tt> or
-<tt class="docutils literal"><span class="pre">vDEPTH</span></tt> for top-side reflections or <tt class="docutils literal"><span class="pre">^(INTERFACE)</span></tt> or <tt class="docutils literal"><span class="pre">^DEPTH</span></tt> for
-underside reflections. When DEPTH is given as a numerical value in [km], the
-interface closest to that depth is chosen. If two legs appear
-consecutively without an explicit <em>knee</em>, surface interaction is assumed.
-The string may end with a backslash <tt class="docutils literal"><span class="pre">\</span></tt>, to indicate that the ray should
-arrive at the receiver from above instead of from below, which is the
-default. It is possible to restrict the maximum and minimum depth of a
-<em>leg</em> by appending <tt class="docutils literal"><span class="pre">&lt;(INTERFACE)</span></tt> or <tt class="docutils literal"><span class="pre">&lt;DEPTH</span></tt> or <tt class="docutils literal"><span class="pre">&gt;(INTERFACE)</span></tt> or
-<tt class="docutils literal"><span class="pre">&gt;DEPTH</span></tt> after the leg character, respectively.</p>
+<tt class="docutils literal"><span class="pre">p</span></tt>,  <tt class="docutils literal"><span class="pre">S</span></tt>, or <tt class="docutils literal"><span class="pre">s</span></tt>. The capital letters are used when the take-off of
+the <em>leg</em> is in downward direction, while the lower case letters indicate a
+take-off in upward direction.</p>
+<p>A <em>knee</em> is an interaction with an interface. It can be a mode conversion,
+a reflection, or propagation as a headwave or diffracted wave.</p>
+<blockquote>
+<div><ul class="simple">
+<li>conversion is simply denoted as: <tt class="docutils literal"><span class="pre">(INTERFACE)</span></tt> or <tt class="docutils literal"><span class="pre">DEPTH</span></tt></li>
+<li>upperside reflection: <tt class="docutils literal"><span class="pre">v(INTERFACE)</span></tt> or <tt class="docutils literal"><span class="pre">vDEPTH</span></tt></li>
+<li>underside reflection: <tt class="docutils literal"><span class="pre">^(INTERFACE)</span></tt> or <tt class="docutils literal"><span class="pre">^DEPTH</span></tt></li>
+<li>normal kind headwave or diffracted wave: <tt class="docutils literal"><span class="pre">v_(INTERFACE)</span></tt> or <tt class="docutils literal"><span class="pre">v_DEPTH</span></tt></li>
+</ul>
+</div></blockquote>
+<p>The interface may be given by name or by depth: INTERFACE is the name of an
+interface defined in the model, DEPTH is the depth of an interface in
+[km] (the interface closest to that depth is chosen).  If two legs appear
+consecutively without an explicit <em>knee</em>, surface interaction is assumed.</p>
+<p>The phase definition may end with a backslash <tt class="docutils literal"><span class="pre">\</span></tt>, to indicate that the
+ray should arrive at the receiver from above instead of from below. It is
+possible to restrict the maximum and minimum depth of a <em>leg</em> by appending
+<tt class="docutils literal"><span class="pre">&lt;(INTERFACE)</span></tt> or <tt class="docutils literal"><span class="pre">&lt;DEPTH</span></tt> or <tt class="docutils literal"><span class="pre">&gt;(INTERFACE)</span></tt> or <tt class="docutils literal"><span class="pre">&gt;DEPTH</span></tt> after the
+leg character, respectively.</p>
 <p><strong>Examples:</strong></p>
 <blockquote>
 <div><ul class="simple">
 <li><tt class="docutils literal"><span class="pre">P</span></tt> - like the classical P, but includes PKP, PKIKP, Pg</li>
-<li><tt class="docutils literal"><span class="pre">P&lt;(moho)</span></tt> - like Pg, but must leave source downwards</li>
+<li><tt class="docutils literal"><span class="pre">P&lt;(moho)</span></tt> - like classical Pg, but must leave source downwards</li>
 <li><tt class="docutils literal"><span class="pre">pP</span></tt> - leaves source upward, reflects at surface, then travels as P</li>
 <li><tt class="docutils literal"><span class="pre">P(moho)s</span></tt> - conversion from P to S at the Moho on upgoing path</li>
 <li><tt class="docutils literal"><span class="pre">P(moho)S</span></tt> - conversion from P to S at the Moho on downgoing path</li>
 <li><tt class="docutils literal"><span class="pre">Pv12p</span></tt> - P with reflection at 12 km deep interface (or the interface closest to that)</li>
+<li><tt class="docutils literal"><span class="pre">Pv_(moho)p</span></tt> - classical Pn</li>
+<li><tt class="docutils literal"><span class="pre">Pv_(cmb)p</span></tt> - classical Pdiff</li>
 <li><tt class="docutils literal"><span class="pre">P^(conrad)P</span></tt> - underside reflection of P at the Conrad discontinuity</li>
 </ul>
 </div></blockquote>
@@ -374,9 +389,9 @@ default. It is possible to restrict the maximum and minimum depth of a
 <span class="go"> - P mode propagation, departing upward</span>
 <span class="go"> - surface reflection</span>
 <span class="go"> - P mode propagation, departing downward</span>
-<span class="go"> - upperside reflection with conversion from p to s at moho</span>
+<span class="go"> - upperside reflection with conversion from P to S at moho</span>
 <span class="go"> - S mode propagation, departing upward</span>
-<span class="go"> - surface reflection with conversion from s to p</span>
+<span class="go"> - surface reflection with conversion from S to P</span>
 <span class="go"> - P mode propagation, departing downward</span>
 <span class="go"> - arriving at target from above</span>
 </pre></div>
@@ -389,12 +404,26 @@ propagation to SH mode, possibly by specifying SH, or a single
 character (e.g. H) instead of S. This would be benificial for the
 selection of conversion and reflection coefficients, which currently 
 only deal with the P-SV case.</li>
-<li>Need a way to specify headwaves (maybe <tt class="docutils literal"><span class="pre">P_(moho)p</span></tt>).</li>
-<li>To support direct mappings between the classical phase names and
-cake phase names, a way to constrain the turning point depth is 
-needed.</li>
 </ol>
 </div>
+<dl class="staticmethod">
+<dt id="pyrocko.cake.PhaseDef.classic">
+<em class="property">static </em><tt class="descname">classic</tt><big>(</big><em>phasename</em><big>)</big><a class="reference internal" href="_modules/pyrocko/cake.html#PhaseDef.classic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.cake.PhaseDef.classic" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get phase definitions based on classic phase name.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>phasename</strong> &#8211; classic name of a phase</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">list of PhaseDef objects</td>
+</tr>
+</tbody>
+</table>
+<p>This returns a list of PhaseDef objects, because some classic phases (like e.g. Pg) can only be
+represented by two Cake style PhaseDef objects (one with downgoing and one with upgoing first leg).</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="pyrocko.cake.PhaseDef.first_leg">
 <tt class="descname">first_leg</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/cake.html#PhaseDef.first_leg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.cake.PhaseDef.first_leg" title="Permalink to this definition">¶</a></dt>
@@ -615,7 +644,6 @@ interpolation of the form</p>
 <dt id="pyrocko.cake.Layer.test">
 <tt class="descname">test</tt><big>(</big><em>p</em>, <em>mode</em>, <em>z</em><big>)</big><a class="reference internal" href="_modules/pyrocko/cake.html#Layer.test"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.cake.Layer.test" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if wave mode can exist for given ray parameter at given depth within the layer.</p>
-<p>Uses potential interpolation.</p>
 </dd></dl>
 
 <dl class="method">
@@ -812,7 +840,7 @@ interpolation of the form</p>
 
 <dl class="method">
 <dt id="pyrocko.cake.RayPath.zxt_path_subdivided">
-<tt class="descname">zxt_path_subdivided</tt><big>(</big><em>p</em>, <em>endgaps</em>, <em>points_per_straight=20</em><big>)</big><a class="reference internal" href="_modules/pyrocko/cake.html#RayPath.zxt_path_subdivided"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.cake.RayPath.zxt_path_subdivided" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">zxt_path_subdivided</tt><big>(</big><em>p</em>, <em>endgaps</em>, <em>points_per_straight=20</em>, <em>x_for_headwave=None</em><big>)</big><a class="reference internal" href="_modules/pyrocko/cake.html#RayPath.zxt_path_subdivided"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.cake.RayPath.zxt_path_subdivided" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get geometrical representation of ray path.</p>
 </dd></dl>
 
@@ -1237,6 +1265,21 @@ to add layers and discontinuities as needed.</p>
 </table>
 </dd></dl>
 
+<dl class="method">
+<dt id="pyrocko.cake.LayeredModel.simplify">
+<tt class="descname">simplify</tt><big>(</big><em>max_rel_error=0.001</em><big>)</big><a class="reference internal" href="_modules/pyrocko/cake.html#LayeredModel.simplify"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.cake.LayeredModel.simplify" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get representation of model with lower resolution.</p>
+<p>Returns an approximation of the model. All discontinuities are kept,
+but layer stacks with continuous model parameters are represented, if
+possible, by a lower number of layers.  Piecewise linear functions are
+fitted against the original model parameter&#8217;s piecewise linear
+functions.  Successively larger numbers of layers are tried, until the
+difference to the original model is below <cite>max_rel_error</cite>. The
+difference is measured as the RMS error of the fit normalized by the
+mean of the input (i.e. the fitted curves should deviate, on average,
+less than 0.1% from the input curves if <cite>max_rel_error</cite> = 0.001).</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="function">
@@ -1258,7 +1301,7 @@ to add layers and discontinuities as needed.</p>
 
 <dl class="function">
 <dt id="pyrocko.cake.load_model">
-<tt class="descname">load_model</tt><big>(</big><em>fn</em>, <em>format='nd'</em><big>)</big><a class="reference internal" href="_modules/pyrocko/cake.html#load_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.cake.load_model" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">load_model</tt><big>(</big><em>fn='ak135-f-continental.m'</em>, <em>format='nd'</em><big>)</big><a class="reference internal" href="_modules/pyrocko/cake.html#load_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.cake.load_model" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load layered earth model from file.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />

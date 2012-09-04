@@ -472,6 +472,21 @@
 
             
         <span class="k">return</span> <span class="n">p</span>
+</div>
+<div class="viewcode-block" id="Snuffling.get_active_event_and_stations"><a class="viewcode-back" href="../../snuffling.html#pyrocko.snuffling.Snuffling.get_active_event_and_stations">[docs]</a>    <span class="k">def</span> <span class="nf">get_active_event_and_stations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trange</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mf">3600.</span><span class="p">,</span><span class="mf">3600.</span><span class="p">)):</span>
+        <span class="sd">&#39;&#39;&#39;Get event and stations with available data for active event.&#39;&#39;&#39;</span>
+
+        <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_pile</span><span class="p">()</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_viewer</span><span class="p">()</span>
+        
+        <span class="n">event</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">get_active_event</span><span class="p">()</span>
+        <span class="n">stations</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">traces</span> <span class="ow">in</span> <span class="n">p</span><span class="o">.</span><span class="n">chopper</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">time</span><span class="o">+</span><span class="n">trange</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">event</span><span class="o">.</span><span class="n">time</span><span class="o">+</span><span class="n">trange</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">load_data</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">tr</span> <span class="ow">in</span> <span class="n">traces</span><span class="p">:</span>
+                <span class="n">station</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">get_station</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">station_key</span><span class="p">(</span><span class="n">tr</span><span class="p">))</span>
+                <span class="n">stations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">station</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">event</span><span class="p">,</span> <span class="n">stations</span>
         </div>
 <div class="viewcode-block" id="Snuffling.chopper_selected_traces"><a class="viewcode-back" href="../../snuffling.html#pyrocko.snuffling.Snuffling.chopper_selected_traces">[docs]</a>    <span class="k">def</span> <span class="nf">chopper_selected_traces</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fallback</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">marker_selector</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span> <span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Iterate over selected traces.</span>

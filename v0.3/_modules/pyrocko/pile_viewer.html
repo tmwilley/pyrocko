@@ -1027,6 +1027,12 @@
             <span class="n">event</span> <span class="o">=</span> <span class="n">event_marker</span><span class="o">.</span><span class="n">get_event</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">set_origin</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">SIGNAL</span><span class="p">(</span><span class="s">&#39;active_event_changed()&#39;</span><span class="p">))</span>
+
+        <span class="k">def</span> <span class="nf">set_active_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">marker</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">markers</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">marker</span><span class="p">,</span> <span class="n">EventMarker</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">marker</span><span class="o">.</span><span class="n">get_event</span><span class="p">()</span> <span class="ow">is</span> <span class="n">event</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">set_active_event_marker</span><span class="p">(</span><span class="n">marker</span><span class="p">)</span>
         
         <span class="k">def</span> <span class="nf">get_active_event_marker</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">active_event_marker</span>
@@ -1063,7 +1069,7 @@
             <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">snuffling_paths</span><span class="p">:</span>
                 
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">path</span><span class="p">):</span> 
-                    <span class="k">continue</span>
+                    <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
                 
                 <span class="k">for</span> <span class="n">fn</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
                     <span class="k">if</span> <span class="ow">not</span> <span class="n">fn</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s">&#39;.py&#39;</span><span class="p">):</span>
@@ -1481,8 +1487,8 @@
                     <span class="k">if</span> <span class="ow">not</span> <span class="n">marker_nslc_ids</span><span class="p">:</span>
                         <span class="n">xstate</span> <span class="o">=</span> <span class="bp">True</span>
                     
-                    <span class="k">for</span> <span class="n">nslc_id</span> <span class="ow">in</span> <span class="n">marker_nslc_ids</span><span class="p">:</span>
-                        <span class="k">if</span> <span class="n">nslc_id</span> <span class="ow">in</span> <span class="n">relevant_nslc_ids</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">nslc</span> <span class="ow">in</span> <span class="n">relevant_nslc_ids</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">marker</span><span class="o">.</span><span class="n">match_nslc</span><span class="p">(</span><span class="n">nslc</span><span class="p">):</span>
                             <span class="n">xstate</span> <span class="o">=</span> <span class="bp">True</span>
                             
                     <span class="n">state</span> <span class="o">=</span> <span class="n">xstate</span>
@@ -1494,19 +1500,7 @@
                     <span class="n">needupdate</span> <span class="o">=</span> <span class="bp">True</span>
                     <span class="n">marker</span><span class="o">.</span><span class="n">set_alerted</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
                     <span class="k">if</span> <span class="n">state</span><span class="p">:</span>
-                        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">marker</span><span class="p">,</span> <span class="n">EventMarker</span><span class="p">):</span>
-                            <span class="n">ev</span> <span class="o">=</span> <span class="n">marker</span><span class="o">.</span><span class="n">get_event</span><span class="p">()</span>
-                            <span class="n">evs</span> <span class="o">=</span> <span class="p">[]</span>
-                            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="s">&#39;magnitude lat lon depth name region catalog&#39;</span><span class="o">.</span><span class="n">split</span><span class="p">():</span>
-                                <span class="k">if</span> <span class="n">ev</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">ev</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">!=</span> <span class="s">&#39;&#39;</span><span class="p">:</span>
-                                    <span class="k">if</span> <span class="n">k</span> <span class="o">==</span> <span class="s">&#39;depth&#39;</span><span class="p">:</span>
-                                        <span class="n">sv</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%g</span><span class="s"> km&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">ev</span><span class="o">.</span><span class="n">depth</span> <span class="o">*</span> <span class="mf">0.001</span><span class="p">)</span>
-                                    <span class="k">else</span><span class="p">:</span>
-                                        <span class="n">sv</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">ev</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
-                                    <span class="n">evs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s"> = </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">sv</span><span class="p">))</span>
-
-                            <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="s">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">evs</span><span class="p">)</span> 
-            
+                        <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="n">marker</span><span class="o">.</span><span class="n">hoover_message</span><span class="p">()</span>
 
             <span class="k">if</span> <span class="ow">not</span> <span class="n">haveone</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="bp">None</span>
@@ -1893,8 +1887,11 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">set_time_range</span><span class="p">(</span><span class="n">tmin</span><span class="p">,</span><span class="n">tmax</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
             
-        <span class="k">def</span> <span class="nf">go_to_time</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
-            <span class="n">tmin</span><span class="p">,</span> <span class="n">tmax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">make_good_looking_time_range</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">t</span><span class="p">)</span>
+        <span class="k">def</span> <span class="nf">go_to_time</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">tlen</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+            <span class="n">tmax</span> <span class="o">=</span> <span class="n">t</span>
+            <span class="k">if</span> <span class="n">tlen</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">tmax</span> <span class="o">=</span> <span class="n">t</span><span class="o">+</span><span class="n">tlen</span>
+            <span class="n">tmin</span><span class="p">,</span> <span class="n">tmax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">make_good_looking_time_range</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">tmax</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">interrupt_following</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">set_time_range</span><span class="p">(</span><span class="n">tmin</span><span class="p">,</span><span class="n">tmax</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
@@ -2968,12 +2965,23 @@
                         <span class="n">toks2</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
                         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">toks2</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
                             <span class="n">arg</span> <span class="o">=</span> <span class="n">toks2</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-                            <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s">r&#39;^\d\d\d\d-\d\d(-\d\d( \d\d(:\d\d(:\d\d(.\d+)?)?)?)?)?$&#39;</span><span class="p">,</span> <span class="n">arg</span><span class="p">):</span>
+                            <span class="n">m</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s">r&#39;^\d\d\d\d-\d\d(-\d\d( \d\d(:\d\d(:\d\d(.\d+)?)?)?)?)?$&#39;</span><span class="p">,</span> <span class="n">arg</span><span class="p">)</span>
+                            <span class="k">if</span> <span class="n">m</span><span class="p">:</span>
+                                <span class="n">tlen</span> <span class="o">=</span> <span class="bp">None</span>
+                                <span class="k">if</span> <span class="ow">not</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">):</span>
+                                    <span class="n">tlen</span> <span class="o">=</span> <span class="mi">32</span><span class="o">*</span><span class="mi">24</span><span class="o">*</span><span class="mi">60</span><span class="o">*</span><span class="mi">60</span>
+                                <span class="k">elif</span> <span class="ow">not</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">):</span>
+                                    <span class="n">tlen</span> <span class="o">=</span> <span class="mi">24</span><span class="o">*</span><span class="mi">60</span><span class="o">*</span><span class="mi">60</span>
+                                <span class="k">elif</span> <span class="ow">not</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+                                    <span class="n">tlen</span> <span class="o">=</span> <span class="mi">60</span><span class="o">*</span><span class="mi">60</span>
+                                <span class="k">elif</span> <span class="ow">not</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
+                                    <span class="n">tlen</span> <span class="o">=</span> <span class="mi">60</span>
+                                    
                                 <span class="n">supl</span> <span class="o">=</span> <span class="s">&#39;1970-01-01 00:00:00&#39;</span>
                                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">supl</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
                                     <span class="n">arg</span> <span class="o">=</span> <span class="n">arg</span> <span class="o">+</span> <span class="n">supl</span><span class="p">[</span><span class="o">-</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">supl</span><span class="p">)</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">arg</span><span class="p">)):]</span>
                                 <span class="n">t</span> <span class="o">=</span> <span class="n">pyrocko</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">str_to_time</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span>
-                                <span class="bp">self</span><span class="o">.</span><span class="n">go_to_time</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">go_to_time</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">tlen</span><span class="o">=</span><span class="n">tlen</span><span class="p">)</span>
                             
                             <span class="k">elif</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s">r&#39;^\d\d:\d\d(:\d\d(.\d+)?)?$&#39;</span><span class="p">,</span> <span class="n">arg</span><span class="p">):</span>
                                 <span class="n">supl</span> <span class="o">=</span> <span class="s">&#39;00:00:00&#39;</span>

@@ -53,7 +53,7 @@
   <h1>Source code for pyrocko.util</h1><div class="highlight"><pre>
 <span class="sd">&#39;&#39;&#39;Utility functions for Pyrocko.&#39;&#39;&#39;</span>
 
-<span class="kn">import</span> <span class="nn">time</span><span class="o">,</span> <span class="nn">logging</span><span class="o">,</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">re</span><span class="o">,</span> <span class="nn">calendar</span><span class="o">,</span> <span class="nn">math</span><span class="o">,</span> <span class="nn">fnmatch</span><span class="o">,</span> <span class="nn">errno</span><span class="o">,</span> <span class="nn">fcntl</span><span class="o">,</span> <span class="nn">shlex</span>
+<span class="kn">import</span> <span class="nn">time</span><span class="o">,</span> <span class="nn">logging</span><span class="o">,</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">re</span><span class="o">,</span> <span class="nn">calendar</span><span class="o">,</span> <span class="nn">math</span><span class="o">,</span> <span class="nn">fnmatch</span><span class="o">,</span> <span class="nn">errno</span><span class="o">,</span> <span class="nn">fcntl</span><span class="o">,</span> <span class="nn">shlex</span><span class="o">,</span> <span class="nn">optparse</span>
 <span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">signal</span>
 <span class="kn">from</span> <span class="nn">os.path</span> <span class="kn">import</span> <span class="n">join</span> <span class="k">as</span> <span class="n">pjoin</span>
 <span class="kn">import</span> <span class="nn">config</span>
@@ -117,8 +117,101 @@
     
     <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">start</span>
+   </div>
+<div class="viewcode-block" id="wrap"><a class="viewcode-back" href="../../util.html#pyrocko.util.wrap">[docs]</a><span class="k">def</span> <span class="nf">wrap</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">line_length</span><span class="o">=</span><span class="mi">80</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Paragraph and list-aware wrapping of text.&#39;&#39;&#39;</span>
+    
+    <span class="n">text</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
+    <span class="n">at_lineend</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s">r&#39; *\n&#39;</span><span class="p">)</span>
+    <span class="n">at_para</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s">r&#39;((^|(\n\s*)?\n)(\s+[*] )|\n\s*\n)&#39;</span><span class="p">)</span>
         
+    <span class="n">paragraphs</span> <span class="o">=</span>  <span class="n">at_para</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">text</span><span class="p">)[::</span><span class="mi">5</span><span class="p">]</span>
+    <span class="n">listindents</span> <span class="o">=</span> <span class="n">at_para</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">text</span><span class="p">)[</span><span class="mi">4</span><span class="p">::</span><span class="mi">5</span><span class="p">]</span>
+    <span class="n">newlist</span> <span class="o">=</span> <span class="n">at_para</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">text</span><span class="p">)[</span><span class="mi">3</span><span class="p">::</span><span class="mi">5</span><span class="p">]</span>
+   
+    <span class="n">listindents</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="bp">None</span><span class="p">]</span>
+    <span class="n">listindents</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">newlist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">None</span><span class="p">)</span>
+  
+    <span class="n">det_indent</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s">r&#39;^ *&#39;</span><span class="p">)</span>
+    
+    <span class="n">iso_latin_1_enc_failed</span> <span class="o">=</span> <span class="bp">False</span>
+    <span class="n">outlines</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">ip</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">paragraphs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">p</span><span class="p">:</span>
+            <span class="k">continue</span>
+        
+        <span class="k">if</span> <span class="n">listindents</span><span class="p">[</span><span class="n">ip</span><span class="p">]</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">_indent</span> <span class="o">=</span> <span class="n">det_indent</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">p</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">findent</span> <span class="o">=</span> <span class="n">_indent</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">findent</span> <span class="o">=</span> <span class="n">listindents</span><span class="p">[</span><span class="n">ip</span><span class="p">]</span>
+            <span class="n">_indent</span> <span class="o">=</span> <span class="s">&#39; &#39;</span><span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">findent</span><span class="p">)</span>
+        
+        <span class="n">ll</span> <span class="o">=</span> <span class="n">line_length</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">_indent</span><span class="p">)</span>
+        <span class="n">llf</span> <span class="o">=</span> <span class="n">ll</span>
+        
+        <span class="n">oldlines</span> <span class="o">=</span> <span class="p">[</span> <span class="n">s</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">at_lineend</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">rstrip</span><span class="p">())</span> <span class="p">]</span>
+        <span class="n">p1</span> <span class="o">=</span> <span class="s">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span> <span class="n">oldlines</span> <span class="p">)</span>
+        <span class="n">possible</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s">r&#39;(^.{1,</span><span class="si">%i</span><span class="s">}|.{1,</span><span class="si">%i</span><span class="s">})( |$)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">llf</span><span class="p">,</span> <span class="n">ll</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">imatch</span><span class="p">,</span> <span class="n">match</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">possible</span><span class="o">.</span><span class="n">finditer</span><span class="p">(</span><span class="n">p1</span><span class="p">)):</span>
+            <span class="n">parout</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">imatch</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">outlines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">findent</span> <span class="o">+</span> <span class="n">parout</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">outlines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_indent</span> <span class="o">+</span> <span class="n">parout</span><span class="p">)</span>
+            
+        <span class="k">if</span> <span class="n">ip</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">paragraphs</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span> <span class="ow">and</span> <span class="p">(</span><span class="n">listindents</span><span class="p">[</span><span class="n">ip</span><span class="p">]</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="n">newlist</span><span class="p">[</span><span class="n">ip</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">or</span> <span class="n">listindents</span><span class="p">[</span><span class="n">ip</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">):</span>
+            <span class="n">outlines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">outlines</span>
 </div>
+<div class="viewcode-block" id="BetterHelpFormatter"><a class="viewcode-back" href="../../util.html#pyrocko.util.BetterHelpFormatter">[docs]</a><span class="k">class</span> <span class="nc">BetterHelpFormatter</span><span class="p">(</span><span class="n">optparse</span><span class="o">.</span><span class="n">IndentedHelpFormatter</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">optparse</span><span class="o">.</span><span class="n">IndentedHelpFormatter</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+<div class="viewcode-block" id="BetterHelpFormatter.format_option"><a class="viewcode-back" href="../../util.html#pyrocko.util.BetterHelpFormatter.format_option">[docs]</a>    <span class="k">def</span> <span class="nf">format_option</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">option</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;From IndentedHelpFormatter but using a different wrap method.&#39;&#39;&#39;</span>
+
+        <span class="n">help_text_position</span> <span class="o">=</span> <span class="mi">4</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_indent</span>
+        <span class="n">help_text_width</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">-</span> <span class="n">help_text_position</span>
+       
+        <span class="n">opts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">option_strings</span><span class="p">[</span><span class="n">option</span><span class="p">]</span>
+        <span class="n">opts</span> <span class="o">=</span> <span class="s">&quot;</span><span class="si">%*s%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">current_indent</span><span class="p">,</span> <span class="s">&quot;&quot;</span><span class="p">,</span> <span class="n">opts</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">option</span><span class="o">.</span><span class="n">help</span><span class="p">:</span>
+            <span class="n">help_text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">expand_default</span><span class="p">(</span><span class="n">option</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">help_position</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">help_text</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">:</span>
+            <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span> <span class="s">&#39;&#39;</span><span class="p">,</span> <span class="s">&#39;</span><span class="si">%-*s</span><span class="s"> </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">help_position</span><span class="p">,</span> <span class="n">opts</span><span class="p">,</span> <span class="n">help_text</span><span class="p">),</span> <span class="s">&#39;&#39;</span> <span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;&#39;</span><span class="p">]</span>
+            <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">opts</span><span class="p">)</span>
+            <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">option</span><span class="o">.</span><span class="n">help</span><span class="p">:</span>
+                <span class="n">help_lines</span> <span class="o">=</span> <span class="n">wrap</span><span class="p">(</span><span class="n">help_text</span><span class="p">,</span> <span class="n">help_text_width</span><span class="p">)</span>
+                <span class="n">lines</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s">&quot;</span><span class="si">%*s%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">help_text_position</span><span class="p">,</span> <span class="s">&quot;&quot;</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span>
+                               <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">help_lines</span><span class="p">])</span>
+            <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="BetterHelpFormatter.format_description"><a class="viewcode-back" href="../../util.html#pyrocko.util.BetterHelpFormatter.format_description">[docs]</a>    <span class="k">def</span> <span class="nf">format_description</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">description</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">description</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s">&#39;&#39;</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_indent</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">lines</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;&#39;</span><span class="p">]</span>
+
+        <span class="n">lines</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">wrap</span><span class="p">(</span><span class="n">description</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_indent</span><span class="p">))</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_indent</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s">&#39;</span><span class="si">%*s%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">current_indent</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">])</span> 
+
+</div></div>
 <div class="viewcode-block" id="progressbar"><a class="viewcode-back" href="../../util.html#pyrocko.util.progressbar">[docs]</a><span class="k">def</span> <span class="nf">progressbar</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">maxval</span><span class="p">):</span>
     <span class="n">widgets</span> <span class="o">=</span> <span class="p">[</span><span class="n">label</span><span class="p">,</span> <span class="s">&#39; &#39;</span><span class="p">,</span>
             <span class="n">progressbar_mod</span><span class="o">.</span><span class="n">Bar</span><span class="p">(</span><span class="n">marker</span><span class="o">=</span><span class="s">&#39;-&#39;</span><span class="p">,</span><span class="n">left</span><span class="o">=</span><span class="s">&#39;[&#39;</span><span class="p">,</span><span class="n">right</span><span class="o">=</span><span class="s">&#39;]&#39;</span><span class="p">),</span> <span class="s">&#39; &#39;</span><span class="p">,</span>
@@ -149,6 +242,62 @@
     <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39; done. </span><span class="si">%s</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">label</span><span class="p">)</span>
     <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
         </div>
+<div class="viewcode-block" id="polylinefit"><a class="viewcode-back" href="../../util.html#pyrocko.util.polylinefit">[docs]</a><span class="k">def</span> <span class="nf">polylinefit</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span> <span class="n">n_or_xnodes</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Fit piece-wise linear function to data.</span>
+<span class="sd">    </span>
+<span class="sd">    :param x,y: arrays with coordinates of data</span>
+<span class="sd">    :param n_or_xnodes: int, number of segments or x coordinates of polyline</span>
+
+<span class="sd">    :returns: `(xnodes, ynodes, rms_error)` arrays with coordinates of polyline, root-mean-square error</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="n">x</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">n_or_xnodes</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="n">n_or_xnodes</span>
+        <span class="n">xmin</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+        <span class="n">xmax</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+        <span class="n">xnodes</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">xmin</span><span class="p">,</span> <span class="n">xmax</span><span class="p">,</span> <span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">xnodes</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">n_or_xnodes</span><span class="p">)</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="n">xnodes</span><span class="o">.</span><span class="n">size</span> <span class="o">-</span> <span class="mi">1</span>
+
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">n</span> <span class="o">&gt;</span> <span class="mi">0</span>
+
+    <span class="n">ndata</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">a</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">ndata</span><span class="o">+</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">n</span><span class="o">*</span><span class="mi">2</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+        <span class="n">xmin_block</span> <span class="o">=</span> <span class="n">xnodes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">xmax_block</span> <span class="o">=</span> <span class="n">xnodes</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span>  <span class="c"># don&#39;t loose last point</span>
+            <span class="n">indices</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">where</span><span class="p">(</span> <span class="n">num</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">xmin_block</span> <span class="o">&lt;=</span> <span class="n">x</span><span class="p">,</span> <span class="n">x</span> <span class="o">&lt;=</span> <span class="n">xmax_block</span><span class="p">)</span> <span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">indices</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">where</span><span class="p">(</span> <span class="n">num</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">xmin_block</span> <span class="o">&lt;=</span> <span class="n">x</span><span class="p">,</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="n">xmax_block</span><span class="p">)</span> <span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="n">a</span><span class="p">[</span><span class="n">indices</span><span class="p">,</span> <span class="n">i</span><span class="o">*</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span>
+        <span class="n">a</span><span class="p">[</span><span class="n">indices</span><span class="p">,</span> <span class="n">i</span><span class="o">*</span><span class="mi">2</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
+
+        <span class="n">w</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">ndata</span><span class="p">)</span><span class="o">*</span><span class="mf">100.</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="n">a</span><span class="p">[</span><span class="n">ndata</span><span class="o">+</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="o">*</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">xmax_block</span><span class="o">*</span><span class="n">w</span>
+            <span class="n">a</span><span class="p">[</span><span class="n">ndata</span><span class="o">+</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="o">*</span><span class="mi">2</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span><span class="o">*</span><span class="n">w</span>
+            <span class="n">a</span><span class="p">[</span><span class="n">ndata</span><span class="o">+</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="o">*</span><span class="mi">2</span><span class="o">+</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">xmax_block</span><span class="o">*</span><span class="n">w</span>
+            <span class="n">a</span><span class="p">[</span><span class="n">ndata</span><span class="o">+</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="o">*</span><span class="mi">2</span><span class="o">+</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span><span class="o">*</span><span class="n">w</span>
+
+    <span class="n">d</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">y</span><span class="p">,</span><span class="n">num</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">)))</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">lstsq</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">d</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="n">n</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
+
+    <span class="n">ynodes</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">ynodes</span><span class="p">[:</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">model</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">xnodes</span><span class="p">[:</span><span class="n">n</span><span class="p">]</span> <span class="o">+</span> <span class="n">model</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">ynodes</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">+=</span> <span class="n">model</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">xnodes</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">+</span> <span class="n">model</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">ynodes</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="n">n</span><span class="p">]</span> <span class="o">*=</span> <span class="mf">0.5</span>
+    
+    <span class="n">rms_error</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">num</span><span class="o">.</span><span class="n">mean</span><span class="p">((</span><span class="n">num</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">xnodes</span><span class="p">,</span> <span class="n">ynodes</span><span class="p">)</span> <span class="o">-</span> <span class="n">y</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">xnodes</span><span class="p">,</span> <span class="n">ynodes</span><span class="p">,</span> <span class="n">rms_error</span>
+</div>
 <div class="viewcode-block" id="GlobalVars"><a class="viewcode-back" href="../../util.html#pyrocko.util.GlobalVars">[docs]</a><span class="k">class</span> <span class="nc">GlobalVars</span><span class="p">:</span>
     <span class="n">reuse_store</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
     <span class="n">decitab_nmax</span> <span class="o">=</span> <span class="mi">0</span>
@@ -932,10 +1081,37 @@
             <span class="n">row</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
             
         <span class="k">return</span> <span class="n">row</span>
+</div></div>
+<div class="viewcode-block" id="gform"><a class="viewcode-back" href="../../util.html#pyrocko.util.gform">[docs]</a><span class="k">def</span> <span class="nf">gform</span><span class="p">(</span> <span class="n">number</span><span class="p">,</span> <span class="n">significant_digits</span><span class="o">=</span><span class="mi">3</span> <span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Pretty print floating point numbers.</span>
+<span class="sd">    </span>
+<span class="sd">    Align floating point numbers at the decimal dot.</span>
+<span class="sd">    </span>
+<span class="sd">    ::</span>
 
-
-            </div></div>
-</pre></div>
+<span class="sd">      |  -d.dde+xxx|</span>
+<span class="sd">      |  -d.dde+xx |</span>
+<span class="sd">      |-ddd.       |</span>
+<span class="sd">      | -dd.d      |</span>
+<span class="sd">      |  -d.dd     |</span>
+<span class="sd">      |  -0.ddd    |</span>
+<span class="sd">      |  -0.0ddd   |</span>
+<span class="sd">      |  -0.00ddd  |</span>
+<span class="sd">      |  -d.dde-xx |</span>
+<span class="sd">      |  -d.dde-xxx|</span>
+<span class="sd">    &#39;&#39;&#39;</span> 
+    
+    <span class="n">no_exp_range</span> <span class="o">=</span> <span class="p">(</span><span class="nb">pow</span><span class="p">(</span><span class="mf">10.</span><span class="p">,</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> 
+                    <span class="nb">pow</span><span class="p">(</span><span class="mf">10.</span><span class="p">,</span><span class="n">significant_digits</span><span class="p">))</span>
+    <span class="n">width</span> <span class="o">=</span> <span class="n">significant_digits</span><span class="o">+</span><span class="n">significant_digits</span><span class="o">-</span><span class="mi">1</span><span class="o">+</span><span class="mi">1</span><span class="o">+</span><span class="mi">1</span><span class="o">+</span><span class="mi">5</span>
+    
+    <span class="k">if</span> <span class="p">(</span><span class="n">no_exp_range</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">number</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">no_exp_range</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="ow">or</span> <span class="n">number</span> <span class="o">==</span> <span class="mf">0.</span><span class="p">:</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;</span><span class="si">%#.*g</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">significant_digits</span><span class="p">,</span> <span class="n">number</span><span class="p">))</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s">&#39;0&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%.*E</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">significant_digits</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">number</span><span class="p">)</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39; &#39;</span><span class="o">*</span><span class="p">(</span><span class="o">-</span><span class="n">s</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s">&#39;.&#39;</span><span class="p">)</span><span class="o">+</span><span class="p">(</span><span class="n">significant_digits</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span><span class="o">+</span><span class="n">s</span><span class="p">)</span><span class="o">.</span><span class="n">ljust</span><span class="p">(</span><span class="n">width</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">s</span>
+</pre></div></div>
 
           </div>
       </div>
