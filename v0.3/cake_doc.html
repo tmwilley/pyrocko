@@ -29,8 +29,8 @@
           title="Search within Pyrocko v0.3 Manual"
           href="_static/opensearch.xml"/>
     <link rel="top" title="Pyrocko v0.3 Manual" href="index.html" />
-    <link rel="next" title="Library Reference" href="reference.html" />
-    <link rel="prev" title="Programming Examples" href="examples.html" /> 
+    <link rel="next" title="Programming Examples" href="examples.html" />
+    <link rel="prev" title="Writing a Snuffling" href="snuffling_howto.html" /> 
   </head>
   <body>
     <div class="related">
@@ -43,10 +43,10 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="reference.html" title="Library Reference"
+          <a href="examples.html" title="Programming Examples"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="examples.html" title="Programming Examples"
+          <a href="snuffling_howto.html" title="Writing a Snuffling"
              accesskey="P">previous</a> |</li>
         <li><a href="index.html">Pyrocko v0.3 Manual</a> &raquo;</li> 
       </ul>
@@ -352,7 +352,8 @@ some of the following options.</p>
 <div class="section" id="some-water-multiples">
 <h3>Some water multiples<a class="headerlink" href="#some-water-multiples" title="Permalink to this headline">¶</a></h3>
 <p>Receivers may be at any depth. Arbitrary reflection/conversion histories may be choosen.</p>
-<div class="highlight-python"><pre>cake plot-rays --sdepth=15 --distances=10 --rdepth=4.443 --crust2loc=0,0 --phase='pP\,pPv3pP\,pPv3pPv3pP\,p'</pre>
+<div class="highlight-python"><pre>cake plot-rays --sdepth=15 --distances=10 --rdepth=4.443 --crust2loc=0,0 \
+               --phase='pP\,pPv3pP\,pPv3pPv3pP\,p'</pre>
 </div>
 <div class="figure">
 <a class="reference internal image-reference" href="_images/cake_plot_example_2.png"><img alt="_images/cake_plot_example_2.png" src="_images/cake_plot_example_2.png" style="width: 868.8px; height: 580.0px;" /></a>
@@ -395,7 +396,8 @@ that there is a constraint on maximum depth.</p>
 1 3 1.73 2.6
 2 4 2.3  2.6
 EOF
-&gt; cake plot-rays --phases='P,p,P\,p\' --sdepth=0.5 --rdepth=1.5 --distances=3,5 --model=waveguide.nd</pre>
+&gt; cake plot-rays --phases='P,p,P\,p\' --sdepth=0.5 --rdepth=1.5 --distances=3,5 \
+                 --model=waveguide.nd</pre>
 </div>
 <div class="figure">
 <a class="reference internal image-reference" href="_images/cake_plot_example_5.png"><img alt="_images/cake_plot_example_5.png" src="_images/cake_plot_example_5.png" style="width: 868.8px; height: 546.4px;" /></a>
@@ -471,10 +473,10 @@ Qk                            :          inf</pre>
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="reference.html" title="Library Reference"
+          <a href="examples.html" title="Programming Examples"
              >next</a> |</li>
         <li class="right" >
-          <a href="examples.html" title="Programming Examples"
+          <a href="snuffling_howto.html" title="Writing a Snuffling"
              >previous</a> |</li>
         <li><a href="index.html">Pyrocko v0.3 Manual</a> &raquo;</li> 
       </ul>

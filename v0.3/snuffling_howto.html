@@ -29,7 +29,7 @@
           title="Search within Pyrocko v0.3 Manual"
           href="_static/opensearch.xml"/>
     <link rel="top" title="Pyrocko v0.3 Manual" href="index.html" />
-    <link rel="next" title="Programming Examples" href="examples.html" />
+    <link rel="next" title="Cake" href="cake_doc.html" />
     <link rel="prev" title="Snuffler Tutorial" href="snuffler_tutorial.html" /> 
   </head>
   <body>
@@ -43,7 +43,7 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="examples.html" title="Programming Examples"
+          <a href="cake_doc.html" title="Cake"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="snuffler_tutorial.html" title="Snuffler Tutorial"
@@ -164,7 +164,9 @@ in the pyrocko source code.</p>
         <span class="c"># the chopper yields lists of traces but for minmax() below, an iterator</span>
         <span class="c"># yielding single traces is needed; using a converter:</span>
         <span class="k">def</span> <span class="nf">iter_single_traces</span><span class="p">():</span>
-            <span class="k">for</span> <span class="n">traces</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">chopper_selected_traces</span><span class="p">(</span><span class="n">tinc</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tinc</span><span class="p">,</span> <span class="n">degap</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">fallback</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">traces</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">chopper_selected_traces</span><span class="p">(</span><span class="n">tinc</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">tinc</span><span class="p">,</span>
+                                                       <span class="n">degap</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                                                       <span class="n">fallback</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
                 <span class="k">for</span> <span class="n">tr</span> <span class="ow">in</span> <span class="n">traces</span><span class="p">:</span>
                     <span class="k">yield</span> <span class="n">tr</span>
 
@@ -332,7 +334,7 @@ in the pyrocko source code.</p>
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="examples.html" title="Programming Examples"
+          <a href="cake_doc.html" title="Cake"
              >next</a> |</li>
         <li class="right" >
           <a href="snuffler_tutorial.html" title="Snuffler Tutorial"

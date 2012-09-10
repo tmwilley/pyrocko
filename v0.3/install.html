@@ -65,8 +65,9 @@
 <li><a class="reference external" href="http://www.python.org/">Python</a> including development headers</li>
 <li><a class="reference external" href="http://numpy.scipy.org/">NumPy</a> including development headers</li>
 <li><a class="reference external" href="http://scipy.org/">SciPy</a></li>
-<li><a class="reference external" href="http://www.riverbankcomputing.co.uk/software/pyqt/intro">PyQt4</a> (&gt;= v4.4.4, Only needed for the GUI apps)</li>
 <li><a class="reference external" href="http://pypi.python.org/pypi/pyavl/">pyavl</a></li>
+<li><a class="reference external" href="http://www.riverbankcomputing.co.uk/software/pyqt/intro">PyQt4</a> (&gt;= v4.4.4, only needed for the GUI apps)</li>
+<li><a class="reference external" href="http://matplotlib.sourceforge.net/">matplotlib</a> (optional, if you want to produce plots with the Cake app)</li>
 <li>libmseed (tarball is included)</li>
 <li>evalresp (only libevresp from this package, tarball is included, could be made optional)</li>
 <li><a class="reference external" href="http://pypi.python.org/pypi/progressbar">progressbar</a> (optional)</li>
@@ -79,16 +80,20 @@
 separate packages for the development headers of NumPy and Python (the *-dev
 packages) is also system specific.</p>
 <ul>
-<li><p class="first">Debian GNU/Linux:</p>
-<div class="highlight-python"><pre>apt-get install python-dev python-numpy python-numpy-dev python-scipy python-qt4 python-qt4-opengl</pre>
+<li><p class="first">Debian GNU/Linux (wheezy):</p>
+<div class="highlight-python"><pre>apt-get install git python-dev python-numpy python-numpy-dev python-scipy
+apt-get install python-qt4 python-qt4-gl python-progressbar
+apt-get install python-matplotlib</pre>
 </div>
 </li>
 <li><p class="first">Fedora:</p>
 <div class="highlight-python"><pre>yum install python numpy scipy PyQt4</pre>
 </div>
 </li>
-<li><p class="first">Ubuntu:</p>
-<div class="highlight-python"><pre>sudo apt-get install python-dev python-numpy python-scipy python-qt4 python-qt4-gl python-progressbar</pre>
+<li><p class="first">Ubuntu (12.04.1 LTS):</p>
+<div class="highlight-python"><pre>apt-get install git python-dev python-numpy python-scipy
+apt-get install python-qt4 python-qt4-gl python-progressbar
+apt-get install python-matplotlib</pre>
 </div>
 </li>
 </ul>
@@ -108,7 +113,7 @@ with the method described above.</p>
 <p>If you already have these libraries installed, these steps might not be necessary.</p>
 <p>First compile libmseed. Its tarball is included in the top directory of Pyrocko:</p>
 <div class="highlight-python"><pre>cd pyrocko/
-tar -xzvf libmseed-2.5.1.tar.gz
+tar -xzvf libmseed-2.6.2.tar.gz
 cd libmseed/
 make gcc
 cd ..</pre>
@@ -121,11 +126,8 @@ cd evalresp-3.3.0/
 ./configure --enable-shared
 make
 sudo make install
-cd ..
-
-# now check that $LD_LIBRARY_PATH contains /usr/local/lib
-echo $LD_LIBRARY_PATH
-# if it is not in there you have to adjust your environment variables</pre>
+sudo ldconfig
+cd ..</pre>
 </div>
 </div>
 <div class="section" id="installing-pyrocko">
@@ -136,13 +138,18 @@ echo $LD_LIBRARY_PATH
 </div>
 <div class="section" id="installing-pyrocko-to-a-custom-location">
 <h2>Installing Pyrocko to a custom location<a class="headerlink" href="#installing-pyrocko-to-a-custom-location" title="Permalink to this headline">¶</a></h2>
-<p>If you would like to install it to a different location than <tt class="docutils literal"><span class="pre">/usr/local</span></tt> (or whatever Python thinks it should be), you may use the <tt class="docutils literal"><span class="pre">--prefix</span></tt> option of <tt class="docutils literal"><span class="pre">setup.py</span></tt>. You will, of course,  have to adjust the environment variables <tt class="docutils literal"><span class="pre">$PATH</span></tt>, <tt class="docutils literal"><span class="pre">$PYTHONPATH</span></tt>, and <tt class="docutils literal"><span class="pre">$LD_LIBRARY_PATH</span></tt> to use your custom installation:</p>
+<p>If you would like to install it to a different location than <tt class="docutils literal"><span class="pre">/usr/local</span></tt> (or
+whatever Python thinks it should be), you may use the <tt class="docutils literal"><span class="pre">--prefix</span></tt> option of
+<tt class="docutils literal"><span class="pre">setup.py</span></tt>. You will, of course,  have to adjust the environment variables
+<tt class="docutils literal"><span class="pre">$PATH</span></tt>, <tt class="docutils literal"><span class="pre">$PYTHONPATH</span></tt>, and <tt class="docutils literal"><span class="pre">$LD_LIBRARY_PATH</span></tt> to use your custom
+installation:</p>
 <div class="highlight-python"><pre>python setup.py install --prefix=/bonus</pre>
 </div>
 </div>
 <div class="section" id="updating">
 <h2>Updating<a class="headerlink" href="#updating" title="Permalink to this headline">¶</a></h2>
-<p>If you later want to update Pyrocko, run the following from within Pyrocko&#8217;s top directory:</p>
+<p>If you later want to update Pyrocko, run the following from within Pyrocko&#8217;s
+top directory:</p>
 <div class="highlight-python"><pre>git pull origin master
 sudo python setup.py install</pre>
 </div>
