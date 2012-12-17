@@ -1,0 +1,232 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>The gui_util Module &mdash; Pyrocko v0.3 Manual</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within Pyrocko v0.3 Manual"
+          href="_static/opensearch.xml"/>
+    <link rel="top" title="Pyrocko v0.3 Manual" href="index.html" />
+    <link rel="up" title="Library Reference" href="reference.html" />
+    <link rel="next" title="The slink Module" href="slink.html" />
+    <link rel="prev" title="The pile_viewer Module" href="pile_viewer.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="slink.html" title="The slink Module"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="pile_viewer.html" title="The pile_viewer Module"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Pyrocko v0.3 Manual</a> &raquo;</li>
+          <li><a href="reference.html" accesskey="U">Library Reference</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body">
+            
+  <div class="section" id="module-pyrocko.gui_util">
+<span id="the-gui-util-module"></span><h1>The <tt class="xref py py-mod docutils literal"><span class="pre">gui_util</span></tt> Module<a class="headerlink" href="#module-pyrocko.gui_util" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="pyrocko.gui_util.Marker">
+<em class="property">class </em><tt class="descname">Marker</tt><big>(</big><em>nslc_ids</em>, <em>tmin</em>, <em>tmax</em>, <em>kind=0</em><big>)</big><a class="reference internal" href="_modules/pyrocko/gui_util.html#Marker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.gui_util.Marker" title="Permalink to this definition">¶</a></dt>
+<dd><p>General purpose marker GUI element and base class for <a class="reference internal" href="#pyrocko.gui_util.EventMarker" title="pyrocko.gui_util.EventMarker"><tt class="xref py py-class docutils literal"><span class="pre">EventMarker</span></tt></a> and <a class="reference internal" href="#pyrocko.gui_util.PhaseMarker" title="pyrocko.gui_util.PhaseMarker"><tt class="xref py py-class docutils literal"><span class="pre">PhaseMarker</span></tt></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>nslc_ids</strong> &#8211; list of (network, station, location, channel) tuples (may contain wildcards)</li>
+<li><strong>tmin</strong> &#8211; start time</li>
+<li><strong>tmax</strong> &#8211; end time</li>
+<li><strong>kind</strong> &#8211; (optional) integer to distinguish groups of markers (color-coded)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="staticmethod">
+<dt id="pyrocko.gui_util.Marker.load_markers">
+<em class="property">static </em><tt class="descname">load_markers</tt><big>(</big><em>fn</em><big>)</big><a class="reference internal" href="_modules/pyrocko/gui_util.html#Marker.load_markers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.gui_util.Marker.load_markers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load markers from a file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fn</strong> &#8211; filename as string</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">list of <a class="reference internal" href="#pyrocko.gui_util.Marker" title="pyrocko.gui_util.Marker"><tt class="xref py py-class docutils literal"><span class="pre">Marker</span></tt></a> Objects</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.gui_util.Marker.get_nslc_ids">
+<tt class="descname">get_nslc_ids</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/gui_util.html#Marker.get_nslc_ids"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.gui_util.Marker.get_nslc_ids" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get marker&#8217;s network-station-location-channel pattern.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">list or set of (network, station, location, channel) tuples</td>
+</tr>
+</tbody>
+</table>
+<p>The network, station, location, or channel strings may contain wildcard expressions.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.gui_util.Marker.match_nsl">
+<tt class="descname">match_nsl</tt><big>(</big><em>nsl</em><big>)</big><a class="reference internal" href="_modules/pyrocko/gui_util.html#Marker.match_nsl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.gui_util.Marker.match_nsl" title="Permalink to this definition">¶</a></dt>
+<dd><p>See documentation of <a class="reference internal" href="util.html#pyrocko.util.match_nslc" title="pyrocko.util.match_nslc"><tt class="xref py py-func docutils literal"><span class="pre">pyrocko.util.match_nslc()</span></tt></a></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.gui_util.Marker.match_nslc">
+<tt class="descname">match_nslc</tt><big>(</big><em>nslc</em><big>)</big><a class="reference internal" href="_modules/pyrocko/gui_util.html#Marker.match_nslc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.gui_util.Marker.match_nslc" title="Permalink to this definition">¶</a></dt>
+<dd><p>See documentation of <a class="reference internal" href="util.html#pyrocko.util.match_nslc" title="pyrocko.util.match_nslc"><tt class="xref py py-func docutils literal"><span class="pre">pyrocko.util.match_nslc()</span></tt></a></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pyrocko.gui_util.EventMarker">
+<em class="property">class </em><tt class="descname">EventMarker</tt><big>(</big><em>event</em>, <em>kind=0</em>, <em>event_hash=None</em><big>)</big><a class="reference internal" href="_modules/pyrocko/gui_util.html#EventMarker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.gui_util.EventMarker" title="Permalink to this definition">¶</a></dt>
+<dd><p>An EventMarker is a GUI element representing a seismological event within snuffler.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>event</strong> &#8211; A <a class="reference internal" href="model.html#pyrocko.model.Event" title="pyrocko.model.Event"><tt class="xref py py-class docutils literal"><span class="pre">pyrocko.model.Event</span></tt></a> object containing meta information 
+of a seismological event</li>
+<li><strong>kind</strong> &#8211; (optional) integer to distinguish groups of markers</li>
+<li><strong>event_hash</strong> &#8211; (optional) hash code of event (see: <a class="reference internal" href="model.html#pyrocko.model.Event.get_hash" title="pyrocko.model.Event.get_hash"><tt class="xref py py-meth docutils literal"><span class="pre">pyrocko.model.Event.get_hash()</span></tt></a>)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="pyrocko.gui_util.EventMarker.label">
+<tt class="descname">label</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/gui_util.html#EventMarker.label"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.gui_util.EventMarker.label" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">string representation of an event.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pyrocko.gui_util.PhaseMarker">
+<em class="property">class </em><tt class="descname">PhaseMarker</tt><big>(</big><em>nslc_ids</em>, <em>tmin</em>, <em>tmax</em>, <em>kind</em>, <em>event=None</em>, <em>event_hash=None</em>, <em>phasename=None</em>, <em>polarity=None</em>, <em>automatic=None</em>, <em>incidence_angle=None</em>, <em>takeoff_angle=None</em><big>)</big><a class="reference internal" href="_modules/pyrocko/gui_util.html#PhaseMarker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.gui_util.PhaseMarker" title="Permalink to this definition">¶</a></dt>
+<dd><p>A PhaseMarker as a GUI-element represents the arrival of a seismological phase within snuffler.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>nslc_ids</strong> &#8211; list of (network, station, location, channel) tuples (may contain wildcards)</li>
+<li><strong>tmin</strong> &#8211; start time</li>
+<li><strong>tmax</strong> &#8211; end time</li>
+<li><strong>kind</strong> &#8211; (optional) integer to distinguish groups of markers (color-coded)</li>
+<li><strong>event</strong> &#8211; a <a class="reference internal" href="model.html#pyrocko.model.Event" title="pyrocko.model.Event"><tt class="xref py py-class docutils literal"><span class="pre">pyrocko.model.Event</span></tt></a> object containing meta information 
+of a seismological event</li>
+<li><strong>event_hash</strong> &#8211; (optional) hash code of event (see: <a class="reference internal" href="model.html#pyrocko.model.Event.get_hash" title="pyrocko.model.Event.get_hash"><tt class="xref py py-meth docutils literal"><span class="pre">pyrocko.model.Event.get_hash()</span></tt></a>)</li>
+<li><strong>phasename</strong> &#8211; (optional) name of the phase associated with the marker</li>
+<li><strong>polarity</strong> &#8211; (optional) polarity of arriving phase</li>
+<li><strong>automatic</strong> &#8211; (optional)</li>
+<li><strong>incident_angle</strong> &#8211; (optional) incident angle of phase</li>
+<li><strong>takeoff_angle</strong> &#8211; (optional) take off angle of phase</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyrocko.gui_util.bin">
+<tt class="descname">bin</tt><big>(</big><em>QTextStream</em><big>)</big> &rarr; QTextStream<a class="headerlink" href="#pyrocko.gui_util.bin" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pyrocko.gui_util.hex">
+<tt class="descname">hex</tt><big>(</big><em>QTextStream</em><big>)</big> &rarr; QTextStream<a class="headerlink" href="#pyrocko.gui_util.hex" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pyrocko.gui_util.oct">
+<tt class="descname">oct</tt><big>(</big><em>QTextStream</em><big>)</big> &rarr; QTextStream<a class="headerlink" href="#pyrocko.gui_util.oct" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="slink.html" title="The slink Module"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="pile_viewer.html" title="The pile_viewer Module"
+             >previous</a> |</li>
+        <li><a href="index.html">Pyrocko v0.3 Manual</a> &raquo;</li>
+          <li><a href="reference.html" >Library Reference</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, Sebastian Heimann.
+    </div>
+  </body>
+</html>

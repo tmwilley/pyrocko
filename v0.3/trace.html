@@ -608,6 +608,11 @@ transfer function coefficients at the frequencies &#8216;freqs&#8217;.</li>
 </dd></dl>
 
 <dl class="method">
+<dt id="pyrocko.trace.Trace.multi_filter">
+<tt class="descname">multi_filter</tt><big>(</big><em>filter_freqs</em>, <em>bandwidth</em><big>)</big><a class="reference internal" href="_modules/pyrocko/trace.html#Trace.multi_filter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.trace.Trace.multi_filter" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
 <dt id="pyrocko.trace.Trace.fill_template">
 <tt class="descname">fill_template</tt><big>(</big><em>template</em>, <em>**additional</em><big>)</big><a class="reference internal" href="_modules/pyrocko/trace.html#Trace.fill_template"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.trace.Trace.fill_template" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fill string template with trace metadata.</p>
@@ -747,7 +752,7 @@ If this is <tt class="docutils literal"><span class="pre">None</span></tt>, the 
 
 <dl class="function">
 <dt id="pyrocko.trace.degapper">
-<tt class="descname">degapper</tt><big>(</big><em>traces</em>, <em>maxgap=5</em>, <em>fillmethod='interpolate'</em>, <em>deoverlap='use_second'</em><big>)</big><a class="reference internal" href="_modules/pyrocko/trace.html#degapper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.trace.degapper" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">degapper</tt><big>(</big><em>traces</em>, <em>maxgap=5</em>, <em>fillmethod='interpolate'</em>, <em>deoverlap='use_second'</em>, <em>maxlap=None</em><big>)</big><a class="reference internal" href="_modules/pyrocko/trace.html#degapper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.trace.degapper" title="Permalink to this definition">¶</a></dt>
 <dd><p>Try to connect traces and remove gaps.</p>
 <p>This method will combine adjacent traces, which match in their network, 
 station, location and channel attributes. Overlapping parts are handled
@@ -763,6 +768,7 @@ according to the <cite>deoverlap</cite> argument.</p>
 <li><strong>deoverlap</strong> &#8211; how to handle overlaps: &#8216;use_second&#8217; to use data from 
 second trace (default), &#8216;use_first&#8217; to use data from first
 trace, &#8216;crossfade_cos&#8217; to crossfade with cosine taper</li>
+<li><strong>maxlap</strong> &#8211; maximum number of samples of overlap which are removed</li>
 </ul>
 </td>
 </tr>

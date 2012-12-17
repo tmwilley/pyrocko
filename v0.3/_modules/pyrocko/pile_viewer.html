@@ -688,6 +688,8 @@
                     <span class="k">lambda</span> <span class="n">tr</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">station_attrib</span><span class="p">(</span><span class="n">tr</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">sta</span><span class="p">:</span> <span class="p">(</span><span class="n">deg_float_or_none</span><span class="p">(</span><span class="n">sta</span><span class="o">.</span><span class="n">azimuth</span><span class="p">),),</span> <span class="k">lambda</span> <span class="n">tr</span><span class="p">:</span> <span class="p">(</span><span class="bp">None</span><span class="p">,)</span> <span class="p">)),</span>
                 <span class="p">(</span><span class="s">&#39;Sort by Distance in 12 Azimuthal Blocks&#39;</span><span class="p">,</span>
                     <span class="k">lambda</span> <span class="n">tr</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">station_attrib</span><span class="p">(</span><span class="n">tr</span><span class="p">,</span> <span class="n">sector_dist</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">tr</span><span class="p">:</span> <span class="p">(</span><span class="bp">None</span><span class="p">,</span><span class="bp">None</span><span class="p">)</span> <span class="p">)),</span>
+                <span class="p">(</span><span class="s">&#39;Sort by Backazimuth&#39;</span><span class="p">,</span>
+                    <span class="k">lambda</span> <span class="n">tr</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">station_attrib</span><span class="p">(</span><span class="n">tr</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">sta</span><span class="p">:</span> <span class="p">(</span><span class="n">deg_float_or_none</span><span class="p">(</span><span class="n">sta</span><span class="o">.</span><span class="n">backazimuth</span><span class="p">),),</span> <span class="k">lambda</span> <span class="n">tr</span><span class="p">:</span> <span class="p">(</span><span class="bp">None</span><span class="p">,)</span> <span class="p">)),</span>
             <span class="p">]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">menuitems_ssorting</span> <span class="o">=</span> <span class="n">add_radiobuttongroup</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">menu</span><span class="p">,</span> <span class="n">menudef</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">s_sortingmode_change</span><span class="p">)</span>
             
@@ -789,6 +791,18 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">menuitem_watch</span><span class="o">.</span><span class="n">setCheckable</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">menuitem_watch</span><span class="o">.</span><span class="n">setChecked</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">menu</span><span class="o">.</span><span class="n">addAction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">menuitem_watch</span><span class="p">)</span>
+
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">visible_length_menu</span> <span class="o">=</span> <span class="n">QMenu</span><span class="p">(</span><span class="s">&#39;Visible Length&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">menu</span><span class="p">)</span>
+            <span class="n">menudef</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="p">(</span><span class="s">&#39;Short&#39;</span><span class="p">,</span> <span class="mi">6000</span><span class="p">),</span>
+                <span class="p">(</span><span class="s">&#39;Medium&#39;</span><span class="p">,</span> <span class="mi">20000</span><span class="p">),</span>
+                <span class="p">(</span><span class="s">&#39;Long&#39;</span><span class="p">,</span> <span class="mi">60000</span><span class="p">),</span>
+            <span class="p">]</span>
+            
+            <span class="bp">self</span><span class="o">.</span><span class="n">menuitems_visible_length</span> <span class="o">=</span> <span class="n">add_radiobuttongroup</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">visible_length_menu</span><span class="p">,</span> <span class="n">menudef</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">visible_length_change</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">visible_length</span> <span class="o">=</span> <span class="n">menudef</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">menu</span><span class="o">.</span><span class="n">addMenu</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">visible_length_menu</span> <span class="p">)</span>
             
             <span class="bp">self</span><span class="o">.</span><span class="n">menu</span><span class="o">.</span><span class="n">addSeparator</span><span class="p">()</span>
             
@@ -1311,16 +1325,23 @@
                 <span class="k">return</span> <span class="mi">1</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">return</span> <span class="mi">0</span>
+
+        <span class="k">def</span> <span class="nf">time_fractional_digits</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="n">min_deltat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">content_deltat_range</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">return</span> <span class="nb">min</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">min_deltat</span><span class="p">)))</span><span class="o">+</span><span class="mi">2</span><span class="p">))</span>
     
         <span class="k">def</span> <span class="nf">write_markers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
             <span class="n">fn</span> <span class="o">=</span> <span class="n">QFileDialog</span><span class="o">.</span><span class="n">getSaveFileName</span><span class="p">(</span><span class="bp">self</span><span class="p">,)</span>
             <span class="k">if</span> <span class="n">fn</span><span class="p">:</span>
-                <span class="n">Marker</span><span class="o">.</span><span class="n">save_markers</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">markers</span><span class="p">,</span> <span class="n">fn</span><span class="p">)</span>
+                <span class="n">Marker</span><span class="o">.</span><span class="n">save_markers</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">markers</span><span class="p">,</span> <span class="n">fn</span><span class="p">,</span>
+                        <span class="n">fdigits</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">time_fractional_digits</span><span class="p">())</span>
 
         <span class="k">def</span> <span class="nf">write_selected_markers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
             <span class="n">fn</span> <span class="o">=</span> <span class="n">QFileDialog</span><span class="o">.</span><span class="n">getSaveFileName</span><span class="p">(</span><span class="bp">self</span><span class="p">,)</span>
             <span class="k">if</span> <span class="n">fn</span><span class="p">:</span>
-                <span class="n">Marker</span><span class="o">.</span><span class="n">save_markers</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selected_markers</span><span class="p">(),</span> <span class="n">fn</span><span class="p">)</span>
+                <span class="n">Marker</span><span class="o">.</span><span class="n">save_markers</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selected_markers</span><span class="p">(),</span> <span class="n">fn</span><span class="p">,</span>
+                        <span class="n">fdigits</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">time_fractional_digits</span><span class="p">())</span>
 
         <span class="k">def</span> <span class="nf">read_markers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
             <span class="n">fn</span> <span class="o">=</span> <span class="n">QFileDialog</span><span class="o">.</span><span class="n">getOpenFileName</span><span class="p">(</span><span class="bp">self</span><span class="p">,)</span>
@@ -1515,8 +1536,8 @@
             <span class="n">keytext</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">key_event</span><span class="o">.</span><span class="n">text</span><span class="p">())</span>
 
             <span class="k">if</span> <span class="n">keytext</span> <span class="o">==</span> <span class="s">&#39;?&#39;</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">help</span><span class="p">()</span>
-
+                <span class="bp">self</span><span class="o">.</span><span class="n">toggle_help</span><span class="p">()</span>
+                
             <span class="k">elif</span> <span class="n">keytext</span> <span class="o">==</span> <span class="s">&#39; &#39;</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">interrupt_following</span><span class="p">()</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">set_time_range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tmin</span><span class="o">+</span><span class="n">dt</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tmax</span><span class="o">+</span><span class="n">dt</span><span class="p">)</span>
@@ -1659,9 +1680,26 @@
 
             <span class="k">elif</span> <span class="n">keytext</span> <span class="o">==</span> <span class="s">&#39;g&#39;</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">go_to_selection</span><span class="p">()</span>
-             
+               
+            <span class="k">elif</span> <span class="n">key_event</span><span class="o">.</span><span class="n">key</span><span class="p">()</span> <span class="ow">in</span> <span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">Key_Left</span><span class="p">,</span> <span class="n">Qt</span><span class="o">.</span><span class="n">Key_Right</span><span class="p">):</span>
+                <span class="nb">dir</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="n">amount</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="k">if</span> <span class="n">key_event</span><span class="o">.</span><span class="n">key</span><span class="p">()</span> <span class="o">==</span> <span class="n">Qt</span><span class="o">.</span><span class="n">Key_Left</span><span class="p">:</span>
+                    <span class="nb">dir</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+                <span class="k">if</span> <span class="n">key_event</span><span class="o">.</span><span class="n">modifiers</span><span class="p">()</span> <span class="o">&amp;</span> <span class="n">Qt</span><span class="o">.</span><span class="n">ShiftModifier</span><span class="p">:</span>
+                    <span class="n">amount</span> <span class="o">=</span> <span class="mi">10</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">nudge_selected_markers</span><span class="p">(</span><span class="nb">dir</span><span class="o">*</span><span class="n">amount</span><span class="p">)</span>
+
             <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">update_status</span><span class="p">()</span>
+
+        <span class="k">def</span> <span class="nf">nudge_selected_markers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">npixels</span><span class="p">):</span>
+            <span class="n">a</span><span class="p">,</span><span class="n">b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_projection</span><span class="o">.</span><span class="n">ur</span>
+            <span class="n">c</span><span class="p">,</span><span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_projection</span><span class="o">.</span><span class="n">xr</span>
+            <span class="k">for</span> <span class="n">marker</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">selected_markers</span><span class="p">():</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">marker</span><span class="p">,</span><span class="n">EventMarker</span><span class="p">):</span>
+                    <span class="n">marker</span><span class="o">.</span><span class="n">tmin</span> <span class="o">+=</span> <span class="n">npixels</span> <span class="o">*</span> <span class="p">(</span><span class="n">d</span><span class="o">-</span><span class="n">c</span><span class="p">)</span><span class="o">/</span><span class="n">b</span>
+                    <span class="n">marker</span><span class="o">.</span><span class="n">tmax</span> <span class="o">+=</span> <span class="n">npixels</span> <span class="o">*</span> <span class="p">(</span><span class="n">d</span><span class="o">-</span><span class="n">c</span><span class="p">)</span><span class="o">/</span><span class="n">b</span>
   
         <span class="k">def</span> <span class="nf">about</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
             <span class="n">fn</span> <span class="o">=</span> <span class="n">pyrocko</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">data_file</span><span class="p">(</span><span class="s">&#39;snuffler.png&#39;</span><span class="p">)</span>
@@ -1684,9 +1722,16 @@
             <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="p">[</span> <span class="n">hcheat</span><span class="p">,</span> <span class="n">hepilog</span> <span class="p">]:</span>
                 <span class="n">h</span><span class="o">.</span><span class="n">setAlignment</span><span class="p">(</span> <span class="n">Qt</span><span class="o">.</span><span class="n">AlignTop</span> <span class="o">|</span> <span class="n">Qt</span><span class="o">.</span><span class="n">AlignHCenter</span> <span class="p">)</span>
                 <span class="n">h</span><span class="o">.</span><span class="n">setWordWrap</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
-
+            
             <span class="bp">self</span><span class="o">.</span><span class="n">show_doc</span><span class="p">(</span><span class="s">&#39;Help&#39;</span><span class="p">,</span> <span class="p">[</span><span class="n">hcheat</span><span class="p">,</span> <span class="n">hepilog</span><span class="p">],</span> <span class="n">target</span><span class="o">=</span><span class="s">&#39;panel&#39;</span><span class="p">)</span>
-
+        
+        <span class="k">def</span> <span class="nf">toggle_help</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">widget</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">panel_parent</span><span class="o">.</span><span class="n">dockwidgets</span><span class="p">():</span>
+                <span class="k">if</span> <span class="s">&#39;Help&#39;</span> <span class="o">==</span> <span class="n">widget</span><span class="o">.</span><span class="n">windowTitle</span><span class="p">():</span>
+                    <span class="n">widget</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+                    <span class="k">return</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">help</span><span class="p">()</span>
+            
         <span class="k">def</span> <span class="nf">show_doc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="s">&#39;panel&#39;</span><span class="p">):</span>
             <span class="n">scroller</span> <span class="o">=</span> <span class="n">QScrollArea</span><span class="p">()</span>
             <span class="n">frame</span> <span class="o">=</span> <span class="n">QFrame</span><span class="p">(</span><span class="n">scroller</span><span class="p">)</span>
@@ -1755,8 +1800,11 @@
                         <span class="n">marker</span><span class="o">.</span><span class="n">convert_to_marker</span><span class="p">()</span>
                     <span class="k">else</span><span class="p">:</span>
                         <span class="n">marker</span><span class="o">.</span><span class="n">set_phasename</span><span class="p">(</span><span class="n">phasename</span><span class="p">)</span>
+                        <span class="n">marker</span><span class="o">.</span><span class="n">set_event</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_active_event</span><span class="p">())</span>
+                        
                 <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">marker</span><span class="p">,</span> <span class="n">EventMarker</span><span class="p">):</span>
                     <span class="k">pass</span>
+
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">if</span> <span class="n">kind</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
                         <span class="n">event</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_active_event</span><span class="p">()</span>
@@ -2334,6 +2382,8 @@
 
         <span class="k">def</span> <span class="nf">prepare_cutout2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tmin</span><span class="p">,</span> <span class="n">tmax</span><span class="p">,</span> <span class="n">trace_selector</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">degap</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">nmax</span><span class="o">=</span><span class="mi">6000</span><span class="p">):</span>
 
+            <span class="n">nmax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">visible_length</span>
+
             <span class="bp">self</span><span class="o">.</span><span class="n">timer_cutout</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
 
             <span class="n">tsee</span> <span class="o">=</span> <span class="n">tmax</span><span class="o">-</span><span class="n">tmin</span>
@@ -2397,6 +2447,8 @@
                     <span class="k">for</span> <span class="n">traces</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">pile</span><span class="o">.</span><span class="n">chopper</span><span class="p">(</span> <span class="n">tmin</span><span class="o">=</span><span class="n">tmin</span><span class="p">,</span> <span class="n">tmax</span><span class="o">=</span><span class="n">tmax</span><span class="p">,</span> <span class="n">tpad</span><span class="o">=</span><span class="n">tpad</span><span class="p">,</span>
                                                     <span class="n">want_incomplete</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
                                                     <span class="n">degap</span><span class="o">=</span><span class="n">degap</span><span class="p">,</span>
+                                                    <span class="n">maxgap</span><span class="o">=</span><span class="n">gap_lap_tolerance</span><span class="p">,</span>
+                                                    <span class="n">maxlap</span><span class="o">=</span><span class="n">gap_lap_tolerance</span><span class="p">,</span>
                                                     <span class="n">keep_current_files_open</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> 
                                                     <span class="n">group_selector</span><span class="o">=</span><span class="n">group_selector</span><span class="p">,</span>
                                                     <span class="n">trace_selector</span><span class="o">=</span><span class="n">trace_selectorx</span><span class="p">,</span>
@@ -2452,7 +2504,8 @@
                     <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">processed_traces</span><span class="p">:</span>
                         <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">processed_traces</span><span class="p">:</span> 
                             <span class="k">if</span> <span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">network</span> <span class="o">==</span> <span class="n">b</span><span class="o">.</span><span class="n">network</span> <span class="ow">and</span> <span class="n">a</span><span class="o">.</span><span class="n">station</span> <span class="o">==</span> <span class="n">b</span><span class="o">.</span><span class="n">station</span> <span class="ow">and</span> <span class="n">a</span><span class="o">.</span><span class="n">location</span> <span class="o">==</span> <span class="n">b</span><span class="o">.</span><span class="n">location</span> <span class="ow">and</span>
-                                <span class="n">a</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s">&#39;n&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">b</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s">&#39;e&#39;</span><span class="p">)</span> <span class="ow">and</span>
+                                <span class="p">((</span><span class="n">a</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s">&#39;n&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">b</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s">&#39;e&#39;</span><span class="p">))</span> <span class="ow">or</span>
+                                <span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s">&#39;1&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">b</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s">&#39;2&#39;</span><span class="p">)))</span> <span class="ow">and</span>
                                 <span class="nb">abs</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">deltat</span><span class="o">-</span><span class="n">b</span><span class="o">.</span><span class="n">deltat</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">a</span><span class="o">.</span><span class="n">deltat</span><span class="o">*</span><span class="mf">0.001</span> <span class="ow">and</span> <span class="nb">abs</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">tmin</span><span class="o">-</span><span class="n">b</span><span class="o">.</span><span class="n">tmin</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">a</span><span class="o">.</span><span class="n">deltat</span><span class="o">*</span><span class="mf">0.01</span> <span class="ow">and</span>
                                 <span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">get_ydata</span><span class="p">())</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">get_ydata</span><span class="p">())):</span>
                                 
@@ -2478,139 +2531,6 @@
             
             <span class="bp">self</span><span class="o">.</span><span class="n">timer_cutout</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
             <span class="k">return</span> <span class="n">chopped_traces</span>
-
-        <span class="k">def</span> <span class="nf">prepare_cutout</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tmin</span><span class="p">,</span> <span class="n">tmax</span><span class="p">,</span> <span class="n">trace_selector</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">degap</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
-            
-            <span class="bp">self</span><span class="o">.</span><span class="n">timer_cutout</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
-            
-            <span class="n">tmin_</span> <span class="o">=</span> <span class="n">tmin</span>
-            <span class="n">tmax_</span> <span class="o">=</span> <span class="n">tmax</span>
-            
-            <span class="n">ndecimate</span><span class="p">,</span> <span class="n">tpad</span><span class="p">,</span> <span class="n">tsee</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">see_data_params</span><span class="p">()</span>
-            <span class="n">show_traces</span> <span class="o">=</span> <span class="p">(</span><span class="n">tmax_</span> <span class="o">-</span> <span class="n">tmin_</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">tsee</span>
-            
-            <span class="c"># fetch more than needed?</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">menuitem_liberal_fetch</span><span class="o">.</span><span class="n">isChecked</span><span class="p">():</span>
-                <span class="n">tlen</span> <span class="o">=</span> <span class="n">pyrocko</span><span class="o">.</span><span class="n">trace</span><span class="o">.</span><span class="n">nextpow2</span><span class="p">((</span><span class="n">tmax</span><span class="o">-</span><span class="n">tmin</span><span class="p">)</span><span class="o">*</span><span class="mf">1.5</span><span class="p">)</span>
-                <span class="n">tmin</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">tmin</span><span class="o">/</span><span class="n">tlen</span><span class="p">)</span> <span class="o">*</span> <span class="n">tlen</span>
-                <span class="n">tmax</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">tmax</span><span class="o">/</span><span class="n">tlen</span><span class="p">)</span> <span class="o">*</span> <span class="n">tlen</span>
-                     
-            <span class="n">fft_filtering</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">menuitem_fft_filtering</span><span class="o">.</span><span class="n">isChecked</span><span class="p">()</span>
-            <span class="n">lphp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">menuitem_lphp</span><span class="o">.</span><span class="n">isChecked</span><span class="p">()</span>
-            <span class="n">ads</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">menuitem_allowdownsampling</span><span class="o">.</span><span class="n">isChecked</span><span class="p">()</span>
-            
-            <span class="c"># state vector to decide if cached traces can be used</span>
-            <span class="n">vec</span> <span class="o">=</span> <span class="p">(</span><span class="n">tmin</span><span class="p">,</span> <span class="n">tmax</span><span class="p">,</span> <span class="n">trace_selector</span><span class="p">,</span> <span class="n">degap</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lowpass</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">highpass</span><span class="p">,</span> <span class="n">fft_filtering</span><span class="p">,</span> <span class="n">lphp</span><span class="p">,</span>
-                <span class="n">show_traces</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">rotate</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">shown_tracks_range</span><span class="p">,</span>
-                <span class="n">ads</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pile</span><span class="o">.</span><span class="n">get_update_count</span><span class="p">())</span>
-                
-            <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">old_vec</span> <span class="ow">and</span> 
-                <span class="bp">self</span><span class="o">.</span><span class="n">old_vec</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">vec</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">and</span> <span class="n">vec</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">old_vec</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">and</span>
-                <span class="n">vec</span><span class="p">[</span><span class="mi">2</span><span class="p">:]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">old_vec</span><span class="p">[</span><span class="mi">2</span><span class="p">:]</span> <span class="ow">and</span> <span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reloaded</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">menuitem_watch</span><span class="o">.</span><span class="n">isChecked</span><span class="p">())</span> <span class="ow">and</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">old_processed_traces</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">):</span>
-
-                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;Using cached traces&#39;</span><span class="p">)</span>
-                <span class="n">processed_traces</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">old_processed_traces</span>
-                
-            <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">old_vec</span> <span class="o">=</span> <span class="n">vec</span>
-                
-                <span class="n">tpad</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">tmax</span><span class="o">-</span><span class="n">tmin</span><span class="p">,</span> <span class="n">tpad</span><span class="p">)</span>
-                <span class="n">tpad</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">content_deltat_range</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="mf">5.</span><span class="p">,</span> <span class="n">tpad</span><span class="p">)</span>
-                    
-                <span class="n">processed_traces</span> <span class="o">=</span> <span class="p">[]</span>
-                
-                <span class="k">if</span> <span class="n">show_traces</span><span class="p">:</span>
-                    
-                    <span class="k">for</span> <span class="n">traces</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">pile</span><span class="o">.</span><span class="n">chopper</span><span class="p">(</span> <span class="n">tmin</span><span class="o">=</span><span class="n">tmin</span><span class="p">,</span> <span class="n">tmax</span><span class="o">=</span><span class="n">tmax</span><span class="p">,</span> <span class="n">tpad</span><span class="o">=</span><span class="n">tpad</span><span class="p">,</span>
-                                                    <span class="n">want_incomplete</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
-                                                    <span class="n">degap</span><span class="o">=</span><span class="n">degap</span><span class="p">,</span>
-                                                    <span class="n">keep_current_files_open</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> 
-                                                    <span class="n">trace_selector</span><span class="o">=</span><span class="n">trace_selector</span><span class="p">,</span>
-                                                    <span class="n">accessor_id</span><span class="o">=</span><span class="nb">id</span><span class="p">(</span><span class="bp">self</span><span class="p">)):</span>
-
-                        <span class="n">traces</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pre_process_hooks</span><span class="p">(</span><span class="n">traces</span><span class="p">)</span>
-
-                        <span class="k">for</span> <span class="n">trace</span> <span class="ow">in</span> <span class="n">traces</span><span class="p">:</span>
-                            
-                            <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">trace</span><span class="o">.</span><span class="n">meta</span> <span class="ow">and</span> <span class="s">&#39;tabu&#39;</span> <span class="ow">in</span> <span class="n">trace</span><span class="o">.</span><span class="n">meta</span> <span class="ow">and</span> <span class="n">trace</span><span class="o">.</span><span class="n">meta</span><span class="p">[</span><span class="s">&#39;tabu&#39;</span><span class="p">]):</span>
-                            
-                                <span class="k">if</span> <span class="n">fft_filtering</span><span class="p">:</span>
-                                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">lowpass</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">highpass</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-                                        <span class="n">high</span><span class="p">,</span> <span class="n">low</span> <span class="o">=</span> <span class="mf">1.</span><span class="o">/</span><span class="p">(</span><span class="n">trace</span><span class="o">.</span><span class="n">deltat</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">trace</span><span class="o">.</span><span class="n">ydata</span><span class="p">)),</span>  <span class="mf">1.</span><span class="o">/</span><span class="p">(</span><span class="mf">2.</span><span class="o">*</span><span class="n">trace</span><span class="o">.</span><span class="n">deltat</span><span class="p">)</span>
-                                        
-                                        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">lowpass</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-                                            <span class="n">low</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lowpass</span>
-                                        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">highpass</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-                                            <span class="n">high</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">highpass</span>
-                                            
-                                        <span class="n">trace</span><span class="o">.</span><span class="n">bandpass_fft</span><span class="p">(</span><span class="n">high</span><span class="p">,</span> <span class="n">low</span><span class="p">)</span>
-                                    
-                                <span class="k">else</span><span class="p">:</span>
-                                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">lowpass</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-                                        <span class="n">deltat_target</span> <span class="o">=</span> <span class="mf">1.</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">lowpass</span> <span class="o">*</span> <span class="mf">0.1</span>
-                                        <span class="n">ndecimate</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">deltat_target</span> <span class="o">/</span> <span class="n">trace</span><span class="o">.</span><span class="n">deltat</span><span class="p">)))</span>
-                                        <span class="n">ndecimate2</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">ndecimate</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
-                                        
-                                    <span class="k">else</span><span class="p">:</span>
-                                        <span class="n">ndecimate</span> <span class="o">=</span> <span class="mi">1</span>
-                                        <span class="n">ndecimate2</span> <span class="o">=</span> <span class="mi">0</span>
-                                    
-                                    <span class="k">if</span> <span class="n">ndecimate2</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">menuitem_allowdownsampling</span><span class="o">.</span><span class="n">isChecked</span><span class="p">():</span>
-                                        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ndecimate2</span><span class="p">):</span>
-                                            <span class="n">trace</span><span class="o">.</span><span class="n">downsample</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-                                    
-                                    
-                                    <span class="k">if</span> <span class="ow">not</span> <span class="n">lphp</span> <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lowpass</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">highpass</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span>
-                                        <span class="bp">self</span><span class="o">.</span><span class="n">lowpass</span> <span class="o">&lt;</span> <span class="mf">0.5</span><span class="o">/</span><span class="n">trace</span><span class="o">.</span><span class="n">deltat</span> <span class="ow">and</span>
-                                        <span class="bp">self</span><span class="o">.</span><span class="n">highpass</span> <span class="o">&lt;</span> <span class="mf">0.5</span><span class="o">/</span><span class="n">trace</span><span class="o">.</span><span class="n">deltat</span> <span class="ow">and</span>
-                                        <span class="bp">self</span><span class="o">.</span><span class="n">highpass</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">lowpass</span><span class="p">):</span>
-                                        <span class="n">trace</span><span class="o">.</span><span class="n">bandpass</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">highpass</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">lowpass</span><span class="p">)</span>
-                                    <span class="k">else</span><span class="p">:</span>
-                                        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">lowpass</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-                                            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">lowpass</span> <span class="o">&lt;</span> <span class="mf">0.5</span><span class="o">/</span><span class="n">trace</span><span class="o">.</span><span class="n">deltat</span><span class="p">:</span>
-                                                <span class="n">trace</span><span class="o">.</span><span class="n">lowpass</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">lowpass</span><span class="p">)</span>
-                                        
-                                        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">highpass</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-                                            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">lowpass</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">highpass</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">lowpass</span><span class="p">:</span>
-                                                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">highpass</span> <span class="o">&lt;</span> <span class="mf">0.5</span><span class="o">/</span><span class="n">trace</span><span class="o">.</span><span class="n">deltat</span><span class="p">:</span>
-                                                    <span class="n">trace</span><span class="o">.</span><span class="n">highpass</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">highpass</span><span class="p">)</span>
-                            
-                            <span class="n">processed_traces</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">trace</span><span class="p">)</span>
-                    
-                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rotate</span> <span class="o">!=</span> <span class="mf">0.0</span><span class="p">:</span>
-                    <span class="n">phi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rotate</span><span class="o">/</span><span class="mf">180.</span><span class="o">*</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span>
-                    <span class="n">cphi</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">phi</span><span class="p">)</span>
-                    <span class="n">sphi</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">phi</span><span class="p">)</span>
-                    <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">processed_traces</span><span class="p">:</span>
-                        <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">processed_traces</span><span class="p">:</span> 
-                            <span class="k">if</span> <span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">network</span> <span class="o">==</span> <span class="n">b</span><span class="o">.</span><span class="n">network</span> <span class="ow">and</span> <span class="n">a</span><span class="o">.</span><span class="n">station</span> <span class="o">==</span> <span class="n">b</span><span class="o">.</span><span class="n">station</span> <span class="ow">and</span> <span class="n">a</span><span class="o">.</span><span class="n">location</span> <span class="o">==</span> <span class="n">b</span><span class="o">.</span><span class="n">location</span> <span class="ow">and</span>
-                                <span class="n">a</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s">&#39;n&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">b</span><span class="o">.</span><span class="n">channel</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s">&#39;e&#39;</span><span class="p">)</span> <span class="ow">and</span>
-                                <span class="nb">abs</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">deltat</span><span class="o">-</span><span class="n">b</span><span class="o">.</span><span class="n">deltat</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">a</span><span class="o">.</span><span class="n">deltat</span><span class="o">*</span><span class="mf">0.001</span> <span class="ow">and</span> <span class="nb">abs</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">tmin</span><span class="o">-</span><span class="n">b</span><span class="o">.</span><span class="n">tmin</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">a</span><span class="o">.</span><span class="n">deltat</span><span class="o">*</span><span class="mf">0.01</span> <span class="ow">and</span>
-                                <span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">get_ydata</span><span class="p">())</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">b</span><span class="o">.</span><span class="n">get_ydata</span><span class="p">())):</span>
-                                
-                                <span class="n">aydata</span> <span class="o">=</span> <span class="n">a</span><span class="o">.</span><span class="n">get_ydata</span><span class="p">()</span><span class="o">*</span><span class="n">cphi</span><span class="o">+</span><span class="n">b</span><span class="o">.</span><span class="n">get_ydata</span><span class="p">()</span><span class="o">*</span><span class="n">sphi</span>
-                                <span class="n">bydata</span> <span class="o">=-</span><span class="n">a</span><span class="o">.</span><span class="n">get_ydata</span><span class="p">()</span><span class="o">*</span><span class="n">sphi</span><span class="o">+</span><span class="n">b</span><span class="o">.</span><span class="n">get_ydata</span><span class="p">()</span><span class="o">*</span><span class="n">cphi</span>
-                                <span class="n">a</span><span class="o">.</span><span class="n">set_ydata</span><span class="p">(</span><span class="n">aydata</span><span class="p">)</span>
-                                <span class="n">b</span><span class="o">.</span><span class="n">set_ydata</span><span class="p">(</span><span class="n">bydata</span><span class="p">)</span>
-
-                <span class="n">processed_traces</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">post_process_hooks</span><span class="p">(</span><span class="n">processed_traces</span><span class="p">)</span>
-                                
-                <span class="bp">self</span><span class="o">.</span><span class="n">old_processed_traces</span> <span class="o">=</span> <span class="n">processed_traces</span>
-            
-            <span class="n">chopped_traces</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="k">for</span> <span class="n">trace</span> <span class="ow">in</span> <span class="n">processed_traces</span><span class="p">:</span>
-                <span class="k">try</span><span class="p">:</span>
-                    <span class="n">ctrace</span> <span class="o">=</span> <span class="n">trace</span><span class="o">.</span><span class="n">chop</span><span class="p">(</span><span class="n">tmin_</span><span class="o">-</span><span class="n">trace</span><span class="o">.</span><span class="n">deltat</span><span class="o">*</span><span class="mf">4.</span><span class="p">,</span><span class="n">tmax_</span><span class="o">+</span><span class="n">trace</span><span class="o">.</span><span class="n">deltat</span><span class="o">*</span><span class="mf">4.</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
-                <span class="k">except</span> <span class="n">pyrocko</span><span class="o">.</span><span class="n">trace</span><span class="o">.</span><span class="n">NoData</span><span class="p">:</span>
-                    <span class="k">continue</span>
-                    
-                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ctrace</span><span class="o">.</span><span class="n">get_ydata</span><span class="p">())</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span> <span class="k">continue</span>
-                
-                <span class="n">chopped_traces</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ctrace</span><span class="p">)</span>
-            
-            <span class="bp">self</span><span class="o">.</span><span class="n">timer_cutout</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
-            <span class="k">return</span> <span class="n">chopped_traces</span>
        
         <span class="k">def</span> <span class="nf">pre_process_hooks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">traces</span><span class="p">):</span>
             <span class="k">for</span> <span class="n">snuffling</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">snufflings</span><span class="p">:</span>
@@ -2625,6 +2545,11 @@
                     <span class="n">traces</span> <span class="o">=</span> <span class="n">snuffling</span><span class="o">.</span><span class="n">post_process_hook</span><span class="p">(</span><span class="n">traces</span><span class="p">)</span>
 
             <span class="k">return</span> <span class="n">traces</span>
+
+        <span class="k">def</span> <span class="nf">visible_length_change</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ignore</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">menuitem</span><span class="p">,</span> <span class="n">vlen</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">menuitems_visible_length</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">menuitem</span><span class="o">.</span><span class="n">isChecked</span><span class="p">():</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">visible_length</span> <span class="o">=</span> <span class="n">vlen</span>
 
         <span class="k">def</span> <span class="nf">scaling_base_change</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ignore</span><span class="p">):</span>
             <span class="k">for</span> <span class="n">menuitem</span><span class="p">,</span> <span class="n">scaling_base</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">menuitems_scaling_base</span><span class="p">:</span>
@@ -2676,7 +2601,7 @@
     
         <span class="k">def</span> <span class="nf">passband_check</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">highpass</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">lowpass</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">highpass</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lowpass</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="s">&#39;Corner frequency of highpass larger than corner frequency of lowpass! I will now deactivate the higpass.&#39;</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="s">&#39;Corner frequency of highpass larger than corner frequency of lowpass! I will now deactivate the highpass.&#39;</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">update_status</span><span class="p">()</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">oldmess</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">message</span>

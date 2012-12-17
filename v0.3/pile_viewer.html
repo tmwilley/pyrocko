@@ -30,7 +30,7 @@
           href="_static/opensearch.xml"/>
     <link rel="top" title="Pyrocko v0.3 Manual" href="index.html" />
     <link rel="up" title="Library Reference" href="reference.html" />
-    <link rel="next" title="The slink Module" href="slink.html" />
+    <link rel="next" title="The gui_util Module" href="gui_util.html" />
     <link rel="prev" title="The snuffling Module" href="snuffling.html" /> 
   </head>
   <body>
@@ -44,7 +44,7 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="slink.html" title="The slink Module"
+          <a href="gui_util.html" title="The gui_util Module"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="snuffling.html" title="The snuffling Module"
@@ -600,6 +600,11 @@
 <dd></dd></dl>
 
 <dl class="method">
+<dt id="pyrocko.pile_viewer.PileViewerMain.nudge_selected_markers">
+<tt class="descname">nudge_selected_markers</tt><big>(</big><em>npixels</em><big>)</big><a class="headerlink" href="#pyrocko.pile_viewer.PileViewerMain.nudge_selected_markers" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
 <dt id="pyrocko.pile_viewer.PileViewerMain.open_link">
 <tt class="descname">open_link</tt><big>(</big><em>link</em><big>)</big><a class="headerlink" href="#pyrocko.pile_viewer.PileViewerMain.open_link" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -633,11 +638,6 @@
 <dl class="method">
 <dt id="pyrocko.pile_viewer.PileViewerMain.pre_process_hooks">
 <tt class="descname">pre_process_hooks</tt><big>(</big><em>traces</em><big>)</big><a class="headerlink" href="#pyrocko.pile_viewer.PileViewerMain.pre_process_hooks" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.pile_viewer.PileViewerMain.prepare_cutout">
-<tt class="descname">prepare_cutout</tt><big>(</big><em>tmin</em>, <em>tmax</em>, <em>trace_selector=None</em>, <em>degap=True</em><big>)</big><a class="headerlink" href="#pyrocko.pile_viewer.PileViewerMain.prepare_cutout" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -882,12 +882,22 @@
 
 <dl class="method">
 <dt id="pyrocko.pile_viewer.PileViewerMain.station_latlon">
-<tt class="descname">station_latlon</tt><big>(</big><em>tr</em>, <em>default_getter=&lt;function &lt;lambda&gt; at 0x711b050&gt;</em><big>)</big><a class="headerlink" href="#pyrocko.pile_viewer.PileViewerMain.station_latlon" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">station_latlon</tt><big>(</big><em>tr</em>, <em>default_getter=&lt;function &lt;lambda&gt; at 0x6628ed8&gt;</em><big>)</big><a class="headerlink" href="#pyrocko.pile_viewer.PileViewerMain.station_latlon" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="pyrocko.pile_viewer.PileViewerMain.stop_picking">
 <tt class="descname">stop_picking</tt><big>(</big><em>x</em>, <em>y</em>, <em>abort=False</em><big>)</big><a class="headerlink" href="#pyrocko.pile_viewer.PileViewerMain.stop_picking" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.pile_viewer.PileViewerMain.time_fractional_digits">
+<tt class="descname">time_fractional_digits</tt><big>(</big><big>)</big><a class="headerlink" href="#pyrocko.pile_viewer.PileViewerMain.time_fractional_digits" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.pile_viewer.PileViewerMain.toggle_help">
+<tt class="descname">toggle_help</tt><big>(</big><big>)</big><a class="headerlink" href="#pyrocko.pile_viewer.PileViewerMain.toggle_help" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -908,6 +918,11 @@
 <dl class="method">
 <dt id="pyrocko.pile_viewer.PileViewerMain.update_trace_filter">
 <tt class="descname">update_trace_filter</tt><big>(</big><big>)</big><a class="headerlink" href="#pyrocko.pile_viewer.PileViewerMain.update_trace_filter" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.pile_viewer.PileViewerMain.visible_length_change">
+<tt class="descname">visible_length_change</tt><big>(</big><em>ignore</em><big>)</big><a class="headerlink" href="#pyrocko.pile_viewer.PileViewerMain.visible_length_change" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -1071,7 +1086,7 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="slink.html" title="The slink Module"
+          <a href="gui_util.html" title="The gui_util Module"
              >next</a> |</li>
         <li class="right" >
           <a href="snuffling.html" title="The snuffling Module"

@@ -320,14 +320,17 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
         <span class="k">raise</span> <span class="n">SnufflingCallFailed</span><span class="p">(</span><span class="n">message</span><span class="p">)</span> 
   </div>
-<div class="viewcode-block" id="Snuffling.pylab"><a class="viewcode-back" href="../../snuffling.html#pyrocko.snuffling.Snuffling.pylab">[docs]</a>    <span class="k">def</span> <span class="nf">pylab</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Snuffling.pylab"><a class="viewcode-back" href="../../snuffling.html#pyrocko.snuffling.Snuffling.pylab">[docs]</a>    <span class="k">def</span> <span class="nf">pylab</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">get</span><span class="o">=</span><span class="s">&#39;axes&#39;</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_iplot</span> <span class="o">+=</span> <span class="mi">1</span>
             <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;Plot </span><span class="si">%i</span><span class="s"> (</span><span class="si">%s</span><span class="s">)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_iplot</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_name</span><span class="p">())</span>
 
         <span class="n">pylab</span> <span class="o">=</span> <span class="n">PyLab</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_panel_parent</span><span class="o">.</span><span class="n">add_tab</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">pylab</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">pylab</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">get</span> <span class="o">==</span> <span class="s">&#39;axes&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">pylab</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="n">get</span> <span class="o">==</span> <span class="s">&#39;figure&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">pylab</span><span class="o">.</span><span class="n">gcf</span><span class="p">()</span>
 </div>
 <div class="viewcode-block" id="Snuffling.tempdir"><a class="viewcode-back" href="../../snuffling.html#pyrocko.snuffling.Snuffling.tempdir">[docs]</a>    <span class="k">def</span> <span class="nf">tempdir</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tempdir</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
@@ -528,6 +531,8 @@
                         <span class="k">yield</span> <span class="n">traces</span>
                         
             <span class="k">elif</span> <span class="n">fallback</span><span class="p">:</span>
+                <span class="k">if</span> <span class="s">&#39;trace_selector&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+                    <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;trace_selector&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">viewer</span><span class="o">.</span><span class="n">trace_selector</span>
                 
                 <span class="n">tmin</span><span class="p">,</span> <span class="n">tmax</span> <span class="o">=</span> <span class="n">viewer</span><span class="o">.</span><span class="n">get_time_range</span><span class="p">()</span>
                 <span class="k">for</span> <span class="n">traces</span> <span class="ow">in</span> <span class="n">pile</span><span class="o">.</span><span class="n">chopper</span><span class="p">(</span>
