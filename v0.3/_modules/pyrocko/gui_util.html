@@ -929,7 +929,10 @@
         <span class="k">if</span> <span class="n">nam</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
             <span class="n">t</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nam</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="s">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="s">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">s</span><span class="p">:</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="s">&#39;(Event)&#39;</span>
+        <span class="k">return</span> <span class="n">s</span>
 </div>
     <span class="k">def</span> <span class="nf">draw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">time_projection</span><span class="p">,</span> <span class="n">y_projection</span><span class="p">):</span>
       
@@ -1193,7 +1196,7 @@
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2012, Sebastian Heimann.
+      &copy; Copyright 2012, Sebastian Heimann. <img src="http://kinherd.org/pyrocko.png" width="5" height="5">
     </div>
   </body>
 </html>

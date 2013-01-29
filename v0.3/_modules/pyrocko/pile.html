@@ -592,12 +592,18 @@
     
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">traces</span><span class="p">):</span>
         <span class="n">TracesGroup</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">traces</span> <span class="o">=</span> <span class="n">traces</span>
-        <span class="k">for</span> <span class="n">trace</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">traces</span><span class="p">:</span>
-            <span class="n">trace</span><span class="o">.</span><span class="n">file</span> <span class="o">=</span> <span class="bp">self</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">traces</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">traces</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mtime</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
         
+<div class="viewcode-block" id="MemTracesFile.add"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.MemTracesFile.add">[docs]</a>    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">traces</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span> <span class="n">traces</span><span class="p">,</span> <span class="n">trace</span><span class="o">.</span><span class="n">Trace</span><span class="p">):</span>
+            <span class="n">traces</span> <span class="o">=</span> <span class="p">[</span> <span class="n">traces</span> <span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">tr</span> <span class="ow">in</span> <span class="n">traces</span><span class="p">:</span>
+            <span class="n">tr</span><span class="o">.</span><span class="n">file</span> <span class="o">=</span> <span class="bp">self</span>
+
+        <span class="n">TracesGroup</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">traces</span><span class="p">)</span>
+</div>
 <div class="viewcode-block" id="MemTracesFile.load_headers"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.MemTracesFile.load_headers">[docs]</a>    <span class="k">def</span> <span class="nf">load_headers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mtime</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="k">pass</span>
         </div>
@@ -613,42 +619,16 @@
 <div class="viewcode-block" id="MemTracesFile.reload_if_modified"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.MemTracesFile.reload_if_modified">[docs]</a>    <span class="k">def</span> <span class="nf">reload_if_modified</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">False</span>
             </div>
-<div class="viewcode-block" id="MemTracesFile.get_newest_mtime"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.MemTracesFile.get_newest_mtime">[docs]</a>    <span class="k">def</span> <span class="nf">get_newest_mtime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tmin</span><span class="p">,</span> <span class="n">tmax</span><span class="p">,</span> <span class="n">trace_selector</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="n">mtime</span> <span class="o">=</span> <span class="bp">None</span>
-        <span class="k">for</span> <span class="n">tr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">traces</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">trace_selector</span> <span class="ow">or</span> <span class="n">trace_selector</span><span class="p">(</span><span class="n">tr</span><span class="p">):</span>
-                <span class="n">mtime</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">mtime</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mtime</span><span class="p">)</span>
-                
-        <span class="k">return</span> <span class="n">mtime</span>
-        </div>
-<div class="viewcode-block" id="MemTracesFile.chop"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.MemTracesFile.chop">[docs]</a>    <span class="k">def</span> <span class="nf">chop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">tmin</span><span class="p">,</span><span class="n">tmax</span><span class="p">,</span><span class="n">trace_selector</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">snap</span><span class="o">=</span><span class="p">(</span><span class="nb">round</span><span class="p">,</span><span class="nb">round</span><span class="p">),</span> <span class="n">include_last</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">load_data</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
-        <span class="n">chopped</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">used</span> <span class="o">=</span> <span class="bp">False</span>
-        <span class="n">needed</span> <span class="o">=</span> <span class="p">[</span> <span class="n">tr</span> <span class="k">for</span> <span class="n">tr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">traces</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">trace_selector</span> <span class="ow">or</span> <span class="n">trace_selector</span><span class="p">(</span><span class="n">tr</span><span class="p">)</span> <span class="p">]</span>
-                
-        <span class="k">if</span> <span class="n">needed</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">load_data</span><span class="p">:</span>
-                <span class="n">used</span> <span class="o">=</span> <span class="bp">True</span>
-
-            <span class="k">for</span> <span class="n">tr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">traces</span><span class="p">:</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="n">trace_selector</span> <span class="ow">or</span> <span class="n">trace_selector</span><span class="p">(</span><span class="n">tr</span><span class="p">):</span>
-                    <span class="k">try</span><span class="p">:</span>
-                        <span class="n">chopped</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tr</span><span class="o">.</span><span class="n">chop</span><span class="p">(</span><span class="n">tmin</span><span class="p">,</span><span class="n">tmax</span><span class="p">,</span><span class="n">inplace</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span><span class="n">snap</span><span class="o">=</span><span class="n">snap</span><span class="p">,</span> <span class="n">include_last</span><span class="o">=</span><span class="n">include_last</span><span class="p">))</span>
-                    <span class="k">except</span> <span class="n">trace</span><span class="o">.</span><span class="n">NoData</span><span class="p">:</span>
-                        <span class="k">pass</span>
-            
-        <span class="k">return</span> <span class="n">chopped</span><span class="p">,</span> <span class="n">used</span>
-    </div>
 <div class="viewcode-block" id="MemTracesFile.iter_traces"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.MemTracesFile.iter_traces">[docs]</a>    <span class="k">def</span> <span class="nf">iter_traces</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">for</span> <span class="n">trace</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">traces</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">trace</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">by_tmin</span><span class="p">:</span>
             <span class="k">yield</span> <span class="n">trace</span>
     </div>
 <div class="viewcode-block" id="MemTracesFile.get_traces"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.MemTracesFile.get_traces">[docs]</a>    <span class="k">def</span> <span class="nf">get_traces</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">traces</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">by_tmin</span><span class="p">)</span>
     </div>
 <div class="viewcode-block" id="MemTracesFile.gather_keys"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.MemTracesFile.gather_keys">[docs]</a>    <span class="k">def</span> <span class="nf">gather_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gather</span><span class="p">,</span> <span class="n">selector</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="n">keys</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">trace</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">traces</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">trace</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">by_tmin</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">selector</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="n">selector</span><span class="p">(</span><span class="n">trace</span><span class="p">):</span>
                 <span class="n">keys</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">gather</span><span class="p">(</span><span class="n">trace</span><span class="p">))</span>
             
@@ -658,7 +638,7 @@
         
         <span class="n">s</span> <span class="o">=</span> <span class="s">&#39;MemTracesFile</span><span class="se">\n</span><span class="s">&#39;</span>
         <span class="n">s</span> <span class="o">+=</span> <span class="s">&#39;file mtime: </span><span class="si">%s</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">util</span><span class="o">.</span><span class="n">time_to_str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mtime</span><span class="p">)</span>
-        <span class="n">s</span> <span class="o">+=</span> <span class="s">&#39;number of traces: </span><span class="si">%i</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">traces</span><span class="p">)</span>
+        <span class="n">s</span> <span class="o">+=</span> <span class="s">&#39;number of traces: </span><span class="si">%i</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">by_tmin</span><span class="p">)</span>
         <span class="n">s</span> <span class="o">+=</span> <span class="s">&#39;timerange: </span><span class="si">%s</span><span class="s"> - </span><span class="si">%s</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">util</span><span class="o">.</span><span class="n">time_to_str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tmin</span><span class="p">),</span> <span class="n">util</span><span class="o">.</span><span class="n">time_to_str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tmax</span><span class="p">))</span>
         <span class="n">s</span> <span class="o">+=</span> <span class="s">&#39;networks: </span><span class="si">%s</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="s">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sl</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">networks</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
         <span class="n">s</span> <span class="o">+=</span> <span class="s">&#39;stations: </span><span class="si">%s</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="s">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sl</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">stations</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span>
@@ -753,40 +733,13 @@
             
         <span class="k">return</span> <span class="bp">False</span>
        </div>
-<div class="viewcode-block" id="TracesFile.get_newest_mtime"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.TracesFile.get_newest_mtime">[docs]</a>    <span class="k">def</span> <span class="nf">get_newest_mtime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tmin</span><span class="p">,</span> <span class="n">tmax</span><span class="p">,</span> <span class="n">trace_selector</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="n">mtime</span> <span class="o">=</span> <span class="bp">None</span>
-        <span class="k">for</span> <span class="n">tr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">traces</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">tr</span><span class="o">.</span><span class="n">overlaps</span><span class="p">(</span><span class="n">tmin</span><span class="p">,</span><span class="n">tmax</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="n">trace_selector</span> <span class="ow">or</span> <span class="n">trace_selector</span><span class="p">(</span><span class="n">tr</span><span class="p">)):</span>
-                <span class="n">mtime</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">mtime</span><span class="p">,</span> <span class="n">tr</span><span class="o">.</span><span class="n">mtime</span><span class="p">)</span>
-                
-        <span class="k">return</span> <span class="n">mtime</span>
-</div>
-<div class="viewcode-block" id="TracesFile.chop"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.TracesFile.chop">[docs]</a>    <span class="k">def</span> <span class="nf">chop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">tmin</span><span class="p">,</span><span class="n">tmax</span><span class="p">,</span><span class="n">trace_selector</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">snap</span><span class="o">=</span><span class="p">(</span><span class="nb">round</span><span class="p">,</span><span class="nb">round</span><span class="p">),</span> <span class="n">include_last</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">load_data</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
-        <span class="n">chopped</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">used</span> <span class="o">=</span> <span class="bp">False</span>
-        <span class="n">needed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">relevant</span><span class="p">(</span><span class="n">tmin</span><span class="p">,</span><span class="n">tmax</span><span class="p">,</span><span class="n">trace_selector</span><span class="o">=</span><span class="n">trace_selector</span><span class="p">)</span>
-                
-        <span class="k">if</span> <span class="n">needed</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">load_data</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_data</span><span class="p">():</span>
-                <span class="n">needed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">relevant</span><span class="p">(</span><span class="n">tmin</span><span class="p">,</span><span class="n">tmax</span><span class="p">,</span> <span class="n">trace_selector</span><span class="o">=</span><span class="n">trace_selector</span><span class="p">)</span>
-
-            <span class="n">used</span> <span class="o">=</span> <span class="bp">True</span>
-            <span class="k">for</span> <span class="n">tr</span> <span class="ow">in</span> <span class="n">needed</span><span class="p">:</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="n">trace_selector</span> <span class="ow">or</span> <span class="n">trace_selector</span><span class="p">(</span><span class="n">tr</span><span class="p">):</span>
-                    <span class="k">try</span><span class="p">:</span>
-                        <span class="n">chopped</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tr</span><span class="o">.</span><span class="n">chop</span><span class="p">(</span><span class="n">tmin</span><span class="p">,</span><span class="n">tmax</span><span class="p">,</span><span class="n">inplace</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span><span class="n">snap</span><span class="o">=</span><span class="n">snap</span><span class="p">,</span> <span class="n">include_last</span><span class="o">=</span><span class="n">include_last</span><span class="p">))</span>
-                    <span class="k">except</span> <span class="n">trace</span><span class="o">.</span><span class="n">NoData</span><span class="p">:</span>
-                        <span class="k">pass</span>
-            
-        <span class="k">return</span> <span class="n">chopped</span><span class="p">,</span> <span class="n">used</span>
-        </div>
 <div class="viewcode-block" id="TracesFile.iter_traces"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.TracesFile.iter_traces">[docs]</a>    <span class="k">def</span> <span class="nf">iter_traces</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">trace</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">traces</span><span class="p">:</span>
             <span class="k">yield</span> <span class="n">trace</span>
     </div>
 <div class="viewcode-block" id="TracesFile.gather_keys"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.TracesFile.gather_keys">[docs]</a>    <span class="k">def</span> <span class="nf">gather_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gather</span><span class="p">,</span> <span class="n">selector</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="n">keys</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">trace</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">traces</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">trace</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">by_tmin</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">selector</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="n">selector</span><span class="p">(</span><span class="n">trace</span><span class="p">):</span>
                 <span class="n">keys</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">gather</span><span class="p">(</span><span class="n">trace</span><span class="p">))</span>
             
@@ -831,26 +784,6 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">files</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="nb">file</span><span class="p">)</span>
             <span class="nb">file</span><span class="o">.</span><span class="n">set_parent</span><span class="p">(</span><span class="bp">None</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">files</span><span class="p">)</span>
-    </div>
-<div class="viewcode-block" id="SubPile.get_newest_mtime"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.SubPile.get_newest_mtime">[docs]</a>    <span class="k">def</span> <span class="nf">get_newest_mtime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tmin</span><span class="p">,</span> <span class="n">tmax</span><span class="p">,</span> <span class="n">group_selector</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">trace_selector</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="n">mtime</span> <span class="o">=</span> <span class="bp">None</span>
-        <span class="k">for</span> <span class="nb">file</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">files</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">file</span><span class="o">.</span><span class="n">is_relevant</span><span class="p">(</span><span class="n">tmin</span><span class="p">,</span> <span class="n">tmax</span><span class="p">,</span> <span class="n">group_selector</span><span class="p">):</span>
-                <span class="n">mtime</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">mtime</span><span class="p">,</span> <span class="nb">file</span><span class="o">.</span><span class="n">get_newest_mtime</span><span class="p">(</span><span class="n">tmin</span><span class="p">,</span> <span class="n">tmax</span><span class="p">,</span> <span class="n">trace_selector</span><span class="p">))</span>
-                
-        <span class="k">return</span> <span class="n">mtime</span>
-    </div>
-<div class="viewcode-block" id="SubPile.chop"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.SubPile.chop">[docs]</a>    <span class="k">def</span> <span class="nf">chop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tmin</span><span class="p">,</span> <span class="n">tmax</span><span class="p">,</span> <span class="n">group_selector</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">trace_selector</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">snap</span><span class="o">=</span><span class="p">(</span><span class="nb">round</span><span class="p">,</span><span class="nb">round</span><span class="p">),</span> <span class="n">include_last</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">load_data</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
-        <span class="n">used_files</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
-        <span class="n">chopped</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="nb">file</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">files</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">file</span><span class="o">.</span><span class="n">is_relevant</span><span class="p">(</span><span class="n">tmin</span><span class="p">,</span> <span class="n">tmax</span><span class="p">,</span> <span class="n">group_selector</span><span class="p">):</span>
-                <span class="n">chopped_</span><span class="p">,</span> <span class="n">used</span> <span class="o">=</span> <span class="nb">file</span><span class="o">.</span><span class="n">chop</span><span class="p">(</span><span class="n">tmin</span><span class="p">,</span> <span class="n">tmax</span><span class="p">,</span> <span class="n">trace_selector</span><span class="p">,</span> <span class="n">snap</span><span class="p">,</span> <span class="n">include_last</span><span class="p">,</span> <span class="n">load_data</span><span class="p">)</span>
-                <span class="n">chopped</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span> <span class="n">chopped_</span> <span class="p">)</span>
-                <span class="k">if</span> <span class="n">used</span><span class="p">:</span>
-                    <span class="n">used_files</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="nb">file</span><span class="p">)</span>
-                
-        <span class="k">return</span> <span class="n">chopped</span><span class="p">,</span> <span class="n">used_files</span>
         </div>
 <div class="viewcode-block" id="SubPile.gather_keys"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.SubPile.gather_keys">[docs]</a>    <span class="k">def</span> <span class="nf">gather_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">gather</span><span class="p">,</span> <span class="n">selector</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="n">keys</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
@@ -1000,14 +933,6 @@
                 <span class="k">pass</span>
 
         <span class="k">return</span> <span class="n">chopped</span><span class="p">,</span> <span class="n">used_files</span>
-        </div>
-<div class="viewcode-block" id="Pile.get_newest_mtime"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.Pile.get_newest_mtime">[docs]</a>    <span class="k">def</span> <span class="nf">get_newest_mtime</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tmin</span><span class="p">,</span> <span class="n">tmax</span><span class="p">,</span> <span class="n">group_selector</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">trace_selector</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="n">mtime</span> <span class="o">=</span> <span class="bp">None</span>
-        <span class="k">for</span> <span class="n">subpile</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">subpiles</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-            <span class="k">if</span> <span class="n">subpile</span><span class="o">.</span><span class="n">is_relevant</span><span class="p">(</span><span class="n">tmin</span><span class="p">,</span><span class="n">tmax</span><span class="p">,</span> <span class="n">group_selector</span><span class="p">):</span>
-                <span class="n">mtime</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">mtime</span><span class="p">,</span> <span class="n">subpile</span><span class="o">.</span><span class="n">get_newest_mtime</span><span class="p">(</span><span class="n">tmin</span><span class="p">,</span> <span class="n">tmax</span><span class="p">,</span> <span class="n">group_selector</span><span class="p">,</span> <span class="n">trace_selector</span><span class="p">))</span>
-                
-        <span class="k">return</span> <span class="n">mtime</span>
 </div>
     <span class="k">def</span> <span class="nf">_process_chopped</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chopped</span><span class="p">,</span> <span class="n">degap</span><span class="p">,</span> <span class="n">maxgap</span><span class="p">,</span> <span class="n">maxlap</span><span class="p">,</span> <span class="n">want_incomplete</span><span class="p">,</span> <span class="n">wmax</span><span class="p">,</span> <span class="n">wmin</span><span class="p">,</span> <span class="n">tpad</span><span class="p">):</span>
         <span class="n">chopped</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="k">lambda</span> <span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">:</span> <span class="nb">cmp</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">full_id</span><span class="p">,</span> <span class="n">b</span><span class="o">.</span><span class="n">full_id</span><span class="p">))</span>
@@ -1279,7 +1204,7 @@
         <span class="n">trbuf</span> <span class="o">=</span> <span class="n">buf</span><span class="o">.</span><span class="n">get_traces</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fixation_length</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">trbuf</span><span class="o">.</span><span class="n">tmax</span> <span class="o">-</span> <span class="n">trbuf</span><span class="o">.</span><span class="n">tmin</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fixation_length</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_fixate</span><span class="p">(</span><span class="n">buf</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_fixate</span><span class="p">(</span><span class="n">buf</span><span class="p">,</span> <span class="n">complete</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="Injector.fixate_all"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.Injector.fixate_all">[docs]</a>    <span class="k">def</span> <span class="nf">fixate_all</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_states</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
@@ -1290,16 +1215,46 @@
 <div class="viewcode-block" id="Injector.free"><a class="viewcode-back" href="../../pile.html#pyrocko.pile.Injector.free">[docs]</a>    <span class="k">def</span> <span class="nf">free</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">buf</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_fixate</span><span class="p">(</span><span class="n">buf</span><span class="p">)</span>
 </div>
-    <span class="k">def</span> <span class="nf">_fixate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">buf</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_fixate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">buf</span><span class="p">,</span> <span class="n">complete</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
         <span class="n">trbuf</span> <span class="o">=</span> <span class="n">buf</span><span class="o">.</span><span class="n">get_traces</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">del_state</span> <span class="o">=</span> <span class="bp">True</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_path</span><span class="p">:</span>
-            <span class="n">fns</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">save</span><span class="p">([</span><span class="n">trbuf</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_path</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_format</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fixation_length</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">ttmin</span> <span class="o">=</span> <span class="n">trbuf</span><span class="o">.</span><span class="n">tmin</span>
+                <span class="n">ytmin</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">year_start</span><span class="p">(</span><span class="n">ttmin</span><span class="p">)</span>
+                <span class="n">n</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">((</span><span class="n">ttmin</span> <span class="o">-</span> <span class="n">ytmin</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fixation_length</span><span class="p">))</span>
+                <span class="n">tmin</span> <span class="o">=</span> <span class="n">ytmin</span> <span class="o">+</span> <span class="n">n</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_fixation_length</span>
+                <span class="n">traces</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">t</span> <span class="o">=</span> <span class="n">tmin</span>
+                <span class="k">while</span> <span class="n">t</span> <span class="o">&lt;=</span> <span class="n">trbuf</span><span class="o">.</span><span class="n">tmax</span><span class="p">:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">traces</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">trbuf</span><span class="o">.</span><span class="n">chop</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">t</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">_fixation_length</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">snap</span><span class="o">=</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">,</span><span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">)))</span>
+                    <span class="k">except</span> <span class="n">trace</span><span class="o">.</span><span class="n">NoData</span><span class="p">:</span>
+                        <span class="k">pass</span>
+                    <span class="n">t</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fixation_length</span>
+
+                <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">traces</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">tmax</span> <span class="o">-</span> <span class="p">(</span><span class="n">t</span> <span class="o">-</span> <span class="n">trbuf</span><span class="o">.</span><span class="n">deltat</span><span class="p">))</span> <span class="o">&lt;</span> <span class="n">trbuf</span><span class="o">.</span><span class="n">deltat</span><span class="o">/</span><span class="mf">100.</span> <span class="ow">or</span> <span class="n">complete</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_pile</span><span class="o">.</span><span class="n">remove_file</span><span class="p">(</span><span class="n">buf</span><span class="p">)</span>
+
+                <span class="k">else</span><span class="p">:</span> <span class="c"># reinsert incomplete last part</span>
+                    <span class="n">new_trbuf</span> <span class="o">=</span> <span class="n">traces</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_pile</span><span class="o">.</span><span class="n">remove_file</span><span class="p">(</span><span class="n">buf</span><span class="p">)</span>
+                    <span class="n">buf</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">trbuf</span><span class="p">)</span>
+                    <span class="n">buf</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">new_trbuf</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_pile</span><span class="o">.</span><span class="n">add_file</span><span class="p">(</span><span class="n">buf</span><span class="p">)</span>
+                    <span class="n">del_state</span> <span class="o">=</span> <span class="bp">False</span>
+                
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">traces</span> <span class="o">=</span> <span class="p">[</span> <span class="n">trbuf</span> <span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_pile</span><span class="o">.</span><span class="n">remove_file</span><span class="p">(</span><span class="n">buf</span><span class="p">)</span>
+
+            <span class="n">fns</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">traces</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_path</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_format</span><span class="p">)</span>
             
-            <span class="bp">self</span><span class="o">.</span><span class="n">_pile</span><span class="o">.</span><span class="n">remove_file</span><span class="p">(</span><span class="n">buf</span><span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_forget_fixed</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_pile</span><span class="o">.</span><span class="n">load_files</span><span class="p">(</span><span class="n">fns</span><span class="p">,</span> <span class="n">show_progress</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">fileformat</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_format</span><span class="p">)</span>
 
-        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_states</span><span class="p">[</span><span class="n">trbuf</span><span class="o">.</span><span class="n">nslc_id</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">del_state</span><span class="p">:</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_states</span><span class="p">[</span><span class="n">trbuf</span><span class="o">.</span><span class="n">nslc_id</span><span class="p">]</span>
                 
     <span class="k">def</span> <span class="nf">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fixate_all</span><span class="p">()</span>
@@ -1323,7 +1278,7 @@
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2012, Sebastian Heimann.
+      &copy; Copyright 2012, Sebastian Heimann. <img src="http://kinherd.org/pyrocko.png" width="5" height="5">
     </div>
   </body>
 </html>

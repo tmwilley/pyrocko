@@ -546,6 +546,56 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">deltat</span> <span class="o">=</span> <span class="n">deltat2</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_ydata</span><span class="p">(</span><span class="n">data2</span><span class="p">)</span>
 </div>
+<div class="viewcode-block" id="Trace.resample_simple"><a class="viewcode-back" href="../../trace.html#pyrocko.trace.Trace.resample_simple">[docs]</a>    <span class="k">def</span> <span class="nf">resample_simple</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">deltat</span><span class="p">):</span>
+        <span class="n">tyear</span> <span class="o">=</span> <span class="mi">3600</span><span class="o">*</span><span class="mi">24</span><span class="o">*</span><span class="mf">365.</span>
+
+        <span class="k">if</span> <span class="n">deltat</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">deltat</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">deltat</span> <span class="o">-</span> <span class="n">deltat</span><span class="p">)</span> <span class="o">*</span> <span class="n">tyear</span><span class="o">/</span><span class="n">deltat</span> <span class="o">&lt;</span> <span class="n">deltat</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&#39;resample_simple: less than one sample would have to be inserted/deleted per year. Doing nothing.&#39;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="n">ninterval</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">deltat</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">deltat</span> <span class="o">-</span> <span class="n">deltat</span><span class="p">)))</span>
+        <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">ninterval</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">20</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&#39;resample_simple: sample insertion/deletion interval less than 20. results would be erroneous.&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">ResamplingFailed</span><span class="p">()</span>
+
+        <span class="n">delete</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="k">if</span> <span class="n">ninterval</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">ninterval</span> <span class="o">=</span> <span class="o">-</span> <span class="n">ninterval</span>
+            <span class="n">delete</span> <span class="o">=</span> <span class="bp">True</span>
+        
+        <span class="n">tyearbegin</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">year_start</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tmin</span><span class="p">)</span>
+        
+        <span class="n">nmin</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">tmin</span> <span class="o">-</span> <span class="n">tyearbegin</span><span class="p">)</span><span class="o">/</span><span class="n">deltat</span><span class="p">))</span>
+
+        <span class="n">ibegin</span> <span class="o">=</span> <span class="p">(((</span><span class="n">nmin</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="n">ninterval</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">ninterval</span> <span class="o">-</span> <span class="n">nmin</span>
+        <span class="n">nindices</span> <span class="o">=</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ydata</span><span class="p">)</span> <span class="o">-</span> <span class="n">ibegin</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="n">ninterval</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">nindices</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">indices</span> <span class="o">=</span> <span class="n">ibegin</span> <span class="o">+</span> <span class="n">num</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">nindices</span><span class="p">)</span> <span class="o">*</span> <span class="n">ninterval</span>
+            <span class="n">data_split</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ydata</span><span class="p">,</span> <span class="n">indices</span><span class="p">)</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">l</span><span class="p">,</span> <span class="n">h</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">data_split</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">data_split</span><span class="p">[</span><span class="mi">1</span><span class="p">:]):</span>
+                <span class="k">if</span> <span class="n">delete</span><span class="p">:</span>
+                    <span class="n">l</span> <span class="o">=</span> <span class="n">l</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                    
+                <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">l</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">delete</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">l</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">v</span> <span class="o">=</span> <span class="n">h</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">v</span> <span class="o">=</span> <span class="mf">0.5</span><span class="o">*</span><span class="p">(</span><span class="n">l</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">h</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                    <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">num</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">v</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">l</span><span class="o">.</span><span class="n">dtype</span><span class="p">))</span>
+
+            <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data_split</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+
+            <span class="n">ydata_new</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span> <span class="n">data</span> <span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">tmin</span> <span class="o">=</span> <span class="n">tyearbegin</span> <span class="o">+</span> <span class="n">nmin</span> <span class="o">*</span> <span class="n">deltat</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">deltat</span> <span class="o">=</span> <span class="n">deltat</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_ydata</span><span class="p">(</span><span class="n">ydata_new</span><span class="p">)</span>
+</div>
 <div class="viewcode-block" id="Trace.nyquist_check"><a class="viewcode-back" href="../../trace.html#pyrocko.trace.Trace.nyquist_check">[docs]</a>    <span class="k">def</span> <span class="nf">nyquist_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">frequency</span><span class="p">,</span> <span class="n">intro</span><span class="o">=</span><span class="s">&#39;Corner frequency&#39;</span><span class="p">,</span> <span class="n">warn</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">raise_exception</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Check if a given frequency is above the Nyquist frequency of the trace.</span>
 
@@ -1082,6 +1132,9 @@
 </div>
 <div class="viewcode-block" id="TraceTooShort"><a class="viewcode-back" href="../../trace.html#pyrocko.trace.TraceTooShort">[docs]</a><span class="k">class</span> <span class="nc">TraceTooShort</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;This exception is raised by some :py:class:`Trace` operations when the trace is too short.&#39;&#39;&#39;</span>
+    <span class="k">pass</span>
+</div>
+<div class="viewcode-block" id="ResamplingFailed"><a class="viewcode-back" href="../../trace.html#pyrocko.trace.ResamplingFailed">[docs]</a><span class="k">class</span> <span class="nc">ResamplingFailed</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
     <span class="k">pass</span>
 </div>
 <div class="viewcode-block" id="minmax"><a class="viewcode-back" href="../../trace.html#pyrocko.trace.minmax">[docs]</a><span class="k">def</span> <span class="nf">minmax</span><span class="p">(</span><span class="n">traces</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s">&#39;minmax&#39;</span><span class="p">):</span>
@@ -2126,7 +2179,7 @@
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2012, Sebastian Heimann.
+      &copy; Copyright 2012, Sebastian Heimann. <img src="http://kinherd.org/pyrocko.png" width="5" height="5">
     </div>
   </body>
 </html>

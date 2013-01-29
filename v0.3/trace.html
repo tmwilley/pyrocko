@@ -332,6 +332,11 @@ possible downsampling ratios.</p>
 <dd></dd></dl>
 
 <dl class="method">
+<dt id="pyrocko.trace.Trace.resample_simple">
+<tt class="descname">resample_simple</tt><big>(</big><em>deltat</em><big>)</big><a class="reference internal" href="_modules/pyrocko/trace.html#Trace.resample_simple"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.trace.Trace.resample_simple" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
 <dt id="pyrocko.trace.Trace.nyquist_check">
 <tt class="descname">nyquist_check</tt><big>(</big><em>frequency</em>, <em>intro='Corner frequency'</em>, <em>warn=True</em>, <em>raise_exception=False</em><big>)</big><a class="reference internal" href="_modules/pyrocko/trace.html#Trace.nyquist_check"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.trace.Trace.nyquist_check" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if a given frequency is above the Nyquist frequency of the trace.</p>
@@ -696,6 +701,11 @@ include microseconds.</p>
 <em class="property">exception </em><tt class="descname">TraceTooShort</tt><a class="reference internal" href="_modules/pyrocko/trace.html#TraceTooShort"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.trace.TraceTooShort" title="Permalink to this definition">¶</a></dt>
 <dd><p>This exception is raised by some <a class="reference internal" href="#pyrocko.trace.Trace" title="pyrocko.trace.Trace"><tt class="xref py py-class docutils literal"><span class="pre">Trace</span></tt></a> operations when the trace is too short.</p>
 </dd></dl>
+
+<dl class="exception">
+<dt id="pyrocko.trace.ResamplingFailed">
+<em class="property">exception </em><tt class="descname">ResamplingFailed</tt><a class="reference internal" href="_modules/pyrocko/trace.html#ResamplingFailed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.trace.ResamplingFailed" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="function">
 <dt id="pyrocko.trace.minmax">
@@ -1224,7 +1234,7 @@ recursion which is normally used.</p>
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2012, Sebastian Heimann.
+      &copy; Copyright 2012, Sebastian Heimann. <img src="http://kinherd.org/pyrocko.png" width="5" height="5">
     </div>
   </body>
 </html>

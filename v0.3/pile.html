@@ -293,6 +293,11 @@ of its contents.</p>
 <dd><p>This is needed to make traces without an actual disc file to be inserted
 into a Pile.</p>
 <dl class="method">
+<dt id="pyrocko.pile.MemTracesFile.add">
+<tt class="descname">add</tt><big>(</big><em>traces</em><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#MemTracesFile.add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.MemTracesFile.add" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
 <dt id="pyrocko.pile.MemTracesFile.load_headers">
 <tt class="descname">load_headers</tt><big>(</big><em>mtime=None</em><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#MemTracesFile.load_headers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.MemTracesFile.load_headers" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -315,16 +320,6 @@ into a Pile.</p>
 <dl class="method">
 <dt id="pyrocko.pile.MemTracesFile.reload_if_modified">
 <tt class="descname">reload_if_modified</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#MemTracesFile.reload_if_modified"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.MemTracesFile.reload_if_modified" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.pile.MemTracesFile.get_newest_mtime">
-<tt class="descname">get_newest_mtime</tt><big>(</big><em>tmin</em>, <em>tmax</em>, <em>trace_selector=None</em><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#MemTracesFile.get_newest_mtime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.MemTracesFile.get_newest_mtime" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.pile.MemTracesFile.chop">
-<tt class="descname">chop</tt><big>(</big><em>tmin</em>, <em>tmax</em>, <em>trace_selector=None</em>, <em>snap=(&lt;built-in function round&gt;</em>, <em>&lt;built-in function round&gt;)</em>, <em>include_last=False</em>, <em>load_data=True</em><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#MemTracesFile.chop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.MemTracesFile.chop" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -373,16 +368,6 @@ into a Pile.</p>
 <dd></dd></dl>
 
 <dl class="method">
-<dt id="pyrocko.pile.TracesFile.get_newest_mtime">
-<tt class="descname">get_newest_mtime</tt><big>(</big><em>tmin</em>, <em>tmax</em>, <em>trace_selector=None</em><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#TracesFile.get_newest_mtime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.TracesFile.get_newest_mtime" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.pile.TracesFile.chop">
-<tt class="descname">chop</tt><big>(</big><em>tmin</em>, <em>tmax</em>, <em>trace_selector=None</em>, <em>snap=(&lt;built-in function round&gt;</em>, <em>&lt;built-in function round&gt;)</em>, <em>include_last=False</em>, <em>load_data=True</em><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#TracesFile.chop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.TracesFile.chop" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
 <dt id="pyrocko.pile.TracesFile.iter_traces">
 <tt class="descname">iter_traces</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#TracesFile.iter_traces"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.TracesFile.iter_traces" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -415,16 +400,6 @@ into a Pile.</p>
 <dl class="method">
 <dt id="pyrocko.pile.SubPile.remove_files">
 <tt class="descname">remove_files</tt><big>(</big><em>files</em><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#SubPile.remove_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.SubPile.remove_files" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.pile.SubPile.get_newest_mtime">
-<tt class="descname">get_newest_mtime</tt><big>(</big><em>tmin</em>, <em>tmax</em>, <em>group_selector=None</em>, <em>trace_selector=None</em><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#SubPile.get_newest_mtime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.SubPile.get_newest_mtime" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.pile.SubPile.chop">
-<tt class="descname">chop</tt><big>(</big><em>tmin</em>, <em>tmax</em>, <em>group_selector=None</em>, <em>trace_selector=None</em>, <em>snap=(&lt;built-in function round&gt;</em>, <em>&lt;built-in function round&gt;)</em>, <em>include_last=False</em>, <em>load_data=True</em><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#SubPile.chop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.SubPile.chop" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -505,11 +480,6 @@ into a Pile.</p>
 <dl class="method">
 <dt id="pyrocko.pile.Pile.chop">
 <tt class="descname">chop</tt><big>(</big><em>tmin</em>, <em>tmax</em>, <em>group_selector=None</em>, <em>trace_selector=None</em>, <em>snap=(&lt;built-in function round&gt;</em>, <em>&lt;built-in function round&gt;)</em>, <em>include_last=False</em>, <em>load_data=True</em><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#Pile.chop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.Pile.chop" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.pile.Pile.get_newest_mtime">
-<tt class="descname">get_newest_mtime</tt><big>(</big><em>tmin</em>, <em>tmax</em>, <em>group_selector=None</em>, <em>trace_selector=None</em><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#Pile.get_newest_mtime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.Pile.get_newest_mtime" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -683,7 +653,7 @@ created as neccessary.</li>
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2012, Sebastian Heimann.
+      &copy; Copyright 2012, Sebastian Heimann. <img src="http://kinherd.org/pyrocko.png" width="5" height="5">
     </div>
   </body>
 </html>
