@@ -279,16 +279,6 @@ class SimpleConnectionHandler(ConnectionHandler):
         self.mapping[command](*args)
 
 
-class MyMainWindow(QMainWindow):
-
-    def __init__(self, app, *args):
-        QMainWindow.__init__(self, *args)
-        self.app = app
-
-    def keyPressEvent(self, ev):
-        self.app.pile_viewer.get_view().keyPressEvent(ev)
-
-
 class SnufflerTabs(QTabWidget):
     def __init__(self, parent):
         QTabWidget.__init__(self, parent)
@@ -368,6 +358,9 @@ class SnufflerWindow(QMainWindow):
 
         if follow:
             self.get_view().follow(float(follow))
+
+        for menu in self.get_view().menus:
+            self.menuBar().addMenu(menu)
         
         self.closing = False
     
@@ -454,6 +447,7 @@ class Snuffler(QApplication):
     
     def __init__(self):
         QApplication.__init__(self, sys.argv)
+        self.setApplicationName('Snuffler')
         self.connect(self, SIGNAL("lastWindowClosed()"), self.myQuit)
         signal.signal(signal.SIGINT, self.myCloseAllWindows)
         self.server = None

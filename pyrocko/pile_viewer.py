@@ -535,6 +535,8 @@ def MakePileViewerMainClass(base):
             else:
                 apply(base.__init__, (self,) + args)
 
+            self.use_menubar = True
+            self.menus = []
             self.pile = pile
             self.ax_height = 80
             self.panel_parent = panel_parent 
@@ -575,26 +577,30 @@ def MakePileViewerMainClass(base):
             self.setMinimumSize(300,200)
             self.setFocusPolicy( Qt.StrongFocus )
     
-            self.menu = QMenu(self)
-             
-#            self.menuitem_pick = QAction('Pick', self.menu)
-#            self.menu.addAction(self.menuitem_pick)
-#            self.connect( self.menuitem_pick, SIGNAL("triggered(bool)"), self.start_picking )
+            if self.use_menubar:
+                menu = QMenu('Markers', self)
+                self.menus.append(menu)
+            else:
+                self.menu = QMenu(self)
+                menu = self.menu
             
-            mi = QAction('Write markers', self.menu)
-            self.menu.addAction(mi)
+            mi = QAction('Write markers', menu)
+            menu.addAction(mi)
             self.connect( mi, SIGNAL("triggered(bool)"), self.write_markers )
             
-            mi = QAction('Write selected markers', self.menu)
-            self.menu.addAction(mi)
+            mi = QAction('Write selected markers', menu)
+            menu.addAction(mi)
             self.connect( mi, SIGNAL("triggered(bool)"), self.write_selected_markers )
             
-            mi = QAction('Read markers', self.menu)
-            self.menu.addAction(mi)
+            mi = QAction('Read markers', menu)
+            menu.addAction(mi)
             self.connect( mi, SIGNAL("triggered(bool)"), self.read_markers )
             
-            self.menu.addSeparator()
-            
+            if self.use_menubar:
+                menu = QMenu('Scaling', self)
+                self.menus.append(menu)
+            else:
+                menu.addSeparator()
     
             menudef = [
                 ('Indivdual Scale',            lambda tr: (tr.network, tr.station, tr.location, tr.channel)),
@@ -603,11 +609,11 @@ def MakePileViewerMainClass(base):
                 ('Common Scale per Component', lambda tr: (tr.channel)),
             ]
             
-            self.menuitems_scaling = add_radiobuttongroup(self.menu, menudef, self, self.scalingmode_change)
+            self.menuitems_scaling = add_radiobuttongroup(menu, menudef, self, self.scalingmode_change)
             self.scaling_key = self.menuitems_scaling[0][1]
             self.scaling_hooks = {} 
             
-            self.menu.addSeparator()
+            menu.addSeparator()
             
             menudef = [
                 ('Scaling based on Minimum and Maximum', 'minmax'),
@@ -615,10 +621,14 @@ def MakePileViewerMainClass(base):
                 ('Scaling based on Mean +- 4 x Std. Deviation', 4),
             ]
             
-            self.menuitems_scaling_base = add_radiobuttongroup(self.menu, menudef, self, self.scaling_base_change)
+            self.menuitems_scaling_base = add_radiobuttongroup(menu, menudef, self, self.scaling_base_change)
             self.scaling_base = self.menuitems_scaling_base[0][1]
             
-            self.menu.addSeparator()
+            if self.use_menubar:
+                menu = QMenu('Sorting')
+                self.menus.append(menu)
+            else:
+                menu.addSeparator()
  
             def sector_dist(sta):
                 if sta.dist_m is None:
@@ -638,11 +648,11 @@ def MakePileViewerMainClass(base):
                 ('Sort by Backazimuth',
                     lambda tr: self.station_attrib(tr, lambda sta: (deg_float_or_none(sta.backazimuth),), lambda tr: (None,) )),
             ]
-            self.menuitems_ssorting = add_radiobuttongroup(self.menu, menudef, self, self.s_sortingmode_change)
+            self.menuitems_ssorting = add_radiobuttongroup(menu, menudef, self, self.s_sortingmode_change)
             
             self._ssort = lambda tr: ()
             
-            self.menu.addSeparator()
+            menu.addSeparator()
             
             menudef = [
                 ('Subsort by Network, Station, Location, Channel', 
@@ -671,76 +681,80 @@ def MakePileViewerMainClass(base):
                     lambda tr: tr.location )),
                 
             ]
-            self.menuitems_sorting = add_radiobuttongroup(self.menu, menudef, self, self.sortingmode_change)
+            self.menuitems_sorting = add_radiobuttongroup(menu, menudef, self, self.sortingmode_change)
             
-            self.menu.addSeparator()
+            if self.use_menubar:
+                menu = QMenu('View')
+                self.menus.append(menu)
+            else:
+                menu.addSeparator()
             
-            self.menuitem_antialias = QAction('Antialiasing', self.menu)
+            self.menuitem_antialias = QAction('Antialiasing', menu)
             self.menuitem_antialias.setCheckable(True)
-            self.menu.addAction(self.menuitem_antialias)
+            menu.addAction(self.menuitem_antialias)
             
-            self.menuitem_liberal_fetch = QAction('Liberal Fetch Optimization', self.menu)
+            self.menuitem_liberal_fetch = QAction('Liberal Fetch Optimization', menu)
             self.menuitem_liberal_fetch.setCheckable(True)
-            self.menu.addAction(self.menuitem_liberal_fetch)
+            menu.addAction(self.menuitem_liberal_fetch)
             
-            self.menuitem_cliptraces = QAction('Clip Traces', self.menu)
+            self.menuitem_cliptraces = QAction('Clip Traces', menu)
             self.menuitem_cliptraces.setCheckable(True)
             self.menuitem_cliptraces.setChecked(True)
-            self.menu.addAction(self.menuitem_cliptraces)
+            menu.addAction(self.menuitem_cliptraces)
             
-            self.menuitem_showboxes = QAction('Show Boxes', self.menu)
+            self.menuitem_showboxes = QAction('Show Boxes', menu)
             self.menuitem_showboxes.setCheckable(True)
             self.menuitem_showboxes.setChecked(True)
-            self.menu.addAction(self.menuitem_showboxes)
+            menu.addAction(self.menuitem_showboxes)
             
-            self.menuitem_colortraces = QAction('Color Traces', self.menu)
+            self.menuitem_colortraces = QAction('Color Traces', menu)
             self.menuitem_colortraces.setCheckable(True)
             self.menuitem_colortraces.setChecked(False)
-            self.menu.addAction(self.menuitem_colortraces)
+            menu.addAction(self.menuitem_colortraces)
             
-            self.menuitem_showscalerange = QAction('Show Scale Ranges', self.menu)
+            self.menuitem_showscalerange = QAction('Show Scale Ranges', menu)
             self.menuitem_showscalerange.setCheckable(True)
-            self.menu.addAction(self.menuitem_showscalerange)
+            menu.addAction(self.menuitem_showscalerange)
 
-            self.menuitem_showscaleaxis = QAction('Show Scale Axes', self.menu)
+            self.menuitem_showscaleaxis = QAction('Show Scale Axes', menu)
             self.menuitem_showscaleaxis.setCheckable(True)
-            self.menu.addAction(self.menuitem_showscaleaxis)
+            menu.addAction(self.menuitem_showscaleaxis)
 
-            self.menuitem_showzeroline = QAction('Show Zero Lines', self.menu)
+            self.menuitem_showzeroline = QAction('Show Zero Lines', menu)
             self.menuitem_showzeroline.setCheckable(True)
-            self.menu.addAction(self.menuitem_showzeroline)
+            menu.addAction(self.menuitem_showzeroline)
             
-            self.menuitem_fixscalerange = QAction('Fix Scale Ranges', self.menu)
+            self.menuitem_fixscalerange = QAction('Fix Scale Ranges', menu)
             self.menuitem_fixscalerange.setCheckable(True)
-            self.menu.addAction(self.menuitem_fixscalerange)
+            menu.addAction(self.menuitem_fixscalerange)
                 
-            self.menuitem_allowdownsampling = QAction('Allow Downsampling', self.menu)
+            self.menuitem_allowdownsampling = QAction('Allow Downsampling', menu)
             self.menuitem_allowdownsampling.setCheckable(True)
             self.menuitem_allowdownsampling.setChecked(True)
-            self.menu.addAction(self.menuitem_allowdownsampling)
+            menu.addAction(self.menuitem_allowdownsampling)
             
-            self.menuitem_degap = QAction('Allow Degapping', self.menu)
+            self.menuitem_degap = QAction('Allow Degapping', menu)
             self.menuitem_degap.setCheckable(True)
             self.menuitem_degap.setChecked(True)
-            self.menu.addAction(self.menuitem_degap)
+            menu.addAction(self.menuitem_degap)
             
-            self.menuitem_fft_filtering = QAction('FFT Filtering', self.menu)
+            self.menuitem_fft_filtering = QAction('FFT Filtering', menu)
             self.menuitem_fft_filtering.setCheckable(True)
             self.menuitem_fft_filtering.setChecked(False)
-            self.menu.addAction(self.menuitem_fft_filtering)
+            menu.addAction(self.menuitem_fft_filtering)
             
-            self.menuitem_lphp = QAction('Bandpass is Lowpass + Highpass', self.menu)
+            self.menuitem_lphp = QAction('Bandpass is Lowpass + Highpass', menu)
             self.menuitem_lphp.setCheckable(True)
             self.menuitem_lphp.setChecked(True)
-            self.menu.addAction(self.menuitem_lphp)
+            menu.addAction(self.menuitem_lphp)
             
-            self.menuitem_watch = QAction('Watch Files', self.menu)
+            self.menuitem_watch = QAction('Watch Files', menu)
             self.menuitem_watch.setCheckable(True)
             self.menuitem_watch.setChecked(False)
-            self.menu.addAction(self.menuitem_watch)
+            menu.addAction(self.menuitem_watch)
 
 
-            self.visible_length_menu = QMenu('Visible Length', self.menu)
+            self.visible_length_menu = QMenu('Visible Length', menu)
             menudef = [
                 ('Short', 6000),
                 ('Medium', 20000),
@@ -749,51 +763,55 @@ def MakePileViewerMainClass(base):
             
             self.menuitems_visible_length = add_radiobuttongroup(self.visible_length_menu, menudef, self, self.visible_length_change)
             self.visible_length = menudef[0][1]
-            self.menu.addMenu( self.visible_length_menu )
+            menu.addMenu( self.visible_length_menu )
             
-            self.menu.addSeparator()
+            self.snufflings_menu = QMenu('Run Snuffling', menu)
+            self.toggle_panel_menu = QMenu('Panels', menu)
+            if self.use_menubar:
+                self.menus.append(self.snufflings_menu)
+                self.menus.append(self.toggle_panel_menu)
+            else:
+                menu.addSeparator()
+                menu.addMenu(self.snufflings_menu)
+                menu.addMenu(self.toggle_panel_menu)
             
-            self.snufflings_menu = QMenu('Run Snuffling', self.menu)
-            self.menu.addMenu(self.snufflings_menu)
-            
-            self.toggle_panel_menu = QMenu('Panels', self.menu)
-            self.menu.addMenu(self.toggle_panel_menu)
-            
-            self.menuitem_reload = QAction('Reload Snufflings', self.menu)
-            self.menu.addAction(self.menuitem_reload)
+            self.menuitem_reload = QAction('Reload Snufflings', menu)
             self.connect( self.menuitem_reload, SIGNAL("triggered(bool)"), self.setup_snufflings )
 
-            self.menu.addSeparator()
+            if self.use_menubar:
+                self.snufflings_menu.addSeparator()
+                self.snufflings_menu.addAction(self.menuitem_reload)
+                menu = QMenu('File')
+                self.menus.append(menu)
+            else:
+                menu.addAction(self.menuitem_reload)
+                menu.addSeparator()
 
-            self.menuitem_test = QAction('Test', self.menu)
-            self.menuitem_test.setCheckable(True)
-            self.menuitem_test.setChecked(False)
-            self.menu.addAction(self.menuitem_test)
-            self.connect( self.menuitem_test, SIGNAL("toggled(bool)"), self.toggletest )
-
-            self.menuitem_print = QAction('Print', self.menu)
-            self.menu.addAction(self.menuitem_print)
+            self.menuitem_print = QAction('Print', menu)
+            menu.addAction(self.menuitem_print)
             self.connect( self.menuitem_print, SIGNAL("triggered(bool)"), self.printit )
             
-            self.menuitem_svg = QAction('Save as SVG', self.menu)
-            self.menu.addAction(self.menuitem_svg)
+            self.menuitem_svg = QAction('Save as SVG', menu)
+            menu.addAction(self.menuitem_svg)
             self.connect( self.menuitem_svg, SIGNAL("triggered(bool)"), self.savesvg )
             
-            self.menuitem_help = QAction('Help', self.menu)
-            self.menu.addAction(self.menuitem_help)
+            self.menuitem_help = QAction('Help', menu)
+            menu.addAction(self.menuitem_help)
             self.connect( self.menuitem_help, SIGNAL('triggered(bool)'), self.help )
             
-            self.menuitem_about = QAction('About', self.menu)
-            self.menu.addAction(self.menuitem_about)
+            self.menuitem_about = QAction('About', menu)
+            menu.addAction(self.menuitem_about)
             self.connect( self.menuitem_about, SIGNAL('triggered(bool)'), self.about )
 
-            self.menuitem_close = QAction('Close', self.menu)
-            self.menu.addAction(self.menuitem_close)
+            self.menuitem_close = QAction('Close', menu)
+            menu.addAction(self.menuitem_close)
             self.connect( self.menuitem_close, SIGNAL("triggered(bool)"), self.myclose )
            
-            self.menu.addSeparator()
-            
-            self.connect( self.menu, SIGNAL('triggered(QAction*)'), self.update )
+            if not self.use_menubar:
+                self.menus = [ menu ]
+                
+            for menu in self.menus:
+                self.connect( menu, SIGNAL('triggered(QAction*)'), self.update )
                 
             self.time_projection = Projection()
             self.set_time_range(self.pile.get_tmin(), self.pile.get_tmax())
@@ -1360,7 +1378,8 @@ def MakePileViewerMainClass(base):
                     self.track_trange = self.tmin, self.tmax
             
             if mouse_ev.button() == Qt.RightButton:
-                self.menu.exec_(QCursor.pos())
+                if not self.use_menubar:
+                    self.menu.exec_(QCursor.pos())
             self.update_status()
     
         def mouseReleaseEvent( self, mouse_ev ):
