@@ -204,7 +204,10 @@
             <span class="k">if</span> <span class="ow">not</span> <span class="n">haveit</span><span class="p">:</span>
                 <span class="n">groups</span><span class="p">[</span><span class="n">ia</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="p">[</span> <span class="n">g</span> <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">groups</span> <span class="k">if</span> <span class="n">g</span> <span class="p">]</span>
+        
+        <span class="n">groups</span> <span class="o">=</span> <span class="p">[</span> <span class="n">g</span> <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">groups</span> <span class="k">if</span> <span class="n">g</span> <span class="p">]</span>
+        <span class="n">groups</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">g</span><span class="p">:</span> <span class="nb">sum</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">time</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">g</span><span class="p">)</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">g</span><span class="p">)</span> <span class="p">)</span>
+        <span class="k">return</span> <span class="n">groups</span>
 </div>
     <span class="nd">@staticmethod</span>
 <div class="viewcode-block" id="Event.dump_catalog"><a class="viewcode-back" href="../../model.html#pyrocko.model.Event.dump_catalog">[docs]</a>    <span class="k">def</span> <span class="nf">dump_catalog</span><span class="p">(</span><span class="n">events</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
