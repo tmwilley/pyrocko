@@ -1,0 +1,53 @@
+#!/usr/bin/env python
+
+import sys, math, tempfile, os
+
+from PyQt4.QtCore import *
+from PyQt4.QtGui import *
+
+from pyrocko.drum import view, state
+from pyrocko import util, pile, snuffler
+
+pjoin = os.path.join
+
+util.setup_logging('drumplot', 'debug')
+
+paths = [ 'seedlink://geofon.gfz-potsdam.de/GR.BFO.*.HHZ' ]
+store_path = 'test_data_bseg'
+store_interval = 600.
+
+paths.append(store_path)
+
+sources = snuffler.setup_acquisition_sources(paths)
+if store_path is None:
+    tempdir = tempfile.mkdtemp('', 'drumplot-tmp-')
+    store_path = pjoin(tempdir, '%(network)s.%(station)s.%(location)s.%(channel)s.%(tmin)s.mseed')
+
+elif os.path.isdir(store_path):
+    store_path = pjoin(store_path, '%(network)s.%(station)s.%(location)s.%(channel)s.%(tmin)s.mseed')
+
+p = pile.Pile()
+
+app = QApplication(sys.argv)
+
+pollinjector = snuffler.PollInjector(p, fixation_length=store_interval, path=store_path)
+for source in sources:
+    source.start()
+    pollinjector.add_source(source)
+
+fns = util.select_files(paths, selector=None, regex=None, show_progress=False)
+p.load_files(fns, show_progress=False)
+
+
+dview = view.DrumViewMain(p)
+dview.show()
+
+app.exec_()
+
+for source in sources:
+    source.stop()
+
+if pollinjector:
+    pollinjector.fixate_all()
+
+
