@@ -1,5 +1,5 @@
 
-from guts import *
+from pyrocko.guts import *
 from weakref import ref
 
 class listdict(dict):
@@ -22,6 +22,80 @@ class Listener(object):
             listener()
 
         return self.listener(listener1)
+
+def root_and_path(obj, name=None):
+    root = obj
+    path = []
+    if name is not None:
+        path.append(name)
+
+    while True:
+        try:
+            root, name_at_parent = root.parent
+            path.append(name_at_parent)
+        except AttributeError:
+            break
+
+    return root, '.'.join(path[::-1])
+
+
+class TalkieList(list):
+    pass
+
+for method_name in [ 'append', 'insert', 'remove', 'pop', 'extend', 'reverse', 
+    'sort', '__setitem__', '__setslice__', '__iadd__', '__imul__' ]:
+
+    def x():
+        list_meth = getattr(list, method_name)
+        def meth(self, *args):
+            retval = list_meth(self, *args)
+            root, path = root_and_path(self)
+            root.set_event(path, self)
+            return retval
+
+        return meth
+
+    setattr(TalkieList, method_name, x())
+
+class Talkie(Object):
+
+    def __setattr__(self, name, value):
+        try:
+            t = self.T.get_property(name)
+        except ValueError:
+            Object.__setattr__(self, name, value)
+            return
+
+        if isinstance(t, List.T):
+            value = TalkieList(value)
+
+        oldvalue = getattr(self, name, None)
+        if oldvalue:
+            if isinstance(oldvalue, Object) or isinstance(oldvalue, TalkieList):
+                Object.__delattr__(oldvalue, 'parent')
+
+        if isinstance(value, Object) or isinstance(value, TalkieList):
+            Object.__setattr__(value, 'parent', (self, name))
+
+        Object.__setattr__(self, name, value)
+        root, path = root_and_path(self, name)
+        root.set_event(path, value)
+
+    def set_event(self, path, value):
+        pass
+
+
+class Color(Object):
+    r = Float.T(default=0.0)
+    g = Float.T(default=0.0)
+    b = Float.T(default=0.0)
+    a = Float.T(default=1.0)
+
+    @property
+    def qt_color(self):
+        from PyQt4.QtGui import QColor
+        color = QColor(*(int(round(x*255)) for x in (self.r, self.g, self.b, self.a)))
+        return color
 
 
 class ScalingMode(StringChoice):
@@ -73,44 +147,12 @@ class Downsample(Filter):
         tr.downsample_to(self.deltat)
 
 
-class Talkie(Object):
-
-    def __setattr__(self, name, value):
-        try:
-            self.T.get_property(name)
-        except ValueError:
-            Object.__setattr__(self, name, value)
-            return
-
-        root = self
-        path = [ name ]
-        while True:
-            try:
-                root, name_at_parent = root.parent
-                path.append(name_at_parent)
-            except AttributeError:
-                break
-
-        oldvalue = getattr(self, name, None)
-        if oldvalue:
-            if isinstance(oldvalue, Object):
-                Object.__delattr__(oldvalue, 'parent')
-
-        if isinstance(value, Object):
-            Object.__setattr__(value, 'parent', (self, name))
-
-        Object.__setattr__(self, name, value)
-        root.set_event('.'.join(path[::-1]), value)
-
-    def set_event(self, path, value):
-        pass
-
-
 class TextStyle(Talkie):
     family = String.T(default='default', optional=True)
     size = Float.T(default=9.0, optional=True)
     bold = Bool.T(default=False, optional=True)
     italic = Bool.T(default=False, optional=True)
+    color = Color.T(default=Color.D())
 
     @property
     def qt_font(self):
@@ -121,25 +163,13 @@ class TextStyle(Talkie):
         font.setItalic(self.italic)
         return font
 
-
-class Color(Object):
-    r = Float.T(default=0.0)
-    g = Float.T(default=0.0)
-    b = Float.T(default=0.0)
-    a = Float.T(default=1.0)
-
-    @property
-    def qt_color(self):
-        from PyQt4.QtGui import QColor
-        color = QColor(*(int(round(x*255)) for x in (self.r, self.g, self.b, self.a)))
-        return color
-
 class Style(Talkie):
     antialiasing = Bool.T(default=False, optional=True)
     label_textstyle = TextStyle.T(default=TextStyle.D(bold=True))
     title_textstyle = TextStyle.T(default=TextStyle.D(bold=True))
     trace_resolution = Float.T(default=2.0, optional=True)
     trace_color = Color.T(default=Color.D())
+    background_color = Color.T(default=Color.D(r=1.0,g=1.0,b=1.0))
 
 
 class Scaling(Talkie):
@@ -155,6 +185,8 @@ class State(Talkie):
     tline = Float.T(default=60*60)
     nlines = Int.T(default=24)
     iline = Int.T(default=0)
+
+    follow = Bool.T(default=False)
 
     style = Style.T(default=Style.D())
     filters = List.T(Filter.T())
@@ -172,8 +204,8 @@ class State(Talkie):
     def set_event(self, path, value):
         parts = path.split('.')
         for i in xrange(len(parts)+1): 
-            path = '.'.join(parts[:i])
-            target_refs = self.listeners[path]
+            subpath = '.'.join(parts[:i])
+            target_refs = self.listeners[subpath]
             delete = []
             for target_ref in target_refs:
                 target = target_ref()

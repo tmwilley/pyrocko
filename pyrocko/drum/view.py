@@ -1,5 +1,5 @@
 
-import math
+import math, time
 import numpy as num
 
 from PyQt4.QtCore import *
@@ -9,7 +9,7 @@ from PyQt4.QtSvg import *
 
 from pyrocko.drum.state import State, Listener
 from pyrocko.gui_util import make_QPolygonF, Label
-from pyrocko import trace, util
+from pyrocko import trace, util, pile
 
 
 class ProjectXU(object):
@@ -142,7 +142,7 @@ class DrumLine(QObject, Listener):
     def draw_time_label(self, plotenv):
         style = plotenv.style
         font = style.label_textstyle.qt_font
-        c = QColor()
+        c = style.title_textstyle.color.qt_color
         text =  util.time_to_str(self.tmin, format=time_fmt_drumline(self.tmin))
         lab = Label(plotenv, font.pointSize(), plotenv.vmin+font.pointSize(), 
                 text,
@@ -196,6 +196,7 @@ class DrumViewMain(QWidget, Listener):
 
         self.state = State()
         self.pile = pile
+        self.pile.add_listener(self)
 
         st = self.state
 
@@ -204,17 +205,75 @@ class DrumViewMain(QWidget, Listener):
         self._iline_float = None
         self._project_iline_to_screen = ProjectYV((st.iline-0.5, st.iline+st.nlines+0.5), (0.,self.height()))
         self._access_counter = 0
-        self.state.add_listener(self.listener_no_args(self.state_changed))
-        self.state.add_listener(self.listener_no_args(self.drop_cached_drumlines), 'filters')
-        self.state.add_listener(self.listener_no_args(self.drop_cached_drumlines), 'nslc')
-        self.state.add_listener(self.listener_no_args(self.drop_cached_drumlines), 'tline')
+        self._waiting_for_first_data = True
+        self._follow_timer = None
 
-        self.next_nslc()
+        self.state.add_listener(self.listener_no_args(self._state_changed))
+        self.state.add_listener(self.listener_no_args(self._drop_cached_drumlines), 'filters')
+        self.state.add_listener(self.listener_no_args(self._drop_cached_drumlines), 'nslc')
+        self.state.add_listener(self.listener_no_args(self._drop_cached_drumlines), 'tline')
+        self.state.add_listener(self.listener_no_args(self._adjust_background_color), 'style.background_color')
+        self.state.add_listener(self.listener_no_args(self._adjust_follow), 'follow')
+
+        self._adjust_background_color()
+        self._adjust_follow()
+
+    def _drop_cached_drumlines(self):
+        self._drumlines = {}
+
+    def _adjust_background_color(self):
+        color = self.state.style.background_color.qt_color
+
+        p = QPalette()
+        p.setColor(QPalette.Background, color)
+        self.setAutoFillBackground(True)
+        self.setPalette(p)
+
+    def _adjust_follow(self):
+        follow = self.state.follow
+        if follow and not self._follow_timer:
+            self._follow_timer = QTimer(self)
+            self.connect( self._follow_timer, SIGNAL("timeout()"), self.follow_update ) 
+            self._follow_timer.setInterval(1000)
+            self.follow_update()
+            self._follow_timer.start()
+
+        elif not follow and self._follow_timer:
+            self._follow_timer.stop()
+
+    def _adjust_first_data(self):
+        if self._waiting_for_first_data:
+            if self.pile.tmin:
+                self.next_nslc()
+                self.goto_data_end()
+                self._waiting_for_first_data = False
+
+    def follow_update(self):
+        now = time.time()
+        iline = int(math.ceil(now / self.state.tline))-self.state.nlines
+        if iline != self.state.iline:
+            self.state.iline = iline
+
+    def goto_data_end(self):
         if self.pile.tmax:
             self.state.iline = int(math.ceil(self.pile.tmax / self.state.tline))-self.state.nlines
 
-    def drop_cached_drumlines(self):
-        self._drumlines = {}
+    def pile_changed(self, what, content):
+        t = []
+
+        self._adjust_first_data()
+
+        delete = []
+        tline = self.state.tline
+        for iline in self._drumlines.keys():
+            for c in content:
+                if c.overlaps(iline*tline, (iline+1)*tline):
+                    delete.append(iline)
+
+        for iline in delete:
+            del self._drumlines[iline]
+
+        self.update()
 
     def next_nslc(self):
         nslc_ids = sorted(self.pile.nslc_ids.keys())
@@ -226,10 +285,11 @@ class DrumViewMain(QWidget, Listener):
 
             self.state.nslc = nslc_ids[(i+1)%len(nslc_ids)]
 
-    def state_changed(self):
+    def _state_changed(self):
         self.update()
 
     def draw(self, plotenv):
+        self._adjust_first_data()
         plotenv.umin = 0.
         plotenv.umax = self.width()
         self.draw_title(plotenv)
@@ -242,7 +302,7 @@ class DrumViewMain(QWidget, Listener):
     def draw_title(self, plotenv):
         style = plotenv.style
         font = style.title_textstyle.qt_font
-        c = QColor()
+        c = style.title_textstyle.color.qt_color
         lab = Label(plotenv, 0.5*(plotenv.umin + plotenv.umax), font.pointSize(),
                 self.title(),
                 label_bg=None, anchor='TC', 
@@ -325,7 +385,9 @@ class DrumViewMain(QWidget, Listener):
                     tmin = iline*st.tline,
                     tmax = (iline+1)*st.tline,
                     tpad = tpad,
-                    trace_selector = lambda tr: tr.nslc_id == st.nslc )
+                    trace_selector = lambda tr: tr.nslc_id == st.nslc,
+                    keep_current_files_open=True, 
+                    accessor_id=id(self))
 
             for tr in traces:
                 for filter in st.filters:

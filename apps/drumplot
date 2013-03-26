@@ -10,36 +10,56 @@ from pyrocko import util, pile, snuffler
 
 pjoin = os.path.join
 
-util.setup_logging('drumplot', 'debug')
-
-paths = [ 'seedlink://geofon.gfz-potsdam.de/GR.BFO.*.HHZ' ]
-store_path = 'test_data_bseg'
-store_interval = 600.
-
-paths.append(store_path)
-
-sources = snuffler.setup_acquisition_sources(paths)
-if store_path is None:
-    tempdir = tempfile.mkdtemp('', 'drumplot-tmp-')
-    store_path = pjoin(tempdir, '%(network)s.%(station)s.%(location)s.%(channel)s.%(tmin)s.mseed')
-
-elif os.path.isdir(store_path):
-    store_path = pjoin(store_path, '%(network)s.%(station)s.%(location)s.%(channel)s.%(tmin)s.mseed')
+util.setup_logging('drumplot', 'info')
 
 p = pile.Pile()
-
 app = QApplication(sys.argv)
 
-pollinjector = snuffler.PollInjector(p, fixation_length=store_interval, path=store_path)
-for source in sources:
-    source.start()
-    pollinjector.add_source(source)
+if len(sys.argv) == 1:
+    paths = [ 'seedlink://geofon.gfz-potsdam.de/GR.BFO.*.HH?' ]
+    store_path = pjoin( os.environ['HOME'], 'test_data_drumplot' )
+    if not os.path.exists(store_path):
+        os.mkdir(store_path)
+
+    store_interval = 600.
+
+    paths.append(store_path)
+
+    sources = snuffler.setup_acquisition_sources(paths)
+    if store_path is None:
+        tempdir = tempfile.mkdtemp('', 'drumplot-tmp-')
+        store_path = pjoin(tempdir, '%(network)s.%(station)s.%(location)s.%(channel)s.%(tmin)s.mseed')
+
+    elif os.path.isdir(store_path):
+        store_path = pjoin(store_path, '%(network)s.%(station)s.%(location)s.%(channel)s.%(tmin)s.mseed')
+
+    pollinjector = snuffler.PollInjector(p, fixation_length=store_interval, path=store_path)
+    for source in sources:
+        source.start()
+        pollinjector.add_source(source)
+
+else:
+    sources = []
+    paths = sys.argv[1:]
+    pollinjector = None
+
+
 
 fns = util.select_files(paths, selector=None, regex=None, show_progress=False)
 p.load_files(fns, show_progress=False)
 
-
 dview = view.DrumViewMain(p)
+dview.state.tline = 600
+dview.state.style.antialiasing = True
+dview.state.style.background_color = state.Color(r=0.2,g=0.27,b=0.36)
+dview.state.style.trace_color = state.Color(r=0.9,g=0.9,b=0.9)
+dview.state.style.title_textstyle.color = state.Color(r=1.0,g=1.0,b=1.0)
+if len(sys.argv) == 1:
+    dview.state.follow = True
+
+print dview.state
+
+
 dview.show()
 
 app.exec_()

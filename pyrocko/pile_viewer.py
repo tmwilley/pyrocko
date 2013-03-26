@@ -1170,7 +1170,7 @@ def MakePileViewerMainClass(base):
         def get_pile(self):
             return self.pile
         
-        def pile_changed(self, what):
+        def pile_changed(self, what, content):
             self.pile_has_changed = True
             self.emit(SIGNAL('pile_has_changed_signal()'))
             if self.automatic_updates:

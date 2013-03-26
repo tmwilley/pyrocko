@@ -570,7 +570,6 @@ def snuffle(pile=None, **kwargs):
 
     store_path = kwargs.pop('store_path', None)
     store_interval = kwargs.pop('store_interval', 600)
-    want_markers = kwargs.pop('want_markers', False)
 
     win = SnufflerWindow(pile, **kwargs)
    
@@ -605,6 +604,7 @@ def snuffle(pile=None, **kwargs):
 
     ret = win.return_tag()
 
+    want_markers = kwargs.pop('want_markers', False)
     if want_markers:
         markers = win.get_view().get_markers()
     
