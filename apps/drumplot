@@ -6,9 +6,54 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
 from pyrocko.drum import view, state
-from pyrocko import util, pile, snuffler
+from pyrocko import util, pile, snuffler, catalog, orthodrome, cake, model
+from pyrocko.gui_util import EventMarker, PhaseMarker
 
 pjoin = os.path.join
+
+def event_markers(tmin, tmax, magmin=6.):
+    cat = catalog.Geofon()
+    event_names = cat.get_event_names(
+        time_range=(tmin,tmax), 
+        magmin=magmin)
+        
+    markers = []
+    for event_name in event_names:
+        event = cat.get_event(event_name)
+        markers.append(EventMarker(event))
+
+    return markers
+
+def phase_markers(events, stations, phase_names='Pg,P,PKP,PKIKP,S,PP,SS'.split(',')):
+    mod = cake.load_model()
+    phases = []
+    for name in phase_names:
+        for phase in cake.PhaseDef.classic(name):
+            phase.name = name
+            phases.append(phase)
+
+
+    markers = []
+    for event in events:
+        for station in stations:
+            dist = orthodrome.distance_accurate50m(event, station)
+            depth = event.depth
+            if depth is None:
+                depth = 0.0
+            
+            rays = mod.arrivals(phases=phases, distances=[dist*cake.m2d], zstart=depth)
+            
+            for ray in rays:
+                time = ray.t
+                name = ray.given_phase().name
+                incidence_angle = ray.incidence_angle()
+                takeoff_angle = ray.takeoff_angle()
+
+                time += event.time 
+                m = PhaseMarker([ (station.network, station.station, '*', '*') ], time, time, 2, phasename=name, event=event, incidence_angle=incidence_angle, takeoff_angle=takeoff_angle)
+                markers.append(m)
+
+    return markers
 
 util.setup_logging('drumplot', 'info')
 
@@ -43,22 +88,32 @@ else:
     paths = sys.argv[1:]
     pollinjector = None
 
-
+stations_fn = '/data/heimann/chile-2008/meta/stations.txt'
 
 fns = util.select_files(paths, selector=None, regex=None, show_progress=False)
 p.load_files(fns, show_progress=False)
 
 dview = view.DrumViewMain(p)
-dview.state.tline = 600
 dview.state.style.antialiasing = True
-dview.state.style.background_color = state.Color(r=0.2,g=0.27,b=0.36)
-dview.state.style.trace_color = state.Color(r=0.9,g=0.9,b=0.9)
-dview.state.style.title_textstyle.color = state.Color(r=1.0,g=1.0,b=1.0)
+#dview.state.style.background_color = state.Color(r=0.2,g=0.27,b=0.36)
+#dview.state.style.trace_color = state.Color(r=0.9,g=0.9,b=0.9)
+#dview.state.style.title_textstyle.color = state.Color(r=1.0,g=1.0,b=1.0)
+#dview.state.style.label_textstyle.color = state.Color(r=1.0,g=1.0,b=1.0)
 if len(sys.argv) == 1:
     dview.state.follow = True
 
 print dview.state
 
+
+pile_nsl = set( x[:3] for x in p.nslc_ids.keys() )
+print pile_nsl
+stations = [ s for s in  model.load_stations(stations_fn) if s.nsl() in pile_nsl ]
+
+emarks = event_markers(p.tmin, p.tmax)
+pmarks = phase_markers(events=[ m.get_event() for m in emarks ], stations=stations)
+
+dview.markers.insert_many(emarks)
+dview.markers.insert_many(pmarks)
 
 dview.show()
 

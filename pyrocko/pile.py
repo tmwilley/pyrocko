@@ -801,7 +801,7 @@ class Pile(TracesGroup):
         for ref in self.listeners:
             obj = ref()
             if obj:
-                obj.pile_changed(what, content)
+                obj(what, content)
     
     def load_files(self, filenames, filename_attributes=None, fileformat='mseed', cache=None, show_progress=True, update_progress=None):
         l = loader(filenames, fileformat, cache, filename_attributes, show_progress=show_progress, update_progress=update_progress)

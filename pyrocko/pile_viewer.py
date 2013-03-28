@@ -1,15 +1,18 @@
-import os, sys, time, calendar, datetime, signal, re, math, scipy.stats, tempfile, logging, traceback, shlex, operator, copy
+import os, sys, time, calendar, datetime, signal, re, math, scipy.stats, \
+        tempfile, logging, traceback, shlex, operator, copy
 
 from optparse import OptionParser
 import numpy as num 
 from itertools import izip
 
-import pyrocko.model, pyrocko.pile, pyrocko.shadow_pile, pyrocko.trace, pyrocko.util, pyrocko.plot, pyrocko.snuffling, pyrocko.snufflings
+import pyrocko.model, pyrocko.pile, pyrocko.shadow_pile, pyrocko.trace, \
+        pyrocko.util, pyrocko.plot, pyrocko.snuffling, pyrocko.snufflings
 
 from pyrocko.util import TableWriter, TableReader, hpfloat
 
-from pyrocko.gui_util import ValControl, LinValControl, Marker, EventMarker, PhaseMarker, make_QPolygonF, draw_label, Label, \
-    gmtime_x, myctime, mystrftime, Progressbars
+from pyrocko.gui_util import ValControl, LinValControl, Marker, EventMarker, \
+    PhaseMarker, make_QPolygonF, draw_label, Label, \
+    gmtime_x, myctime, mystrftime, Progressbars, Projection
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -460,43 +463,6 @@ class TimeAx(TimeScaler):
         v = yprojection(0)
         p.drawLine(QPointF(uumin, v), QPointF(uumax, v))
         
-class Projection(object):
-    def __init__(self):
-        self.xr = 0.,1.
-        self.ur = 0.,1.
-        
-    def set_in_range(self, xmin, xmax):
-        if xmax == xmin: xmax = xmin + 1.
-        self.xr = xmin, xmax
-
-    def get_in_range(self):
-        return self.xr
-
-    def set_out_range(self, umin, umax):
-        if umax == umin: umax = umin + 1.
-        self.ur = umin, umax
-        
-    def get_out_range(self):
-        return self.ur
-        
-    def __call__(self, x):
-        umin, umax = self.ur
-        xmin, xmax = self.xr
-        return umin + (x-xmin)*((umax-umin)/(xmax-xmin))
-    
-    def clipped(self, x):
-        umin, umax = self.ur
-        xmin, xmax = self.xr
-        return min(umax, max(umin, umin + (x-xmin)*((umax-umin)/(xmax-xmin))))
-        
-    def rev(self, u):
-        umin, umax = self.ur
-        xmin, xmax = self.xr
-        return xmin + (u-umin)*((xmax-xmin)/(umax-umin))
-    
-    def copy(self):
-        return copy.copy(self)
-
 def add_radiobuttongroup(menu, menudef, obj, target):
     group = QActionGroup(menu)
     menuitems = []
@@ -816,7 +782,10 @@ def MakePileViewerMainClass(base):
             self.connect( self.timer, SIGNAL("timeout()"), self.periodical ) 
             self.timer.setInterval(1000)
             self.timer.start()
-            self.pile.add_listener(self)
+
+            self._pile_changed = self.pile_changed # need a strong ref to pile_changed
+
+            self.pile.add_listener(self._pile_changed)
             self.trace_styles = {}
             self.determine_box_styles()
             self.setMouseTracking(True)
@@ -1020,7 +989,7 @@ def MakePileViewerMainClass(base):
         
         def add_shadow_pile(self, shadow_pile):
             shadow_pile.set_basepile(self.pile)
-            shadow_pile.add_listener(self)
+            shadow_pile.add_listener(self._pile_changed)
             self.pile = shadow_pile
         
         def remove_shadow_piles(self):

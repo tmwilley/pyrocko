@@ -54,6 +54,44 @@ def make_QPolygonF( xdata, ydata ):
     aa[:,1] = ydata
     return qpoints
 
+class Projection(object):
+    def __init__(self):
+        self.xr = 0.,1.
+        self.ur = 0.,1.
+        
+    def set_in_range(self, xmin, xmax):
+        if xmax == xmin: xmax = xmin + 1.
+        self.xr = xmin, xmax
+
+    def get_in_range(self):
+        return self.xr
+
+    def set_out_range(self, umin, umax):
+        if umax == umin: umax = umin + 1.
+        self.ur = umin, umax
+        
+    def get_out_range(self):
+        return self.ur
+        
+    def __call__(self, x):
+        umin, umax = self.ur
+        xmin, xmax = self.xr
+        return umin + (x-xmin)*((umax-umin)/(xmax-xmin))
+    
+    def clipped(self, x):
+        umin, umax = self.ur
+        xmin, xmax = self.xr
+        return min(umax, max(umin, umin + (x-xmin)*((umax-umin)/(xmax-xmin))))
+        
+    def rev(self, u):
+        umin, umax = self.ur
+        xmin, xmax = self.xr
+        return xmin + (u-umin)*((xmax-xmin)/(umax-umin))
+    
+    def copy(self):
+        return copy.copy(self)
+
+
 class Label:
     def __init__(self, p, x, y, label_str, label_bg=None, anchor='BL', outline=False, font=None, color=None):
         text = QTextDocument()
@@ -862,6 +900,9 @@ class EventMarker(Marker):
         self._active = active
 
     def label(self):
+        return self.get_label()
+
+    def get_label(self):
         """ :return: string representation of an event. """
         t = []
         mag = self._event.magnitude
