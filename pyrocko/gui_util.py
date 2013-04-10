@@ -1,4 +1,4 @@
-import math, calendar, time
+import math, calendar, time, copy
 import numpy as num
 
 import pyrocko.util, pyrocko.plot, pyrocko.model, pyrocko.trace, pyrocko.plot

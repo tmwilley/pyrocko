@@ -6,7 +6,8 @@ import numpy as num
 from itertools import izip
 
 import pyrocko.model, pyrocko.pile, pyrocko.shadow_pile, pyrocko.trace, \
-        pyrocko.util, pyrocko.plot, pyrocko.snuffling, pyrocko.snufflings
+        pyrocko.util, pyrocko.plot, pyrocko.snuffling, pyrocko.snufflings, \
+        pyrocko.drum.view
 
 from pyrocko.util import TableWriter, TableReader, hpfloat
 
@@ -730,6 +731,10 @@ def MakePileViewerMainClass(base):
             self.connect( self.menuitem_reload, SIGNAL("triggered(bool)"), self.setup_snufflings )
 
             self.menu.addSeparator()
+
+            self.menuitem_dview = QAction('Drum View', self.menu)
+            self.menu.addAction(self.menuitem_dview)
+            self.connect( self.menuitem_dview, SIGNAL('triggered(bool)'), self.show_drumview)
 
             self.menuitem_test = QAction('Test', self.menu)
             self.menuitem_test.setCheckable(True)
@@ -1670,7 +1675,16 @@ def MakePileViewerMainClass(base):
                     self.panel_parent.add_panel(name, scroller, True, volatile=True)
                 else:
                     self.panel_parent.add_tab(name, scroller)
-                
+        
+        def show_drumview(self):
+            dview = pyrocko.drum.view.DrumViewMain(self.pile)
+            dview.state.style.antialiasing = True
+            dview.state.validate()
+            for marker in self.markers:
+                dview.markers.insert(marker)
+
+            if self.panel_parent is not None:
+                self.panel_parent.add_tab('Drumplot', dview)
 
         def open_link(self, link):
             QDesktopServices.openUrl( QUrl(link) )

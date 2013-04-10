@@ -197,7 +197,7 @@ class Scaling(Talkie):
 
 class State(Talkie):
     nslc = Tuple.T(4, String.T(default=''))
-    tline = Float.T(default=60*60)
+    tline = Float.T(default=60.*60.)
     nlines = Int.T(default=24)
     iline = Int.T(default=0)
 
