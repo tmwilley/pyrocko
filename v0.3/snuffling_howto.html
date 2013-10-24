@@ -58,10 +58,19 @@
             
   <div class="section" id="writing-a-snuffling">
 <h1>Writing a Snuffling<a class="headerlink" href="#writing-a-snuffling" title="Permalink to this headline">¶</a></h1>
-<p>Snufflings are small Python scripts which extend the functionality of Snuffler. Snuffler looks into the directory <tt class="docutils literal"><span class="pre">$HOME/.snufflings</span></tt> for snufflings. Snufflings can be reloaded at run-time using the menu entry &#8216;Reload Snufflings&#8217; in the main menu of Snuffler - no need to restart Snuffler when a snuffling is modified or added.</p>
+<p>Snufflings are small Python scripts which extend the functionality of Snuffler.
+Snuffler looks into the directory <tt class="docutils literal"><span class="pre">$HOME/.snufflings</span></tt> for snufflings.
+Snufflings can be reloaded at run-time using the menu entry &#8216;Reload Snufflings&#8217;
+in the main menu of Snuffler - no need to restart Snuffler when a snuffling is
+modified or added.</p>
 <div class="section" id="an-example-snuffling-to-show-earthquake-catalog-information-within-snuffler">
 <h2>An example snuffling to show earthquake catalog information within Snuffler<a class="headerlink" href="#an-example-snuffling-to-show-earthquake-catalog-information-within-snuffler" title="Permalink to this headline">¶</a></h2>
-<p>Put the following code into <tt class="docutils literal"><span class="pre">$HOME/.snufflings/geofon.py</span></tt>. It will add four items into the <em>Snufflings</em> sub-menu of Snuffler (<em>Get GEOFON events</em>, <em>Get GEOFON events (&gt; M6)</em>, ...). When one of these is selected by the user, the <a class="reference external" href="http://geofon.gfz-potsdam.de/eqinfo/form.php">GEOFON catalog</a> is queried for earthquake information for the time range visible in Snuffler. For each earthquake found, a marker is shown in the viewer.</p>
+<p>Put the following code into <tt class="docutils literal"><span class="pre">$HOME/.snufflings/geofon.py</span></tt>. It will add four
+items into the <em>Snufflings</em> sub-menu of Snuffler (<em>Get GEOFON events</em>, <em>Get
+GEOFON events (&gt; M6)</em>, ...). When one of these is selected by the user, the
+<a class="reference external" href="http://geofon.gfz-potsdam.de/eqinfo/form.php">GEOFON catalog</a> is queried for
+earthquake information for the time range visible in Snuffler. For each
+earthquake found, a marker is shown in the viewer.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">pyrocko.snuffling</span> <span class="kn">import</span> <span class="n">Snuffling</span><span class="p">,</span> <span class="n">Param</span>
 <span class="kn">from</span> <span class="nn">pyrocko.pile_viewer</span> <span class="kn">import</span> <span class="n">Marker</span><span class="p">,</span> <span class="n">EventMarker</span>
 <span class="kn">from</span> <span class="nn">pyrocko</span> <span class="kn">import</span> <span class="n">catalog</span>
@@ -135,7 +144,8 @@ in the pyrocko source code.</p>
 <h2>More examples<a class="headerlink" href="#more-examples" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="print-minimum-maximum-and-peak-to-peak-amplitudes-to-the-terminal">
 <h3>Print minimum, maximum, and peak-to-peak amplitudes to the terminal<a class="headerlink" href="#print-minimum-maximum-and-peak-to-peak-amplitudes-to-the-terminal" title="Permalink to this headline">¶</a></h3>
-<p>This is a built-in snuffling of Snuffler. It serves here as a demonstration of how selected trace data can be accessed from within the snuffling.</p>
+<p>This is a built-in snuffling of Snuffler. It serves here as a demonstration of
+how selected trace data can be accessed from within the snuffling.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">pyrocko.snuffling</span> <span class="kn">import</span> <span class="n">Snuffling</span><span class="p">,</span> <span class="n">Param</span>
 <span class="kn">from</span> <span class="nn">pyrocko</span> <span class="kn">import</span> <span class="n">trace</span>
 
@@ -184,6 +194,55 @@ in the pyrocko source code.</p>
     <span class="k">return</span> <span class="p">[</span> <span class="n">MinMaxSnuffling</span><span class="p">()</span> <span class="p">]</span>
 </pre></div>
 </div>
+</div>
+</div>
+<div class="section" id="how-to-add-simple-markers-to-the-viewer">
+<h2>How to add simple markers to the viewer<a class="headerlink" href="#how-to-add-simple-markers-to-the-viewer" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">pyrocko.snuffling</span> <span class="kn">import</span> <span class="n">Snuffling</span>
+<span class="kn">from</span> <span class="nn">pyrocko.pile_viewer</span> <span class="kn">import</span> <span class="n">Marker</span>
+
+<span class="k">class</span> <span class="nc">Example1</span><span class="p">(</span><span class="n">Snuffling</span><span class="p">):</span>
+
+    <span class="sd">&#39;&#39;&#39;Example Snuffling to demonstrate how to add markers to the viewer.</span>
+
+<span class="sd">It looks at all selected traces and puts a Marker at the peak amplitude of the</span>
+<span class="sd">raw traces. If no traces are selected all traces in view are used.  It is not</span>
+<span class="sd">affected by filter settings of the viewer.</span>
+
+<span class="sd">This works well for short continuous traces, but if longer or gappy traces are</span>
+<span class="sd">in the viewer, there may be some problems which are not</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+    <span class="k">def</span> <span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c"># this sets the name for the menu entry:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_name</span><span class="p">(</span><span class="s">&#39;Example 1: mark peak amplitudes&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">call</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="c"># remove all markers which have been previously added by this snuffling</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
+
+        <span class="c"># this is a shortcut to get selected traces or all traces in view</span>
+        <span class="k">for</span> <span class="n">traces</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">chopper_selected_traces</span><span class="p">(</span><span class="n">fallback</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+
+            <span class="k">for</span> <span class="n">tr</span> <span class="ow">in</span> <span class="n">traces</span><span class="p">:</span>
+                <span class="n">net</span><span class="p">,</span> <span class="n">sta</span><span class="p">,</span> <span class="n">loc</span><span class="p">,</span> <span class="n">cha</span> <span class="o">=</span> <span class="n">tr</span><span class="o">.</span><span class="n">nslc_id</span>
+
+                <span class="c"># using a trace method to get time and amplitude</span>
+                <span class="n">time</span><span class="p">,</span> <span class="n">amplitude</span> <span class="o">=</span> <span class="n">tr</span><span class="o">.</span><span class="n">absmax</span><span class="p">()</span>
+
+                <span class="c"># the marker kind sets the color of the marker</span>
+                <span class="n">kind</span> <span class="o">=</span> <span class="mi">3</span>
+
+                <span class="c"># create the marker object</span>
+                <span class="n">m</span> <span class="o">=</span> <span class="n">Marker</span><span class="p">([</span> <span class="p">(</span><span class="n">net</span><span class="p">,</span> <span class="n">sta</span><span class="p">,</span> <span class="n">loc</span><span class="p">,</span> <span class="n">cha</span><span class="p">)</span> <span class="p">],</span> <span class="n">time</span><span class="p">,</span> <span class="n">time</span><span class="p">,</span> <span class="n">kind</span> <span class="p">)</span>
+
+                <span class="c"># add it to the viewer</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">add_marker</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">__snufflings__</span><span class="p">():</span>
+    <span class="k">return</span> <span class="p">[</span> <span class="n">Example1</span><span class="p">()</span> <span class="p">]</span>
+</pre></div>
 </div>
 <div class="section" id="synthetic-seismograms-of-an-sts2-seismometer">
 <h3>Synthetic Seismograms of an STS2 seismometer<a class="headerlink" href="#synthetic-seismograms-of-an-sts2-seismometer" title="Permalink to this headline">¶</a></h3>

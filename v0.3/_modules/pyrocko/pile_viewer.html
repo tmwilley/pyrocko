@@ -570,8 +570,13 @@
         <span class="n">menu</span><span class="o">.</span><span class="n">removeAction</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
 
     <span class="n">actions</span><span class="o">.</span><span class="n">sort</span><span class="p">((</span><span class="k">lambda</span> <span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">:</span> <span class="nb">cmp</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">text</span><span class="p">(),</span> <span class="n">b</span><span class="o">.</span><span class="n">text</span><span class="p">())))</span>
+
+    <span class="n">help_action</span> <span class="o">=</span> <span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">a</span> <span class="p">:</span> <span class="n">a</span><span class="o">.</span><span class="n">text</span><span class="p">()</span><span class="o">==</span><span class="s">&quot;Snuffler Controls&quot;</span><span class="p">,</span> <span class="n">actions</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">help_action</span><span class="p">:</span>
+        <span class="n">actions</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">actions</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">actions</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">help_action</span><span class="p">[</span><span class="mi">0</span><span class="p">])))</span>
     <span class="k">for</span> <span class="n">action</span> <span class="ow">in</span> <span class="n">actions</span><span class="p">:</span>
         <span class="n">menu</span><span class="o">.</span><span class="n">addAction</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
+
 </div>
 <span class="n">fkey_map</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">((</span><span class="n">Qt</span><span class="o">.</span><span class="n">Key_F1</span><span class="p">,</span> <span class="n">Qt</span><span class="o">.</span><span class="n">Key_F2</span><span class="p">,</span> <span class="n">Qt</span><span class="o">.</span><span class="n">Key_F3</span><span class="p">,</span> <span class="n">Qt</span><span class="o">.</span><span class="n">Key_F4</span><span class="p">,</span> <span class="n">Qt</span><span class="o">.</span><span class="n">Key_F5</span><span class="p">,</span> <span class="n">Qt</span><span class="o">.</span><span class="n">Key_F10</span><span class="p">),(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">0</span><span class="p">)))</span>
 
@@ -633,16 +638,28 @@
 <span class="c">#            self.menuitem_pick = QAction(&#39;Pick&#39;, self.menu)</span>
 <span class="c">#            self.menu.addAction(self.menuitem_pick)</span>
 <span class="c">#            self.connect( self.menuitem_pick, SIGNAL(&quot;triggered(bool)&quot;), self.start_picking )</span>
+
+            <span class="n">mi</span> <span class="o">=</span> <span class="n">QAction</span><span class="p">(</span><span class="s">&#39;Open waveform files...&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">menu</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">menu</span><span class="o">.</span><span class="n">addAction</span><span class="p">(</span><span class="n">mi</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">mi</span><span class="p">,</span> <span class="n">SIGNAL</span><span class="p">(</span><span class="s">&quot;triggered(bool)&quot;</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">open_waveforms</span> <span class="p">)</span>
+
+            <span class="n">mi</span> <span class="o">=</span> <span class="n">QAction</span><span class="p">(</span><span class="s">&#39;Open waveform directory...&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">menu</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">menu</span><span class="o">.</span><span class="n">addAction</span><span class="p">(</span><span class="n">mi</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">mi</span><span class="p">,</span> <span class="n">SIGNAL</span><span class="p">(</span><span class="s">&quot;triggered(bool)&quot;</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">open_waveform_directory</span> <span class="p">)</span>
             
-            <span class="n">mi</span> <span class="o">=</span> <span class="n">QAction</span><span class="p">(</span><span class="s">&#39;Write markers&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">menu</span><span class="p">)</span>
+            <span class="n">mi</span> <span class="o">=</span> <span class="n">QAction</span><span class="p">(</span><span class="s">&#39;Open station files...&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">menu</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">menu</span><span class="o">.</span><span class="n">addAction</span><span class="p">(</span><span class="n">mi</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">mi</span><span class="p">,</span> <span class="n">SIGNAL</span><span class="p">(</span><span class="s">&quot;triggered(bool)&quot;</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">open_stations</span><span class="p">)</span>
+
+            <span class="n">mi</span> <span class="o">=</span> <span class="n">QAction</span><span class="p">(</span><span class="s">&#39;Write markers...&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">menu</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">menu</span><span class="o">.</span><span class="n">addAction</span><span class="p">(</span><span class="n">mi</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span> <span class="n">mi</span><span class="p">,</span> <span class="n">SIGNAL</span><span class="p">(</span><span class="s">&quot;triggered(bool)&quot;</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">write_markers</span> <span class="p">)</span>
             
-            <span class="n">mi</span> <span class="o">=</span> <span class="n">QAction</span><span class="p">(</span><span class="s">&#39;Write selected markers&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">menu</span><span class="p">)</span>
+            <span class="n">mi</span> <span class="o">=</span> <span class="n">QAction</span><span class="p">(</span><span class="s">&#39;Write selected markers...&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">menu</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">menu</span><span class="o">.</span><span class="n">addAction</span><span class="p">(</span><span class="n">mi</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span> <span class="n">mi</span><span class="p">,</span> <span class="n">SIGNAL</span><span class="p">(</span><span class="s">&quot;triggered(bool)&quot;</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">write_selected_markers</span> <span class="p">)</span>
             
-            <span class="n">mi</span> <span class="o">=</span> <span class="n">QAction</span><span class="p">(</span><span class="s">&#39;Read markers&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">menu</span><span class="p">)</span>
+            <span class="n">mi</span> <span class="o">=</span> <span class="n">QAction</span><span class="p">(</span><span class="s">&#39;Read markers...&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">menu</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">menu</span><span class="o">.</span><span class="n">addAction</span><span class="p">(</span><span class="n">mi</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span> <span class="n">mi</span><span class="p">,</span> <span class="n">SIGNAL</span><span class="p">(</span><span class="s">&quot;triggered(bool)&quot;</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_markers</span> <span class="p">)</span>
             
@@ -714,6 +731,10 @@
                     <span class="p">(</span> <span class="k">lambda</span> <span class="n">tr</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssort</span><span class="p">(</span><span class="n">tr</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">tr</span><span class="o">.</span><span class="n">location</span><span class="p">,</span> <span class="n">tr</span><span class="o">.</span><span class="n">network</span><span class="p">,</span> <span class="n">tr</span><span class="o">.</span><span class="n">station</span><span class="p">,</span> <span class="n">tr</span><span class="o">.</span><span class="n">channel</span><span class="p">),</span>
                     <span class="k">lambda</span> <span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">:</span> <span class="nb">cmp</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">),</span>
                     <span class="k">lambda</span> <span class="n">tr</span><span class="p">:</span> <span class="n">tr</span><span class="o">.</span><span class="n">channel</span> <span class="p">)),</span>
+                <span class="p">(</span><span class="s">&#39;Subsort by Channel, Network, Station, Location&#39;</span><span class="p">,</span> 
+                    <span class="p">(</span> <span class="k">lambda</span> <span class="n">tr</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssort</span><span class="p">(</span><span class="n">tr</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">tr</span><span class="o">.</span><span class="n">channel</span><span class="p">,</span> <span class="n">tr</span><span class="o">.</span><span class="n">network</span><span class="p">,</span> <span class="n">tr</span><span class="o">.</span><span class="n">station</span><span class="p">,</span> <span class="n">tr</span><span class="o">.</span><span class="n">location</span><span class="p">),</span>
+                    <span class="k">lambda</span> <span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">:</span> <span class="nb">cmp</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">),</span>
+                    <span class="k">lambda</span> <span class="n">tr</span><span class="p">:</span> <span class="p">(</span><span class="n">tr</span><span class="o">.</span><span class="n">network</span><span class="p">,</span> <span class="n">tr</span><span class="o">.</span><span class="n">station</span><span class="p">,</span> <span class="n">tr</span><span class="o">.</span><span class="n">location</span><span class="p">)</span> <span class="p">)),</span>
                 <span class="p">(</span><span class="s">&#39;Subsort by Network, Station, Channel (Grouped by Location)&#39;</span><span class="p">,</span>
                     <span class="p">(</span> <span class="k">lambda</span> <span class="n">tr</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">ssort</span><span class="p">(</span><span class="n">tr</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">tr</span><span class="o">.</span><span class="n">network</span><span class="p">,</span> <span class="n">tr</span><span class="o">.</span><span class="n">station</span><span class="p">,</span> <span class="n">tr</span><span class="o">.</span><span class="n">channel</span><span class="p">),</span>
                     <span class="k">lambda</span> <span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">:</span> <span class="nb">cmp</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">),</span>
@@ -832,10 +853,13 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">menu</span><span class="o">.</span><span class="n">addAction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">menuitem_svg</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">menuitem_svg</span><span class="p">,</span> <span class="n">SIGNAL</span><span class="p">(</span><span class="s">&quot;triggered(bool)&quot;</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">savesvg</span> <span class="p">)</span>
             
-            <span class="bp">self</span><span class="o">.</span><span class="n">menuitem_help</span> <span class="o">=</span> <span class="n">QAction</span><span class="p">(</span><span class="s">&#39;Help&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">menu</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">menu</span><span class="o">.</span><span class="n">addAction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">menuitem_help</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">snuffling_help_menu</span> <span class="o">=</span> <span class="n">QMenu</span><span class="p">(</span><span class="s">&#39;Help&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">menu</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">menu</span><span class="o">.</span><span class="n">addMenu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">snuffling_help_menu</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">menuitem_help</span> <span class="o">=</span> <span class="n">QAction</span><span class="p">(</span><span class="s">&#39;Snuffler Controls&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">snuffling_help_menu</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">snuffling_help_menu</span><span class="o">.</span><span class="n">addAction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">menuitem_help</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">menuitem_help</span><span class="p">,</span> <span class="n">SIGNAL</span><span class="p">(</span><span class="s">&#39;triggered(bool)&#39;</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">help</span> <span class="p">)</span>
-            
+            <span class="bp">self</span><span class="o">.</span><span class="n">snuffling_help_menu</span><span class="o">.</span><span class="n">addSeparator</span><span class="p">()</span>
+
             <span class="bp">self</span><span class="o">.</span><span class="n">menuitem_about</span> <span class="o">=</span> <span class="n">QAction</span><span class="p">(</span><span class="s">&#39;About&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">menu</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">menu</span><span class="o">.</span><span class="n">addAction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">menuitem_about</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">menuitem_about</span><span class="p">,</span> <span class="n">SIGNAL</span><span class="p">(</span><span class="s">&#39;triggered(bool)&#39;</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">about</span> <span class="p">)</span>
@@ -1080,21 +1104,31 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">pile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pile</span><span class="o">.</span><span class="n">get_basepile</span><span class="p">()</span>
             
         <span class="k">def</span> <span class="nf">iter_snuffling_modules</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="n">pjoin</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span>
             <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">snuffling_paths</span><span class="p">:</span>
                 
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">path</span><span class="p">):</span> 
                     <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
                 
-                <span class="k">for</span> <span class="n">fn</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+                    <span class="n">directory</span> <span class="o">=</span> <span class="n">path</span>
+                    <span class="n">fn</span> <span class="o">=</span> <span class="n">entry</span>
+                    <span class="n">d</span> <span class="o">=</span> <span class="n">pjoin</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">entry</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">d</span><span class="p">):</span>
+                        <span class="n">directory</span> <span class="o">=</span> <span class="n">d</span>
+                        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">directory</span><span class="p">,</span> <span class="s">&#39;snuffling.py&#39;</span><span class="p">)):</span>
+                            <span class="n">fn</span> <span class="o">=</span> <span class="s">&#39;snuffling.py&#39;</span>
+
                     <span class="k">if</span> <span class="ow">not</span> <span class="n">fn</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s">&#39;.py&#39;</span><span class="p">):</span>
                         <span class="k">continue</span>
                     
                     <span class="n">name</span> <span class="o">=</span> <span class="n">fn</span><span class="p">[:</span><span class="o">-</span><span class="mi">3</span><span class="p">]</span>
-                    <span class="k">if</span> <span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">snuffling_modules</span><span class="p">:</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">snuffling_modules</span><span class="p">[</span><span class="n">path</span><span class="p">,</span> <span class="n">name</span><span class="p">]</span> <span class="o">=</span> \
-                            <span class="n">pyrocko</span><span class="o">.</span><span class="n">snuffling</span><span class="o">.</span><span class="n">SnufflingModule</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
                     
-                    <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">snuffling_modules</span><span class="p">[</span><span class="n">path</span><span class="p">,</span> <span class="n">name</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="n">directory</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">snuffling_modules</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">snuffling_modules</span><span class="p">[</span><span class="n">directory</span><span class="p">,</span> <span class="n">name</span><span class="p">]</span> <span class="o">=</span> \
+                            <span class="n">pyrocko</span><span class="o">.</span><span class="n">snuffling</span><span class="o">.</span><span class="n">SnufflingModule</span><span class="p">(</span><span class="n">directory</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+                    
+                    <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">snuffling_modules</span><span class="p">[</span><span class="n">directory</span><span class="p">,</span> <span class="n">name</span><span class="p">]</span>
                     
         <span class="k">def</span> <span class="nf">setup_snufflings</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
             <span class="c"># user snufflings</span>
@@ -1117,6 +1151,7 @@
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">panel_parent</span>
 
         <span class="k">def</span> <span class="nf">add_snuffling</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">snuffling</span><span class="p">,</span> <span class="n">reloaded</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;Adding snuffling </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">snuffling</span><span class="o">.</span><span class="n">get_name</span><span class="p">())</span>
             <span class="n">snuffling</span><span class="o">.</span><span class="n">init_gui</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_panel_parent</span><span class="p">(),</span> <span class="bp">self</span><span class="p">,</span> <span class="n">reloaded</span><span class="o">=</span><span class="n">reloaded</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">snufflings</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">snuffling</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
@@ -1134,6 +1169,14 @@
 
         <span class="k">def</span> <span class="nf">remove_snuffling_menuitem</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">snufflings_menu</span><span class="o">.</span><span class="n">removeAction</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">add_snuffling_help_menuitem</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">snuffling_help_menu</span><span class="o">.</span><span class="n">addAction</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+            <span class="n">item</span><span class="o">.</span><span class="n">setParent</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">snuffling_help_menu</span><span class="p">)</span>
+            <span class="n">sort_actions</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">snuffling_help_menu</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">remove_snuffling_help_menuitem</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">snuffling_help_menu</span><span class="o">.</span><span class="n">removeAction</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
         
         <span class="k">def</span> <span class="nf">add_panel_toggler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">toggle_panel_menu</span><span class="o">.</span><span class="n">addAction</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
@@ -1184,7 +1227,9 @@
 
             <span class="bp">self</span><span class="o">.</span><span class="n">automatic_updates</span> <span class="o">=</span> <span class="bp">False</span>
 
-            <span class="bp">self</span><span class="o">.</span><span class="n">pile</span><span class="o">.</span><span class="n">load_files</span><span class="p">(</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">fns</span><span class="p">),</span> <span class="n">cache</span><span class="o">=</span><span class="n">cache</span><span class="p">,</span> <span class="n">fileformat</span><span class="o">=</span><span class="n">format</span><span class="p">,</span> <span class="n">show_progress</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">update_progress</span><span class="o">=</span><span class="n">update_progress</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pile</span><span class="o">.</span><span class="n">load_files</span><span class="p">(</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">fns</span><span class="p">),</span> <span class="n">filename_attributes</span><span class="o">=</span><span class="n">regex</span><span class="p">,</span> 
+                    <span class="n">cache</span><span class="o">=</span><span class="n">cache</span><span class="p">,</span> <span class="n">fileformat</span><span class="o">=</span><span class="n">format</span><span class="p">,</span> 
+                    <span class="n">show_progress</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">update_progress</span><span class="o">=</span><span class="n">update_progress</span><span class="p">)</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">automatic_updates</span> <span class="o">=</span> <span class="bp">True</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
@@ -1199,6 +1244,37 @@
         <span class="k">def</span> <span class="nf">load_soon</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">paths</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_paths_to_load</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">paths</span><span class="p">)</span>
             <span class="n">QTimer</span><span class="o">.</span><span class="n">singleShot</span><span class="p">(</span> <span class="mi">200</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_queued</span> <span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">open_waveforms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+
+            <span class="n">caption</span> <span class="o">=</span> <span class="s">&#39;Select one or more files to open&#39;</span>
+
+            <span class="n">fns</span> <span class="o">=</span> <span class="n">QFileDialog</span><span class="o">.</span><span class="n">getOpenFileNames</span><span class="p">(</span>
+                <span class="bp">self</span><span class="p">,</span>
+                <span class="n">caption</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span> <span class="k">for</span> <span class="n">fn</span> <span class="ow">in</span> <span class="n">fns</span><span class="p">))</span>
+        
+        <span class="k">def</span> <span class="nf">open_waveform_directory</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+
+            <span class="n">caption</span> <span class="o">=</span> <span class="s">&#39;Select directory to scan for waveform files&#39;</span>
+
+            <span class="n">fn</span> <span class="o">=</span> <span class="n">QFileDialog</span><span class="o">.</span><span class="n">getExistingDirectory</span><span class="p">(</span>
+                <span class="bp">self</span><span class="p">,</span>
+                <span class="n">caption</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">load</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">fn</span><span class="p">)])</span>
+
+        <span class="k">def</span> <span class="nf">open_stations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+            <span class="n">caption</span> <span class="o">=</span> <span class="s">&#39;Select one or more files to open&#39;</span>
+
+            <span class="n">fns</span> <span class="o">=</span> <span class="n">QFileDialog</span><span class="o">.</span><span class="n">getOpenFileNames</span><span class="p">(</span>
+                <span class="bp">self</span><span class="p">,</span>
+                <span class="n">caption</span><span class="p">)</span>
+
+            <span class="n">stations</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">pyrocko</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">load_stations</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)),</span> <span class="n">fns</span><span class="p">)</span>           
+            <span class="k">for</span> <span class="n">stat</span> <span class="ow">in</span> <span class="n">stations</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">add_stations</span><span class="p">(</span><span class="n">stat</span><span class="p">)</span>
 
         <span class="k">def</span> <span class="nf">add_traces</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">traces</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">traces</span><span class="p">:</span>
@@ -1536,8 +1612,8 @@
             <span class="n">keytext</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">key_event</span><span class="o">.</span><span class="n">text</span><span class="p">())</span>
 
             <span class="k">if</span> <span class="n">keytext</span> <span class="o">==</span> <span class="s">&#39;?&#39;</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">toggle_help</span><span class="p">()</span>
-                
+                <span class="bp">self</span><span class="o">.</span><span class="n">help</span><span class="p">()</span>
+
             <span class="k">elif</span> <span class="n">keytext</span> <span class="o">==</span> <span class="s">&#39; &#39;</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">interrupt_following</span><span class="p">()</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">set_time_range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tmin</span><span class="o">+</span><span class="n">dt</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tmax</span><span class="o">+</span><span class="n">dt</span><span class="p">)</span>
@@ -1722,16 +1798,9 @@
             <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="p">[</span> <span class="n">hcheat</span><span class="p">,</span> <span class="n">hepilog</span> <span class="p">]:</span>
                 <span class="n">h</span><span class="o">.</span><span class="n">setAlignment</span><span class="p">(</span> <span class="n">Qt</span><span class="o">.</span><span class="n">AlignTop</span> <span class="o">|</span> <span class="n">Qt</span><span class="o">.</span><span class="n">AlignHCenter</span> <span class="p">)</span>
                 <span class="n">h</span><span class="o">.</span><span class="n">setWordWrap</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
-            
+
             <span class="bp">self</span><span class="o">.</span><span class="n">show_doc</span><span class="p">(</span><span class="s">&#39;Help&#39;</span><span class="p">,</span> <span class="p">[</span><span class="n">hcheat</span><span class="p">,</span> <span class="n">hepilog</span><span class="p">],</span> <span class="n">target</span><span class="o">=</span><span class="s">&#39;panel&#39;</span><span class="p">)</span>
-        
-        <span class="k">def</span> <span class="nf">toggle_help</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-            <span class="k">for</span> <span class="n">widget</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">panel_parent</span><span class="o">.</span><span class="n">dockwidgets</span><span class="p">():</span>
-                <span class="k">if</span> <span class="s">&#39;Help&#39;</span> <span class="o">==</span> <span class="n">widget</span><span class="o">.</span><span class="n">windowTitle</span><span class="p">():</span>
-                    <span class="n">widget</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-                    <span class="k">return</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">help</span><span class="p">()</span>
-            
+
         <span class="k">def</span> <span class="nf">show_doc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="s">&#39;panel&#39;</span><span class="p">):</span>
             <span class="n">scroller</span> <span class="o">=</span> <span class="n">QScrollArea</span><span class="p">()</span>
             <span class="n">frame</span> <span class="o">=</span> <span class="n">QFrame</span><span class="p">(</span><span class="n">scroller</span><span class="p">)</span>
@@ -1745,13 +1814,15 @@
             <span class="n">frame</span><span class="o">.</span><span class="n">setBackgroundRole</span><span class="p">(</span><span class="n">QPalette</span><span class="o">.</span><span class="n">Base</span><span class="p">)</span> 
             <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">labels</span><span class="p">:</span>
                 <span class="n">h</span><span class="o">.</span><span class="n">setParent</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+                <span class="n">h</span><span class="o">.</span><span class="n">setMargin</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+                <span class="n">h</span><span class="o">.</span><span class="n">setTextInteractionFlags</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">LinksAccessibleByMouse</span> <span class="o">|</span> <span class="n">Qt</span><span class="o">.</span><span class="n">TextSelectableByMouse</span><span class="p">)</span>
                 <span class="n">h</span><span class="o">.</span><span class="n">setBackgroundRole</span><span class="p">(</span> <span class="n">QPalette</span><span class="o">.</span><span class="n">Base</span> <span class="p">)</span>
                 <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
                 <span class="n">frame</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">SIGNAL</span><span class="p">(</span><span class="s">&#39;linkActivated(QString)&#39;</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">open_link</span><span class="p">)</span>
             
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">panel_parent</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">target</span> <span class="o">==</span> <span class="s">&#39;panel&#39;</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">panel_parent</span><span class="o">.</span><span class="n">add_panel</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">scroller</span><span class="p">,</span> <span class="bp">True</span><span class="p">,</span> <span class="n">volatile</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">panel_parent</span><span class="o">.</span><span class="n">add_panel</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">scroller</span><span class="p">,</span> <span class="bp">True</span><span class="p">,</span> <span class="n">volatile</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">panel_parent</span><span class="o">.</span><span class="n">add_tab</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">scroller</span><span class="p">)</span>
                 
@@ -1980,11 +2051,15 @@
             
             <span class="n">generator</span> <span class="o">=</span> <span class="n">QSvgGenerator</span><span class="p">()</span>
             <span class="n">generator</span><span class="o">.</span><span class="n">setFileName</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
-            <span class="n">generator</span><span class="o">.</span><span class="n">setSize</span><span class="p">(</span><span class="n">QSize</span><span class="p">(</span><span class="mi">842</span><span class="p">,</span> <span class="mi">595</span><span class="p">))</span>
+            <span class="n">w</span><span class="p">,</span><span class="n">h</span> <span class="o">=</span> <span class="mi">842</span><span class="p">,</span> <span class="mi">595</span>
+            <span class="n">margin</span> <span class="o">=</span> <span class="mf">0.025</span>
+            <span class="n">generator</span><span class="o">.</span><span class="n">setSize</span><span class="p">(</span><span class="n">QSize</span><span class="p">(</span><span class="n">w</span><span class="p">,</span><span class="n">h</span><span class="p">))</span>
+            <span class="n">m</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">w</span><span class="p">,</span><span class="n">h</span><span class="p">)</span><span class="o">*</span><span class="n">margin</span>
+            <span class="n">generator</span><span class="o">.</span><span class="n">setViewBox</span><span class="p">(</span><span class="n">QRectF</span><span class="p">(</span><span class="o">-</span><span class="n">m</span><span class="p">,</span><span class="o">-</span><span class="n">m</span><span class="p">,</span> <span class="n">w</span><span class="o">+</span><span class="mi">2</span><span class="o">*</span><span class="n">m</span><span class="p">,</span><span class="n">h</span><span class="o">+</span><span class="mi">2</span><span class="o">*</span><span class="n">m</span><span class="p">))</span>
 
             <span class="n">painter</span> <span class="o">=</span> <span class="n">QPainter</span><span class="p">()</span>
             <span class="n">painter</span><span class="o">.</span><span class="n">begin</span><span class="p">(</span><span class="n">generator</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">drawit</span><span class="p">(</span><span class="n">painter</span><span class="p">,</span> <span class="n">printmode</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="n">generator</span><span class="o">.</span><span class="n">size</span><span class="p">()</span><span class="o">.</span><span class="n">width</span><span class="p">(),</span> <span class="n">h</span><span class="o">=</span><span class="n">generator</span><span class="o">.</span><span class="n">size</span><span class="p">()</span><span class="o">.</span><span class="n">height</span><span class="p">())</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">drawit</span><span class="p">(</span><span class="n">painter</span><span class="p">,</span> <span class="n">printmode</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="o">=</span><span class="n">h</span><span class="p">)</span>
             <span class="n">painter</span><span class="o">.</span><span class="n">end</span><span class="p">()</span>
             
         <span class="k">def</span> <span class="nf">paintEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">paint_ev</span> <span class="p">):</span>

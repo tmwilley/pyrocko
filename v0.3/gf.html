@@ -1,0 +1,861 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>The gf Subpackage &mdash; Pyrocko v0.3 Manual</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within Pyrocko v0.3 Manual"
+          href="_static/opensearch.xml"/>
+    <link rel="top" title="Pyrocko v0.3 Manual" href="index.html" />
+    <link rel="up" title="Library Reference" href="reference.html" />
+    <link rel="prev" title="The slink Module" href="slink.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="slink.html" title="The slink Module"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Pyrocko v0.3 Manual</a> &raquo;</li>
+          <li><a href="reference.html" accesskey="U">Library Reference</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body">
+            
+  <div class="section" id="module-pyrocko.gf.meta">
+<span id="the-gf-subpackage"></span><h1>The <tt class="xref py py-mod docutils literal"><span class="pre">gf</span></tt> Subpackage<a class="headerlink" href="#module-pyrocko.gf.meta" title="Permalink to this headline">¶</a></h1>
+</div>
+<div class="section" id="module-pyrocko.gf.meta">
+<span id="the-gf-meta-module"></span><h1>The <tt class="xref py py-mod docutils literal"><span class="pre">gf.meta</span></tt> Module<a class="headerlink" href="#module-pyrocko.gf.meta" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="pyrocko.gf.meta.StringID">
+<em class="property">class </em><tt class="descname">StringID</tt><big>(</big><em>dummy</em><big>)</big> &rarr; str<a class="reference internal" href="_modules/pyrocko/gf/meta.html#StringID"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.gf.meta.StringID" title="Permalink to this definition">¶</a></dt>
+<dd><p>Any <tt class="docutils literal"><span class="pre">str</span></tt> matching pattern <tt class="docutils literal"><span class="pre">'^[A-Za-z][A-Za-z0-9._]{0,64}$'</span></tt>.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="pyrocko.gf.meta.ScopeType">
+<em class="property">class </em><tt class="descname">ScopeType</tt><big>(</big><em>dummy</em><big>)</big> &rarr; str<a class="reference internal" href="_modules/pyrocko/gf/meta.html#ScopeType"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.gf.meta.ScopeType" title="Permalink to this definition">¶</a></dt>
+<dd><p>Any <tt class="docutils literal"><span class="pre">str</span></tt> out of <tt class="docutils literal"><span class="pre">['global',</span> <span class="pre">'regional',</span> <span class="pre">'local']</span></tt>.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="pyrocko.gf.meta.WaveformType">
+<em class="property">class </em><tt class="descname">WaveformType</tt><big>(</big><em>dummy</em><big>)</big> &rarr; str<a class="reference internal" href="_modules/pyrocko/gf/meta.html#WaveformType"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.gf.meta.WaveformType" title="Permalink to this definition">¶</a></dt>
+<dd><p>Any <tt class="docutils literal"><span class="pre">str</span></tt> out of <tt class="docutils literal"><span class="pre">['full</span> <span class="pre">waveform',</span> <span class="pre">'bodywave',</span> <span class="pre">'P</span> <span class="pre">wave',</span> <span class="pre">'S</span> <span class="pre">wave',</span> <span class="pre">'surface</span> <span class="pre">wave']</span></tt>.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="pyrocko.gf.meta.NearfieldTermsType">
+<em class="property">class </em><tt class="descname">NearfieldTermsType</tt><big>(</big><em>dummy</em><big>)</big> &rarr; str<a class="reference internal" href="_modules/pyrocko/gf/meta.html#NearfieldTermsType"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.gf.meta.NearfieldTermsType" title="Permalink to this definition">¶</a></dt>
+<dd><p>Any <tt class="docutils literal"><span class="pre">str</span></tt> out of <tt class="docutils literal"><span class="pre">['complete',</span> <span class="pre">'incomplete',</span> <span class="pre">'missing']</span></tt>.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="pyrocko.gf.meta.Reference">
+<em class="property">class </em><tt class="descname">Reference</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/pyrocko/gf/meta.html#Reference"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.gf.meta.Reference" title="Permalink to this definition">¶</a></dt>
+<dd><p>Undocumented.</p>
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.Reference.id">
+<tt class="descname">id</tt><a class="headerlink" href="#pyrocko.gf.meta.Reference.id" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#pyrocko.gf.meta.StringID" title="pyrocko.gf.meta.StringID"><tt class="xref py py-class docutils literal"><span class="pre">pyrocko.gf.meta.StringID</span></tt></a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.Reference.type">
+<tt class="descname">type</tt><a class="headerlink" href="#pyrocko.gf.meta.Reference.type" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">str</span></tt></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.Reference.title">
+<tt class="descname">title</tt><a class="headerlink" href="#pyrocko.gf.meta.Reference.title" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">unicode</span></tt></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.Reference.journal">
+<tt class="descname">journal</tt><a class="headerlink" href="#pyrocko.gf.meta.Reference.journal" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">unicode</span></tt>, <em>optional</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.Reference.volume">
+<tt class="descname">volume</tt><a class="headerlink" href="#pyrocko.gf.meta.Reference.volume" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">unicode</span></tt>, <em>optional</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.Reference.number">
+<tt class="descname">number</tt><a class="headerlink" href="#pyrocko.gf.meta.Reference.number" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">unicode</span></tt>, <em>optional</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.Reference.pages">
+<tt class="descname">pages</tt><a class="headerlink" href="#pyrocko.gf.meta.Reference.pages" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">unicode</span></tt>, <em>optional</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.Reference.year">
+<tt class="descname">year</tt><a class="headerlink" href="#pyrocko.gf.meta.Reference.year" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">str</span></tt></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.Reference.issn">
+<tt class="descname">issn</tt><a class="headerlink" href="#pyrocko.gf.meta.Reference.issn" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">str</span></tt>, <em>optional</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.Reference.doi">
+<tt class="descname">doi</tt><a class="headerlink" href="#pyrocko.gf.meta.Reference.doi" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">str</span></tt>, <em>optional</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.Reference.url">
+<tt class="descname">url</tt><a class="headerlink" href="#pyrocko.gf.meta.Reference.url" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">str</span></tt>, <em>optional</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.Reference.eprint">
+<tt class="descname">eprint</tt><a class="headerlink" href="#pyrocko.gf.meta.Reference.eprint" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">str</span></tt>, <em>optional</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.Reference.authors">
+<tt class="descname">authors</tt><a class="headerlink" href="#pyrocko.gf.meta.Reference.authors" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">list</span></tt> of <tt class="docutils literal"><span class="pre">unicode</span></tt> objects, <em>default:</em> <tt class="docutils literal"><span class="pre">[]</span></tt></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.Reference.publisher">
+<tt class="descname">publisher</tt><a class="headerlink" href="#pyrocko.gf.meta.Reference.publisher" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">unicode</span></tt>, <em>optional</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.Reference.keywords">
+<tt class="descname">keywords</tt><a class="headerlink" href="#pyrocko.gf.meta.Reference.keywords" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">unicode</span></tt>, <em>optional</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.Reference.note">
+<tt class="descname">note</tt><a class="headerlink" href="#pyrocko.gf.meta.Reference.note" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">unicode</span></tt>, <em>optional</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.Reference.abstract">
+<tt class="descname">abstract</tt><a class="headerlink" href="#pyrocko.gf.meta.Reference.abstract" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">unicode</span></tt>, <em>optional</em></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pyrocko.gf.meta.PhaseSelect">
+<em class="property">class </em><tt class="descname">PhaseSelect</tt><big>(</big><em>dummy</em><big>)</big> &rarr; str<a class="reference internal" href="_modules/pyrocko/gf/meta.html#PhaseSelect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.gf.meta.PhaseSelect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Any <tt class="docutils literal"><span class="pre">str</span></tt> out of <tt class="docutils literal"><span class="pre">['',</span> <span class="pre">'first',</span> <span class="pre">'last']</span></tt>.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="pyrocko.gf.meta.Timing">
+<em class="property">class </em><tt class="descname">Timing</tt><big>(</big><em>s=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/pyrocko/gf/meta.html#Timing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.gf.meta.Timing" title="Permalink to this definition">¶</a></dt>
+<dd><p>Undocumented.</p>
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.Timing.phase_ids">
+<tt class="descname">phase_ids</tt><a class="headerlink" href="#pyrocko.gf.meta.Timing.phase_ids" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">list</span></tt> of <tt class="docutils literal"><span class="pre">str</span></tt> objects, <em>default:</em> <tt class="docutils literal"><span class="pre">[]</span></tt></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.Timing.offset">
+<tt class="descname">offset</tt><a class="headerlink" href="#pyrocko.gf.meta.Timing.offset" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">float</span></tt>, <em>default:</em> <tt class="docutils literal"><span class="pre">0.0</span></tt></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.Timing.select">
+<tt class="descname">select</tt><a class="headerlink" href="#pyrocko.gf.meta.Timing.select" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#pyrocko.gf.meta.PhaseSelect" title="pyrocko.gf.meta.PhaseSelect"><tt class="xref py py-class docutils literal"><span class="pre">pyrocko.gf.meta.PhaseSelect</span></tt></a>, <em>default:</em> <tt class="docutils literal"><span class="pre">''</span></tt></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pyrocko.gf.meta.TPDef">
+<em class="property">class </em><tt class="descname">TPDef</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/pyrocko/gf/meta.html#TPDef"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.gf.meta.TPDef" title="Permalink to this definition">¶</a></dt>
+<dd><p>Undocumented.</p>
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.TPDef.id">
+<tt class="descname">id</tt><a class="headerlink" href="#pyrocko.gf.meta.TPDef.id" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#pyrocko.gf.meta.StringID" title="pyrocko.gf.meta.StringID"><tt class="xref py py-class docutils literal"><span class="pre">pyrocko.gf.meta.StringID</span></tt></a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.TPDef.definition">
+<tt class="descname">definition</tt><a class="headerlink" href="#pyrocko.gf.meta.TPDef.definition" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">str</span></tt></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pyrocko.gf.meta.Config">
+<em class="property">class </em><tt class="descname">Config</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/pyrocko/gf/meta.html#Config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.gf.meta.Config" title="Permalink to this definition">¶</a></dt>
+<dd><p>Undocumented.</p>
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.Config.id">
+<tt class="descname">id</tt><a class="headerlink" href="#pyrocko.gf.meta.Config.id" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#pyrocko.gf.meta.StringID" title="pyrocko.gf.meta.StringID"><tt class="xref py py-class docutils literal"><span class="pre">pyrocko.gf.meta.StringID</span></tt></a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.Config.derived_from_id">
+<tt class="descname">derived_from_id</tt><a class="headerlink" href="#pyrocko.gf.meta.Config.derived_from_id" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#pyrocko.gf.meta.StringID" title="pyrocko.gf.meta.StringID"><tt class="xref py py-class docutils literal"><span class="pre">pyrocko.gf.meta.StringID</span></tt></a>, <em>optional</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.Config.version">
+<tt class="descname">version</tt><a class="headerlink" href="#pyrocko.gf.meta.Config.version" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">str</span></tt>, <em>optional</em>, <em>default:</em> <tt class="docutils literal"><span class="pre">'1.0'</span></tt></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.Config.modelling_code_id">
+<tt class="descname">modelling_code_id</tt><a class="headerlink" href="#pyrocko.gf.meta.Config.modelling_code_id" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#pyrocko.gf.meta.StringID" title="pyrocko.gf.meta.StringID"><tt class="xref py py-class docutils literal"><span class="pre">pyrocko.gf.meta.StringID</span></tt></a>, <em>optional</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.Config.author">
+<tt class="descname">author</tt><a class="headerlink" href="#pyrocko.gf.meta.Config.author" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">unicode</span></tt>, <em>optional</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.Config.author_email">
+<tt class="descname">author_email</tt><a class="headerlink" href="#pyrocko.gf.meta.Config.author_email" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">str</span></tt>, <em>optional</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.Config.scope_type">
+<tt class="descname">scope_type</tt><a class="headerlink" href="#pyrocko.gf.meta.Config.scope_type" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#pyrocko.gf.meta.ScopeType" title="pyrocko.gf.meta.ScopeType"><tt class="xref py py-class docutils literal"><span class="pre">pyrocko.gf.meta.ScopeType</span></tt></a>, <em>optional</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.Config.waveform_type">
+<tt class="descname">waveform_type</tt><a class="headerlink" href="#pyrocko.gf.meta.Config.waveform_type" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#pyrocko.gf.meta.WaveformType" title="pyrocko.gf.meta.WaveformType"><tt class="xref py py-class docutils literal"><span class="pre">pyrocko.gf.meta.WaveformType</span></tt></a>, <em>optional</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.Config.nearfield_terms">
+<tt class="descname">nearfield_terms</tt><a class="headerlink" href="#pyrocko.gf.meta.Config.nearfield_terms" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#pyrocko.gf.meta.NearfieldTermsType" title="pyrocko.gf.meta.NearfieldTermsType"><tt class="xref py py-class docutils literal"><span class="pre">pyrocko.gf.meta.NearfieldTermsType</span></tt></a>, <em>optional</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.Config.description">
+<tt class="descname">description</tt><a class="headerlink" href="#pyrocko.gf.meta.Config.description" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">str</span></tt>, <em>optional</em>, <em>default:</em> <tt class="docutils literal"><span class="pre">''</span></tt></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.Config.reference_ids">
+<tt class="descname">reference_ids</tt><a class="headerlink" href="#pyrocko.gf.meta.Config.reference_ids" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">list</span></tt> of <a class="reference internal" href="#pyrocko.gf.meta.StringID" title="pyrocko.gf.meta.StringID"><tt class="xref py py-class docutils literal"><span class="pre">pyrocko.gf.meta.StringID</span></tt></a> objects, <em>default:</em> <tt class="docutils literal"><span class="pre">[]</span></tt></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.Config.size">
+<tt class="descname">size</tt><a class="headerlink" href="#pyrocko.gf.meta.Config.size" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">int</span></tt>, <em>optional</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.Config.earthmodel_1d">
+<tt class="descname">earthmodel_1d</tt><a class="headerlink" href="#pyrocko.gf.meta.Config.earthmodel_1d" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="xref py py-class docutils literal"><span class="pre">pyrocko.gf.meta.Earthmodel1D</span></tt>, <em>optional</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.Config.can_interpolate_source">
+<tt class="descname">can_interpolate_source</tt><a class="headerlink" href="#pyrocko.gf.meta.Config.can_interpolate_source" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">bool</span></tt>, <em>optional</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.Config.can_interpolate_receiver">
+<tt class="descname">can_interpolate_receiver</tt><a class="headerlink" href="#pyrocko.gf.meta.Config.can_interpolate_receiver" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">bool</span></tt>, <em>optional</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.Config.frequency_min">
+<tt class="descname">frequency_min</tt><a class="headerlink" href="#pyrocko.gf.meta.Config.frequency_min" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">float</span></tt>, <em>optional</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.Config.frequency_max">
+<tt class="descname">frequency_max</tt><a class="headerlink" href="#pyrocko.gf.meta.Config.frequency_max" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">float</span></tt>, <em>optional</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.Config.sample_rate">
+<tt class="descname">sample_rate</tt><a class="headerlink" href="#pyrocko.gf.meta.Config.sample_rate" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">float</span></tt>, <em>optional</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.Config.ncomponents">
+<tt class="descname">ncomponents</tt><a class="headerlink" href="#pyrocko.gf.meta.Config.ncomponents" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">int</span></tt>, <em>default:</em> <tt class="docutils literal"><span class="pre">1</span></tt></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.Config.tabulated_phases">
+<tt class="descname">tabulated_phases</tt><a class="headerlink" href="#pyrocko.gf.meta.Config.tabulated_phases" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">list</span></tt> of <a class="reference internal" href="#pyrocko.gf.meta.TPDef" title="pyrocko.gf.meta.TPDef"><tt class="xref py py-class docutils literal"><span class="pre">pyrocko.gf.meta.TPDef</span></tt></a> objects, <em>default:</em> <tt class="docutils literal"><span class="pre">[]</span></tt></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pyrocko.gf.meta.ConfigTypeA">
+<em class="property">class </em><tt class="descname">ConfigTypeA</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/pyrocko/gf/meta.html#ConfigTypeA"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.gf.meta.ConfigTypeA" title="Permalink to this definition">¶</a></dt>
+<dd><p>Undocumented.</p>
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.ConfigTypeA.id">
+<tt class="descname">id</tt><a class="headerlink" href="#pyrocko.gf.meta.ConfigTypeA.id" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#pyrocko.gf.meta.StringID" title="pyrocko.gf.meta.StringID"><tt class="xref py py-class docutils literal"><span class="pre">pyrocko.gf.meta.StringID</span></tt></a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.ConfigTypeA.derived_from_id">
+<tt class="descname">derived_from_id</tt><a class="headerlink" href="#pyrocko.gf.meta.ConfigTypeA.derived_from_id" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#pyrocko.gf.meta.StringID" title="pyrocko.gf.meta.StringID"><tt class="xref py py-class docutils literal"><span class="pre">pyrocko.gf.meta.StringID</span></tt></a>, <em>optional</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.ConfigTypeA.version">
+<tt class="descname">version</tt><a class="headerlink" href="#pyrocko.gf.meta.ConfigTypeA.version" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">str</span></tt>, <em>optional</em>, <em>default:</em> <tt class="docutils literal"><span class="pre">'1.0'</span></tt></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.ConfigTypeA.modelling_code_id">
+<tt class="descname">modelling_code_id</tt><a class="headerlink" href="#pyrocko.gf.meta.ConfigTypeA.modelling_code_id" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#pyrocko.gf.meta.StringID" title="pyrocko.gf.meta.StringID"><tt class="xref py py-class docutils literal"><span class="pre">pyrocko.gf.meta.StringID</span></tt></a>, <em>optional</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.ConfigTypeA.author">
+<tt class="descname">author</tt><a class="headerlink" href="#pyrocko.gf.meta.ConfigTypeA.author" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">unicode</span></tt>, <em>optional</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.ConfigTypeA.author_email">
+<tt class="descname">author_email</tt><a class="headerlink" href="#pyrocko.gf.meta.ConfigTypeA.author_email" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">str</span></tt>, <em>optional</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.ConfigTypeA.scope_type">
+<tt class="descname">scope_type</tt><a class="headerlink" href="#pyrocko.gf.meta.ConfigTypeA.scope_type" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#pyrocko.gf.meta.ScopeType" title="pyrocko.gf.meta.ScopeType"><tt class="xref py py-class docutils literal"><span class="pre">pyrocko.gf.meta.ScopeType</span></tt></a>, <em>optional</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.ConfigTypeA.waveform_type">
+<tt class="descname">waveform_type</tt><a class="headerlink" href="#pyrocko.gf.meta.ConfigTypeA.waveform_type" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#pyrocko.gf.meta.WaveformType" title="pyrocko.gf.meta.WaveformType"><tt class="xref py py-class docutils literal"><span class="pre">pyrocko.gf.meta.WaveformType</span></tt></a>, <em>optional</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.ConfigTypeA.nearfield_terms">
+<tt class="descname">nearfield_terms</tt><a class="headerlink" href="#pyrocko.gf.meta.ConfigTypeA.nearfield_terms" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#pyrocko.gf.meta.NearfieldTermsType" title="pyrocko.gf.meta.NearfieldTermsType"><tt class="xref py py-class docutils literal"><span class="pre">pyrocko.gf.meta.NearfieldTermsType</span></tt></a>, <em>optional</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.ConfigTypeA.description">
+<tt class="descname">description</tt><a class="headerlink" href="#pyrocko.gf.meta.ConfigTypeA.description" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">str</span></tt>, <em>optional</em>, <em>default:</em> <tt class="docutils literal"><span class="pre">''</span></tt></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.ConfigTypeA.reference_ids">
+<tt class="descname">reference_ids</tt><a class="headerlink" href="#pyrocko.gf.meta.ConfigTypeA.reference_ids" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">list</span></tt> of <a class="reference internal" href="#pyrocko.gf.meta.StringID" title="pyrocko.gf.meta.StringID"><tt class="xref py py-class docutils literal"><span class="pre">pyrocko.gf.meta.StringID</span></tt></a> objects, <em>default:</em> <tt class="docutils literal"><span class="pre">[]</span></tt></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.ConfigTypeA.size">
+<tt class="descname">size</tt><a class="headerlink" href="#pyrocko.gf.meta.ConfigTypeA.size" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">int</span></tt>, <em>optional</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.ConfigTypeA.earthmodel_1d">
+<tt class="descname">earthmodel_1d</tt><a class="headerlink" href="#pyrocko.gf.meta.ConfigTypeA.earthmodel_1d" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="xref py py-class docutils literal"><span class="pre">pyrocko.gf.meta.Earthmodel1D</span></tt>, <em>optional</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.ConfigTypeA.can_interpolate_source">
+<tt class="descname">can_interpolate_source</tt><a class="headerlink" href="#pyrocko.gf.meta.ConfigTypeA.can_interpolate_source" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">bool</span></tt>, <em>optional</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.ConfigTypeA.can_interpolate_receiver">
+<tt class="descname">can_interpolate_receiver</tt><a class="headerlink" href="#pyrocko.gf.meta.ConfigTypeA.can_interpolate_receiver" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">bool</span></tt>, <em>optional</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.ConfigTypeA.frequency_min">
+<tt class="descname">frequency_min</tt><a class="headerlink" href="#pyrocko.gf.meta.ConfigTypeA.frequency_min" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">float</span></tt>, <em>optional</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.ConfigTypeA.frequency_max">
+<tt class="descname">frequency_max</tt><a class="headerlink" href="#pyrocko.gf.meta.ConfigTypeA.frequency_max" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">float</span></tt>, <em>optional</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.ConfigTypeA.sample_rate">
+<tt class="descname">sample_rate</tt><a class="headerlink" href="#pyrocko.gf.meta.ConfigTypeA.sample_rate" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">float</span></tt>, <em>optional</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.ConfigTypeA.ncomponents">
+<tt class="descname">ncomponents</tt><a class="headerlink" href="#pyrocko.gf.meta.ConfigTypeA.ncomponents" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">int</span></tt>, <em>default:</em> <tt class="docutils literal"><span class="pre">1</span></tt></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.ConfigTypeA.tabulated_phases">
+<tt class="descname">tabulated_phases</tt><a class="headerlink" href="#pyrocko.gf.meta.ConfigTypeA.tabulated_phases" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">list</span></tt> of <a class="reference internal" href="#pyrocko.gf.meta.TPDef" title="pyrocko.gf.meta.TPDef"><tt class="xref py py-class docutils literal"><span class="pre">pyrocko.gf.meta.TPDef</span></tt></a> objects, <em>default:</em> <tt class="docutils literal"><span class="pre">[]</span></tt></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.ConfigTypeA.receiver_depth">
+<tt class="descname">receiver_depth</tt><a class="headerlink" href="#pyrocko.gf.meta.ConfigTypeA.receiver_depth" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">float</span></tt>, <em>default:</em> <tt class="docutils literal"><span class="pre">0.0</span></tt></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.ConfigTypeA.source_depth_min">
+<tt class="descname">source_depth_min</tt><a class="headerlink" href="#pyrocko.gf.meta.ConfigTypeA.source_depth_min" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">float</span></tt></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.ConfigTypeA.source_depth_max">
+<tt class="descname">source_depth_max</tt><a class="headerlink" href="#pyrocko.gf.meta.ConfigTypeA.source_depth_max" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">float</span></tt></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.ConfigTypeA.source_depth_delta">
+<tt class="descname">source_depth_delta</tt><a class="headerlink" href="#pyrocko.gf.meta.ConfigTypeA.source_depth_delta" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">float</span></tt></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.ConfigTypeA.distance_min">
+<tt class="descname">distance_min</tt><a class="headerlink" href="#pyrocko.gf.meta.ConfigTypeA.distance_min" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">float</span></tt></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.ConfigTypeA.distance_max">
+<tt class="descname">distance_max</tt><a class="headerlink" href="#pyrocko.gf.meta.ConfigTypeA.distance_max" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">float</span></tt></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.ConfigTypeA.distance_delta">
+<tt class="descname">distance_delta</tt><a class="headerlink" href="#pyrocko.gf.meta.ConfigTypeA.distance_delta" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">float</span></tt></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pyrocko.gf.meta.ConfigTypeB">
+<em class="property">class </em><tt class="descname">ConfigTypeB</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/pyrocko/gf/meta.html#ConfigTypeB"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.gf.meta.ConfigTypeB" title="Permalink to this definition">¶</a></dt>
+<dd><p>Undocumented.</p>
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.ConfigTypeB.id">
+<tt class="descname">id</tt><a class="headerlink" href="#pyrocko.gf.meta.ConfigTypeB.id" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#pyrocko.gf.meta.StringID" title="pyrocko.gf.meta.StringID"><tt class="xref py py-class docutils literal"><span class="pre">pyrocko.gf.meta.StringID</span></tt></a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.ConfigTypeB.derived_from_id">
+<tt class="descname">derived_from_id</tt><a class="headerlink" href="#pyrocko.gf.meta.ConfigTypeB.derived_from_id" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#pyrocko.gf.meta.StringID" title="pyrocko.gf.meta.StringID"><tt class="xref py py-class docutils literal"><span class="pre">pyrocko.gf.meta.StringID</span></tt></a>, <em>optional</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.ConfigTypeB.version">
+<tt class="descname">version</tt><a class="headerlink" href="#pyrocko.gf.meta.ConfigTypeB.version" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">str</span></tt>, <em>optional</em>, <em>default:</em> <tt class="docutils literal"><span class="pre">'1.0'</span></tt></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.ConfigTypeB.modelling_code_id">
+<tt class="descname">modelling_code_id</tt><a class="headerlink" href="#pyrocko.gf.meta.ConfigTypeB.modelling_code_id" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#pyrocko.gf.meta.StringID" title="pyrocko.gf.meta.StringID"><tt class="xref py py-class docutils literal"><span class="pre">pyrocko.gf.meta.StringID</span></tt></a>, <em>optional</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.ConfigTypeB.author">
+<tt class="descname">author</tt><a class="headerlink" href="#pyrocko.gf.meta.ConfigTypeB.author" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">unicode</span></tt>, <em>optional</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.ConfigTypeB.author_email">
+<tt class="descname">author_email</tt><a class="headerlink" href="#pyrocko.gf.meta.ConfigTypeB.author_email" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">str</span></tt>, <em>optional</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.ConfigTypeB.scope_type">
+<tt class="descname">scope_type</tt><a class="headerlink" href="#pyrocko.gf.meta.ConfigTypeB.scope_type" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#pyrocko.gf.meta.ScopeType" title="pyrocko.gf.meta.ScopeType"><tt class="xref py py-class docutils literal"><span class="pre">pyrocko.gf.meta.ScopeType</span></tt></a>, <em>optional</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.ConfigTypeB.waveform_type">
+<tt class="descname">waveform_type</tt><a class="headerlink" href="#pyrocko.gf.meta.ConfigTypeB.waveform_type" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#pyrocko.gf.meta.WaveformType" title="pyrocko.gf.meta.WaveformType"><tt class="xref py py-class docutils literal"><span class="pre">pyrocko.gf.meta.WaveformType</span></tt></a>, <em>optional</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.ConfigTypeB.nearfield_terms">
+<tt class="descname">nearfield_terms</tt><a class="headerlink" href="#pyrocko.gf.meta.ConfigTypeB.nearfield_terms" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#pyrocko.gf.meta.NearfieldTermsType" title="pyrocko.gf.meta.NearfieldTermsType"><tt class="xref py py-class docutils literal"><span class="pre">pyrocko.gf.meta.NearfieldTermsType</span></tt></a>, <em>optional</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.ConfigTypeB.description">
+<tt class="descname">description</tt><a class="headerlink" href="#pyrocko.gf.meta.ConfigTypeB.description" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">str</span></tt>, <em>optional</em>, <em>default:</em> <tt class="docutils literal"><span class="pre">''</span></tt></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.ConfigTypeB.reference_ids">
+<tt class="descname">reference_ids</tt><a class="headerlink" href="#pyrocko.gf.meta.ConfigTypeB.reference_ids" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">list</span></tt> of <a class="reference internal" href="#pyrocko.gf.meta.StringID" title="pyrocko.gf.meta.StringID"><tt class="xref py py-class docutils literal"><span class="pre">pyrocko.gf.meta.StringID</span></tt></a> objects, <em>default:</em> <tt class="docutils literal"><span class="pre">[]</span></tt></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.ConfigTypeB.size">
+<tt class="descname">size</tt><a class="headerlink" href="#pyrocko.gf.meta.ConfigTypeB.size" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">int</span></tt>, <em>optional</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.ConfigTypeB.earthmodel_1d">
+<tt class="descname">earthmodel_1d</tt><a class="headerlink" href="#pyrocko.gf.meta.ConfigTypeB.earthmodel_1d" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="xref py py-class docutils literal"><span class="pre">pyrocko.gf.meta.Earthmodel1D</span></tt>, <em>optional</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.ConfigTypeB.can_interpolate_source">
+<tt class="descname">can_interpolate_source</tt><a class="headerlink" href="#pyrocko.gf.meta.ConfigTypeB.can_interpolate_source" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">bool</span></tt>, <em>optional</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.ConfigTypeB.can_interpolate_receiver">
+<tt class="descname">can_interpolate_receiver</tt><a class="headerlink" href="#pyrocko.gf.meta.ConfigTypeB.can_interpolate_receiver" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">bool</span></tt>, <em>optional</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.ConfigTypeB.frequency_min">
+<tt class="descname">frequency_min</tt><a class="headerlink" href="#pyrocko.gf.meta.ConfigTypeB.frequency_min" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">float</span></tt>, <em>optional</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.ConfigTypeB.frequency_max">
+<tt class="descname">frequency_max</tt><a class="headerlink" href="#pyrocko.gf.meta.ConfigTypeB.frequency_max" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">float</span></tt>, <em>optional</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.ConfigTypeB.sample_rate">
+<tt class="descname">sample_rate</tt><a class="headerlink" href="#pyrocko.gf.meta.ConfigTypeB.sample_rate" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">float</span></tt>, <em>optional</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.ConfigTypeB.ncomponents">
+<tt class="descname">ncomponents</tt><a class="headerlink" href="#pyrocko.gf.meta.ConfigTypeB.ncomponents" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">int</span></tt>, <em>default:</em> <tt class="docutils literal"><span class="pre">1</span></tt></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.ConfigTypeB.tabulated_phases">
+<tt class="descname">tabulated_phases</tt><a class="headerlink" href="#pyrocko.gf.meta.ConfigTypeB.tabulated_phases" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">list</span></tt> of <a class="reference internal" href="#pyrocko.gf.meta.TPDef" title="pyrocko.gf.meta.TPDef"><tt class="xref py py-class docutils literal"><span class="pre">pyrocko.gf.meta.TPDef</span></tt></a> objects, <em>default:</em> <tt class="docutils literal"><span class="pre">[]</span></tt></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.ConfigTypeB.receiver_depth_min">
+<tt class="descname">receiver_depth_min</tt><a class="headerlink" href="#pyrocko.gf.meta.ConfigTypeB.receiver_depth_min" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">float</span></tt></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.ConfigTypeB.receiver_depth_max">
+<tt class="descname">receiver_depth_max</tt><a class="headerlink" href="#pyrocko.gf.meta.ConfigTypeB.receiver_depth_max" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">float</span></tt></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.ConfigTypeB.receiver_depth_delta">
+<tt class="descname">receiver_depth_delta</tt><a class="headerlink" href="#pyrocko.gf.meta.ConfigTypeB.receiver_depth_delta" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">float</span></tt></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.ConfigTypeB.source_depth_min">
+<tt class="descname">source_depth_min</tt><a class="headerlink" href="#pyrocko.gf.meta.ConfigTypeB.source_depth_min" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">float</span></tt></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.ConfigTypeB.source_depth_max">
+<tt class="descname">source_depth_max</tt><a class="headerlink" href="#pyrocko.gf.meta.ConfigTypeB.source_depth_max" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">float</span></tt></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.ConfigTypeB.source_depth_delta">
+<tt class="descname">source_depth_delta</tt><a class="headerlink" href="#pyrocko.gf.meta.ConfigTypeB.source_depth_delta" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">float</span></tt></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.ConfigTypeB.distance_min">
+<tt class="descname">distance_min</tt><a class="headerlink" href="#pyrocko.gf.meta.ConfigTypeB.distance_min" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">float</span></tt></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.ConfigTypeB.distance_max">
+<tt class="descname">distance_max</tt><a class="headerlink" href="#pyrocko.gf.meta.ConfigTypeB.distance_max" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">float</span></tt></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.ConfigTypeB.distance_delta">
+<tt class="descname">distance_delta</tt><a class="headerlink" href="#pyrocko.gf.meta.ConfigTypeB.distance_delta" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">float</span></tt></p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pyrocko.gf.store">
+<span id="the-gf-store-module"></span><h1>The <tt class="xref py py-mod docutils literal"><span class="pre">gf.store</span></tt> Module<a class="headerlink" href="#module-pyrocko.gf.store" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="pyrocko.gf.store.Store">
+<em class="property">class </em><tt class="descname">Store</tt><big>(</big><em>store_dir</em>, <em>mode='r'</em><big>)</big><a class="reference internal" href="_modules/pyrocko/gf/store.html#Store"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.gf.store.Store" title="Permalink to this definition">¶</a></dt>
+<dd><p>Green&#8217;s function disk storage and summation machine.</p>
+<p>The <cite>Store</cite> can be used to efficiently store, retrieve, and sum Green&#8217;s
+function traces. A <cite>Store</cite> contains many 1D time traces sampled at even
+multiples of a global sampling rate, where each time trace has an
+individual start and end time.  The traces are treated as having repeating
+end points, so the functions they represent can be non-constant only
+between begin and end time. It provides capabilities to retrieve decimated
+traces and to extract parts of the traces. The main purpose of this class
+is to provide a fast, easy to use, and flexible machanism to compute
+weighted delay-and-sum stacks with many Green&#8217;s function traces involved.</p>
+<p>Individual Green&#8217;s functions are accessed through a single integer index at
+low level.  At higher level, various indexing schemes can be implemented by
+providing a mapping from physical coordinates to the low level index. E.g.
+for a problem with cylindrical symmetry, one might define a mapping from
+(z1, z2, r) -&gt; i. Index translation is done in the
+<a class="reference internal" href="#pyrocko.gf.meta.Config" title="pyrocko.gf.meta.Config"><tt class="xref py py-class docutils literal"><span class="pre">pyrocko.gf.meta.Config</span></tt></a> subclass object associated with the Store.</p>
+<dl class="staticmethod">
+<dt id="pyrocko.gf.store.Store.create">
+<em class="property">static </em><tt class="descname">create</tt><big>(</big><em>store_dir</em>, <em>config</em>, <em>force=False</em>, <em>extra=None</em><big>)</big><a class="reference internal" href="_modules/pyrocko/gf/store.html#Store.create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.gf.store.Store.create" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create new GF store.</p>
+<p>Creates a new GF store at path <cite>store_dir</cite>. The layout of the GF is
+defined with the parameters given in <cite>config</cite>, which should be an object
+of a subclass of <a class="reference internal" href="#pyrocko.gf.meta.Config" title="pyrocko.gf.meta.Config"><tt class="xref py py-class docutils literal"><span class="pre">pyrocko.gf.meta.Config</span></tt></a>. This function will
+refuse to overwrite an existing GF store, unless <cite>force</cite> is set  to
+<tt class="docutils literal"><span class="pre">True</span></tt>. If more information, e.g. parameters used for the modelling
+code, earth models or other, should be saved along with the GF store,
+these may be provided though a dict given to <cite>extra</cite>. The keys of this
+dict must be names and the values must be <em>guts</em> type objects.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.gf.store.Store.get_extra">
+<tt class="descname">get_extra</tt><big>(</big><em>key</em><big>)</big><a class="reference internal" href="_modules/pyrocko/gf/store.html#Store.get_extra"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.gf.store.Store.get_extra" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get extra information stored under given key.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.gf.store.Store.put">
+<tt class="descname">put</tt><big>(</big><em>args</em>, <em>trace</em><big>)</big><a class="reference internal" href="_modules/pyrocko/gf/store.html#Store.put"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.gf.store.Store.put" title="Permalink to this definition">¶</a></dt>
+<dd><p>Insert trace into GF store.</p>
+<p>Store a single GF trace at (high-level) index <cite>args</cite>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.gf.store.Store.get">
+<tt class="descname">get</tt><big>(</big><em>args</em>, <em>itmin=None</em>, <em>nsamples=None</em>, <em>decimate=1</em>, <em>interpolate='nearest_neighbor'</em><big>)</big><a class="reference internal" href="_modules/pyrocko/gf/store.html#Store.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.gf.store.Store.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrieve GF trace from store.</p>
+<p>Retrieve a single GF trace from the store at (high-level) index <cite>args</cite>.
+By default, the full trace is retrieved. Given <cite>itmin</cite> and <cite>nsamples</cite>,
+only the selected portion of the trace is extracted. If <cite>decimate</cite> is
+an integer in the range [2,8], the trace is decimated on the fly or, if
+available, the trace is read from a decimated version of the GF store.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.gf.store.Store.sum">
+<tt class="descname">sum</tt><big>(</big><em>args</em>, <em>delays</em>, <em>weights</em>, <em>itmin=None</em>, <em>nsamples=None</em>, <em>decimate=1</em><big>)</big><a class="reference internal" href="_modules/pyrocko/gf/store.html#Store.sum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.gf.store.Store.sum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sum delayed and weighted GF traces.</p>
+<p>Calculate sum of delayed and weighted GF traces. <cite>args</cite> is a tuple of
+arrays forming the (high-level) indices of the GF traces to be
+selected.  Delays and weights for the summation are given in the arrays
+<cite>delays</cite> and <cite>weights</cite>. If <cite>itmin</cite> and <cite>nsamples</cite> are given,
+computation is restricted to the output time range <em>(decimated) sampling
+interval x [ itmin, (itmin + nsamples - 1) ]</em>.  If <cite>decimate</cite> is an
+integer in the range [2,8], decimated traces are used in the summation.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.gf.store.Store.sum_reference">
+<tt class="descname">sum_reference</tt><big>(</big><em>args</em>, <em>delays</em>, <em>weights</em>, <em>itmin=None</em>, <em>nsamples=None</em>, <em>decimate=1</em><big>)</big><a class="reference internal" href="_modules/pyrocko/gf/store.html#Store.sum_reference"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.gf.store.Store.sum_reference" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alternative version of <a class="reference internal" href="#pyrocko.gf.store.Store.sum" title="pyrocko.gf.store.Store.sum"><tt class="xref py py-meth docutils literal"><span class="pre">sum()</span></tt></a>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.gf.store.Store.make_decimated">
+<tt class="descname">make_decimated</tt><big>(</big><em>decimate</em>, <em>config=None</em>, <em>force=False</em><big>)</big><a class="reference internal" href="_modules/pyrocko/gf/store.html#Store.make_decimated"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.gf.store.Store.make_decimated" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create decimated version of GF store.</p>
+<p>Create a downsampled version of the GF store. Downsampling is done for
+the integer factor <cite>decimate</cite> which should be in the range [2,8].  If
+<cite>config</cite> is <tt class="docutils literal"><span class="pre">None</span></tt>, all traces of the GF store are decimated and held
+available (i.e. the index mapping of the original store is used),
+otherwise, a different spacial stepping can be specified by giving a
+modified GF store configuration in <cite>config</cite> (see <a class="reference internal" href="#pyrocko.gf.store.Store.create" title="pyrocko.gf.store.Store.create"><tt class="xref py py-meth docutils literal"><span class="pre">create()</span></tt></a>).
+Decimated GF sub-stores are created under the <cite>decimated</cite> subdirectory
+within the GF store directory. Holding available decimated versions of
+the GF store can save computation time, IO bandwidth, or decrease
+memory footprint at the cost of increased disk space usage, when
+computation are done for lower frequency signals.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.gf.store.Store.make_timing_params">
+<tt class="descname">make_timing_params</tt><big>(</big><em>begin</em>, <em>end</em>, <em>snap_vred=True</em><big>)</big><a class="reference internal" href="_modules/pyrocko/gf/store.html#Store.make_timing_params"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.gf.store.Store.make_timing_params" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute tight parameterized time ranges to include given timings.</p>
+<p>Calculates appropriate time ranges to cover given begin and end timings
+over all GF points in the store. A dict with the following keys is 
+returned:</p>
+<blockquote>
+<div><p>tmin: time [s] minimum of begin timing over all GF points
+tmax: time [s] maximum of end timing over all GF points
+vred, tmin_vred: slope [m/s] and offset [s] of reduction velocity [m/s]</p>
+<blockquote>
+<div>appropriate to catch begin timing over all GF points</div></blockquote>
+<dl class="docutils">
+<dt>tlenmax_vred: maximum time length needed to cover all end timings,</dt>
+<dd>when using linear slope given with (vred, tmin_vred) as start</dd>
+</dl>
+</div></blockquote>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="slink.html" title="The slink Module"
+             >previous</a> |</li>
+        <li><a href="index.html">Pyrocko v0.3 Manual</a> &raquo;</li>
+          <li><a href="reference.html" >Library Reference</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2012, Sebastian Heimann. <img src="http://kinherd.org/pyrocko.png" width="5" height="5">
+    </div>
+  </body>
+</html>

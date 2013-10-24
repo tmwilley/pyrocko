@@ -61,6 +61,16 @@
   <div class="section" id="module-pyrocko.moment_tensor">
 <span id="the-moment-tensor-module"></span><h1>The <tt class="xref py py-mod docutils literal"><span class="pre">moment_tensor</span></tt> Module<a class="headerlink" href="#module-pyrocko.moment_tensor" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
+<dt id="pyrocko.moment_tensor.rotation_from_axis_and_angle">
+<tt class="descname">rotation_from_axis_and_angle</tt><big>(</big><em>angle</em>, <em>axis</em><big>)</big><a class="reference internal" href="_modules/pyrocko/moment_tensor.html#rotation_from_axis_and_angle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.moment_tensor.rotation_from_axis_and_angle" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pyrocko.moment_tensor.random_rotation">
+<tt class="descname">random_rotation</tt><big>(</big><em>x=None</em><big>)</big><a class="reference internal" href="_modules/pyrocko/moment_tensor.html#random_rotation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.moment_tensor.random_rotation" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
 <dt id="pyrocko.moment_tensor.symmat6">
 <tt class="descname">symmat6</tt><big>(</big><em>*vals</em><big>)</big><a class="reference internal" href="_modules/pyrocko/moment_tensor.html#symmat6"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.moment_tensor.symmat6" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create symmetric 3x3 matrix from its 6 non-redundant values.</p>
@@ -148,11 +158,21 @@ zero, to prevent that additional ambiguity.</p>
 <dl class="class">
 <dt id="pyrocko.moment_tensor.MomentTensor">
 <em class="property">class </em><tt class="descname">MomentTensor</tt><big>(</big><em>m=None</em>, <em>m_up_south_east=None</em>, <em>strike=0.0</em>, <em>dip=0.0</em>, <em>rake=0.0</em>, <em>scalar_moment=1.0</em><big>)</big><a class="reference internal" href="_modules/pyrocko/moment_tensor.html#MomentTensor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.moment_tensor.MomentTensor" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="method">
+<dd><dl class="classmethod">
+<dt id="pyrocko.moment_tensor.MomentTensor.random_dc">
+<em class="property">classmethod </em><tt class="descname">random_dc</tt><big>(</big><em>x=None</em><big>)</big><a class="reference internal" href="_modules/pyrocko/moment_tensor.html#MomentTensor.random_dc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.moment_tensor.MomentTensor.random_dc" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
 <dt id="pyrocko.moment_tensor.MomentTensor.both_strike_dip_rake">
 <tt class="descname">both_strike_dip_rake</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/moment_tensor.html#MomentTensor.both_strike_dip_rake"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.moment_tensor.MomentTensor.both_strike_dip_rake" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get both possible (strike,dip,rake) triplets.</p>
 </dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.moment_tensor.MomentTensor.angle">
+<tt class="descname">angle</tt><big>(</big><em>other</em><big>)</big><a class="reference internal" href="_modules/pyrocko/moment_tensor.html#MomentTensor.angle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.moment_tensor.MomentTensor.angle" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="method">
 <dt id="pyrocko.moment_tensor.MomentTensor.p_axis">

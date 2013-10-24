@@ -95,8 +95,11 @@
 
 <dl class="describe">
 <dt>
-<tt class="descname">usb628://&lt;device&gt;?&lt;rate&gt;</tt></dt>
-<dd><p>Acquire data from a USB628 module.</p>
+<tt class="descname">hb628://&lt;device&gt;[?rate=&lt;rate&gt;[&amp;channels=&lt;channels&gt;]]</tt></dt>
+<dd><p>Acquire data from eight-channel USB-HB628 module. Example: to read channels
+0, 3 and 5 from serial device <tt class="docutils literal"><span class="pre">/dev/ttyS0</span></tt> at default rate (50Hz), use
+<tt class="docutils literal"><span class="pre">snuffler</span> <span class="pre">'hb628:///dev/ttyS0?channels=035'</span></tt>. By default all channels are
+shown.</p>
 </dd></dl>
 
 <dl class="describe">
@@ -129,7 +132,15 @@
 <dl class="option">
 <dt id="cmdoption-snuffler--stations">
 <tt class="descname">--stations</tt><tt class="descclassname">=STATIONS</tt><a class="headerlink" href="#cmdoption-snuffler--stations" title="Permalink to this definition">¶</a></dt>
-<dd><p>read station information from file <tt class="docutils literal"><span class="pre">STATIONS</span></tt>, this option can be given more than once</p>
+<dd><p>read station information from file <tt class="docutils literal"><span class="pre">STATIONS</span></tt>, this option can be given
+more than once.  The format of the stations file is a simple five-column
+ASCII table where each line has the form</p>
+<div class="highlight-python"><pre>&lt;net&gt;.&lt;sta&gt;.&lt;loc&gt;  &lt;latitude&gt;  &lt;longitude&gt;  &lt;altitude&gt;  &lt;sensor-depth&gt;</pre>
+</div>
+<p><tt class="docutils literal"><span class="pre">&lt;net&gt;</span></tt>, <tt class="docutils literal"><span class="pre">&lt;sta&gt;</span></tt>, and <tt class="docutils literal"><span class="pre">&lt;loc&gt;</span></tt> are the network, station and location
+codes, respectively. <tt class="docutils literal"><span class="pre">&lt;altitude&gt;</span></tt> and <tt class="docutils literal"><span class="pre">&lt;sensor-depth&gt;</span></tt> are given in
+[m]. If network and location code are empty, use <tt class="docutils literal"><span class="pre">.&lt;sta&gt;.</span></tt>, i.e. the dots
+should not be omitted.</p>
 </dd></dl>
 
 <dl class="option">
@@ -151,9 +162,27 @@
 </dd></dl>
 
 <dl class="option">
+<dt id="cmdoption-snuffler--cache">
+<tt class="descname">--cache</tt><tt class="descclassname">=DIR</tt><a class="headerlink" href="#cmdoption-snuffler--cache" title="Permalink to this definition">¶</a></dt>
+<dd><p>use directory DIR to cache trace metadata (default: <tt class="docutils literal"><span class="pre">pyrocko_0.3_cache_&lt;username&gt;</span></tt> in the system&#8217;s default temporary directory)</p>
+</dd></dl>
+
+<dl class="option">
 <dt id="cmdoption-snuffler--force-cache">
 <tt class="descname">--force-cache</tt><tt class="descclassname"></tt><a class="headerlink" href="#cmdoption-snuffler--force-cache" title="Permalink to this definition">¶</a></dt>
 <dd><p>use the cache even when trace attribute spoofing is active (may have silly consequences)</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-snuffler--store-path">
+<tt class="descname">--store-path</tt><tt class="descclassname">=TARGET</tt><a class="headerlink" href="#cmdoption-snuffler--store-path" title="Permalink to this definition">¶</a></dt>
+<dd><p>store data received through streams to TARGET. If TARGET is a directory, filnames are automatically choosen. If    more control over the filenames is needed, TARGET can be a filename template containing placeholders like <tt class="docutils literal"><span class="pre">%(KEY)s</span></tt>, where KEY is any of <tt class="docutils literal"><span class="pre">network</span></tt>, <tt class="docutils literal"><span class="pre">station</span></tt>, <tt class="docutils literal"><span class="pre">location</span></tt>, <tt class="docutils literal"><span class="pre">channel</span></tt>, <tt class="docutils literal"><span class="pre">tmin</span></tt> (time of first sample), <tt class="docutils literal"><span class="pre">tmax</span></tt> (time of last sample).</p>
+</dd></dl>
+
+<dl class="option">
+<dt id="cmdoption-snuffler--store-interval">
+<tt class="descname">--store-interval</tt><tt class="descclassname">=N</tt><a class="headerlink" href="#cmdoption-snuffler--store-interval" title="Permalink to this definition">¶</a></dt>
+<dd><p>dump stream data to file every N seconds [default: <tt class="docutils literal"><span class="pre">600</span></tt>]</p>
 </dd></dl>
 
 <dl class="option">
@@ -174,12 +203,6 @@
 <dd><p>print debugging information to stderr</p>
 </dd></dl>
 
-<div class="section" id="read-station-information">
-<h3>Read Station Information<a class="headerlink" href="#read-station-information" title="Permalink to this headline">¶</a></h3>
-<p><tt class="docutils literal"><span class="pre">snuffler</span> <span class="pre">--stations=station_file.txt</span></tt>
-will read location and nslc informations from a file named <tt class="docutils literal"><span class="pre">station_file.txt</span></tt>. The required format of this file is
-<em>n.s.l.c latitude longitude elevation elevationcorrection</em></p>
-</div>
 </div>
 <div class="section" id="keystrokes">
 <h2>Keystrokes<a class="headerlink" href="#keystrokes" title="Permalink to this headline">¶</a></h2>

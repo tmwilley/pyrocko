@@ -845,24 +845,6 @@ interpolation of the form</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pyrocko.cake.RayPath.interpolate_t2x_linear">
-<tt class="descname">interpolate_t2x_linear</tt><big>(</big><em>t</em>, <em>endgaps</em><big>)</big><a class="reference internal" href="_modules/pyrocko/cake.html#RayPath.interpolate_t2x_linear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.cake.RayPath.interpolate_t2x_linear" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get approximate distance for arrival time.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.cake.RayPath.interpolate_x2t_linear">
-<tt class="descname">interpolate_x2t_linear</tt><big>(</big><em>x</em>, <em>endgaps</em><big>)</big><a class="reference internal" href="_modules/pyrocko/cake.html#RayPath.interpolate_x2t_linear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.cake.RayPath.interpolate_x2t_linear" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get approximate arrival time for distance.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.cake.RayPath.interpolate_t2px_linear">
-<tt class="descname">interpolate_t2px_linear</tt><big>(</big><em>t</em>, <em>endgaps</em><big>)</big><a class="reference internal" href="_modules/pyrocko/cake.html#RayPath.interpolate_t2px_linear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.cake.RayPath.interpolate_t2px_linear" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get approximate ray parameter and distance for arrivaltime.</p>
-</dd></dl>
-
-<dl class="method">
 <dt id="pyrocko.cake.RayPath.interpolate_x2pt_linear">
 <tt class="descname">interpolate_x2pt_linear</tt><big>(</big><em>x</em>, <em>endgaps</em><big>)</big><a class="reference internal" href="_modules/pyrocko/cake.html#RayPath.interpolate_x2pt_linear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.cake.RayPath.interpolate_x2pt_linear" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get approximate ray parameter and traveltime for distance.</p>
@@ -896,7 +878,7 @@ interpolation of the form</p>
 
 <dl class="class">
 <dt id="pyrocko.cake.Ray">
-<em class="property">class </em><tt class="descname">Ray</tt><big>(</big><em>path</em>, <em>p</em>, <em>x</em>, <em>t</em>, <em>endgaps</em><big>)</big><a class="reference internal" href="_modules/pyrocko/cake.html#Ray"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.cake.Ray" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descname">Ray</tt><big>(</big><em>path</em>, <em>p</em>, <em>x</em>, <em>t</em>, <em>endgaps</em>, <em>draft_pxt</em><big>)</big><a class="reference internal" href="_modules/pyrocko/cake.html#Ray"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.cake.Ray" title="Permalink to this definition">¶</a></dt>
 <dd><p>Representation of a ray with a specific (path, ray parameter, distance, arrival time) choice.</p>
 <p><strong>Attributes:</strong></p>
 <blockquote>
@@ -1390,15 +1372,6 @@ siliciclastic rocks (i.e. sandstones and shales). [Castagna et al., 1985]</p>
 <dd><p>Create NumPy array filled with given value.</p>
 <p>This works like <tt class="xref py py-func docutils literal"><span class="pre">numpy.ones()</span></tt> but initializes the array with <cite>v</cite> instead
 of ones.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyrocko.cake.monotony">
-<tt class="descname">monotony</tt><big>(</big><em>x</em><big>)</big><a class="reference internal" href="_modules/pyrocko/cake.html#monotony"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.cake.monotony" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check if an array is strictly increasing or decreasing.</p>
-<p>Given an array <cite>x</cite>, returns <cite>1</cite> if the values of x are in strictly
-increasing order and <cite>-1</cite> if they are in strictly decreasing order, or zero
-otherwise.</p>
 </dd></dl>
 
 </div>

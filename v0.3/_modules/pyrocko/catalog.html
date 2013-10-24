@@ -504,7 +504,7 @@
 </div>
 <div class="viewcode-block" id="USGS"><a class="viewcode-back" href="../../catalog.html#pyrocko.catalog.USGS">[docs]</a><span class="k">class</span> <span class="nc">USGS</span><span class="p">(</span><span class="n">EarthquakeCatalog</span><span class="p">):</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">catalog</span><span class="o">=</span><span class="p">(</span><span class="s">&#39;PDE&#39;</span><span class="p">,</span> <span class="s">&#39;PDE-Q&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">catalog</span><span class="o">=</span><span class="s">&#39;pde&#39;</span><span class="p">):</span>
        <span class="bp">self</span><span class="o">.</span><span class="n">catalog</span> <span class="o">=</span> <span class="n">catalog</span> 
        <span class="bp">self</span><span class="o">.</span><span class="n">events</span> <span class="o">=</span> <span class="p">{}</span>
 
@@ -513,43 +513,31 @@
 </div>
 <div class="viewcode-block" id="USGS.iter_event_names"><a class="viewcode-back" href="../../catalog.html#pyrocko.catalog.USGS.iter_event_names">[docs]</a>    <span class="k">def</span> <span class="nf">iter_event_names</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time_range</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">magmin</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">magmax</span><span class="o">=</span><span class="mf">10.</span><span class="p">,</span> <span class="n">latmin</span><span class="o">=-</span><span class="mf">90.</span><span class="p">,</span> <span class="n">latmax</span><span class="o">=</span><span class="mf">90.</span><span class="p">,</span> <span class="n">lonmin</span><span class="o">=-</span><span class="mf">180.</span><span class="p">,</span> <span class="n">lonmax</span><span class="o">=</span><span class="mf">180.</span><span class="p">):</span>
 
-        <span class="n">catmap</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;PDE&#39;</span><span class="p">:</span> <span class="s">&#39;HH&#39;</span><span class="p">,</span> <span class="s">&#39;PDE-Q&#39;</span><span class="p">:</span> <span class="s">&#39;PP&#39;</span><span class="p">}</span>
-        
         <span class="n">yearbeg</span><span class="p">,</span> <span class="n">monbeg</span><span class="p">,</span> <span class="n">daybeg</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">gmtime</span><span class="p">(</span><span class="n">time_range</span><span class="p">[</span><span class="mi">0</span><span class="p">])[:</span><span class="mi">3</span><span class="p">]</span>
         <span class="n">yearend</span><span class="p">,</span> <span class="n">monend</span><span class="p">,</span> <span class="n">dayend</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">gmtime</span><span class="p">(</span><span class="n">time_range</span><span class="p">[</span><span class="mi">1</span><span class="p">])[:</span><span class="mi">3</span><span class="p">]</span>
         
-        <span class="k">if</span> <span class="n">latmin</span> <span class="o">!=</span> <span class="o">-</span><span class="mf">90.</span> <span class="ow">or</span> <span class="n">latmax</span> <span class="o">!=</span> <span class="mf">90.</span> <span class="ow">or</span> <span class="n">lonmin</span> <span class="o">!=</span> <span class="o">-</span><span class="mf">180.</span> <span class="ow">or</span> <span class="n">lonmax</span> <span class="o">!=</span> <span class="mf">180.</span><span class="p">:</span>
-            <span class="n">searchmethod</span> <span class="o">=</span> <span class="mi">2</span>
-            <span class="c"># searchmethod=2 is for rectangular lat/lon area, but currently does not seem to work</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">append</span>
+        <span class="n">a</span><span class="p">(</span><span class="s">&#39;format=geojson&#39;</span><span class="p">)</span>
+        <span class="n">a</span><span class="p">(</span><span class="s">&#39;catalog=</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">catalog</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
 
-        <span class="n">searchmethod</span> <span class="o">=</span> <span class="mi">1</span>
-        <span class="n">url</span> <span class="o">=</span> <span class="s">&#39;http://neic.usgs.gov/cgi-bin/epic/epic.cgi?&#39;</span> <span class="o">+</span> <span class="s">&#39;&amp;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span>
-                <span class="s">&#39;SEARCHMETHOD=</span><span class="si">%i</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">searchmethod</span><span class="p">,</span>
-                <span class="s">&#39;FILEFORMAT=6&#39;</span><span class="p">,</span>
-                <span class="s">&#39;SEARCHRANGE=</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">catmap</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">catalog</span><span class="p">],</span>
-                <span class="p">]</span> <span class="o">+</span> <span class="p">([],[</span>
-                    <span class="s">&#39;SLAT1=</span><span class="si">%g</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">latmin</span><span class="p">,</span>
-                    <span class="s">&#39;SLAT2=</span><span class="si">%g</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">latmax</span><span class="p">,</span>
-                    <span class="s">&#39;SLON1=</span><span class="si">%g</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">lonmin</span><span class="p">,</span>
-                    <span class="s">&#39;SLON2=</span><span class="si">%g</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">lonmax</span><span class="p">,</span>
-                <span class="p">])[</span><span class="n">searchmethod</span><span class="o">==</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span>
-                <span class="s">&#39;SYEAR=</span><span class="si">%i</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">yearbeg</span><span class="p">,</span>
-                <span class="s">&#39;SMONTH=</span><span class="si">%02i</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">monbeg</span><span class="p">,</span>
-                <span class="s">&#39;SDAY=</span><span class="si">%02i</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">daybeg</span><span class="p">,</span>
-                <span class="s">&#39;EYEAR=</span><span class="si">%i</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">yearend</span><span class="p">,</span>
-                <span class="s">&#39;EMONTH=</span><span class="si">%02i</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">monend</span><span class="p">,</span>
-                <span class="s">&#39;EDAY=</span><span class="si">%02i</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">dayend</span><span class="p">,</span>
-                <span class="s">&#39;LMAG=</span><span class="si">%g</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">magmin</span><span class="p">,</span>
-                <span class="s">&#39;UMAG=</span><span class="si">%g</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">magmax</span><span class="p">,</span>
-                <span class="s">&#39;NDEP1=&#39;</span><span class="p">,</span>
-                <span class="s">&#39;NDEP2=&#39;</span><span class="p">,</span>
-                <span class="s">&#39;IO1=&#39;</span><span class="p">,</span>
-                <span class="s">&#39;IO2=&#39;</span><span class="p">,</span>
-                <span class="s">&#39;CLAT=0.0&#39;</span><span class="p">,</span>
-                <span class="s">&#39;CLON=0.0&#39;</span><span class="p">,</span>
-                <span class="s">&#39;CRAD=0.0&#39;</span><span class="p">,</span>
-                <span class="s">&#39;SUBMIT=Submit+Search&#39;</span><span class="p">])</span>
+        <span class="n">a</span><span class="p">(</span><span class="s">&#39;starttime=</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">util</span><span class="o">.</span><span class="n">time_to_str</span><span class="p">(</span><span class="n">time_range</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">format</span><span class="o">=</span><span class="s">&#39;%Y-%m-</span><span class="si">%d</span><span class="s">T%H:%M:%S&#39;</span><span class="p">))</span>
+        <span class="n">a</span><span class="p">(</span><span class="s">&#39;endtime=</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">util</span><span class="o">.</span><span class="n">time_to_str</span><span class="p">(</span><span class="n">time_range</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">format</span><span class="o">=</span><span class="s">&#39;%Y-%m-</span><span class="si">%d</span><span class="s">T%H:%M:%S&#39;</span><span class="p">))</span>
 
+        <span class="k">if</span> <span class="n">latmin</span> <span class="o">!=</span> <span class="o">-</span><span class="mf">90.</span><span class="p">:</span>
+            <span class="n">a</span><span class="p">(</span><span class="s">&#39;minlatitude=</span><span class="si">%g</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">latmin</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">latmax</span> <span class="o">!=</span> <span class="mf">90.</span><span class="p">:</span>
+            <span class="n">a</span><span class="p">(</span><span class="s">&#39;maxlatitude=</span><span class="si">%g</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">latmax</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">lonmin</span> <span class="o">!=</span> <span class="o">-</span><span class="mf">180.</span><span class="p">:</span>
+            <span class="n">a</span><span class="p">(</span><span class="s">&#39;minlongitude=</span><span class="si">%g</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">lonmin</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">lonmax</span> <span class="o">!=</span> <span class="mf">180.</span><span class="p">:</span>
+            <span class="n">a</span><span class="p">(</span><span class="s">&#39;maxlongitude=</span><span class="si">%g</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">lonmax</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">magmin</span> <span class="o">!=</span> <span class="mf">0.</span><span class="p">:</span>
+            <span class="n">a</span><span class="p">(</span><span class="s">&#39;minmagnitude=</span><span class="si">%g</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">magmin</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">magmax</span> <span class="o">!=</span> <span class="mf">10.</span><span class="p">:</span>
+            <span class="n">a</span><span class="p">(</span><span class="s">&#39;maxmagnitude=</span><span class="si">%g</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">magmax</span><span class="p">)</span>
+        
+        <span class="n">url</span> <span class="o">=</span> <span class="s">&#39;http://comcat.cr.usgs.gov/fdsnws/event/1/query?&#39;</span> <span class="o">+</span> <span class="s">&#39;&amp;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
 
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;Opening URL: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">url</span><span class="p">)</span>
         <span class="n">page</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
@@ -565,24 +553,30 @@
                 <span class="k">yield</span> <span class="n">ev</span><span class="o">.</span><span class="n">name</span>
 </div>
     <span class="k">def</span> <span class="nf">_parse_events_page</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">page</span><span class="p">):</span>
+
+        <span class="kn">import</span> <span class="nn">json</span>
+        <span class="n">doc</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">page</span><span class="p">)</span>
+        
         <span class="n">events</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">page</span><span class="o">.</span><span class="n">splitlines</span><span class="p">():</span>
-            <span class="n">toks</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;,&#39;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">toks</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">9</span><span class="p">:</span>
-                <span class="k">continue</span>
+        <span class="k">for</span> <span class="n">feat</span> <span class="ow">in</span> <span class="n">doc</span><span class="p">[</span><span class="s">&#39;features&#39;</span><span class="p">]:</span>
+            <span class="n">props</span> <span class="o">=</span> <span class="n">feat</span><span class="p">[</span><span class="s">&#39;properties&#39;</span><span class="p">]</span>
+            <span class="n">geo</span> <span class="o">=</span> <span class="n">feat</span><span class="p">[</span><span class="s">&#39;geometry&#39;</span><span class="p">]</span>
+            <span class="n">lon</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">depth</span> <span class="o">=</span> <span class="p">[</span> <span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">geo</span><span class="p">[</span><span class="s">&#39;coordinates&#39;</span><span class="p">]</span> <span class="p">]</span>
+            <span class="n">t</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">str_to_time</span><span class="p">(</span><span class="s">&#39;1970-01-01 00:00:00&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="n">props</span><span class="p">[</span><span class="s">&#39;time&#39;</span><span class="p">]</span> <span class="o">*</span><span class="mf">0.001</span>
+            <span class="k">if</span> <span class="n">props</span><span class="p">[</span><span class="s">&#39;mag&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">mag</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">props</span><span class="p">[</span><span class="s">&#39;mag&#39;</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">mag</span> <span class="o">=</span> <span class="bp">None</span>
 
-            <span class="k">try</span><span class="p">:</span>
-                <span class="nb">int</span><span class="p">(</span><span class="n">toks</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-            <span class="k">except</span><span class="p">:</span>
-                <span class="k">continue</span>
 
-            <span class="n">t</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">str_to_time</span><span class="p">(</span><span class="s">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">toks</span><span class="p">[:</span><span class="mi">4</span><span class="p">])</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span> <span class="n">format</span><span class="o">=</span><span class="s">&#39;%Y,%m,</span><span class="si">%d</span><span class="s">,%H%M%S.OPTFRAC&#39;</span><span class="p">)</span>
-            <span class="n">lat</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">toks</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span>
-            <span class="n">lon</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">toks</span><span class="p">[</span><span class="mi">5</span><span class="p">])</span>
-            <span class="n">mag</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">toks</span><span class="p">[</span><span class="mi">6</span><span class="p">])</span>
-            <span class="n">depth</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">toks</span><span class="p">[</span><span class="mi">7</span><span class="p">])</span>
-            <span class="n">catalog</span> <span class="o">=</span> <span class="n">toks</span><span class="p">[</span><span class="mi">8</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">props</span><span class="p">[</span><span class="s">&#39;place&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">region</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">props</span><span class="p">[</span><span class="s">&#39;place&#39;</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">region</span> <span class="o">=</span> <span class="bp">None</span>
+
+            <span class="n">catalog</span><span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">props</span><span class="p">[</span><span class="s">&#39;net&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">upper</span><span class="p">())</span>
             <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;USGS-</span><span class="si">%s</span><span class="s">-&#39;</span> <span class="o">%</span> <span class="n">catalog</span> <span class="o">+</span> <span class="n">util</span><span class="o">.</span><span class="n">time_to_str</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="s">&#39;%Y-%m-</span><span class="si">%d</span><span class="s">_%H-%M-%S.3FRAC&#39;</span><span class="p">)</span>
+
             <span class="n">ev</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">Event</span><span class="p">(</span>
                     <span class="n">lat</span><span class="o">=</span><span class="n">lat</span><span class="p">,</span>
                     <span class="n">lon</span><span class="o">=</span><span class="n">lon</span><span class="p">,</span> 
@@ -590,9 +584,10 @@
                     <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
                     <span class="n">depth</span><span class="o">=</span><span class="n">depth</span><span class="o">*</span><span class="mf">1000.</span><span class="p">,</span>
                     <span class="n">magnitude</span><span class="o">=</span><span class="n">mag</span><span class="p">,</span>
+                    <span class="n">region</span><span class="o">=</span><span class="n">region</span><span class="p">,</span>
                     <span class="n">catalog</span><span class="o">=</span><span class="n">catalog</span><span class="p">)</span>
 
-            <span class="n">events</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="n">ev</span> <span class="p">)</span>
+            <span class="n">events</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ev</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">events</span>
     
@@ -674,6 +669,12 @@
                 <span class="n">name</span> <span class="o">=</span> <span class="n">eq</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">],</span>
                 <span class="n">catalog</span><span class="o">=</span><span class="s">&#39;KPS&#39;</span><span class="p">,</span>
                 <span class="n">moment_tensor</span> <span class="o">=</span> <span class="n">mt</span><span class="p">)</span>
+
+            <span class="n">event</span><span class="o">.</span><span class="n">ext_confidence_intervals</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">trans</span> <span class="o">=</span> <span class="p">{</span> <span class="s">&#39;latitude&#39;</span><span class="p">:</span> <span class="s">&#39;lat&#39;</span><span class="p">,</span> <span class="s">&#39;longitude&#39;</span><span class="p">:</span> <span class="s">&#39;lon&#39;</span> <span class="p">}</span>
+            <span class="k">for</span> <span class="n">par</span> <span class="ow">in</span> <span class="s">&#39;latitude longitude depth magnitude&#39;</span><span class="o">.</span><span class="n">split</span><span class="p">():</span>
+                <span class="n">event</span><span class="o">.</span><span class="n">ext_confidence_intervals</span><span class="p">[</span><span class="n">trans</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">par</span><span class="p">,</span> <span class="n">par</span><span class="p">)]</span> <span class="o">=</span> \
+                        <span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="n">par</span><span class="o">+</span><span class="s">&#39;_ci_low&#39;</span><span class="p">],</span> <span class="n">params</span><span class="p">[</span><span class="n">par</span><span class="o">+</span><span class="s">&#39;_ci_high&#39;</span><span class="p">])</span>
             
             <span class="n">name</span> <span class="o">=</span> <span class="n">eq</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">events</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">event</span>
