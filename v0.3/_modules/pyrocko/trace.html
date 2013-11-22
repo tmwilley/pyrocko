@@ -51,17 +51,13 @@
           <div class="body">
             
   <h1>Source code for pyrocko.trace</h1><div class="highlight"><pre>
-<span class="sd">&#39;&#39;&#39;This module provides basic signal processing for seismic traces.</span>
+<span class="sd">&#39;&#39;&#39;This module provides basic signal processing for seismic traces.&#39;&#39;&#39;</span>
 
-
-<span class="sd">&#39;&#39;&#39;</span>
-
-<span class="kn">import</span> <span class="nn">util</span><span class="o">,</span> <span class="nn">evalresp</span>
 <span class="kn">import</span> <span class="nn">time</span><span class="o">,</span> <span class="nn">math</span><span class="o">,</span> <span class="nn">copy</span><span class="o">,</span> <span class="nn">logging</span><span class="o">,</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">num</span>
-<span class="kn">from</span> <span class="nn">util</span> <span class="kn">import</span> <span class="n">reuse</span><span class="p">,</span> <span class="n">hpfloat</span>
 <span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">signal</span>
-<span class="kn">from</span> <span class="nn">pyrocko</span> <span class="kn">import</span> <span class="n">model</span><span class="p">,</span> <span class="n">orthodrome</span>
+<span class="kn">from</span> <span class="nn">pyrocko</span> <span class="kn">import</span> <span class="n">util</span><span class="p">,</span> <span class="n">evalresp</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">orthodrome</span>
+<span class="kn">from</span> <span class="nn">pyrocko.util</span> <span class="kn">import</span> <span class="n">reuse</span><span class="p">,</span> <span class="n">hpfloat</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s">&#39;pyrocko.trace&#39;</span><span class="p">)</span>
 
@@ -1052,7 +1048,7 @@
         <span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">d</span> <span class="o">=</span> <span class="n">freqlimits</span>
         <span class="n">freqs</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">hi</span><span class="p">(</span><span class="n">d</span><span class="p">)</span><span class="o">-</span><span class="n">hi</span><span class="p">(</span><span class="n">a</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">num</span><span class="o">.</span><span class="n">float</span><span class="p">)</span><span class="o">*</span><span class="n">deltaf</span> <span class="o">+</span> <span class="n">hi</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="o">*</span><span class="n">deltaf</span>
         <span class="n">transfer</span><span class="p">[</span><span class="n">hi</span><span class="p">(</span><span class="n">a</span><span class="p">):</span><span class="n">hi</span><span class="p">(</span><span class="n">d</span><span class="p">)]</span> <span class="o">=</span> <span class="n">transfer_function</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">freqs</span><span class="p">)</span>
-        
+
         <span class="n">tapered_transfer</span> <span class="o">=</span> <span class="n">costaper</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">d</span><span class="p">,</span> <span class="n">nfreqs</span><span class="p">,</span> <span class="n">deltaf</span><span class="p">)</span><span class="o">*</span><span class="n">transfer</span>
         <span class="n">tapered_transfer</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span> <span class="c"># don&#39;t introduce static offsets</span>
         <span class="k">return</span> <span class="n">tapered_transfer</span>
@@ -1877,7 +1873,14 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_gain</span> <span class="o">=</span> <span class="n">gain</span>
         
 <div class="viewcode-block" id="IntegrationResponse.evaluate"><a class="viewcode-back" href="../../trace.html#pyrocko.trace.IntegrationResponse.evaluate">[docs]</a>    <span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">freqs</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gain</span> <span class="o">/</span> <span class="p">(</span><span class="mf">1.0j</span> <span class="o">*</span> <span class="mf">2.</span> <span class="o">*</span> <span class="n">num</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">freqs</span><span class="p">)</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_n</span>
+        
+        <span class="n">nonzero</span> <span class="o">=</span> <span class="n">freqs</span> <span class="o">!=</span> <span class="mf">0.0</span>
+
+        <span class="n">resp</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">freqs</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">num</span><span class="o">.</span><span class="n">complex</span><span class="p">)</span>
+
+        <span class="n">resp</span><span class="p">[</span><span class="n">nonzero</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gain</span> <span class="o">/</span> <span class="p">(</span><span class="mf">1.0j</span> <span class="o">*</span> <span class="mf">2.</span> <span class="o">*</span> <span class="n">num</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">freqs</span><span class="p">[</span><span class="n">nonzero</span><span class="p">])</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_n</span>
+        <span class="n">resp</span><span class="p">[</span><span class="n">num</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">nonzero</span><span class="p">)]</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="k">return</span> <span class="n">resp</span>
 </div></div>
 <div class="viewcode-block" id="DifferentiationResponse"><a class="viewcode-back" href="../../trace.html#pyrocko.trace.DifferentiationResponse">[docs]</a><span class="k">class</span> <span class="nc">DifferentiationResponse</span><span class="p">(</span><span class="n">FrequencyResponse</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;The differentiation response, optionally multiplied by a constant gain.</span>
@@ -1916,8 +1919,7 @@
 <div class="viewcode-block" id="MultiplyResponse.evaluate"><a class="viewcode-back" href="../../trace.html#pyrocko.trace.MultiplyResponse.evaluate">[docs]</a>    <span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">freqs</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_a</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">freqs</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_b</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">freqs</span><span class="p">)</span>
 </div></div>
-<span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span> <span class="o">&gt;=</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">5</span><span class="p">):</span>
-    <span class="kn">from</span> <span class="nn">need_python_2_5.trace</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="k">print</span> <span class="s">&#39;xxx&#39;</span>
 
 <span class="n">cached_coefficients</span> <span class="o">=</span> <span class="p">{}</span>
 <span class="k">def</span> <span class="nf">_get_cached_filter_coefs</span><span class="p">(</span><span class="n">order</span><span class="p">,</span> <span class="n">corners</span><span class="p">,</span> <span class="n">btype</span><span class="p">):</span>
@@ -2142,7 +2144,7 @@
     <span class="k">if</span> <span class="n">N</span> <span class="o">&lt;=</span><span class="mi">0</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">,</span> <span class="s">&quot;N must be positive.&quot;</span>
     <span class="k">if</span> <span class="n">num</span><span class="o">.</span><span class="n">iscomplexobj</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-        <span class="k">print</span> <span class="s">&quot;Warning: imaginary part of x ignored.&quot;</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&#39;imaginary part of x ignored.&#39;</span><span class="p">)</span>
         <span class="n">x</span> <span class="o">=</span> <span class="n">real</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
     <span class="n">Xf</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fft</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
     <span class="n">h</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
@@ -2157,9 +2159,184 @@
         <span class="n">h</span> <span class="o">=</span> <span class="n">h</span><span class="p">[:,</span> <span class="n">newaxis</span><span class="p">]</span>
     <span class="n">x</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">ifft</span><span class="p">(</span><span class="n">Xf</span><span class="o">*</span><span class="n">h</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">x</span>
+    </div>
+<div class="viewcode-block" id="near"><a class="viewcode-back" href="../../trace.html#pyrocko.trace.near">[docs]</a><span class="k">def</span> <span class="nf">near</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">eps</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">abs</span><span class="p">(</span><span class="n">a</span><span class="o">-</span><span class="n">b</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">eps</span>
+</div>
+<div class="viewcode-block" id="coroutine"><a class="viewcode-back" href="../../trace.html#pyrocko.trace.coroutine">[docs]</a><span class="k">def</span> <span class="nf">coroutine</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">gen</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">gen</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">gen</span>
+
+    <span class="n">wrapper</span><span class="o">.</span><span class="n">__name__</span> <span class="o">=</span> <span class="n">func</span><span class="o">.</span><span class="n">__name__</span>
+    <span class="n">wrapper</span><span class="o">.</span><span class="n">__dict__</span> <span class="o">=</span> <span class="n">func</span><span class="o">.</span><span class="n">__dict__</span>
+    <span class="n">wrapper</span><span class="o">.</span><span class="n">__doc__</span> <span class="o">=</span> <span class="n">func</span><span class="o">.</span><span class="n">__doc__</span>
+    <span class="k">return</span> <span class="n">wrapper</span>
+</div>
+<div class="viewcode-block" id="States"><a class="viewcode-back" href="../../trace.html#pyrocko.trace.States">[docs]</a><span class="k">class</span> <span class="nc">States</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Utility to store channel-specific state in coroutines.&#39;&#39;&#39;</span>
     
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_states</span> <span class="o">=</span> <span class="p">{}</span>
+
+<div class="viewcode-block" id="States.get"><a class="viewcode-back" href="../../trace.html#pyrocko.trace.States.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tr</span><span class="p">):</span>
+        <span class="n">k</span> <span class="o">=</span> <span class="n">tr</span><span class="o">.</span><span class="n">nslc_id</span>
+        <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_states</span><span class="p">:</span>
+            <span class="n">tmin</span><span class="p">,</span> <span class="n">deltat</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_states</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">near</span><span class="p">(</span><span class="n">tmin</span><span class="p">,</span> <span class="n">tr</span><span class="o">.</span><span class="n">tmin</span><span class="p">,</span> <span class="n">deltat</span><span class="o">/</span><span class="mf">100.</span><span class="p">)</span> <span class="ow">and</span>
+                <span class="n">near</span><span class="p">(</span><span class="n">deltat</span><span class="p">,</span> <span class="n">tr</span><span class="o">.</span><span class="n">deltat</span><span class="p">,</span> <span class="n">deltat</span><span class="o">/</span><span class="mf">10000.</span> <span class="ow">and</span>
+                <span class="n">dtype</span> <span class="o">==</span> <span class="n">tr</span><span class="o">.</span><span class="n">ydata</span><span class="o">.</span><span class="n">dtype</span><span class="p">)):</span>
+                <span class="k">return</span> <span class="n">value</span>
+        
+        <span class="k">return</span> <span class="bp">None</span>
+</div>
+<div class="viewcode-block" id="States.set"><a class="viewcode-back" href="../../trace.html#pyrocko.trace.States.set">[docs]</a>    <span class="k">def</span> <span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tr</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="n">k</span> <span class="o">=</span> <span class="n">tr</span><span class="o">.</span><span class="n">nslc_id</span>
+        <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_states</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_states</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">value</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">free</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_states</span><span class="p">[</span><span class="n">k</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_states</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">tr</span><span class="o">.</span><span class="n">tmax</span><span class="o">+</span><span class="n">tr</span><span class="o">.</span><span class="n">deltat</span><span class="p">,</span> <span class="n">tr</span><span class="o">.</span><span class="n">deltat</span><span class="p">,</span> <span class="n">tr</span><span class="o">.</span><span class="n">ydata</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="States.free"><a class="viewcode-back" href="../../trace.html#pyrocko.trace.States.free">[docs]</a>    <span class="k">def</span> <span class="nf">free</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">pass</span>
+
+</div></div>
+<span class="nd">@coroutine</span>
+<div class="viewcode-block" id="co_list_append"><a class="viewcode-back" href="../../trace.html#pyrocko.trace.co_list_append">[docs]</a><span class="k">def</span> <span class="nf">co_list_append</span><span class="p">(</span><span class="nb">list</span><span class="p">):</span>
+    <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+        <span class="nb">list</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="k">yield</span><span class="p">))</span>
+</div>
+<span class="nd">@coroutine</span>
+<div class="viewcode-block" id="co_lfilter"><a class="viewcode-back" href="../../trace.html#pyrocko.trace.co_lfilter">[docs]</a><span class="k">def</span> <span class="nf">co_lfilter</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span><span class="n">a</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Successively filter broken continuous trace data (coroutine).</span>
+<span class="sd">    </span>
+<span class="sd">    Create coroutine which takes :py:class:`Trace` objects, filters their data</span>
+<span class="sd">    through :py:func:`scipy.signal.lfilter` and sends new :py:class:`Trace`</span>
+<span class="sd">    objects containing the filtered data to target. This is useful, if one</span>
+<span class="sd">    wants to filter a long continuous time series, which is split into many</span>
+<span class="sd">    successive traces without producing filter artifacts at trace boundaries.</span>
+<span class="sd">    </span>
+<span class="sd">    Filter states are kept *per channel*, specifically, for each (network,</span>
+<span class="sd">    station, location, channel) combination occuring in the input traces, a</span>
+<span class="sd">    separate state is created and maintained. This makes it possible to filter</span>
+<span class="sd">    multichannel or multistation data with only one :py:func:`co_lfilter`</span>
+<span class="sd">    instance.</span>
+<span class="sd">    </span>
+<span class="sd">    Filter state is reset, when gaps occur.</span>
+<span class="sd">    </span>
+<span class="sd">    Use it like this::</span>
+<span class="sd">      </span>
+<span class="sd">      from pyrocko.trace import co_lfilter, co_list_append</span>
+
+<span class="sd">      filtered_traces = []</span>
+<span class="sd">      pipe = co_lfilter(co_list_append(filtered_traces), a,b)</span>
+<span class="sd">      for trace in traces:</span>
+<span class="sd">           pipe.send(trace)</span>
+
+<span class="sd">      pipe.close()</span>
+<span class="sd">    </span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">states</span> <span class="o">=</span> <span class="n">States</span><span class="p">()</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+            <span class="nb">input</span> <span class="o">=</span> <span class="p">(</span><span class="k">yield</span><span class="p">)</span>
+        
+            <span class="n">k</span> <span class="o">=</span> <span class="nb">input</span><span class="o">.</span><span class="n">nslc_id</span>
+            <span class="n">zi</span> <span class="o">=</span> <span class="n">states</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">input</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">zi</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">zi</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">a</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">b</span><span class="p">))</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">num</span><span class="o">.</span><span class="n">float</span><span class="p">)</span>
+            
+            <span class="n">output</span> <span class="o">=</span> <span class="nb">input</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+            <span class="n">ydata</span><span class="p">,</span> <span class="n">zf</span> <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">lfilter</span><span class="p">(</span><span class="n">b</span><span class="p">,</span><span class="n">a</span><span class="p">,</span> <span class="nb">input</span><span class="o">.</span><span class="n">get_ydata</span><span class="p">(),</span><span class="n">zi</span><span class="o">=</span><span class="n">zi</span><span class="p">)</span>
+            <span class="n">output</span><span class="o">.</span><span class="n">set_ydata</span><span class="p">(</span><span class="n">ydata</span><span class="p">)</span>
+            <span class="n">states</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="nb">input</span><span class="p">,</span> <span class="n">zf</span><span class="p">)</span>
+            <span class="n">target</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
+
+    <span class="k">except</span> <span class="ne">GeneratorExit</span><span class="p">:</span>
+        <span class="n">target</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="co_antialias"><a class="viewcode-back" href="../../trace.html#pyrocko.trace.co_antialias">[docs]</a><span class="k">def</span> <span class="nf">co_antialias</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">ftype</span><span class="o">=</span><span class="s">&#39;fir&#39;</span><span class="p">):</span>
+    <span class="n">b</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">n</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">decimate_coeffs</span><span class="p">(</span><span class="n">q</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="n">ftype</span><span class="p">)</span>
+    <span class="n">anti</span> <span class="o">=</span> <span class="n">co_lfilter</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span><span class="n">a</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">anti</span>
+</div>
+<span class="nd">@coroutine</span>
+<div class="viewcode-block" id="co_dropsamples"><a class="viewcode-back" href="../../trace.html#pyrocko.trace.co_dropsamples">[docs]</a><span class="k">def</span> <span class="nf">co_dropsamples</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">nfir</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">states</span> <span class="o">=</span> <span class="n">States</span><span class="p">()</span>
+        <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+            <span class="n">tr</span> <span class="o">=</span> <span class="p">(</span><span class="k">yield</span><span class="p">)</span>
+            <span class="n">newdeltat</span> <span class="o">=</span> <span class="n">q</span> <span class="o">*</span> <span class="n">tr</span><span class="o">.</span><span class="n">deltat</span>
+            <span class="n">ioffset</span> <span class="o">=</span> <span class="n">states</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">tr</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">ioffset</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="c"># for fir filter, the first nfir samples are pulluted by boundary effects; cut it off.</span>
+                <span class="c"># for iir this may be (much) more, we do not correct for that.</span>
+                <span class="c"># put sample instances to a time which is a multiple of the new sampling interval.</span>
+                <span class="n">newtmin_want</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">((</span><span class="n">tr</span><span class="o">.</span><span class="n">tmin</span><span class="o">+</span><span class="p">(</span><span class="n">nfir</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">tr</span><span class="o">.</span><span class="n">deltat</span><span class="p">)</span><span class="o">/</span><span class="n">newdeltat</span><span class="p">)</span> <span class="o">*</span> <span class="n">newdeltat</span> <span class="o">-</span> <span class="p">(</span><span class="n">nfir</span><span class="o">/</span><span class="mi">2</span><span class="o">*</span><span class="n">tr</span><span class="o">.</span><span class="n">deltat</span><span class="p">)</span>
+                <span class="n">ioffset</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">((</span><span class="n">newtmin_want</span> <span class="o">-</span> <span class="n">tr</span><span class="o">.</span><span class="n">tmin</span><span class="p">)</span><span class="o">/</span><span class="n">tr</span><span class="o">.</span><span class="n">deltat</span><span class="p">))</span>
+                <span class="k">if</span> <span class="n">ioffset</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">ioffset</span> <span class="o">=</span> <span class="n">ioffset</span> <span class="o">%</span> <span class="n">q</span>
+
+            <span class="n">newtmin_have</span> <span class="o">=</span> <span class="n">tr</span><span class="o">.</span><span class="n">tmin</span> <span class="o">+</span> <span class="n">ioffset</span> <span class="o">*</span> <span class="n">tr</span><span class="o">.</span><span class="n">deltat</span>
+            <span class="n">newtr</span> <span class="o">=</span> <span class="n">tr</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+            <span class="n">newtr</span><span class="o">.</span><span class="n">deltat</span> <span class="o">=</span> <span class="n">newdeltat</span>
+            <span class="n">newtr</span><span class="o">.</span><span class="n">tmin</span> <span class="o">=</span> <span class="n">newtmin_have</span> <span class="o">-</span> <span class="p">(</span><span class="n">nfir</span><span class="o">/</span><span class="mi">2</span><span class="o">*</span><span class="n">tr</span><span class="o">.</span><span class="n">deltat</span><span class="p">)</span> <span class="c"># because the fir kernel shifts data by nfir/2 samples</span>
+            <span class="n">newtr</span><span class="o">.</span><span class="n">set_ydata</span><span class="p">(</span><span class="n">tr</span><span class="o">.</span><span class="n">get_ydata</span><span class="p">()[</span><span class="n">ioffset</span><span class="p">::</span><span class="n">q</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">())</span>
+            <span class="n">states</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">tr</span><span class="p">,</span> <span class="p">(</span><span class="n">ioffset</span> <span class="o">%</span> <span class="n">q</span> <span class="o">-</span> <span class="n">tr</span><span class="o">.</span><span class="n">data_len</span><span class="p">()</span> <span class="o">%</span> <span class="n">q</span> <span class="p">)</span> <span class="o">%</span> <span class="n">q</span><span class="p">)</span>        
+            <span class="n">target</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">newtr</span><span class="p">)</span>
+
+    <span class="k">except</span> <span class="ne">GeneratorExit</span><span class="p">:</span>
+        <span class="n">target</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="co_downsample"><a class="viewcode-back" href="../../trace.html#pyrocko.trace.co_downsample">[docs]</a><span class="k">def</span> <span class="nf">co_downsample</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">ftype</span><span class="o">=</span><span class="s">&#39;fir&#39;</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Successively downsample broken continuous trace data (coroutine).</span>
+
+<span class="sd">    Create coroutine which takes :py:class:`Trace` objects, downsamples their</span>
+<span class="sd">    data and sends new :py:class:`Trace` objects containing the downsampled</span>
+<span class="sd">    data to target.  This is useful, if one wants to downsample a long</span>
+<span class="sd">    continuous time series, which is split into many successive traces without</span>
+<span class="sd">    producing filter artifacts and gaps at trace boundaries.</span>
+<span class="sd">    </span>
+<span class="sd">    Filter states are kept *per channel*, specifically, for each (network,</span>
+<span class="sd">    station, location, channel) combination occuring in the input traces, a</span>
+<span class="sd">    separate state is created and maintained. This makes it possible to filter</span>
+<span class="sd">    multichannel or multistation data with only one :py:func:`co_lfilter`</span>
+<span class="sd">    instance.</span>
+<span class="sd">    </span>
+<span class="sd">    Filter state is reset, when gaps occur. The sampling instances are choosen</span>
+<span class="sd">    so that they occur at (or as close as possible) to even multiples of the</span>
+<span class="sd">    sampling interval of the downsampled trace (based on system time).&#39;&#39;&#39;</span>
+    <span class="n">b</span><span class="p">,</span><span class="n">a</span><span class="p">,</span><span class="n">n</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">decimate_coeffs</span><span class="p">(</span><span class="n">q</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="n">ftype</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">co_antialias</span><span class="p">(</span><span class="n">co_dropsamples</span><span class="p">(</span><span class="n">target</span><span class="p">,</span><span class="n">q</span><span class="p">,</span><span class="n">n</span><span class="p">),</span> <span class="n">q</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="n">ftype</span><span class="p">)</span>
         </div>
-</pre></div>
+<span class="nd">@coroutine</span>
+<div class="viewcode-block" id="co_downsample_to"><a class="viewcode-back" href="../../trace.html#pyrocko.trace.co_downsample_to">[docs]</a><span class="k">def</span> <span class="nf">co_downsample_to</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">deltat</span><span class="p">):</span>
+
+    <span class="n">decimators</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+            <span class="n">tr</span> <span class="o">=</span> <span class="p">(</span><span class="k">yield</span><span class="p">)</span>
+            <span class="n">ratio</span> <span class="o">=</span> <span class="n">deltat</span> <span class="o">/</span> <span class="n">tr</span><span class="o">.</span><span class="n">deltat</span>
+            <span class="n">rratio</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">ratio</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">rratio</span> <span class="o">-</span> <span class="n">ratio</span><span class="p">)</span><span class="o">/</span><span class="n">ratio</span> <span class="o">&gt;</span> <span class="mf">0.0001</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">util</span><span class="o">.</span><span class="n">UnavailableDecimation</span><span class="p">(</span><span class="s">&#39;ratio = </span><span class="si">%g</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">ratio</span><span class="p">)</span>
+            
+            <span class="n">deci_seq</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span> <span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">util</span><span class="o">.</span><span class="n">decitab</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">rratio</span><span class="p">))</span> <span class="k">if</span> <span class="n">x</span> <span class="o">!=</span> <span class="mi">1</span> <span class="p">)</span>
+            <span class="k">if</span> <span class="n">deci_seq</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">decimators</span><span class="p">:</span>
+                <span class="n">pipe</span> <span class="o">=</span> <span class="n">target</span>
+                <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">deci_seq</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+                    <span class="n">pipe</span> <span class="o">=</span> <span class="n">co_downsample</span><span class="p">(</span><span class="n">pipe</span><span class="p">,</span> <span class="n">q</span><span class="p">)</span>
+
+                <span class="n">decimators</span><span class="p">[</span><span class="n">deci_seq</span><span class="p">]</span> <span class="o">=</span> <span class="n">pipe</span>
+               
+            <span class="n">decimators</span><span class="p">[</span><span class="n">deci_seq</span><span class="p">]</span><span class="o">.</span><span class="n">send</span><span class="p">(</span> <span class="n">tr</span> <span class="p">)</span>
+
+    <span class="k">except</span> <span class="ne">GeneratorExit</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">decimators</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div></div>
 
           </div>
       </div>

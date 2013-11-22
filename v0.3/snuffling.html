@@ -306,7 +306,7 @@ so that the parameter can be adjusted from the gui.</p>
 <dl class="method">
 <dt id="pyrocko.snuffling.Snuffling.add_trigger">
 <tt class="descname">add_trigger</tt><big>(</big><em>name</em>, <em>method</em><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#Snuffling.add_trigger"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.Snuffling.add_trigger" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add a button to the snufflings&#8217; panel.</p>
+<dd><p>Add a button to the snuffling&#8217;s panel.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -324,7 +324,7 @@ so that the parameter can be adjusted from the gui.</p>
 <dl class="method">
 <dt id="pyrocko.snuffling.Snuffling.get_parameters">
 <tt class="descname">get_parameters</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#Snuffling.get_parameters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.Snuffling.get_parameters" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the snufflings adjustable parameter definitions.</p>
+<dd><p>Get the snuffling&#8217;s adjustable parameter definitions.</p>
 <p>Returns a list of objects of type Param.</p>
 </dd></dl>
 
@@ -355,7 +355,7 @@ so that the parameter can be adjusted from the gui.</p>
 <dl class="method">
 <dt id="pyrocko.snuffling.Snuffling.set_parameter_range">
 <tt class="descname">set_parameter_range</tt><big>(</big><em>ident</em>, <em>vmin</em>, <em>vmax</em><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#Snuffling.set_parameter_range"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.Snuffling.set_parameter_range" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set the range of one of the snnuffling&#8217;s adjustable parameters.</p>
+<dd><p>Set the range of one of the snuffling&#8217;s adjustable parameters.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -370,6 +370,11 @@ so that the parameter can be adjusted from the gui.</p>
 </table>
 <p>Adjusts the control of a parameter without calling <a class="reference internal" href="#pyrocko.snuffling.Snuffling.call" title="pyrocko.snuffling.Snuffling.call"><tt class="xref py py-meth docutils literal"><span class="pre">call()</span></tt></a>.</p>
 </dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.snuffling.Snuffling.set_parameter_choices">
+<tt class="descname">set_parameter_choices</tt><big>(</big><em>ident</em>, <em>choices</em><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#Snuffling.set_parameter_choices"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.Snuffling.set_parameter_choices" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="method">
 <dt id="pyrocko.snuffling.Snuffling.get_parameter_value">
@@ -408,8 +413,25 @@ hybrid snufflings, which may work also in a standalone mode.</p>
 
 <dl class="method">
 <dt id="pyrocko.snuffling.Snuffling.get_active_event_and_stations">
-<tt class="descname">get_active_event_and_stations</tt><big>(</big><em>trange=(-3600.0</em>, <em>3600.0)</em><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#Snuffling.get_active_event_and_stations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.Snuffling.get_active_event_and_stations" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">get_active_event_and_stations</tt><big>(</big><em>trange=(-3600.0</em>, <em>3600.0)</em>, <em>missing='warn'</em><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#Snuffling.get_active_event_and_stations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.Snuffling.get_active_event_and_stations" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get event and stations with available data for active event.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>trange</strong> &#8211; (begin, end), time range around event origin time to query for
+available data</li>
+<li><strong>missing</strong> &#8211; string, what to do in case of missing station
+information: <tt class="docutils literal"><span class="pre">'warn'</span></tt>, <tt class="docutils literal"><span class="pre">'raise'</span></tt> or <tt class="docutils literal"><span class="pre">'ignore'</span></tt>.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><tt class="docutils literal"><span class="pre">(event,</span> <span class="pre">stations)</span></tt></p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -565,7 +587,7 @@ given in the snufflings&#8217; __doc__ string.</p>
 </tr>
 </tbody>
 </table>
-<p>The traces are put into a <a class="reference internal" href="pile.html#pyrocko.pile.MemTracesFile" title="pyrocko.pile.MemTracesFile"><tt class="xref py py-class docutils literal"><span class="pre">pyrocko.pile.MemTracesFile</span></tt></a> and added to the viewer&#8217;s 
+<p>The traces are put into a <tt class="xref py py-class docutils literal"><span class="pre">pyrocko.pile.MemTracesFile</span></tt> and added to the viewer&#8217;s 
 internal pile for display. Note, that unlike with the traces from the 
 files given on the command line, these traces are kept in memory and so
 may quickly occupy a lot of ram if a lot of traces are added.</p>
@@ -638,6 +660,12 @@ subclass. The default implementation does nothing useful.</p>
 <dt id="pyrocko.snuffling.NoViewerSet">
 <em class="property">exception </em><tt class="descname">NoViewerSet</tt><a class="reference internal" href="_modules/pyrocko/snuffling.html#NoViewerSet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.NoViewerSet" title="Permalink to this definition">¶</a></dt>
 <dd><p>This exception is raised, when no viewer has been set on a Snuffling.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="pyrocko.snuffling.MissingStationInformation">
+<em class="property">exception </em><tt class="descname">MissingStationInformation</tt><a class="reference internal" href="_modules/pyrocko/snuffling.html#MissingStationInformation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.MissingStationInformation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Raised when station information is missing.</p>
 </dd></dl>
 
 <dl class="exception">
@@ -732,6 +760,11 @@ needed.</p>
 <dt id="pyrocko.snuffling.ChoiceControl">
 <em class="property">class </em><tt class="descname">ChoiceControl</tt><big>(</big><em>ident</em>, <em>default</em>, <em>choices</em>, <em>name</em>, <em>*args</em><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#ChoiceControl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.ChoiceControl" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="method">
+<dt id="pyrocko.snuffling.ChoiceControl.set_choices">
+<tt class="descname">set_choices</tt><big>(</big><em>choices</em><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#ChoiceControl.set_choices"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.ChoiceControl.set_choices" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
 <dt id="pyrocko.snuffling.ChoiceControl.choosen">
 <tt class="descname">choosen</tt><big>(</big><em>i</em><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#ChoiceControl.choosen"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.ChoiceControl.choosen" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>

@@ -60,127 +60,45 @@
             
   <div class="section" id="module-pyrocko.pile">
 <span id="the-pile-module"></span><h1>The <tt class="xref py py-mod docutils literal"><span class="pre">pile</span></tt> Module<a class="headerlink" href="#module-pyrocko.pile" title="Permalink to this headline">¶</a></h1>
-<p>A pile contains subpiles which contain tracesfiles which contain traces.</p>
-<dl class="function">
-<dt id="pyrocko.pile.sl">
-<tt class="descname">sl</tt><big>(</big><em>s</em><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#sl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.sl" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
 <dl class="class">
-<dt id="pyrocko.pile.Counter">
-<em class="property">class </em><tt class="descname">Counter</tt><a class="reference internal" href="_modules/pyrocko/pile.html#Counter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.Counter" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="method">
-<dt id="pyrocko.pile.Counter.update">
-<tt class="descname">update</tt><big>(</big><em>other</em><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#Counter.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.Counter.update" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
+<dt id="pyrocko.pile.Pile">
+<em class="property">class </em><tt class="descname">Pile</tt><a class="reference internal" href="_modules/pyrocko/pile.html#Pile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.Pile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Waveform archive lookup, data loading and caching infrastructure.</p>
 <dl class="method">
-<dt id="pyrocko.pile.Counter.subtract">
-<tt class="descname">subtract</tt><big>(</big><em>other</em><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#Counter.subtract"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.Counter.subtract" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.pile.Counter.subtract1">
-<tt class="descname">subtract1</tt><big>(</big><em>k</em><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#Counter.subtract1"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.Counter.subtract1" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="function">
-<dt id="pyrocko.pile.avl_remove_exact">
-<tt class="descname">avl_remove_exact</tt><big>(</big><em>avltree</em>, <em>element</em><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#avl_remove_exact"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.avl_remove_exact" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="pyrocko.pile.cmpfunc">
-<tt class="descname">cmpfunc</tt><big>(</big><em>key</em><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#cmpfunc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.cmpfunc" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="class">
-<dt id="pyrocko.pile.Dummy">
-<em class="property">class </em><tt class="descname">Dummy</tt><a class="reference internal" href="_modules/pyrocko/pile.html#Dummy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.Dummy" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="class">
-<dt id="pyrocko.pile.Sorted">
-<em class="property">class </em><tt class="descname">Sorted</tt><big>(</big><em>values=</em><span class="optional">[</span><span class="optional">]</span>, <em>key=None</em><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#Sorted"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.Sorted" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="method">
-<dt id="pyrocko.pile.Sorted.insert">
-<tt class="descname">insert</tt><big>(</big><em>value</em><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#Sorted.insert"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.Sorted.insert" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.pile.Sorted.remove">
-<tt class="descname">remove</tt><big>(</big><em>value</em><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#Sorted.remove"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.Sorted.remove" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.pile.Sorted.insert_many">
-<tt class="descname">insert_many</tt><big>(</big><em>values</em><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#Sorted.insert_many"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.Sorted.insert_many" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.pile.Sorted.remove_many">
-<tt class="descname">remove_many</tt><big>(</big><em>values</em><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#Sorted.remove_many"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.Sorted.remove_many" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.pile.Sorted.with_key_in">
-<tt class="descname">with_key_in</tt><big>(</big><em>kmin</em>, <em>kmax</em><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#Sorted.with_key_in"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.Sorted.with_key_in" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.pile.Sorted.min">
-<tt class="descname">min</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#Sorted.min"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.Sorted.min" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.pile.Sorted.max">
-<tt class="descname">max</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#Sorted.max"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.Sorted.max" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="pyrocko.pile.TracesFileCache">
-<em class="property">class </em><tt class="descname">TracesFileCache</tt><big>(</big><em>cachedir</em><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#TracesFileCache"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.TracesFileCache" title="Permalink to this definition">¶</a></dt>
-<dd><p>Manages trace metainformation cache.</p>
-<p>For each directory with files containing traces, one cache file is 
-maintained to hold the trace metainformation of all files which are 
-contained in the directory.</p>
-<dl class="attribute">
-<dt id="pyrocko.pile.TracesFileCache.caches">
-<tt class="descname">caches</tt><em class="property"> = {}</em><a class="headerlink" href="#pyrocko.pile.TracesFileCache.caches" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.pile.TracesFileCache.get">
-<tt class="descname">get</tt><big>(</big><em>abspath</em><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#TracesFileCache.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.TracesFileCache.get" title="Permalink to this definition">¶</a></dt>
-<dd><p>Try to get an item from the cache.</p>
+<dt id="pyrocko.pile.Pile.chopper">
+<tt class="descname">chopper</tt><big>(</big><em>tmin=None</em>, <em>tmax=None</em>, <em>tinc=None</em>, <em>tpad=0.0</em>, <em>group_selector=None</em>, <em>trace_selector=None</em>, <em>want_incomplete=True</em>, <em>degap=True</em>, <em>maxgap=5</em>, <em>maxlap=None</em>, <em>keep_current_files_open=False</em>, <em>accessor_id=None</em>, <em>snap=(&lt;built-in function round&gt;</em>, <em>&lt;built-in function round&gt;)</em>, <em>include_last=False</em>, <em>load_data=True</em><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#Pile.chopper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.Pile.chopper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get iterator for shifting window wise data extraction from waveform archive.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>abspath</strong> &#8211; absolute path of the object to retrieve</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">a stored object is returned or None if nothing could be found.</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.pile.TracesFileCache.put">
-<tt class="descname">put</tt><big>(</big><em>abspath</em>, <em>tfile</em><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#TracesFileCache.put"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.TracesFileCache.put" title="Permalink to this definition">¶</a></dt>
-<dd><p>Put an item into the cache.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>abspath</strong> &#8211; absolute path of the object to be stored</li>
-<li><strong>tfile</strong> &#8211; object to be stored</li>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>tmin</strong> &#8211; start time (default uses start time of available data)</li>
+<li><strong>tmax</strong> &#8211; end time (default uses end time of available data)</li>
+<li><strong>tinc</strong> &#8211; time increment (window shift time) (default uses <tt class="docutils literal"><span class="pre">tmax-tmin</span></tt>)</li>
+<li><strong>tpad</strong> &#8211; padding time appended on either side of the data windows (window overlap is <tt class="docutils literal"><span class="pre">2*tpad</span></tt>)</li>
+<li><strong>group_selector</strong> &#8211; filter callback taking <tt class="xref py py-class docutils literal"><span class="pre">TracesGroup</span></tt> objects</li>
+<li><strong>trace_selector</strong> &#8211; filter callback taking <a class="reference internal" href="trace.html#pyrocko.trace.Trace" title="pyrocko.trace.Trace"><tt class="xref py py-class docutils literal"><span class="pre">pyrocko.trace.Trace</span></tt></a> objects</li>
+<li><strong>want_incomplete</strong> &#8211; if set to <tt class="docutils literal"><span class="pre">False</span></tt>, gappy/incomplete traces are discarded from the results</li>
+<li><strong>degap</strong> &#8211; whether to try to connect traces and to remove gaps and overlaps</li>
+<li><strong>maxgap</strong> &#8211; maximum gap size in samples which is filled with interpolated samples when <em>degap</em> is <tt class="docutils literal"><span class="pre">True</span></tt></li>
+<li><strong>maxlap</strong> &#8211; maximum overlap size in samples which is removed when <em>degap</em> is <tt class="docutils literal"><span class="pre">True</span></tt></li>
+<li><strong>keep_current_files_open</strong> &#8211; whether to keep cached trace data in memory after the iterator has ended</li>
+<li><strong>accessor_id</strong> &#8211; if given, used as a key to identify different
+points of extraction for the decision of when to release cached
+trace data (should be used when data is alternately extracted from 
+more than one region / selection)</li>
+<li><strong>snap</strong> &#8211; replaces Python&#8217;s <tt class="xref py py-func docutils literal"><span class="pre">round()</span></tt> function which is used to determine
+indices where to start and end the trace data array</li>
+<li><strong>include_last</strong> &#8211; whether to include last sample</li>
+<li><strong>load_data</strong> &#8211; whether to load the waveform data. If set to 
+<tt class="docutils literal"><span class="pre">False</span></tt>, traces with no data samples, but with correct 
+meta-information are returned</li>
 </ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">itererator yielding a list of <a class="reference internal" href="trace.html#pyrocko.trace.Trace" title="pyrocko.trace.Trace"><tt class="xref py py-class docutils literal"><span class="pre">pyrocko.trace.Trace</span></tt></a> 
+objects for every extracted time window</p>
 </td>
 </tr>
 </tbody>
@@ -188,359 +106,36 @@ contained in the directory.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pyrocko.pile.TracesFileCache.dump_modified">
-<tt class="descname">dump_modified</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#TracesFileCache.dump_modified"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.TracesFileCache.dump_modified" title="Permalink to this definition">¶</a></dt>
-<dd><p>Save any modifications to disk.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.pile.TracesFileCache.clean">
-<tt class="descname">clean</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#TracesFileCache.clean"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.TracesFileCache.clean" title="Permalink to this definition">¶</a></dt>
-<dd><p>Weed out missing files from the disk caches.</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="function">
-<dt id="pyrocko.pile.get_cache">
-<tt class="descname">get_cache</tt><big>(</big><em>cachedir</em><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#get_cache"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.get_cache" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get global TracesFileCache object for given directory.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="pyrocko.pile.loader">
-<tt class="descname">loader</tt><big>(</big><em>filenames</em>, <em>fileformat</em>, <em>cache</em>, <em>filename_attributes</em>, <em>show_progress=True</em>, <em>update_progress=None</em><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#loader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.loader" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="pyrocko.pile.tlen">
-<tt class="descname">tlen</tt><big>(</big><em>x</em><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#tlen"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.tlen" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="class">
-<dt id="pyrocko.pile.TracesGroup">
-<em class="property">class </em><tt class="descname">TracesGroup</tt><big>(</big><em>parent</em><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#TracesGroup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.TracesGroup" title="Permalink to this definition">¶</a></dt>
-<dd><p>Trace container base class.</p>
-<p>Base class for Pile, SubPile, and TracesFile, i.e. anything containing 
-a collection of several traces. A TracesGroup object maintains lookup sets
-of some of the traces meta-information, as well as a combined time-range
-of its contents.</p>
-<dl class="method">
-<dt id="pyrocko.pile.TracesGroup.set_parent">
-<tt class="descname">set_parent</tt><big>(</big><em>parent</em><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#TracesGroup.set_parent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.TracesGroup.set_parent" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.pile.TracesGroup.get_parent">
-<tt class="descname">get_parent</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#TracesGroup.get_parent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.TracesGroup.get_parent" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.pile.TracesGroup.empty">
-<tt class="descname">empty</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#TracesGroup.empty"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.TracesGroup.empty" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.pile.TracesGroup.trees_from_content">
-<tt class="descname">trees_from_content</tt><big>(</big><em>content</em><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#TracesGroup.trees_from_content"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.TracesGroup.trees_from_content" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.pile.TracesGroup.add">
-<tt class="descname">add</tt><big>(</big><em>content</em><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#TracesGroup.add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.TracesGroup.add" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.pile.TracesGroup.remove">
-<tt class="descname">remove</tt><big>(</big><em>content</em><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#TracesGroup.remove"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.TracesGroup.remove" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.pile.TracesGroup.relevant">
-<tt class="descname">relevant</tt><big>(</big><em>tmin</em>, <em>tmax</em>, <em>group_selector=None</em>, <em>trace_selector=None</em><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#TracesGroup.relevant"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.TracesGroup.relevant" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.pile.TracesGroup.adjust_minmax">
-<tt class="descname">adjust_minmax</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#TracesGroup.adjust_minmax"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.TracesGroup.adjust_minmax" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.pile.TracesGroup.notify_listeners">
-<tt class="descname">notify_listeners</tt><big>(</big><em>what</em><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#TracesGroup.notify_listeners"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.TracesGroup.notify_listeners" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.pile.TracesGroup.get_update_count">
-<tt class="descname">get_update_count</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#TracesGroup.get_update_count"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.TracesGroup.get_update_count" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.pile.TracesGroup.overlaps">
-<tt class="descname">overlaps</tt><big>(</big><em>tmin</em>, <em>tmax</em><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#TracesGroup.overlaps"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.TracesGroup.overlaps" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.pile.TracesGroup.is_relevant">
-<tt class="descname">is_relevant</tt><big>(</big><em>tmin</em>, <em>tmax</em>, <em>group_selector=None</em><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#TracesGroup.is_relevant"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.TracesGroup.is_relevant" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="pyrocko.pile.MemTracesFile">
-<em class="property">class </em><tt class="descname">MemTracesFile</tt><big>(</big><em>parent</em>, <em>traces</em><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#MemTracesFile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.MemTracesFile" title="Permalink to this definition">¶</a></dt>
-<dd><p>This is needed to make traces without an actual disc file to be inserted
-into a Pile.</p>
-<dl class="method">
-<dt id="pyrocko.pile.MemTracesFile.add">
-<tt class="descname">add</tt><big>(</big><em>traces</em><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#MemTracesFile.add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.MemTracesFile.add" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.pile.MemTracesFile.load_headers">
-<tt class="descname">load_headers</tt><big>(</big><em>mtime=None</em><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#MemTracesFile.load_headers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.MemTracesFile.load_headers" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.pile.MemTracesFile.load_data">
-<tt class="descname">load_data</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#MemTracesFile.load_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.MemTracesFile.load_data" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.pile.MemTracesFile.use_data">
-<tt class="descname">use_data</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#MemTracesFile.use_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.MemTracesFile.use_data" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.pile.MemTracesFile.drop_data">
-<tt class="descname">drop_data</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#MemTracesFile.drop_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.MemTracesFile.drop_data" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.pile.MemTracesFile.reload_if_modified">
-<tt class="descname">reload_if_modified</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#MemTracesFile.reload_if_modified"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.MemTracesFile.reload_if_modified" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.pile.MemTracesFile.iter_traces">
-<tt class="descname">iter_traces</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#MemTracesFile.iter_traces"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.MemTracesFile.iter_traces" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.pile.MemTracesFile.get_traces">
-<tt class="descname">get_traces</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#MemTracesFile.get_traces"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.MemTracesFile.get_traces" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.pile.MemTracesFile.gather_keys">
-<tt class="descname">gather_keys</tt><big>(</big><em>gather</em>, <em>selector=None</em><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#MemTracesFile.gather_keys"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.MemTracesFile.gather_keys" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="pyrocko.pile.TracesFile">
-<em class="property">class </em><tt class="descname">TracesFile</tt><big>(</big><em>parent</em>, <em>abspath</em>, <em>format</em>, <em>substitutions=None</em>, <em>mtime=None</em><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#TracesFile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.TracesFile" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="method">
-<dt id="pyrocko.pile.TracesFile.load_headers">
-<tt class="descname">load_headers</tt><big>(</big><em>mtime=None</em><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#TracesFile.load_headers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.TracesFile.load_headers" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.pile.TracesFile.load_data">
-<tt class="descname">load_data</tt><big>(</big><em>force=False</em><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#TracesFile.load_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.TracesFile.load_data" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.pile.TracesFile.use_data">
-<tt class="descname">use_data</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#TracesFile.use_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.TracesFile.use_data" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.pile.TracesFile.drop_data">
-<tt class="descname">drop_data</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#TracesFile.drop_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.TracesFile.drop_data" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.pile.TracesFile.reload_if_modified">
-<tt class="descname">reload_if_modified</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#TracesFile.reload_if_modified"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.TracesFile.reload_if_modified" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.pile.TracesFile.iter_traces">
-<tt class="descname">iter_traces</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#TracesFile.iter_traces"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.TracesFile.iter_traces" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.pile.TracesFile.gather_keys">
-<tt class="descname">gather_keys</tt><big>(</big><em>gather</em>, <em>selector=None</em><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#TracesFile.gather_keys"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.TracesFile.gather_keys" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="exception">
-<dt id="pyrocko.pile.FilenameAttributeError">
-<em class="property">exception </em><tt class="descname">FilenameAttributeError</tt><a class="reference internal" href="_modules/pyrocko/pile.html#FilenameAttributeError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.FilenameAttributeError" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="class">
-<dt id="pyrocko.pile.SubPile">
-<em class="property">class </em><tt class="descname">SubPile</tt><big>(</big><em>parent</em><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#SubPile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.SubPile" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="method">
-<dt id="pyrocko.pile.SubPile.add_file">
-<tt class="descname">add_file</tt><big>(</big><em>file</em><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#SubPile.add_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.SubPile.add_file" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.pile.SubPile.remove_file">
-<tt class="descname">remove_file</tt><big>(</big><em>file</em><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#SubPile.remove_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.SubPile.remove_file" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.pile.SubPile.remove_files">
-<tt class="descname">remove_files</tt><big>(</big><em>files</em><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#SubPile.remove_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.SubPile.remove_files" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.pile.SubPile.gather_keys">
-<tt class="descname">gather_keys</tt><big>(</big><em>gather</em>, <em>selector=None</em><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#SubPile.gather_keys"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.SubPile.gather_keys" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.pile.SubPile.iter_traces">
-<tt class="descname">iter_traces</tt><big>(</big><em>load_data=False</em>, <em>return_abspath=False</em>, <em>group_selector=None</em>, <em>trace_selector=None</em><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#SubPile.iter_traces"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.SubPile.iter_traces" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.pile.SubPile.iter_files">
-<tt class="descname">iter_files</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#SubPile.iter_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.SubPile.iter_files" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.pile.SubPile.reload_modified">
-<tt class="descname">reload_modified</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#SubPile.reload_modified"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.SubPile.reload_modified" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="pyrocko.pile.Pile">
-<em class="property">class </em><tt class="descname">Pile</tt><a class="reference internal" href="_modules/pyrocko/pile.html#Pile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.Pile" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="method">
-<dt id="pyrocko.pile.Pile.add_listener">
-<tt class="descname">add_listener</tt><big>(</big><em>obj</em><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#Pile.add_listener"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.Pile.add_listener" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.pile.Pile.notify_listeners">
-<tt class="descname">notify_listeners</tt><big>(</big><em>what</em><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#Pile.notify_listeners"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.Pile.notify_listeners" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.pile.Pile.load_files">
-<tt class="descname">load_files</tt><big>(</big><em>filenames</em>, <em>filename_attributes=None</em>, <em>fileformat='mseed'</em>, <em>cache=None</em>, <em>show_progress=True</em>, <em>update_progress=None</em><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#Pile.load_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.Pile.load_files" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.pile.Pile.add_files">
-<tt class="descname">add_files</tt><big>(</big><em>files</em><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#Pile.add_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.Pile.add_files" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.pile.Pile.add_file">
-<tt class="descname">add_file</tt><big>(</big><em>file</em><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#Pile.add_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.Pile.add_file" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.pile.Pile.remove_file">
-<tt class="descname">remove_file</tt><big>(</big><em>file</em><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#Pile.remove_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.Pile.remove_file" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.pile.Pile.remove_files">
-<tt class="descname">remove_files</tt><big>(</big><em>files</em><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#Pile.remove_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.Pile.remove_files" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.pile.Pile.dispatch_key">
-<tt class="descname">dispatch_key</tt><big>(</big><em>file</em><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#Pile.dispatch_key"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.Pile.dispatch_key" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.pile.Pile.dispatch">
-<tt class="descname">dispatch</tt><big>(</big><em>file</em><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#Pile.dispatch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.Pile.dispatch" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.pile.Pile.get_deltats">
-<tt class="descname">get_deltats</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#Pile.get_deltats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.Pile.get_deltats" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.pile.Pile.chop">
-<tt class="descname">chop</tt><big>(</big><em>tmin</em>, <em>tmax</em>, <em>group_selector=None</em>, <em>trace_selector=None</em>, <em>snap=(&lt;built-in function round&gt;</em>, <em>&lt;built-in function round&gt;)</em>, <em>include_last=False</em>, <em>load_data=True</em><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#Pile.chop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.Pile.chop" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.pile.Pile.chopper">
-<tt class="descname">chopper</tt><big>(</big><em>tmin=None</em>, <em>tmax=None</em>, <em>tinc=None</em>, <em>tpad=0.0</em>, <em>group_selector=None</em>, <em>trace_selector=None</em>, <em>want_incomplete=True</em>, <em>degap=True</em>, <em>maxgap=5</em>, <em>maxlap=None</em>, <em>keep_current_files_open=False</em>, <em>accessor_id=None</em>, <em>snap=(&lt;built-in function round&gt;</em>, <em>&lt;built-in function round&gt;)</em>, <em>include_last=False</em>, <em>load_data=True</em><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#Pile.chopper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.Pile.chopper" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
 <dt id="pyrocko.pile.Pile.all">
 <tt class="descname">all</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#Pile.all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.Pile.all" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.pile.Pile.iter_all">
-<tt class="descname">iter_all</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#Pile.iter_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.Pile.iter_all" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.pile.Pile.chopper_grouped">
-<tt class="descname">chopper_grouped</tt><big>(</big><em>gather</em>, <em>progress=None</em>, <em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#Pile.chopper_grouped"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.Pile.chopper_grouped" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.pile.Pile.gather_keys">
-<tt class="descname">gather_keys</tt><big>(</big><em>gather</em>, <em>selector=None</em><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#Pile.gather_keys"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.Pile.gather_keys" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Shortcut to aggregate <a class="reference internal" href="#pyrocko.pile.Pile.chopper" title="pyrocko.pile.Pile.chopper"><tt class="xref py py-meth docutils literal"><span class="pre">chopper()</span></tt></a> output into a single list.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="pyrocko.pile.Pile.iter_traces">
 <tt class="descname">iter_traces</tt><big>(</big><em>load_data=False</em>, <em>return_abspath=False</em>, <em>group_selector=None</em>, <em>trace_selector=None</em><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#Pile.iter_traces"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.Pile.iter_traces" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.pile.Pile.iter_files">
-<tt class="descname">iter_files</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#Pile.iter_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.Pile.iter_files" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.pile.Pile.reload_modified">
-<tt class="descname">reload_modified</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#Pile.reload_modified"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.Pile.reload_modified" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.pile.Pile.get_tmin">
-<tt class="descname">get_tmin</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#Pile.get_tmin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.Pile.get_tmin" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.pile.Pile.get_tmax">
-<tt class="descname">get_tmax</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#Pile.get_tmax"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.Pile.get_tmax" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.pile.Pile.get_deltatmin">
-<tt class="descname">get_deltatmin</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#Pile.get_deltatmin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.Pile.get_deltatmin" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.pile.Pile.get_deltatmax">
-<tt class="descname">get_deltatmax</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#Pile.get_deltatmax"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.Pile.get_deltatmax" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Iterate over all traces in pile.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>load_data</strong> &#8211; whether to load the waveform data, by default empty traces are yielded</li>
+<li><strong>return_abspath</strong> &#8211; if <tt class="docutils literal"><span class="pre">True</span></tt> yield tuples containing absolute file path and <a class="reference internal" href="trace.html#pyrocko.trace.Trace" title="pyrocko.trace.Trace"><tt class="xref py py-class docutils literal"><span class="pre">pyrocko.trace.Trace</span></tt></a> objects</li>
+<li><strong>group_selector</strong> &#8211; filter callback taking <tt class="xref py py-class docutils literal"><span class="pre">TracesGroup</span></tt> objects</li>
+<li><strong>trace_selector</strong> &#8211; filter callback taking <a class="reference internal" href="trace.html#pyrocko.trace.Trace" title="pyrocko.trace.Trace"><tt class="xref py py-class docutils literal"><span class="pre">pyrocko.trace.Trace</span></tt></a> objects</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>The following example yields only traces, where the station code is &#8216;HH1&#8217;.</p>
+<p>Example:</p>
+<div class="highlight-python"><pre>test_pile = pile.make_pile('/local/test_trace_directory')
+    for t in test_pile.iter_traces(trace_selector=lambda tr:  tr.station=='HH1'):
+    print t</pre>
+</div>
+</dd></dl>
 
 <dl class="method">
 <dt id="pyrocko.pile.Pile.snuffle">
@@ -592,38 +187,6 @@ created as neccessary.</li>
 </tr>
 </tbody>
 </table>
-</dd></dl>
-
-<dl class="class">
-<dt id="pyrocko.pile.Injector">
-<em class="property">class </em><tt class="descname">Injector</tt><big>(</big><em>pile</em>, <em>fixation_length=None</em>, <em>path=None</em>, <em>format='from_extension'</em>, <em>forget_fixed=False</em><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#Injector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.Injector" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="method">
-<dt id="pyrocko.pile.Injector.set_fixation_length">
-<tt class="descname">set_fixation_length</tt><big>(</big><em>l</em><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#Injector.set_fixation_length"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.Injector.set_fixation_length" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set length after which the fixation method is called on buffer traces.</p>
-<p>The length should be given in seconds. Give None to disable.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.pile.Injector.set_save_path">
-<tt class="descname">set_save_path</tt><big>(</big><em>path='dump_%(network)s.%(station)s.%(location)s.%(channel)s_%(tmin)s_%(tmax)s.mseed'</em><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#Injector.set_save_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.Injector.set_save_path" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.pile.Injector.inject">
-<tt class="descname">inject</tt><big>(</big><em>trace</em><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#Injector.inject"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.Injector.inject" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.pile.Injector.fixate_all">
-<tt class="descname">fixate_all</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#Injector.fixate_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.Injector.fixate_all" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.pile.Injector.free">
-<tt class="descname">free</tt><big>(</big><em>buf</em><big>)</big><a class="reference internal" href="_modules/pyrocko/pile.html#Injector.free"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile.Injector.free" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
 </dd></dl>
 
 </div>

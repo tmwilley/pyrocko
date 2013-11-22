@@ -103,7 +103,7 @@
 <span class="sd">    </span>
 <span class="sd">    :param name:    labels the switch within snuffler</span>
 <span class="sd">    :param ident:   identifier of the parameter</span>
-<span class="sd">    :param default: default value &#39;&#39;&#39;</span>
+<span class="sd">    :param default: default value&#39;&#39;&#39;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">ident</span><span class="p">,</span> <span class="n">default</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
@@ -413,7 +413,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">setup_gui</span><span class="p">()</span>
    </div>
 <div class="viewcode-block" id="Snuffling.add_trigger"><a class="viewcode-back" href="../../snuffling.html#pyrocko.snuffling.Snuffling.add_trigger">[docs]</a>    <span class="k">def</span> <span class="nf">add_trigger</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">method</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;Add a button to the snufflings&#39; panel. </span>
+        <span class="sd">&#39;&#39;&#39;Add a button to the snuffling&#39;s panel.</span>
 
 <span class="sd">        :param name:    string that labels the button</span>
 <span class="sd">        :param method:  method associated with the button</span>
@@ -426,7 +426,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">setup_gui</span><span class="p">()</span>
 </div>
 <div class="viewcode-block" id="Snuffling.get_parameters"><a class="viewcode-back" href="../../snuffling.html#pyrocko.snuffling.Snuffling.get_parameters">[docs]</a>    <span class="k">def</span> <span class="nf">get_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;Get the snufflings adjustable parameter definitions.</span>
+        <span class="sd">&#39;&#39;&#39;Get the snuffling&#39;s adjustable parameter definitions.</span>
 <span class="sd">        </span>
 <span class="sd">        </span>
 <span class="sd">        Returns a list of objects of type Param.</span>
@@ -456,7 +456,7 @@
             <span class="n">control</span><span class="o">.</span><span class="n">set_value</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="Snuffling.set_parameter_range"><a class="viewcode-back" href="../../snuffling.html#pyrocko.snuffling.Snuffling.set_parameter_range">[docs]</a>    <span class="k">def</span> <span class="nf">set_parameter_range</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ident</span><span class="p">,</span> <span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;Set the range of one of the snnuffling&#39;s adjustable parameters.</span>
+        <span class="sd">&#39;&#39;&#39;Set the range of one of the snuffling&#39;s adjustable parameters.</span>
 
 <span class="sd">        :param ident: identifier of the parameter</span>
 <span class="sd">        :param vmin,vmax: new minimum and maximum value for the parameter</span>
@@ -467,6 +467,12 @@
         <span class="n">control</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_param_controls</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">ident</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">control</span><span class="p">:</span>
             <span class="n">control</span><span class="o">.</span><span class="n">set_range</span><span class="p">(</span><span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Snuffling.set_parameter_choices"><a class="viewcode-back" href="../../snuffling.html#pyrocko.snuffling.Snuffling.set_parameter_choices">[docs]</a>    <span class="k">def</span> <span class="nf">set_parameter_choices</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ident</span><span class="p">,</span> <span class="n">choices</span><span class="p">):</span>
+        <span class="n">control</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_param_controls</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">ident</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">control</span><span class="p">:</span>
+            <span class="n">control</span><span class="o">.</span><span class="n">set_choices</span><span class="p">(</span><span class="n">choices</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_set_parameter_value</span><span class="p">(</span><span class="n">ident</span><span class="p">,</span> <span class="n">choices</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
     </div>
     <span class="k">def</span> <span class="nf">_set_parameter_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ident</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ident</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
@@ -523,23 +529,52 @@
 
             <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_no_viewer_pile</span>
 
-            
         <span class="k">return</span> <span class="n">p</span>
 </div>
-<div class="viewcode-block" id="Snuffling.get_active_event_and_stations"><a class="viewcode-back" href="../../snuffling.html#pyrocko.snuffling.Snuffling.get_active_event_and_stations">[docs]</a>    <span class="k">def</span> <span class="nf">get_active_event_and_stations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trange</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mf">3600.</span><span class="p">,</span><span class="mf">3600.</span><span class="p">)):</span>
-        <span class="sd">&#39;&#39;&#39;Get event and stations with available data for active event.&#39;&#39;&#39;</span>
+<div class="viewcode-block" id="Snuffling.get_active_event_and_stations"><a class="viewcode-back" href="../../snuffling.html#pyrocko.snuffling.Snuffling.get_active_event_and_stations">[docs]</a>    <span class="k">def</span> <span class="nf">get_active_event_and_stations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trange</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mf">3600.</span><span class="p">,</span><span class="mf">3600.</span><span class="p">),</span> <span class="n">missing</span><span class="o">=</span><span class="s">&#39;warn&#39;</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Get event and stations with available data for active event.</span>
+
+<span class="sd">        :param trange: (begin, end), time range around event origin time to query for</span>
+<span class="sd">                       available data </span>
+<span class="sd">        :param missing: string, what to do in case of missing station</span>
+<span class="sd">                        information: ``&#39;warn&#39;``, ``&#39;raise&#39;`` or ``&#39;ignore&#39;``.</span>
+
+<span class="sd">        :returns: ``(event, stations)``</span>
+<span class="sd">        &#39;&#39;&#39;</span>
 
         <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_pile</span><span class="p">()</span>
         <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_viewer</span><span class="p">()</span>
-        
+
         <span class="n">event</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">get_active_event</span><span class="p">()</span>
-        <span class="n">stations</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">event</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fail</span><span class="p">(</span><span class="s">&#39;No active event set. &#39;</span>
+                <span class="s">&#39;Select an event and press &quot;e&quot; to make it the &quot;active event&quot;&#39;</span><span class="p">)</span>
+
+        <span class="n">stations</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">traces</span> <span class="ow">in</span> <span class="n">p</span><span class="o">.</span><span class="n">chopper</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">time</span><span class="o">+</span><span class="n">trange</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">event</span><span class="o">.</span><span class="n">time</span><span class="o">+</span><span class="n">trange</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">load_data</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">degap</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
             <span class="k">for</span> <span class="n">tr</span> <span class="ow">in</span> <span class="n">traces</span><span class="p">:</span>
-                <span class="n">station</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">get_station</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">station_key</span><span class="p">(</span><span class="n">tr</span><span class="p">))</span>
-                <span class="n">stations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">station</span><span class="p">)</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">skey</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">station_key</span><span class="p">(</span><span class="n">tr</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">skey</span> <span class="ow">in</span> <span class="n">stations</span><span class="p">:</span>
+                        <span class="k">continue</span>
 
-        <span class="k">return</span> <span class="n">event</span><span class="p">,</span> <span class="n">stations</span>
+                    <span class="n">station</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">get_station</span><span class="p">(</span><span class="n">skey</span><span class="p">)</span>
+                    <span class="n">stations</span><span class="p">[</span><span class="n">skey</span><span class="p">]</span> <span class="o">=</span> <span class="n">station</span>
+
+                <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                    <span class="n">s</span> <span class="o">=</span> <span class="s">&#39;No station information for station key &quot;</span><span class="si">%s</span><span class="s">&quot;.&#39;</span> <span class="o">%</span> <span class="s">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">skey</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">missing</span> <span class="o">==</span> <span class="s">&#39;warn&#39;</span><span class="p">:</span>
+                        <span class="n">logger</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+                    <span class="k">elif</span> <span class="n">missing</span> <span class="o">==</span> <span class="s">&#39;raise&#39;</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="n">MissingStationInformation</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+                    <span class="k">elif</span> <span class="n">missing</span> <span class="o">==</span> <span class="s">&#39;ignore&#39;</span><span class="p">:</span>
+                        <span class="k">pass</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">assert</span> <span class="bp">False</span><span class="p">,</span> <span class="s">&#39;invalid argument to &quot;missing&quot;&#39;</span>
+
+                    <span class="n">stations</span><span class="p">[</span><span class="n">skey</span><span class="p">]</span> <span class="o">=</span> <span class="bp">None</span>
+
+        <span class="k">return</span> <span class="n">event</span><span class="p">,</span> <span class="p">[</span> <span class="n">s</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">stations</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">if</span> <span class="n">s</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="p">]</span>
         </div>
 <div class="viewcode-block" id="Snuffling.chopper_selected_traces"><a class="viewcode-back" href="../../snuffling.html#pyrocko.snuffling.Snuffling.chopper_selected_traces">[docs]</a>    <span class="k">def</span> <span class="nf">chopper_selected_traces</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fallback</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">marker_selector</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span> <span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Iterate over selected traces.</span>
@@ -562,15 +597,15 @@
             <span class="k">if</span> <span class="n">marker_selector</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
                 <span class="n">markers</span> <span class="o">=</span> <span class="p">[</span>  <span class="n">marker</span> <span class="k">for</span> <span class="n">marker</span> <span class="ow">in</span> <span class="n">markers</span> <span class="k">if</span> <span class="n">marker_selector</span><span class="p">(</span><span class="n">marker</span><span class="p">)</span> <span class="p">]</span> 
             <span class="n">pile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_pile</span><span class="p">()</span>
-            
+
             <span class="k">if</span> <span class="n">markers</span><span class="p">:</span>
                 
                 <span class="k">for</span> <span class="n">marker</span> <span class="ow">in</span> <span class="n">markers</span><span class="p">:</span>
                     <span class="k">if</span> <span class="ow">not</span> <span class="n">marker</span><span class="o">.</span><span class="n">nslc_ids</span><span class="p">:</span>
                         <span class="n">trace_selector</span> <span class="o">=</span> <span class="bp">None</span>
                     <span class="k">else</span><span class="p">:</span>
-                        <span class="n">trace_selector</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">tr</span><span class="p">:</span> <span class="n">tr</span><span class="o">.</span><span class="n">nslc_id</span> <span class="ow">in</span> <span class="n">marker</span><span class="o">.</span><span class="n">nslc_ids</span>
-                    
+                        <span class="n">trace_selector</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">tr</span><span class="p">:</span> <span class="n">marker</span><span class="o">.</span><span class="n">match_nslc</span><span class="p">(</span><span class="n">tr</span><span class="o">.</span><span class="n">nslc_id</span><span class="p">)</span>
+
                     <span class="k">for</span> <span class="n">traces</span> <span class="ow">in</span> <span class="n">pile</span><span class="o">.</span><span class="n">chopper</span><span class="p">(</span>
                             <span class="n">tmin</span> <span class="o">=</span> <span class="n">marker</span><span class="o">.</span><span class="n">tmin</span><span class="p">,</span>
                             <span class="n">tmax</span> <span class="o">=</span> <span class="n">marker</span><span class="o">.</span><span class="n">tmax</span><span class="p">,</span>
@@ -1051,6 +1086,9 @@
     <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s">&#39;No GUI available. Maybe this Snuffling cannot be run in command line mode?&#39;</span>
 </div>
+<div class="viewcode-block" id="MissingStationInformation"><a class="viewcode-back" href="../../snuffling.html#pyrocko.snuffling.MissingStationInformation">[docs]</a><span class="k">class</span> <span class="nc">MissingStationInformation</span><span class="p">(</span><span class="n">SnufflingError</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Raised when station information is missing.&#39;&#39;&#39;</span>
+</div>
 <div class="viewcode-block" id="NoTracesSelected"><a class="viewcode-back" href="../../snuffling.html#pyrocko.snuffling.NoTracesSelected">[docs]</a><span class="k">class</span> <span class="nc">NoTracesSelected</span><span class="p">(</span><span class="n">SnufflingError</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;This exception is raised, when no traces have been selected in the viewer </span>
 <span class="sd">    and we cannot fallback to using the current view.&#39;&#39;&#39;</span>
@@ -1199,7 +1237,15 @@
         
         <span class="bp">self</span><span class="o">.</span><span class="n">set_value</span><span class="p">(</span><span class="n">default</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cbox</span><span class="p">,</span> <span class="n">SIGNAL</span><span class="p">(</span><span class="s">&#39;activated(int)&#39;</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">choosen</span><span class="p">)</span>
-        
+
+<div class="viewcode-block" id="ChoiceControl.set_choices"><a class="viewcode-back" href="../../snuffling.html#pyrocko.snuffling.ChoiceControl.set_choices">[docs]</a>    <span class="k">def</span> <span class="nf">set_choices</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">choices</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">choices</span> <span class="o">=</span> <span class="n">choices</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cbox</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">ichoice</span><span class="p">,</span> <span class="n">choice</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">choices</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cbox</span><span class="o">.</span><span class="n">addItem</span><span class="p">(</span><span class="n">QString</span><span class="p">(</span><span class="n">choice</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_value</span><span class="p">(</span><span class="n">choices</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        </div>
 <div class="viewcode-block" id="ChoiceControl.choosen"><a class="viewcode-back" href="../../snuffling.html#pyrocko.snuffling.ChoiceControl.choosen">[docs]</a>    <span class="k">def</span> <span class="nf">choosen</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">SIGNAL</span><span class="p">(</span><span class="s">&#39;choosen(PyQt_PyObject,PyQt_PyObject)&#39;</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">ident</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">choices</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
 </div>

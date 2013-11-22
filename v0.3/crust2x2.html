@@ -257,23 +257,10 @@ are used.</td>
 
 <dl class="method">
 <dt id="pyrocko.crust2x2.Crust2.get_profile">
-<tt class="descname">get_profile</tt><big>(</big><em>lat</em>, <em>lon</em><big>)</big><a class="reference internal" href="_modules/pyrocko/crust2x2.html#Crust2.get_profile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.crust2x2.Crust2.get_profile" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get crustal profile at a specific location.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>lat</strong> &#8211; latitude</li>
-<li><strong>lon</strong> &#8211; longitude</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">instance of <a class="reference internal" href="#pyrocko.crust2x2.Crust2Profile" title="pyrocko.crust2x2.Crust2Profile"><tt class="xref py py-class docutils literal"><span class="pre">Crust2Profile</span></tt></a></p>
-</td>
-</tr>
-</tbody>
-</table>
+<tt class="descname">get_profile</tt><big>(</big><em>*args</em><big>)</big><a class="reference internal" href="_modules/pyrocko/crust2x2.html#Crust2.get_profile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.crust2x2.Crust2.get_profile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get crustal profile at a specific location or raw profile for given key.</p>
+<p>Get profile for location (lat,lon), or raw profile for given string key.
+:rtype: instance of <a class="reference internal" href="#pyrocko.crust2x2.Crust2Profile" title="pyrocko.crust2x2.Crust2Profile"><tt class="xref py py-class docutils literal"><span class="pre">Crust2Profile</span></tt></a></p>
 </dd></dl>
 
 <dl class="staticmethod">
@@ -285,9 +272,16 @@ are used.</td>
 </dd></dl>
 
 <dl class="function">
+<dt id="pyrocko.crust2x2.get_profile_keys">
+<tt class="descname">get_profile_keys</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/crust2x2.html#get_profile_keys"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.crust2x2.get_profile_keys" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get list of all profile keys.</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="pyrocko.crust2x2.get_profile">
-<tt class="descname">get_profile</tt><big>(</big><em>lat</em>, <em>lon</em><big>)</big><a class="reference internal" href="_modules/pyrocko/crust2x2.html#get_profile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.crust2x2.get_profile" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get Crust2x2 profile for given location.</p>
+<tt class="descname">get_profile</tt><big>(</big><em>*args</em><big>)</big><a class="reference internal" href="_modules/pyrocko/crust2x2.html#get_profile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.crust2x2.get_profile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get Crust2x2 profile for given location or profile key.</p>
+<p>Get profile for (lat,lon) or raw profile for given string key.</p>
 </dd></dl>
 
 <dl class="function">

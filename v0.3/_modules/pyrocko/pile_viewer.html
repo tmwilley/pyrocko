@@ -1407,20 +1407,25 @@
             <span class="k">return</span> <span class="nb">min</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="o">-</span><span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">min_deltat</span><span class="p">)))</span><span class="o">+</span><span class="mi">2</span><span class="p">))</span>
     
         <span class="k">def</span> <span class="nf">write_markers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-
-            <span class="n">fn</span> <span class="o">=</span> <span class="n">QFileDialog</span><span class="o">.</span><span class="n">getSaveFileName</span><span class="p">(</span><span class="bp">self</span><span class="p">,)</span>
+            <span class="n">caption</span> <span class="o">=</span> <span class="s">&quot;Choose a file name to write markers&quot;</span>
+            <span class="n">fn</span> <span class="o">=</span> <span class="n">QFileDialog</span><span class="o">.</span><span class="n">getSaveFileName</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">caption</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">fn</span><span class="p">:</span>
                 <span class="n">Marker</span><span class="o">.</span><span class="n">save_markers</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">markers</span><span class="p">,</span> <span class="n">fn</span><span class="p">,</span>
                         <span class="n">fdigits</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">time_fractional_digits</span><span class="p">())</span>
 
         <span class="k">def</span> <span class="nf">write_selected_markers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-            <span class="n">fn</span> <span class="o">=</span> <span class="n">QFileDialog</span><span class="o">.</span><span class="n">getSaveFileName</span><span class="p">(</span><span class="bp">self</span><span class="p">,)</span>
+            <span class="n">caption</span> <span class="o">=</span> <span class="s">&quot;Choose a file name to write selected markers&quot;</span>
+            <span class="n">fn</span> <span class="o">=</span> <span class="n">QFileDialog</span><span class="o">.</span><span class="n">getSaveFileName</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">caption</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">fn</span><span class="p">:</span>
                 <span class="n">Marker</span><span class="o">.</span><span class="n">save_markers</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selected_markers</span><span class="p">(),</span> <span class="n">fn</span><span class="p">,</span>
                         <span class="n">fdigits</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">time_fractional_digits</span><span class="p">())</span>
 
         <span class="k">def</span> <span class="nf">read_markers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-            <span class="n">fn</span> <span class="o">=</span> <span class="n">QFileDialog</span><span class="o">.</span><span class="n">getOpenFileName</span><span class="p">(</span><span class="bp">self</span><span class="p">,)</span>
+            <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">            Open QFileDialog to open, read and add markers to the pile viewer.</span>
+<span class="sd">            &#39;&#39;&#39;</span>
+            <span class="n">caption</span> <span class="o">=</span> <span class="s">&quot;Selet one or more files to open&quot;</span>
+            <span class="n">fn</span> <span class="o">=</span> <span class="n">QFileDialog</span><span class="o">.</span><span class="n">getOpenFileName</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">caption</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">fn</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">add_markers</span><span class="p">(</span><span class="n">Marker</span><span class="o">.</span><span class="n">load_markers</span><span class="p">(</span><span class="n">fn</span><span class="p">))</span>
 
@@ -1604,7 +1609,7 @@
 
             <span class="k">if</span> <span class="n">needupdate</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
-                
+
         <span class="k">def</span> <span class="nf">keyPressEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key_event</span><span class="p">):</span>
             <span class="n">dt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tmax</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">tmin</span>
             <span class="n">tmid</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tmin</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">tmax</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.</span>
@@ -1668,7 +1673,7 @@
                     <span class="bp">self</span><span class="o">.</span><span class="n">reloaded</span> <span class="o">=</span> <span class="bp">True</span>
    
             <span class="k">elif</span> <span class="n">keytext</span> <span class="o">==</span> <span class="s">&#39;R&#39;</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">setup_snufflings</span><span class="p">()</span> 
+                <span class="bp">self</span><span class="o">.</span><span class="n">setup_snufflings</span><span class="p">()</span>
 
             <span class="k">elif</span> <span class="n">key_event</span><span class="o">.</span><span class="n">key</span><span class="p">()</span> <span class="o">==</span> <span class="n">Qt</span><span class="o">.</span><span class="n">Key_Backspace</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">remove_markers</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selected_markers</span><span class="p">())</span>

@@ -3196,6 +3196,49 @@
 
         <span class="k">return</span> <span class="n">mod_extracted</span>
 
+    <span class="k">def</span> <span class="nf">replaced_crust</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">crust2_profile</span><span class="p">):</span>
+        <span class="kn">import</span> <span class="nn">crust2x2</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">crust2_profile</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+            <span class="n">lat</span><span class="p">,</span> <span class="n">lon</span> <span class="o">=</span> <span class="p">[</span> <span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">crust2_profile</span> <span class="p">]</span>
+            <span class="n">profile</span> <span class="o">=</span> <span class="n">crust2x2</span><span class="o">.</span><span class="n">get_profile</span><span class="p">(</span><span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">crust2_profile</span><span class="p">,</span> <span class="nb">basestring</span><span class="p">):</span>
+            <span class="n">profile</span> <span class="o">=</span> <span class="n">crust2x2</span><span class="o">.</span><span class="n">get_profile</span><span class="p">(</span><span class="n">crust2_profile</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">crust2_profile</span><span class="p">,</span> <span class="n">crust2x2</span><span class="o">.</span><span class="n">Crust2Profile</span><span class="p">):</span>
+            <span class="n">profile</span> <span class="o">=</span> <span class="n">crust2_profile</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="bp">False</span><span class="p">,</span> <span class="s">&#39;crust2_profile must be (lat,lon) a profile key or a crust2x2 Profile object)&#39;</span>
+
+        <span class="n">crustmod</span> <span class="o">=</span> <span class="n">LayeredModel</span><span class="o">.</span><span class="n">from_scanlines</span><span class="p">(</span><span class="n">from_crust2x2_profile</span><span class="p">(</span><span class="n">profile</span><span class="p">))</span>
+
+        <span class="n">newmod</span> <span class="o">=</span> <span class="n">LayeredModel</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">crustmod</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">depth_max</span><span class="o">=</span><span class="s">&#39;moho&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">elements</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">element</span><span class="o">.</span><span class="n">name</span> <span class="o">!=</span> <span class="s">&#39;moho&#39;</span><span class="p">:</span>
+                <span class="n">newmod</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">element</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">moho1</span> <span class="o">=</span> <span class="n">element</span>
+
+        <span class="n">mod</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">depth_min</span><span class="o">=</span><span class="s">&#39;moho&#39;</span><span class="p">)</span>
+        <span class="n">first</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">mod</span><span class="o">.</span><span class="n">elements</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">element</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s">&#39;moho&#39;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">element</span><span class="o">.</span><span class="n">z</span> <span class="o">&lt;=</span> <span class="n">moho1</span><span class="o">.</span><span class="n">z</span><span class="p">:</span>
+                    <span class="n">mbelow</span> <span class="o">=</span> <span class="n">mod</span><span class="o">.</span><span class="n">material</span><span class="p">(</span><span class="n">moho1</span><span class="o">.</span><span class="n">z</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="n">UP</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">mbelow</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="n">mbelow</span>
+
+                <span class="n">moho</span> <span class="o">=</span> <span class="n">Interface</span><span class="p">(</span><span class="n">moho1</span><span class="o">.</span><span class="n">z</span><span class="p">,</span> <span class="n">moho1</span><span class="o">.</span><span class="n">mabove</span><span class="p">,</span> <span class="n">mbelow</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">&#39;moho&#39;</span><span class="p">)</span>
+                <span class="n">newmod</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">moho</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">first</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">Layer</span><span class="p">)</span> <span class="ow">and</span> <span class="n">element</span><span class="o">.</span><span class="n">zbot</span> <span class="o">&gt;</span> <span class="n">moho</span><span class="o">.</span><span class="n">z</span><span class="p">:</span>
+                            <span class="n">newmod</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">GradientLayer</span><span class="p">(</span><span class="n">moho</span><span class="o">.</span><span class="n">z</span><span class="p">,</span> <span class="n">element</span><span class="o">.</span><span class="n">zbot</span><span class="p">,</span> 
+                                <span class="n">moho</span><span class="o">.</span><span class="n">mbelow</span><span class="p">,</span> <span class="n">element</span><span class="o">.</span><span class="n">mbot</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">element</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+
+                            <span class="n">first</span> <span class="o">=</span> <span class="bp">False</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">newmod</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">element</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">newmod</span>
+
     <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span> <span class="nb">str</span><span class="p">(</span><span class="n">element</span><span class="p">)</span> <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elements</span> <span class="p">)</span>
                 </div>
@@ -3323,11 +3366,14 @@
 <span class="k">def</span> <span class="nf">builtin_model_filename</span><span class="p">(</span><span class="n">modelname</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">util</span><span class="o">.</span><span class="n">data_file</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s">&#39;earthmodels&#39;</span><span class="p">,</span> <span class="n">modelname</span><span class="o">+</span><span class="s">&#39;.nd&#39;</span><span class="p">))</span>
 
-<div class="viewcode-block" id="load_model"><a class="viewcode-back" href="../../cake.html#pyrocko.cake.load_model">[docs]</a><span class="k">def</span> <span class="nf">load_model</span><span class="p">(</span><span class="n">fn</span><span class="o">=</span><span class="s">&#39;ak135-f-continental.m&#39;</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="s">&#39;nd&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="load_model"><a class="viewcode-back" href="../../cake.html#pyrocko.cake.load_model">[docs]</a><span class="k">def</span> <span class="nf">load_model</span><span class="p">(</span><span class="n">fn</span><span class="o">=</span><span class="s">&#39;ak135-f-continental.m&#39;</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="s">&#39;nd&#39;</span><span class="p">,</span> <span class="n">crust2_profile</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Load layered earth model from file.</span>
 <span class="sd">    </span>
 <span class="sd">    :param fn: filename</span>
 <span class="sd">    :param format: format </span>
+<span class="sd">    :param crust2_profile: ``(lat, lon)`` or </span>
+<span class="sd">        :py:class:`pyrocko.crust2x2.Crust2Profile` object, merge model with crustal </span>
+<span class="sd">        profile</span>
 <span class="sd">    :returns: object of type :py:class:`LayeredModel`</span>
 
 <span class="sd">    The following formats are currently supported:</span>
@@ -3354,7 +3400,11 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="k">assert</span> <span class="bp">False</span><span class="p">,</span> <span class="s">&#39;unsupported model format&#39;</span>
 
-    <span class="k">return</span> <span class="n">LayeredModel</span><span class="o">.</span><span class="n">from_scanlines</span><span class="p">(</span><span class="n">reader</span><span class="p">)</span>
+    <span class="n">mod</span> <span class="o">=</span> <span class="n">LayeredModel</span><span class="o">.</span><span class="n">from_scanlines</span><span class="p">(</span><span class="n">reader</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">crust2_profile</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">mod</span><span class="o">.</span><span class="n">replaced_crust</span><span class="p">(</span><span class="n">crust2_profile</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">mod</span>
 </div>
 <div class="viewcode-block" id="castagna_vs_to_vp"><a class="viewcode-back" href="../../cake.html#pyrocko.cake.castagna_vs_to_vp">[docs]</a><span class="k">def</span> <span class="nf">castagna_vs_to_vp</span><span class="p">(</span><span class="n">vs</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Calculate vp from vs using castagna&#39;s relation.</span>

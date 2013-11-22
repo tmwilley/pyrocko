@@ -1207,6 +1207,104 @@ recursion which is normally used.</p>
 <p>(from scipy.signal, but changed to use fft and ifft from numpy.fft)</p>
 </dd></dl>
 
+<dl class="function">
+<dt id="pyrocko.trace.near">
+<tt class="descname">near</tt><big>(</big><em>a</em>, <em>b</em>, <em>eps</em><big>)</big><a class="reference internal" href="_modules/pyrocko/trace.html#near"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.trace.near" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pyrocko.trace.coroutine">
+<tt class="descname">coroutine</tt><big>(</big><em>func</em><big>)</big><a class="reference internal" href="_modules/pyrocko/trace.html#coroutine"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.trace.coroutine" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="pyrocko.trace.States">
+<em class="property">class </em><tt class="descname">States</tt><a class="reference internal" href="_modules/pyrocko/trace.html#States"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.trace.States" title="Permalink to this definition">¶</a></dt>
+<dd><p>Utility to store channel-specific state in coroutines.</p>
+<dl class="method">
+<dt id="pyrocko.trace.States.get">
+<tt class="descname">get</tt><big>(</big><em>tr</em><big>)</big><a class="reference internal" href="_modules/pyrocko/trace.html#States.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.trace.States.get" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.trace.States.set">
+<tt class="descname">set</tt><big>(</big><em>tr</em>, <em>value</em><big>)</big><a class="reference internal" href="_modules/pyrocko/trace.html#States.set"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.trace.States.set" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.trace.States.free">
+<tt class="descname">free</tt><big>(</big><em>value</em><big>)</big><a class="reference internal" href="_modules/pyrocko/trace.html#States.free"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.trace.States.free" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="pyrocko.trace.co_list_append">
+<tt class="descname">co_list_append</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/pyrocko/trace.html#co_list_append"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.trace.co_list_append" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pyrocko.trace.co_lfilter">
+<tt class="descname">co_lfilter</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/pyrocko/trace.html#co_lfilter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.trace.co_lfilter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Successively filter broken continuous trace data (coroutine).</p>
+<p>Create coroutine which takes <a class="reference internal" href="#pyrocko.trace.Trace" title="pyrocko.trace.Trace"><tt class="xref py py-class docutils literal"><span class="pre">Trace</span></tt></a> objects, filters their data
+through <tt class="xref py py-func docutils literal"><span class="pre">scipy.signal.lfilter()</span></tt> and sends new <a class="reference internal" href="#pyrocko.trace.Trace" title="pyrocko.trace.Trace"><tt class="xref py py-class docutils literal"><span class="pre">Trace</span></tt></a>
+objects containing the filtered data to target. This is useful, if one
+wants to filter a long continuous time series, which is split into many
+successive traces without producing filter artifacts at trace boundaries.</p>
+<p>Filter states are kept <em>per channel</em>, specifically, for each (network,
+station, location, channel) combination occuring in the input traces, a
+separate state is created and maintained. This makes it possible to filter
+multichannel or multistation data with only one <a class="reference internal" href="#pyrocko.trace.co_lfilter" title="pyrocko.trace.co_lfilter"><tt class="xref py py-func docutils literal"><span class="pre">co_lfilter()</span></tt></a>
+instance.</p>
+<p>Filter state is reset, when gaps occur.</p>
+<p>Use it like this:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">pyrocko.trace</span> <span class="kn">import</span> <span class="n">co_lfilter</span><span class="p">,</span> <span class="n">co_list_append</span>
+
+<span class="n">filtered_traces</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">pipe</span> <span class="o">=</span> <span class="n">co_lfilter</span><span class="p">(</span><span class="n">co_list_append</span><span class="p">(</span><span class="n">filtered_traces</span><span class="p">),</span> <span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">trace</span> <span class="ow">in</span> <span class="n">traces</span><span class="p">:</span>
+     <span class="n">pipe</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">trace</span><span class="p">)</span>
+
+<span class="n">pipe</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyrocko.trace.co_antialias">
+<tt class="descname">co_antialias</tt><big>(</big><em>target</em>, <em>q</em>, <em>n=None</em>, <em>ftype='fir'</em><big>)</big><a class="reference internal" href="_modules/pyrocko/trace.html#co_antialias"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.trace.co_antialias" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pyrocko.trace.co_dropsamples">
+<tt class="descname">co_dropsamples</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/pyrocko/trace.html#co_dropsamples"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.trace.co_dropsamples" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pyrocko.trace.co_downsample">
+<tt class="descname">co_downsample</tt><big>(</big><em>target</em>, <em>q</em>, <em>n=None</em>, <em>ftype='fir'</em><big>)</big><a class="reference internal" href="_modules/pyrocko/trace.html#co_downsample"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.trace.co_downsample" title="Permalink to this definition">¶</a></dt>
+<dd><p>Successively downsample broken continuous trace data (coroutine).</p>
+<p>Create coroutine which takes <a class="reference internal" href="#pyrocko.trace.Trace" title="pyrocko.trace.Trace"><tt class="xref py py-class docutils literal"><span class="pre">Trace</span></tt></a> objects, downsamples their
+data and sends new <a class="reference internal" href="#pyrocko.trace.Trace" title="pyrocko.trace.Trace"><tt class="xref py py-class docutils literal"><span class="pre">Trace</span></tt></a> objects containing the downsampled
+data to target.  This is useful, if one wants to downsample a long
+continuous time series, which is split into many successive traces without
+producing filter artifacts and gaps at trace boundaries.</p>
+<p>Filter states are kept <em>per channel</em>, specifically, for each (network,
+station, location, channel) combination occuring in the input traces, a
+separate state is created and maintained. This makes it possible to filter
+multichannel or multistation data with only one <a class="reference internal" href="#pyrocko.trace.co_lfilter" title="pyrocko.trace.co_lfilter"><tt class="xref py py-func docutils literal"><span class="pre">co_lfilter()</span></tt></a>
+instance.</p>
+<p>Filter state is reset, when gaps occur. The sampling instances are choosen
+so that they occur at (or as close as possible) to even multiples of the
+sampling interval of the downsampled trace (based on system time).</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyrocko.trace.co_downsample_to">
+<tt class="descname">co_downsample_to</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/pyrocko/trace.html#co_downsample_to"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.trace.co_downsample_to" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </div>
 
 

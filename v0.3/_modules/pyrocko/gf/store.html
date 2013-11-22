@@ -769,6 +769,10 @@
             <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_decimated_store_dir</span><span class="p">(</span><span class="n">decimate</span><span class="p">)):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_decimated</span><span class="p">[</span><span class="n">decimate</span><span class="p">]</span> <span class="o">=</span> <span class="bp">None</span>
 
+    <span class="k">def</span> <span class="nf">save_config</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">config_fn</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">store_dir</span><span class="p">,</span> <span class="s">&#39;config&#39;</span><span class="p">)</span>
+        <span class="n">meta</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="n">config_fn</span><span class="p">)</span>
+
     <span class="k">def</span> <span class="nf">get_extra</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
 <div class="viewcode-block" id="Store.get_extra"><a class="viewcode-back" href="../../../gf.html#pyrocko.gf.store.Store.get_extra">[docs]</a>        <span class="sd">&#39;&#39;&#39;Get extra information stored under given key.&#39;&#39;&#39;</span>
 
@@ -953,6 +957,8 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_phases</span><span class="p">[</span><span class="n">phase_id</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">t</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timing</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">timing</span><span class="p">,</span> <span class="n">meta</span><span class="o">.</span><span class="n">Timing</span><span class="p">):</span>
+            <span class="n">timing</span> <span class="o">=</span> <span class="n">meta</span><span class="o">.</span><span class="n">Timing</span><span class="p">(</span><span class="n">timing</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">timing</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_phase</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">make_timing_params</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">begin</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">snap_vred</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
@@ -987,8 +993,7 @@
         <span class="n">dx</span> <span class="o">=</span> <span class="p">(</span><span class="n">xs</span> <span class="o">-</span> <span class="n">x_tminmin</span><span class="p">)</span>
         <span class="n">dx</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">where</span><span class="p">(</span> <span class="n">dx</span> <span class="o">!=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">num</span><span class="o">.</span><span class="n">nan</span> <span class="p">)</span>
         <span class="n">s</span> <span class="o">=</span> <span class="p">(</span><span class="n">tmin</span> <span class="o">-</span> <span class="n">tminmin</span><span class="p">)</span> <span class="o">/</span> <span class="n">dx</span>
-        <span class="n">i</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">nanargmin</span><span class="p">(</span><span class="n">num</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">s</span><span class="p">))</span>
-        <span class="n">sred</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">sred</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">num</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="n">num</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">s</span><span class="p">)]))</span>
         
         <span class="k">if</span> <span class="n">snap_vred</span><span class="p">:</span>
             <span class="n">tdif</span> <span class="o">=</span> <span class="n">sred</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">distance_delta</span>
@@ -1012,7 +1017,66 @@
                 <span class="n">tlenmax_vred</span> <span class="o">=</span> <span class="n">tlenmax_vred</span><span class="p">,</span>
                 <span class="n">vred</span> <span class="o">=</span> <span class="n">vred</span><span class="p">)</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="s">&#39;Store GFTrace Zero StoreError CannotCreate CannotOpen&#39;</span><span class="o">.</span><span class="n">split</span><span class="p">()</span></div></div>
+    <span class="k">def</span> <span class="nf">make_ttt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span></div>
+        <span class="kn">from</span> <span class="nn">pyrocko</span> <span class="kn">import</span> <span class="n">cake</span>
+        <span class="n">config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span>
+
+        <span class="n">mod</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">earthmodel_1d</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">mod</span><span class="p">:</span>
+            <span class="n">die</span><span class="p">(</span><span class="s">&#39;no earth model found&#39;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">pdef</span> <span class="ow">in</span> <span class="n">config</span><span class="o">.</span><span class="n">tabulated_phases</span><span class="p">:</span>
+
+            <span class="n">phase_id</span> <span class="o">=</span> <span class="n">pdef</span><span class="o">.</span><span class="n">id</span>
+            <span class="n">phases</span> <span class="o">=</span> <span class="n">pdef</span><span class="o">.</span><span class="n">phases</span>
+            <span class="n">horvels</span> <span class="o">=</span> <span class="n">pdef</span><span class="o">.</span><span class="n">horizontal_velocities</span>
+
+            <span class="n">fn</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">store_dir</span><span class="p">,</span> <span class="s">&#39;phases&#39;</span><span class="p">,</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s">.phase&#39;</span> <span class="o">%</span> <span class="n">phase_id</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">force</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;file already exists: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">fn</span><span class="p">)</span>
+                <span class="k">continue</span>
+
+            <span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                    <span class="n">zr</span><span class="p">,</span> <span class="n">zs</span><span class="p">,</span> <span class="n">x</span> <span class="o">=</span> <span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">receiver_depth</span><span class="p">,)</span> <span class="o">+</span> <span class="n">args</span>
+                <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+                    <span class="n">zr</span><span class="p">,</span> <span class="n">zs</span><span class="p">,</span> <span class="n">x</span> <span class="o">=</span> <span class="n">args</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">assert</span> <span class="bp">False</span>
+
+                <span class="n">t</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">if</span> <span class="n">phases</span><span class="p">:</span>
+                    <span class="n">rays</span> <span class="o">=</span> <span class="n">mod</span><span class="o">.</span><span class="n">arrivals</span><span class="p">(</span>
+                            <span class="n">phases</span> <span class="o">=</span> <span class="n">phases</span><span class="p">,</span>
+                            <span class="n">distances</span> <span class="o">=</span> <span class="p">[</span> <span class="n">x</span><span class="o">*</span><span class="n">cake</span><span class="o">.</span><span class="n">m2d</span> <span class="p">],</span>
+                            <span class="n">zstart</span> <span class="o">=</span> <span class="n">zs</span><span class="p">,</span>
+                            <span class="n">zstop</span> <span class="o">=</span> <span class="n">zr</span><span class="p">)</span>
+
+                    <span class="k">for</span> <span class="n">ray</span> <span class="ow">in</span> <span class="n">rays</span><span class="p">:</span>
+                        <span class="n">t</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ray</span><span class="o">.</span><span class="n">t</span><span class="p">)</span>
+
+                <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">pdef</span><span class="o">.</span><span class="n">horizontal_velocities</span><span class="p">:</span>
+                    <span class="n">t</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="o">/</span><span class="p">(</span><span class="n">v</span><span class="o">*</span><span class="mf">1000.</span><span class="p">))</span>
+                
+                <span class="k">if</span> <span class="n">t</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="nb">min</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="bp">None</span>
+
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;making travel time table for phasegroup &quot;</span><span class="si">%s</span><span class="s">&quot;&#39;</span> <span class="o">%</span> <span class="n">phase_id</span><span class="p">)</span>
+            <span class="n">ip</span> <span class="o">=</span> <span class="n">spit</span><span class="o">.</span><span class="n">SPTree</span><span class="p">(</span>
+                <span class="n">f</span> <span class="o">=</span> <span class="n">evaluate</span><span class="p">,</span>
+                <span class="n">ftol</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">deltat</span><span class="o">*</span><span class="mf">0.5</span><span class="p">,</span>
+                <span class="n">xbounds</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">transpose</span><span class="p">((</span><span class="n">config</span><span class="o">.</span><span class="n">mins</span><span class="p">,</span> <span class="n">config</span><span class="o">.</span><span class="n">maxs</span><span class="p">)),</span>
+                <span class="n">xtols</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">deltas</span><span class="p">)</span>
+
+            <span class="n">util</span><span class="o">.</span><span class="n">ensuredirs</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
+            <span class="n">ip</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
+
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="s">&#39;Store GFTrace Zero StoreError CannotCreate CannotOpen&#39;</span><span class="o">.</span><span class="n">split</span><span class="p">()</span></div>
 </pre></div>
 
           </div>
