@@ -51,8 +51,16 @@
           <div class="body">
             
   <h1>Source code for pyrocko.gf.store</h1><div class="highlight"><pre>
-<span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">struct</span><span class="o">,</span> <span class="nn">math</span><span class="o">,</span> <span class="nn">shutil</span><span class="o">,</span> <span class="nn">fcntl</span><span class="o">,</span> <span class="nn">copy</span><span class="o">,</span> <span class="nn">logging</span><span class="o">,</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">errno</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">struct</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">import</span> <span class="nn">fcntl</span>
+<span class="kn">import</span> <span class="nn">copy</span>
 <span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">re</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">num</span>
 <span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">signal</span>
@@ -66,20 +74,21 @@
 <span class="n">gf_dtype_nbytes_per_sample</span> <span class="o">=</span> <span class="mi">4</span>
 
 <span class="n">gf_store_header_dtype</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="p">(</span><span class="s">&#39;nrecords&#39;</span><span class="p">,</span> <span class="s">&#39;&lt;u8&#39;</span><span class="p">),</span>
-        <span class="p">(</span><span class="s">&#39;deltat&#39;</span><span class="p">,</span> <span class="s">&#39;&lt;f4&#39;</span><span class="p">),</span>
-    <span class="p">]</span>
+    <span class="p">(</span><span class="s">&#39;nrecords&#39;</span><span class="p">,</span> <span class="s">&#39;&lt;u8&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">&#39;deltat&#39;</span><span class="p">,</span> <span class="s">&#39;&lt;f4&#39;</span><span class="p">),</span>
+<span class="p">]</span>
 
 <span class="n">gf_store_header_fmt</span> <span class="o">=</span> <span class="s">&#39;&lt;Qf&#39;</span>
 <span class="n">gf_store_header_fmt_size</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">calcsize</span><span class="p">(</span><span class="n">gf_store_header_fmt</span><span class="p">)</span>
 
 <span class="n">gf_record_dtype</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">dtype</span><span class="p">([</span>
-        <span class="p">(</span><span class="s">&#39;data_offset&#39;</span><span class="p">,</span> <span class="s">&#39;&lt;u8&#39;</span><span class="p">),</span>
-        <span class="p">(</span><span class="s">&#39;itmin&#39;</span><span class="p">,</span> <span class="s">&#39;&lt;i4&#39;</span><span class="p">),</span>
-        <span class="p">(</span><span class="s">&#39;nsamples&#39;</span><span class="p">,</span> <span class="s">&#39;&lt;u4&#39;</span><span class="p">),</span>
-        <span class="p">(</span><span class="s">&#39;begin_value&#39;</span><span class="p">,</span> <span class="s">&#39;&lt;f4&#39;</span><span class="p">),</span>
-        <span class="p">(</span><span class="s">&#39;end_value&#39;</span><span class="p">,</span> <span class="s">&#39;&lt;f4&#39;</span><span class="p">),</span>
-    <span class="p">])</span>
+    <span class="p">(</span><span class="s">&#39;data_offset&#39;</span><span class="p">,</span> <span class="s">&#39;&lt;u8&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">&#39;itmin&#39;</span><span class="p">,</span> <span class="s">&#39;&lt;i4&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">&#39;nsamples&#39;</span><span class="p">,</span> <span class="s">&#39;&lt;u4&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">&#39;begin_value&#39;</span><span class="p">,</span> <span class="s">&#39;&lt;f4&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">&#39;end_value&#39;</span><span class="p">,</span> <span class="s">&#39;&lt;f4&#39;</span><span class="p">),</span>
+<span class="p">])</span>
+
 
 <span class="k">def</span> <span class="nf">check_string_id</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">meta</span><span class="o">.</span><span class="n">StringID</span><span class="o">.</span><span class="n">pattern</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
@@ -89,7 +98,7 @@
 <span class="c">#</span>
 <span class="c"># Data file offset of first sample in bytes (the seek value).</span>
 <span class="c"># Special values:</span>
-<span class="c"># </span>
+<span class="c">#</span>
 <span class="c">#  0x00 - missing trace</span>
 <span class="c">#  0x01 - zero trace (GF trace is physically zero)</span>
 <span class="c">#  0x02 - short trace of 1 or 2 samples (no need for data allocation)</span>
@@ -101,18 +110,21 @@
 <span class="c"># respect to a global reference time zero.</span>
 <span class="c">#</span>
 <span class="c"># - nsamples</span>
-<span class="c"># </span>
-<span class="c"># Number of samples in the GF trace. </span>
-<span class="c"># </span>
+<span class="c">#</span>
+<span class="c"># Number of samples in the GF trace.</span>
+<span class="c">#</span>
 <span class="c"># - begin_value, end_value</span>
 <span class="c">#</span>
-<span class="c"># Values of first and last sample. These values are included in data[] </span>
+<span class="c"># Values of first and last sample. These values are included in data[]</span>
 <span class="c"># redunantly.</span>
+
 
 <span class="k">class</span> <span class="nc">NotMultipleOfSamplingInterval</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
     <span class="k">pass</span>
 
+
 <span class="n">sampling_check_eps</span> <span class="o">=</span> <span class="mf">1e-5</span>
+
 
 <span class="k">class</span> <span class="nc">GFTrace</span><span class="p">:</span>
 
@@ -120,27 +132,23 @@
     <span class="k">def</span> <span class="nf">from_trace</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">tr</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">cls</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">tr</span><span class="o">.</span><span class="n">ydata</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span> <span class="n">tmin</span><span class="o">=</span><span class="n">tr</span><span class="o">.</span><span class="n">tmin</span><span class="p">,</span> <span class="n">deltat</span><span class="o">=</span><span class="n">tr</span><span class="o">.</span><span class="n">deltat</span><span class="p">)</span>
 
-
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">itmin</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">deltat</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> 
-            <span class="n">is_zero</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">begin_value</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">end_value</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">tmin</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">itmin</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">deltat</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+                 <span class="n">is_zero</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">begin_value</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">end_value</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">tmin</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
 
         <span class="k">assert</span> <span class="nb">sum</span><span class="p">((</span><span class="n">x</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">(</span><span class="n">tmin</span><span class="p">,</span> <span class="n">itmin</span><span class="p">))</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> \
-                <span class="s">&#39;GFTrace: either tmin or itmin must be given&#39;</span>
+            <span class="s">&#39;GFTrace: either tmin or itmin must be given&#39;</span>
 
         <span class="k">if</span> <span class="n">tmin</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
             <span class="n">itmin</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">tmin</span> <span class="o">/</span> <span class="n">deltat</span><span class="p">))</span>
             <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">itmin</span><span class="o">*</span><span class="n">deltat</span> <span class="o">-</span> <span class="n">tmin</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">sampling_check_eps</span><span class="o">*</span><span class="n">deltat</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="n">NotMultipleOfSamplingInterval</span><span class="p">(</span> 
-                 <span class="s">&#39;GFTrace: tmin (</span><span class="si">%g</span><span class="s">) is not a multiple of sampling interval (</span><span class="si">%g</span><span class="s">)&#39;</span>
-                         <span class="o">%</span> <span class="p">(</span><span class="n">tmin</span><span class="p">,</span> <span class="n">deltat</span><span class="p">)</span> <span class="p">)</span>
+                <span class="k">raise</span> <span class="n">NotMultipleOfSamplingInterval</span><span class="p">(</span>
+                    <span class="s">&#39;GFTrace: tmin (</span><span class="si">%g</span><span class="s">) is not a multiple of sampling &#39;</span>
+                    <span class="s">&#39;interval (</span><span class="si">%g</span><span class="s">)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">tmin</span><span class="p">,</span> <span class="n">deltat</span><span class="p">))</span>
 
         <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
             <span class="n">data</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">gf_dtype</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">data</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">array</span><span class="p">([],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">gf_dtype</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="n">data</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">num</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">is_zero</span> <span class="o">=</span> <span class="bp">True</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">itmin</span> <span class="o">=</span> <span class="n">itmin</span>
@@ -158,41 +166,79 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">t</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">num</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">itmin</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">deltat</span><span class="p">,</span> 
-                <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">itmin</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">size</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">deltat</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">num</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">itmin</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">deltat</span><span class="p">,</span>
+            <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">itmin</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">size</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">deltat</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">itmin</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
-        
+
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_zero</span><span class="p">:</span>
             <span class="k">return</span> <span class="s">&#39;ZERO&#39;</span>
 
         <span class="n">s</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">itmin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">itmin</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">size</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">itmin</span> <span class="ow">and</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">itmin</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">size</span><span class="p">:</span>
-                <span class="n">s</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="s">&#39;</span><span class="si">%7.4g</span><span class="s">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">itmin</span><span class="p">]</span> <span class="p">)</span>
+                <span class="n">s</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%7.4g</span><span class="s">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">itmin</span><span class="p">])</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">s</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="s">&#39; &#39;</span><span class="o">*</span><span class="mi">7</span> <span class="p">)</span>
-        
+                <span class="n">s</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&#39; &#39;</span><span class="o">*</span><span class="mi">7</span><span class="p">)</span>
+
         <span class="k">return</span> <span class="s">&#39;|&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
 
 
+<span class="k">def</span> <span class="nf">make_same_span</span><span class="p">(</span><span class="n">traces</span><span class="p">):</span>
+    <span class="n">nonzero</span> <span class="o">=</span> <span class="p">[</span><span class="n">tr</span> <span class="k">for</span> <span class="n">tr</span> <span class="ow">in</span> <span class="n">traces</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">tr</span><span class="o">.</span><span class="n">is_zero</span><span class="p">]</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">nonzero</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">Zero</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">traces</span><span class="p">)</span>
+
+    <span class="n">deltat</span> <span class="o">=</span> <span class="n">nonzero</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">deltat</span>
+
+    <span class="n">itmin</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">tr</span><span class="o">.</span><span class="n">itmin</span> <span class="k">for</span> <span class="n">tr</span> <span class="ow">in</span> <span class="n">nonzero</span><span class="p">)</span>
+    <span class="n">itmax</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">tr</span><span class="o">.</span><span class="n">itmin</span><span class="o">+</span><span class="n">tr</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">size</span> <span class="k">for</span> <span class="n">tr</span> <span class="ow">in</span> <span class="n">nonzero</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+
+    <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">tr</span> <span class="ow">in</span> <span class="n">traces</span><span class="p">:</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="n">itmax</span> <span class="o">-</span> <span class="n">itmin</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">tr</span><span class="o">.</span><span class="n">itmin</span> <span class="o">!=</span> <span class="n">itmin</span> <span class="ow">or</span> <span class="n">tr</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">size</span> <span class="o">!=</span> <span class="n">n</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">gf_dtype</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">tr</span><span class="o">.</span><span class="n">is_zero</span><span class="p">:</span>
+                <span class="n">lo</span> <span class="o">=</span> <span class="n">tr</span><span class="o">.</span><span class="n">itmin</span><span class="o">-</span><span class="n">itmin</span>
+                <span class="n">hi</span> <span class="o">=</span> <span class="n">lo</span> <span class="o">+</span> <span class="n">tr</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">size</span>
+                <span class="n">data</span><span class="p">[:</span><span class="n">lo</span><span class="p">]</span> <span class="o">=</span> <span class="n">tr</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">data</span><span class="p">[</span><span class="n">lo</span><span class="p">:</span><span class="n">hi</span><span class="p">]</span> <span class="o">=</span> <span class="n">tr</span><span class="o">.</span><span class="n">data</span>
+                <span class="n">data</span><span class="p">[</span><span class="n">hi</span><span class="p">:]</span> <span class="o">=</span> <span class="n">tr</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+            <span class="n">tr</span> <span class="o">=</span> <span class="n">GFTrace</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">itmin</span><span class="p">,</span> <span class="n">deltat</span><span class="p">)</span>
+
+        <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tr</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">out</span>
+
 <span class="n">Zero</span> <span class="o">=</span> <span class="n">GFTrace</span><span class="p">(</span><span class="n">is_zero</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">itmin</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
 
 <span class="k">class</span> <span class="nc">StoreError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
     <span class="k">pass</span>
 
+
 <span class="k">class</span> <span class="nc">CannotCreate</span><span class="p">(</span><span class="n">StoreError</span><span class="p">):</span>
     <span class="k">pass</span>
+
 
 <span class="k">class</span> <span class="nc">CannotOpen</span><span class="p">(</span><span class="n">StoreError</span><span class="p">):</span>
     <span class="k">pass</span>
 
+
 <span class="k">class</span> <span class="nc">DuplicateInsert</span><span class="p">(</span><span class="n">StoreError</span><span class="p">):</span>
     <span class="k">pass</span>
+
+<span class="k">class</span> <span class="nc">ShortRead</span><span class="p">(</span><span class="n">StoreError</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">&#39;unexpected end of data (truncated traces file?)&#39;</span>
 
 <span class="k">class</span> <span class="nc">NotAllowedToInterpolate</span><span class="p">(</span><span class="n">StoreError</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s">&#39;not allowed to interpolate&#39;</span>
+
 
 <span class="k">class</span> <span class="nc">NoSuchExtra</span><span class="p">(</span><span class="n">StoreError</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
@@ -201,6 +247,7 @@
 
     <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s">&#39;extra information for key &quot;</span><span class="si">%s</span><span class="s">&quot; not found.&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span>
+
 
 <span class="k">class</span> <span class="nc">NoSuchPhase</span><span class="p">(</span><span class="n">StoreError</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
@@ -211,6 +258,7 @@
         <span class="k">return</span> <span class="s">&#39;phase for key &quot;</span><span class="si">%s</span><span class="s">&quot; not found. &#39;</span> \
                <span class="s">&#39;Running &quot;fomosto ttt&quot; may be needed.&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span>
 
+
 <span class="k">def</span> <span class="nf">remove_if_exists</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">force</span><span class="p">:</span>
@@ -218,7 +266,8 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">CannotCreate</span><span class="p">(</span><span class="s">&#39;file </span><span class="si">%s</span><span class="s"> already exists&#39;</span> <span class="o">%</span> <span class="n">fn</span><span class="p">)</span>
 
-<span class="k">class</span> <span class="nc">Store_</span><span class="p">:</span>
+
+<span class="k">class</span> <span class="nc">BaseStore</span><span class="p">:</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">index_fn_</span><span class="p">(</span><span class="n">store_dir</span><span class="p">):</span>
@@ -231,14 +280,13 @@
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="n">store_dir</span><span class="p">,</span> <span class="n">deltat</span><span class="p">,</span> <span class="n">nrecords</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
 
-
         <span class="k">try</span><span class="p">:</span>
             <span class="n">util</span><span class="o">.</span><span class="n">ensuredir</span><span class="p">(</span><span class="n">store_dir</span><span class="p">)</span>
         <span class="k">except</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">CannotCreate</span><span class="p">(</span><span class="s">&#39;cannot create directory </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">store_dir</span><span class="p">)</span>
-        
-        <span class="n">index_fn</span> <span class="o">=</span> <span class="n">Store_</span><span class="o">.</span><span class="n">index_fn_</span><span class="p">(</span><span class="n">store_dir</span><span class="p">)</span>
-        <span class="n">data_fn</span> <span class="o">=</span> <span class="n">Store_</span><span class="o">.</span><span class="n">data_fn_</span><span class="p">(</span><span class="n">store_dir</span><span class="p">)</span>
+
+        <span class="n">index_fn</span> <span class="o">=</span> <span class="n">BaseStore</span><span class="o">.</span><span class="n">index_fn_</span><span class="p">(</span><span class="n">store_dir</span><span class="p">)</span>
+        <span class="n">data_fn</span> <span class="o">=</span> <span class="n">BaseStore</span><span class="o">.</span><span class="n">data_fn_</span><span class="p">(</span><span class="n">store_dir</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">fn</span> <span class="ow">in</span> <span class="p">(</span><span class="n">index_fn</span><span class="p">,</span> <span class="n">data_fn</span><span class="p">):</span>
             <span class="n">remove_if_exists</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">force</span><span class="p">)</span>
@@ -261,7 +309,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_f_index</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_f_data</span> <span class="o">=</span> <span class="bp">None</span>
 
-
     <span class="k">def</span> <span class="nf">open</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">index_fn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">index_fn</span><span class="p">()</span>
         <span class="n">data_fn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_fn</span><span class="p">()</span>
@@ -280,7 +327,18 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
             <span class="k">raise</span> <span class="n">CannotOpen</span><span class="p">(</span><span class="s">&#39;cannot open gf store: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">store_dir</span><span class="p">)</span>
 
-        <span class="n">dataheader</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_f_index</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">gf_store_header_fmt_size</span><span class="p">)</span>
+        <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">dataheader</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_f_index</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">gf_store_header_fmt_size</span><span class="p">)</span>
+                <span class="k">break</span>
+
+            <span class="k">except</span> <span class="ne">IOError</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
+                <span class="c"># occasionally got this one on an NFS volume</span>
+                <span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">errno</span> <span class="o">==</span> <span class="n">errno</span><span class="o">.</span><span class="n">EBUSY</span><span class="p">:</span>
+                    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.01</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span>
+
         <span class="n">nrecords</span><span class="p">,</span> <span class="n">deltat</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="n">gf_store_header_fmt</span><span class="p">,</span> <span class="n">dataheader</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_nrecords</span> <span class="o">=</span> <span class="n">nrecords</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_deltat</span> <span class="o">=</span> <span class="n">deltat</span>
@@ -292,8 +350,19 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">lock</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_f_index</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
-        <span class="n">fcntl</span><span class="o">.</span><span class="n">lockf</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_f_index</span><span class="p">,</span> <span class="n">fcntl</span><span class="o">.</span><span class="n">LOCK_EX</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_f_index</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
+
+        <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">fcntl</span><span class="o">.</span><span class="n">lockf</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_f_index</span><span class="p">,</span> <span class="n">fcntl</span><span class="o">.</span><span class="n">LOCK_EX</span><span class="p">)</span>
+                <span class="k">break</span>
+
+            <span class="k">except</span> <span class="ne">IOError</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">errno</span> <span class="o">==</span> <span class="n">errno</span><span class="o">.</span><span class="n">ENOLCK</span><span class="p">:</span>
+                    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.01</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span>
 
     <span class="k">def</span> <span class="nf">unlock</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_f_data</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
@@ -309,20 +378,31 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_span</span><span class="p">(</span><span class="n">irecord</span><span class="p">,</span> <span class="n">decimate</span><span class="o">=</span><span class="n">decimate</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">irecord</span><span class="p">,</span> <span class="n">itmin</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">nsamples</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">decimate</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="n">irecord</span><span class="p">,</span> <span class="n">itmin</span><span class="o">=</span><span class="n">itmin</span><span class="p">,</span> <span class="n">nsamples</span><span class="o">=</span><span class="n">nsamples</span><span class="p">,</span> <span class="n">decimate</span><span class="o">=</span><span class="n">decimate</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="n">irecord</span><span class="p">,</span> <span class="n">itmin</span><span class="o">=</span><span class="n">itmin</span><span class="p">,</span> <span class="n">nsamples</span><span class="o">=</span><span class="n">nsamples</span><span class="p">,</span>
+                         <span class="n">decimate</span><span class="o">=</span><span class="n">decimate</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">sum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">irecords</span><span class="p">,</span> <span class="n">delays</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">itmin</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">nsamples</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">decimate</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sum</span><span class="p">(</span><span class="n">irecords</span><span class="p">,</span> <span class="n">delays</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">itmin</span><span class="p">,</span> <span class="n">nsamples</span><span class="p">,</span> 
-                    <span class="n">decimate</span><span class="p">)</span>
-    
-    <span class="k">def</span> <span class="nf">sum_reference</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">irecords</span><span class="p">,</span> <span class="n">delays</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">itmin</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">nsamples</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">decimate</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sum_reference</span><span class="p">(</span><span class="n">irecords</span><span class="p">,</span> <span class="n">delays</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">itmin</span><span class="p">,</span> <span class="n">nsamples</span><span class="p">,</span> 
-                    <span class="n">decimate</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">sum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">irecords</span><span class="p">,</span> <span class="n">delays</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">itmin</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">nsamples</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+            <span class="n">decimate</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sum</span><span class="p">(</span><span class="n">irecords</span><span class="p">,</span> <span class="n">delays</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">itmin</span><span class="p">,</span> <span class="n">nsamples</span><span class="p">,</span> <span class="n">decimate</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">sum_reference</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">irecords</span><span class="p">,</span> <span class="n">delays</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">itmin</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                      <span class="n">nsamples</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">decimate</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sum_reference</span><span class="p">(</span>
+            <span class="n">irecords</span><span class="p">,</span> <span class="n">delays</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">itmin</span><span class="p">,</span> <span class="n">nsamples</span><span class="p">,</span> <span class="n">decimate</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">irecord_format</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">util</span><span class="o">.</span><span class="n">zfmt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_nrecords</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">str_irecord</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">irecord</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">irecord_format</span><span class="p">()</span> <span class="o">%</span> <span class="n">irecord</span>
 
     <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="s">&#39;w&#39;</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_f_index</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_f_index</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_save_index</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_f_data</span><span class="p">:</span>
@@ -336,21 +416,25 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
 
     <span class="k">def</span> <span class="nf">_get_record</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">irecord</span><span class="p">):</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_f_index</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_f_index</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_records</span><span class="p">[</span><span class="n">irecord</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">_get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">irecord</span><span class="p">,</span> <span class="n">itmin</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">nsamples</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">decimate</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Retrieve complete GF trace from storage.&#39;&#39;&#39;</span>
 
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_f_index</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_f_index</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
 
         <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="s">&#39;r&#39;</span>
-        <span class="k">assert</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">irecord</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nrecords</span><span class="p">,</span> <span class="s">&#39;irecord = </span><span class="si">%i</span><span class="s">, nrecords = </span><span class="si">%i</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">irecord</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nrecords</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">irecord</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nrecords</span><span class="p">,</span> \
+            <span class="s">&#39;irecord = </span><span class="si">%i</span><span class="s">, nrecords = </span><span class="si">%i</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">irecord</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nrecords</span><span class="p">)</span>
 
-        <span class="p">(</span><span class="n">ipos</span><span class="p">,</span> <span class="n">itmin_data</span><span class="p">,</span> <span class="n">nsamples_data</span><span class="p">,</span> <span class="n">begin_value</span><span class="p">,</span> <span class="n">end_value</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_records</span><span class="p">[</span><span class="n">irecord</span><span class="p">]</span>
+        <span class="n">ipos</span><span class="p">,</span> <span class="n">itmin_data</span><span class="p">,</span> <span class="n">nsamples_data</span><span class="p">,</span> <span class="n">begin_value</span><span class="p">,</span> <span class="n">end_value</span> <span class="o">=</span> \
+            <span class="bp">self</span><span class="o">.</span><span class="n">_records</span><span class="p">[</span><span class="n">irecord</span><span class="p">]</span>
 
-        <span class="k">if</span> <span class="bp">None</span> <span class="ow">in</span> <span class="p">(</span><span class="n">itmin</span><span class="p">,</span> <span class="n">nsamples</span><span class="p">):</span> 
+        <span class="k">if</span> <span class="bp">None</span> <span class="ow">in</span> <span class="p">(</span><span class="n">itmin</span><span class="p">,</span> <span class="n">nsamples</span><span class="p">):</span>
             <span class="n">itmin</span> <span class="o">=</span> <span class="n">itmin_data</span>
             <span class="n">itmax</span> <span class="o">=</span> <span class="n">itmin_data</span> <span class="o">+</span> <span class="n">nsamples_data</span> <span class="o">-</span> <span class="mi">1</span>
             <span class="n">nsamples</span> <span class="o">=</span> <span class="n">nsamples_data</span>
@@ -371,14 +455,14 @@
             <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_data</span><span class="p">(</span><span class="n">ipos</span><span class="p">,</span> <span class="n">begin_value</span><span class="p">,</span> <span class="n">end_value</span><span class="p">,</span> <span class="n">ilo</span><span class="p">,</span> <span class="n">ihi</span><span class="p">)</span>
 
             <span class="k">return</span> <span class="n">GFTrace</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">itmin</span><span class="o">=</span><span class="n">itmin_data</span><span class="o">+</span><span class="n">ilo</span><span class="p">,</span> <span class="n">deltat</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_deltat</span><span class="p">,</span>
-                <span class="n">begin_value</span><span class="o">=</span><span class="n">begin_value</span><span class="p">,</span> <span class="n">end_value</span><span class="o">=</span><span class="n">end_value</span><span class="p">)</span>
+                           <span class="n">begin_value</span><span class="o">=</span><span class="n">begin_value</span><span class="p">,</span> <span class="n">end_value</span><span class="o">=</span><span class="n">end_value</span><span class="p">)</span>
 
         <span class="k">else</span><span class="p">:</span>
             <span class="n">itmax_data</span> <span class="o">=</span> <span class="n">itmin_data</span> <span class="o">+</span> <span class="n">nsamples_data</span> <span class="o">-</span> <span class="mi">1</span>
 
             <span class="c"># put begin and end to multiples of new sampling rate</span>
-            <span class="n">itmin_ext</span> <span class="o">=</span> <span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">itmin</span><span class="p">,</span><span class="n">itmin_data</span><span class="p">)</span><span class="o">/</span><span class="n">decimate</span><span class="p">)</span> <span class="o">*</span> <span class="n">decimate</span>
-            <span class="n">itmax_ext</span> <span class="o">=</span> <span class="o">-</span><span class="p">((</span><span class="o">-</span><span class="nb">min</span><span class="p">(</span><span class="n">itmax</span><span class="p">,</span><span class="n">itmax_data</span><span class="p">))</span><span class="o">/</span><span class="n">decimate</span><span class="p">)</span> <span class="o">*</span> <span class="n">decimate</span>
+            <span class="n">itmin_ext</span> <span class="o">=</span> <span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">itmin</span><span class="p">,</span> <span class="n">itmin_data</span><span class="p">)</span><span class="o">/</span><span class="n">decimate</span><span class="p">)</span> <span class="o">*</span> <span class="n">decimate</span>
+            <span class="n">itmax_ext</span> <span class="o">=</span> <span class="o">-</span><span class="p">((</span><span class="o">-</span><span class="nb">min</span><span class="p">(</span><span class="n">itmax</span><span class="p">,</span> <span class="n">itmax_data</span><span class="p">))</span><span class="o">/</span><span class="n">decimate</span><span class="p">)</span> <span class="o">*</span> <span class="n">decimate</span>
             <span class="n">nsamples_ext</span> <span class="o">=</span> <span class="n">itmax_ext</span> <span class="o">-</span> <span class="n">itmin_ext</span> <span class="o">+</span> <span class="mi">1</span>
 
             <span class="c"># add some padding for the aa filter</span>
@@ -386,24 +470,25 @@
             <span class="n">itmin_ext_pad</span> <span class="o">=</span> <span class="n">itmin_ext</span> <span class="o">-</span> <span class="n">order</span><span class="o">/</span><span class="mi">2</span>
             <span class="n">itmax_ext_pad</span> <span class="o">=</span> <span class="n">itmax_ext</span> <span class="o">+</span> <span class="n">order</span><span class="o">/</span><span class="mi">2</span>
             <span class="n">nsamples_ext_pad</span> <span class="o">=</span> <span class="n">itmax_ext_pad</span> <span class="o">-</span> <span class="n">itmin_ext_pad</span> <span class="o">+</span> <span class="mi">1</span>
-            
+
             <span class="n">itmin_overlap</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">itmin_data</span><span class="p">,</span> <span class="n">itmin_ext_pad</span><span class="p">)</span>
             <span class="n">itmax_overlap</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">itmax_data</span><span class="p">,</span> <span class="n">itmax_ext_pad</span><span class="p">)</span>
 
             <span class="n">ilo</span> <span class="o">=</span> <span class="n">itmin_overlap</span> <span class="o">-</span> <span class="n">itmin_ext_pad</span>
             <span class="n">ihi</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">ilo</span><span class="p">,</span> <span class="n">itmax_overlap</span> <span class="o">-</span> <span class="n">itmin_ext_pad</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
             <span class="n">ilo_data</span> <span class="o">=</span> <span class="n">itmin_overlap</span> <span class="o">-</span> <span class="n">itmin_data</span>
-            <span class="n">ihi_data</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span> <span class="n">ilo_data</span><span class="p">,</span> <span class="n">itmax_overlap</span> <span class="o">-</span> <span class="n">itmin_data</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">ihi_data</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">ilo_data</span><span class="p">,</span> <span class="n">itmax_overlap</span> <span class="o">-</span> <span class="n">itmin_data</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
 
             <span class="n">data_ext_pad</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">nsamples_ext_pad</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">gf_dtype</span><span class="p">)</span>
-            <span class="n">data_ext_pad</span><span class="p">[</span><span class="n">ilo</span><span class="p">:</span><span class="n">ihi</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_data</span><span class="p">(</span><span class="n">ipos</span><span class="p">,</span> <span class="n">begin_value</span><span class="p">,</span> <span class="n">end_value</span><span class="p">,</span> 
-                    <span class="n">ilo_data</span><span class="p">,</span> <span class="n">ihi_data</span><span class="p">)</span>
+            <span class="n">data_ext_pad</span><span class="p">[</span><span class="n">ilo</span><span class="p">:</span><span class="n">ihi</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_data</span><span class="p">(</span>
+                <span class="n">ipos</span><span class="p">,</span> <span class="n">begin_value</span><span class="p">,</span> <span class="n">end_value</span><span class="p">,</span> <span class="n">ilo_data</span><span class="p">,</span> <span class="n">ihi_data</span><span class="p">)</span>
+
             <span class="n">data_ext_pad</span><span class="p">[:</span><span class="n">ilo</span><span class="p">]</span> <span class="o">=</span> <span class="n">begin_value</span>
             <span class="n">data_ext_pad</span><span class="p">[</span><span class="n">ihi</span><span class="p">:]</span> <span class="o">=</span> <span class="n">end_value</span>
 
             <span class="n">b</span> <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">firwin</span><span class="p">(</span><span class="n">order</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">1.</span> <span class="o">/</span> <span class="n">decimate</span><span class="p">,</span> <span class="n">window</span><span class="o">=</span><span class="s">&#39;hamming&#39;</span><span class="p">)</span>
             <span class="n">a</span> <span class="o">=</span> <span class="mf">1.</span>
-            <span class="n">data_filt_pad</span> <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">lfilter</span><span class="p">(</span><span class="n">b</span><span class="p">,</span><span class="n">a</span><span class="p">,</span> <span class="n">data_ext_pad</span><span class="p">)</span>
+            <span class="n">data_filt_pad</span> <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">lfilter</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">data_ext_pad</span><span class="p">)</span>
             <span class="n">data_deci</span> <span class="o">=</span> <span class="n">data_filt_pad</span><span class="p">[</span><span class="n">order</span><span class="p">:</span><span class="n">order</span><span class="o">+</span><span class="n">nsamples_ext</span><span class="p">:</span><span class="n">decimate</span><span class="p">]</span>
             <span class="k">if</span> <span class="n">data_deci</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">itmin_ext</span> <span class="o">&lt;=</span> <span class="n">itmin_data</span><span class="p">:</span>
@@ -412,16 +497,19 @@
                 <span class="k">if</span> <span class="n">itmax_ext</span> <span class="o">&gt;=</span> <span class="n">itmax_data</span><span class="p">:</span>
                     <span class="n">data_deci</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">end_value</span>
 
-            <span class="k">return</span> <span class="n">GFTrace</span><span class="p">(</span><span class="n">data_deci</span><span class="p">,</span> <span class="n">itmin_ext</span><span class="o">/</span><span class="n">decimate</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_deltat</span><span class="o">*</span><span class="n">decimate</span><span class="p">,</span>
-                <span class="n">begin_value</span><span class="o">=</span><span class="n">begin_value</span><span class="p">,</span> <span class="n">end_value</span><span class="o">=</span><span class="n">end_value</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">GFTrace</span><span class="p">(</span><span class="n">data_deci</span><span class="p">,</span> <span class="n">itmin_ext</span><span class="o">/</span><span class="n">decimate</span><span class="p">,</span>
+                           <span class="bp">self</span><span class="o">.</span><span class="n">_deltat</span><span class="o">*</span><span class="n">decimate</span><span class="p">,</span>
+                           <span class="n">begin_value</span><span class="o">=</span><span class="n">begin_value</span><span class="p">,</span> <span class="n">end_value</span><span class="o">=</span><span class="n">end_value</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_get_span</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">irecord</span><span class="p">,</span> <span class="n">decimate</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Get temporal extent of GF trace at given index.&#39;&#39;&#39;</span>
 
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_f_index</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_f_index</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
 
-        <span class="k">assert</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">irecord</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nrecords</span><span class="p">,</span> <span class="s">&#39;irecord = </span><span class="si">%i</span><span class="s">, nrecords = </span><span class="si">%i</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">irecord</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nrecords</span><span class="p">)</span>
-        
+        <span class="k">assert</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">irecord</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nrecords</span><span class="p">,</span> \
+            <span class="s">&#39;irecord = </span><span class="si">%i</span><span class="s">, nrecords = </span><span class="si">%i</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">irecord</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nrecords</span><span class="p">)</span>
+
         <span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">itmin</span><span class="p">,</span> <span class="n">nsamples</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_records</span><span class="p">[</span><span class="n">irecord</span><span class="p">]</span>
 
         <span class="n">itmax</span> <span class="o">=</span> <span class="n">itmin</span> <span class="o">+</span> <span class="n">nsamples</span> <span class="o">-</span> <span class="mi">1</span>
@@ -434,38 +522,43 @@
     <span class="k">def</span> <span class="nf">_put</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">irecord</span><span class="p">,</span> <span class="n">trace</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Save GF trace to storage.&#39;&#39;&#39;</span>
 
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_f_index</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_f_index</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
 
         <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="s">&#39;w&#39;</span>
         <span class="k">assert</span> <span class="nb">abs</span><span class="p">(</span><span class="n">trace</span><span class="o">.</span><span class="n">deltat</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_deltat</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">1e-7</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_deltat</span>
-        <span class="k">assert</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">irecord</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nrecords</span><span class="p">,</span> <span class="s">&#39;irecord = </span><span class="si">%i</span><span class="s">, nrecords = </span><span class="si">%i</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">irecord</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nrecords</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">irecord</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nrecords</span><span class="p">,</span> \
+            <span class="s">&#39;irecord = </span><span class="si">%i</span><span class="s">, nrecords = </span><span class="si">%i</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">irecord</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nrecords</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_records</span><span class="p">[</span><span class="n">irecord</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">DuplicateInsert</span><span class="p">(</span><span class="s">&#39;record </span><span class="si">%i</span><span class="s"> already in store&#39;</span> <span class="o">%</span> <span class="n">irecord</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">trace</span><span class="o">.</span><span class="n">is_zero</span> <span class="ow">or</span> <span class="n">num</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">trace</span><span class="o">.</span><span class="n">data</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_records</span><span class="p">[</span><span class="n">irecord</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mf">0.</span><span class="p">,</span><span class="mf">0.</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_records</span><span class="p">[</span><span class="n">irecord</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">)</span>
             <span class="k">return</span>
-        
+
         <span class="n">ndata</span> <span class="o">=</span> <span class="n">trace</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">size</span>
 
         <span class="k">if</span> <span class="n">ndata</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_f_data</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
             <span class="n">ipos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_f_data</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span>
-            <span class="n">trace</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">tofile</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_f_data</span> <span class="p">)</span>
+            <span class="n">trace</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">tofile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_f_data</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">ipos</span> <span class="o">=</span> <span class="mi">2</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_records</span><span class="p">[</span><span class="n">irecord</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">ipos</span><span class="p">,</span> <span class="n">trace</span><span class="o">.</span><span class="n">itmin</span><span class="p">,</span> <span class="n">ndata</span><span class="p">,</span> <span class="n">trace</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">trace</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_records</span><span class="p">[</span><span class="n">irecord</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">ipos</span><span class="p">,</span> <span class="n">trace</span><span class="o">.</span><span class="n">itmin</span><span class="p">,</span> <span class="n">ndata</span><span class="p">,</span>
+                                  <span class="n">trace</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">trace</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
 
-        
-    <span class="k">def</span> <span class="nf">_sum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">irecords</span><span class="p">,</span> <span class="n">delays</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">itmin</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">nsamples</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">decimate</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_sum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">irecords</span><span class="p">,</span> <span class="n">delays</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">itmin</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">nsamples</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+             <span class="n">decimate</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+
         <span class="sd">&#39;&#39;&#39;Sum delayed and weighted GF traces.&#39;&#39;&#39;</span>
 
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_f_index</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_f_index</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
 
         <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="s">&#39;r&#39;</span>
-    
+
         <span class="n">deltat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_deltat</span> <span class="o">*</span> <span class="n">decimate</span>
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">irecords</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
@@ -480,15 +573,14 @@
                 <span class="n">itmin</span><span class="p">,</span> <span class="n">itmax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_span</span><span class="p">(</span><span class="n">irecord</span><span class="p">,</span> <span class="n">decimate</span><span class="o">=</span><span class="n">decimate</span><span class="p">)</span>
                 <span class="n">itmin_delayed</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">itmin</span> <span class="o">+</span> <span class="n">delay</span><span class="o">/</span><span class="n">deltat</span><span class="p">)</span>
                 <span class="n">itmax_delayed</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">itmax</span> <span class="o">+</span> <span class="n">delay</span><span class="o">/</span><span class="n">deltat</span><span class="p">)</span>
-            
+
             <span class="n">itmin</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">itmin_delayed</span><span class="p">)))</span>
             <span class="n">nsamples</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">itmax_delayed</span><span class="p">)))</span> <span class="o">-</span> <span class="n">itmin</span> <span class="o">+</span> <span class="mi">1</span>
-
 
         <span class="n">out</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">nsamples</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">gf_dtype</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">nsamples</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">GFTrace</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">itmin</span><span class="p">,</span> <span class="n">deltat</span><span class="p">)</span>
-        
+
         <span class="k">for</span> <span class="n">irecord</span><span class="p">,</span> <span class="n">delay</span><span class="p">,</span> <span class="n">weight</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">irecords</span><span class="p">,</span> <span class="n">delays</span><span class="p">,</span> <span class="n">weights</span><span class="p">):</span>
 
             <span class="k">if</span> <span class="n">weight</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">:</span>
@@ -497,10 +589,11 @@
             <span class="n">idelay_floor</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">delay</span><span class="o">/</span><span class="n">deltat</span><span class="p">))</span>
             <span class="n">idelay_ceil</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">delay</span><span class="o">/</span><span class="n">deltat</span><span class="p">))</span>
 
-            <span class="n">gf_trace</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="n">irecord</span><span class="p">,</span> 
-                    <span class="n">itmin</span> <span class="o">-</span> <span class="n">idelay_ceil</span><span class="p">,</span> 
-                    <span class="n">nsamples</span> <span class="o">+</span> <span class="n">idelay_ceil</span> <span class="o">-</span> <span class="n">idelay_floor</span><span class="p">,</span>
-                    <span class="n">decimate</span><span class="o">=</span><span class="n">decimate</span><span class="p">)</span>
+            <span class="n">gf_trace</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span>
+                <span class="n">irecord</span><span class="p">,</span>
+                <span class="n">itmin</span> <span class="o">-</span> <span class="n">idelay_ceil</span><span class="p">,</span>
+                <span class="n">nsamples</span> <span class="o">+</span> <span class="n">idelay_ceil</span> <span class="o">-</span> <span class="n">idelay_floor</span><span class="p">,</span>
+                <span class="n">decimate</span><span class="o">=</span><span class="n">decimate</span><span class="p">)</span>
 
             <span class="k">assert</span> <span class="n">gf_trace</span><span class="o">.</span><span class="n">itmin</span> <span class="o">&gt;=</span> <span class="n">itmin</span> <span class="o">-</span> <span class="n">idelay_ceil</span>
             <span class="k">assert</span> <span class="n">gf_trace</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">size</span> <span class="o">&lt;=</span> <span class="n">nsamples</span> <span class="o">+</span> <span class="n">idelay_ceil</span> <span class="o">-</span> <span class="n">idelay_floor</span>
@@ -517,19 +610,22 @@
                 <span class="n">out</span><span class="p">[</span><span class="n">ilo</span><span class="p">:</span><span class="n">ihi</span><span class="p">]</span> <span class="o">+=</span> <span class="n">data</span> <span class="o">*</span> <span class="n">weight</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">size</span><span class="p">:</span>
-                    <span class="n">k</span> <span class="o">=</span> <span class="mi">1</span> 
+                    <span class="n">k</span> <span class="o">=</span> <span class="mi">1</span>
                     <span class="k">if</span> <span class="n">ihi</span> <span class="o">&lt;=</span> <span class="n">nsamples</span><span class="p">:</span>
-                        <span class="n">out</span><span class="p">[</span><span class="n">ihi</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="n">gf_trace</span><span class="o">.</span><span class="n">end_value</span> <span class="o">*</span> <span class="p">((</span><span class="n">idelay_ceil</span><span class="o">-</span><span class="n">delay</span><span class="o">/</span><span class="n">deltat</span><span class="p">)</span> <span class="o">*</span> <span class="n">weight</span><span class="p">)</span>
+                        <span class="n">out</span><span class="p">[</span><span class="n">ihi</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="n">gf_trace</span><span class="o">.</span><span class="n">end_value</span> <span class="o">*</span> \
+                            <span class="p">((</span><span class="n">idelay_ceil</span><span class="o">-</span><span class="n">delay</span><span class="o">/</span><span class="n">deltat</span><span class="p">)</span> <span class="o">*</span> <span class="n">weight</span><span class="p">)</span>
                         <span class="n">k</span> <span class="o">=</span> <span class="mi">0</span>
 
-                    <span class="n">out</span><span class="p">[</span><span class="n">ilo</span><span class="o">+</span><span class="mi">1</span><span class="p">:</span><span class="n">ihi</span><span class="o">-</span><span class="n">k</span><span class="p">]</span> <span class="o">+=</span> <span class="n">data</span><span class="p">[:</span><span class="n">data</span><span class="o">.</span><span class="n">size</span><span class="o">-</span><span class="n">k</span><span class="p">]</span> <span class="o">*</span> <span class="p">((</span><span class="n">delay</span><span class="o">/</span><span class="n">deltat</span><span class="o">-</span><span class="n">idelay_floor</span><span class="p">)</span> <span class="o">*</span> <span class="n">weight</span><span class="p">)</span>
+                    <span class="n">out</span><span class="p">[</span><span class="n">ilo</span><span class="o">+</span><span class="mi">1</span><span class="p">:</span><span class="n">ihi</span><span class="o">-</span><span class="n">k</span><span class="p">]</span> <span class="o">+=</span> <span class="n">data</span><span class="p">[:</span><span class="n">data</span><span class="o">.</span><span class="n">size</span><span class="o">-</span><span class="n">k</span><span class="p">]</span> <span class="o">*</span> \
+                        <span class="p">((</span><span class="n">delay</span><span class="o">/</span><span class="n">deltat</span><span class="o">-</span><span class="n">idelay_floor</span><span class="p">)</span> <span class="o">*</span> <span class="n">weight</span><span class="p">)</span>
                     <span class="n">k</span> <span class="o">=</span> <span class="mi">1</span>
                     <span class="k">if</span> <span class="n">ilo</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
-                        <span class="n">out</span><span class="p">[</span><span class="n">ilo</span><span class="p">]</span> <span class="o">+=</span> <span class="n">gf_trace</span><span class="o">.</span><span class="n">begin_value</span> <span class="o">*</span> <span class="p">((</span><span class="n">delay</span><span class="o">/</span><span class="n">deltat</span><span class="o">-</span><span class="n">idelay_floor</span><span class="p">)</span> <span class="o">*</span> <span class="n">weight</span><span class="p">)</span>
+                        <span class="n">out</span><span class="p">[</span><span class="n">ilo</span><span class="p">]</span> <span class="o">+=</span> <span class="n">gf_trace</span><span class="o">.</span><span class="n">begin_value</span> <span class="o">*</span> \
+                            <span class="p">((</span><span class="n">delay</span><span class="o">/</span><span class="n">deltat</span><span class="o">-</span><span class="n">idelay_floor</span><span class="p">)</span> <span class="o">*</span> <span class="n">weight</span><span class="p">)</span>
                         <span class="n">k</span> <span class="o">=</span> <span class="mi">0</span>
 
-                    <span class="n">out</span><span class="p">[</span><span class="n">ilo</span><span class="o">+</span><span class="n">k</span><span class="p">:</span><span class="n">ihi</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="n">data</span><span class="p">[</span><span class="n">k</span><span class="p">:]</span> <span class="o">*</span> <span class="p">((</span><span class="n">idelay_ceil</span><span class="o">-</span><span class="n">delay</span><span class="o">/</span><span class="n">deltat</span><span class="p">)</span> <span class="o">*</span> <span class="n">weight</span><span class="p">)</span>
-
+                    <span class="n">out</span><span class="p">[</span><span class="n">ilo</span><span class="o">+</span><span class="n">k</span><span class="p">:</span><span class="n">ihi</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="n">data</span><span class="p">[</span><span class="n">k</span><span class="p">:]</span> <span class="o">*</span> \
+                        <span class="p">((</span><span class="n">idelay_ceil</span><span class="o">-</span><span class="n">delay</span><span class="o">/</span><span class="n">deltat</span><span class="p">)</span> <span class="o">*</span> <span class="n">weight</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="n">ilo</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">gf_trace</span><span class="o">.</span><span class="n">begin_value</span> <span class="o">!=</span> <span class="mf">0.0</span><span class="p">:</span>
                 <span class="n">out</span><span class="p">[:</span><span class="n">ilo</span><span class="p">]</span> <span class="o">+=</span> <span class="n">gf_trace</span><span class="o">.</span><span class="n">begin_value</span> <span class="o">*</span> <span class="n">weight</span>
@@ -537,15 +633,16 @@
             <span class="k">if</span> <span class="n">ihi</span> <span class="o">&lt;</span> <span class="n">nsamples</span> <span class="ow">and</span> <span class="n">gf_trace</span><span class="o">.</span><span class="n">end_value</span> <span class="o">!=</span> <span class="mf">0.0</span><span class="p">:</span>
                 <span class="n">out</span><span class="p">[</span><span class="n">ihi</span><span class="p">:]</span> <span class="o">+=</span> <span class="n">gf_trace</span><span class="o">.</span><span class="n">end_value</span> <span class="o">*</span> <span class="n">weight</span>
 
-        
         <span class="k">return</span> <span class="n">GFTrace</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">itmin</span><span class="p">,</span> <span class="n">deltat</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_sum_reference</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">irecords</span><span class="p">,</span> <span class="n">delays</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">itmin</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">nsamples</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">decimate</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_sum_reference</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">irecords</span><span class="p">,</span> <span class="n">delays</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">itmin</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                       <span class="n">nsamples</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">decimate</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
 
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_f_index</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_f_index</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
 
         <span class="n">deltat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_deltat</span> <span class="o">*</span> <span class="n">decimate</span>
-        
+
         <span class="n">datas</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">itmins</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">delay</span><span class="p">,</span> <span class="n">weight</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">irecords</span><span class="p">,</span> <span class="n">delays</span><span class="p">,</span> <span class="n">weights</span><span class="p">):</span>
@@ -567,16 +664,18 @@
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">itmins</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">Zero</span>
-            
+
         <span class="n">itmin_all</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">itmins</span><span class="p">)</span>
 
-        <span class="n">itmax_all</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span> <span class="n">itmin_</span> <span class="o">+</span> <span class="n">data</span><span class="o">.</span><span class="n">size</span> <span class="k">for</span> <span class="p">(</span><span class="n">itmin_</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">itmins</span><span class="p">,</span> <span class="n">datas</span><span class="p">)</span> <span class="p">)</span>
+        <span class="n">itmax_all</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">itmin_</span> <span class="o">+</span> <span class="n">data</span><span class="o">.</span><span class="n">size</span> <span class="k">for</span> <span class="p">(</span><span class="n">itmin_</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span> <span class="ow">in</span>
+                        <span class="nb">zip</span><span class="p">(</span><span class="n">itmins</span><span class="p">,</span> <span class="n">datas</span><span class="p">))</span>
+
         <span class="k">if</span> <span class="n">itmin</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
             <span class="n">itmin_all</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">itmin_all</span><span class="p">,</span> <span class="n">itmin</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">nsamples</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
             <span class="n">itmax_all</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">itmax_all</span><span class="p">,</span> <span class="n">itmin</span><span class="o">+</span><span class="n">nsamples</span><span class="p">)</span>
 
-        <span class="n">nsamples_all</span> <span class="o">=</span> <span class="n">itmax_all</span> <span class="o">-</span> <span class="n">itmin_all</span> 
+        <span class="n">nsamples_all</span> <span class="o">=</span> <span class="n">itmax_all</span> <span class="o">-</span> <span class="n">itmin_all</span>
 
         <span class="n">arr</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">datas</span><span class="p">),</span> <span class="n">nsamples_all</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">gf_dtype</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">itmin_</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">num</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">datas</span><span class="p">)),</span> <span class="n">itmins</span><span class="p">,</span> <span class="n">datas</span><span class="p">):</span>
@@ -600,9 +699,10 @@
 
     <span class="k">def</span> <span class="nf">_load_index</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_use_memmap</span><span class="p">:</span>
-            <span class="n">records</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">memmap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_f_index</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">gf_record_dtype</span><span class="p">,</span> 
-                    <span class="n">offset</span><span class="o">=</span><span class="n">gf_store_header_fmt_size</span><span class="p">,</span>
-                    <span class="n">mode</span><span class="o">=</span> <span class="p">(</span><span class="s">&#39;r&#39;</span><span class="p">,</span><span class="s">&#39;r+&#39;</span><span class="p">)[</span><span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="s">&#39;w&#39;</span><span class="p">])</span>
+            <span class="n">records</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">memmap</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_f_index</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">gf_record_dtype</span><span class="p">,</span>
+                <span class="n">offset</span><span class="o">=</span><span class="n">gf_store_header_fmt_size</span><span class="p">,</span>
+                <span class="n">mode</span><span class="o">=</span><span class="p">(</span><span class="s">&#39;r&#39;</span><span class="p">,</span> <span class="s">&#39;r+&#39;</span><span class="p">)[</span><span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="s">&#39;w&#39;</span><span class="p">])</span>
 
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_f_index</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">gf_store_header_fmt_size</span><span class="p">)</span>
@@ -614,8 +714,8 @@
 
     <span class="k">def</span> <span class="nf">_save_index</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_f_index</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_f_index</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">gf_store_header_fmt</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nrecords</span><span class="p">,</span> 
-            <span class="bp">self</span><span class="o">.</span><span class="n">_deltat</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_f_index</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="n">gf_store_header_fmt</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nrecords</span><span class="p">,</span>
+                                        <span class="bp">self</span><span class="o">.</span><span class="n">_deltat</span><span class="p">))</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_use_memmap</span><span class="p">:</span>
             <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_records</span>
@@ -624,7 +724,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_records</span><span class="o">.</span><span class="n">tofile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_f_index</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_f_index</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">_get_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ipos</span><span class="p">,</span> <span class="n">begin_value</span><span class="p">,</span> <span class="n">end_value</span><span class="p">,</span> <span class="n">ilo</span><span class="p">,</span> <span class="n">ihi</span><span class="p">):</span> 
+    <span class="k">def</span> <span class="nf">_get_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ipos</span><span class="p">,</span> <span class="n">begin_value</span><span class="p">,</span> <span class="n">end_value</span><span class="p">,</span> <span class="n">ilo</span><span class="p">,</span> <span class="n">ihi</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">ihi</span> <span class="o">-</span> <span class="n">ilo</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">ipos</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
                 <span class="n">data_orig</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">gf_dtype</span><span class="p">)</span>
@@ -633,41 +733,60 @@
                 <span class="k">return</span> <span class="n">data_orig</span><span class="p">[</span><span class="n">ilo</span><span class="p">:</span><span class="n">ihi</span><span class="p">]</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_f_data</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">ipos</span> <span class="o">+</span> <span class="n">ilo</span><span class="o">*</span><span class="n">gf_dtype_nbytes_per_sample</span><span class="p">))</span>
-                <span class="k">return</span> <span class="n">num</span><span class="o">.</span><span class="n">fromfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_f_data</span><span class="p">,</span> <span class="n">gf_dtype</span><span class="p">,</span> <span class="n">ihi</span><span class="o">-</span><span class="n">ilo</span><span class="p">)</span>
+                <span class="n">arr</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">fromfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_f_data</span><span class="p">,</span> <span class="n">gf_dtype</span><span class="p">,</span> <span class="n">ihi</span><span class="o">-</span><span class="n">ilo</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">arr</span><span class="o">.</span><span class="n">size</span> <span class="o">!=</span> <span class="n">ihi</span><span class="o">-</span><span class="n">ilo</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="n">ShortRead</span><span class="p">()</span>
+                <span class="k">return</span> <span class="n">arr</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">x</span>  <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">0</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">gf_dtype</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">num</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">0</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">gf_dtype</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">index_fn</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">Store_</span><span class="o">.</span><span class="n">index_fn_</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">store_dir</span><span class="p">)</span>
-    
+        <span class="k">return</span> <span class="n">BaseStore</span><span class="o">.</span><span class="n">index_fn_</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">store_dir</span><span class="p">)</span>
+
     <span class="k">def</span> <span class="nf">data_fn</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">Store_</span><span class="o">.</span><span class="n">data_fn_</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">store_dir</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">BaseStore</span><span class="o">.</span><span class="n">data_fn_</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">store_dir</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">count_special_records</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_f_index</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_f_index</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
 
-        <span class="k">return</span> <span class="n">num</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">_records</span><span class="p">[</span><span class="s">&#39;data_offset&#39;</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span> <span class="n">num</span><span class="o">.</span><span class="n">uint64</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">]</span> <span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">num</span><span class="o">.</span><span class="n">histogram</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_records</span><span class="p">[</span><span class="s">&#39;data_offset&#39;</span><span class="p">],</span>
+                             <span class="n">bins</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">num</span><span class="o">.</span><span class="n">uint64</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)])[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">size_index</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">stat</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">index_fn</span><span class="p">())</span><span class="o">.</span><span class="n">st_size</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">size_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">stat</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_fn</span><span class="p">())</span><span class="o">.</span><span class="n">st_size</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">size_index_and_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">size_index</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">size_data</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">size_index_and_data_human</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">util</span><span class="o">.</span><span class="n">human_bytesize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">size_index_and_data</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">stats</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">counter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">count_special_records</span><span class="p">()</span>
 
-        <span class="n">sdata</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">stat</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_fn</span><span class="p">())</span><span class="o">.</span><span class="n">st_size</span>
-        <span class="n">sindex</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">stat</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">index_fn</span><span class="p">())</span><span class="o">.</span><span class="n">st_size</span>
 
         <span class="n">stats</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
-                <span class="n">total</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nrecords</span><span class="p">,</span>
-                <span class="n">inserted</span> <span class="o">=</span> <span class="p">(</span><span class="n">counter</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">counter</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="n">counter</span><span class="p">[</span><span class="mi">3</span><span class="p">]),</span> 
-                <span class="n">empty</span> <span class="o">=</span> <span class="n">counter</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-                <span class="n">short</span> <span class="o">=</span> <span class="n">counter</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
-                <span class="n">zero</span> <span class="o">=</span> <span class="n">counter</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
-                <span class="n">size_data</span> <span class="o">=</span> <span class="n">sdata</span><span class="p">,</span>
-                <span class="n">size_index</span> <span class="o">=</span> <span class="n">sindex</span><span class="p">,</span>
-            <span class="p">)</span>
+            <span class="n">total</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_nrecords</span><span class="p">,</span>
+            <span class="n">inserted</span><span class="o">=</span><span class="p">(</span><span class="n">counter</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">counter</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="n">counter</span><span class="p">[</span><span class="mi">3</span><span class="p">]),</span>
+            <span class="n">empty</span><span class="o">=</span><span class="n">counter</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+            <span class="n">short</span><span class="o">=</span><span class="n">counter</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+            <span class="n">zero</span><span class="o">=</span><span class="n">counter</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+            <span class="n">size_data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">size_data</span><span class="p">,</span>
+            <span class="n">size_index</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">size_index</span><span class="p">,</span>
+        <span class="p">)</span>
 
         <span class="k">return</span> <span class="n">stats</span>
 
     <span class="n">stats_keys</span> <span class="o">=</span> <span class="s">&#39;total inserted empty short zero size_data size_index&#39;</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+
 
 <span class="k">def</span> <span class="nf">remake_dir</span><span class="p">(</span><span class="n">dpath</span><span class="p">,</span> <span class="n">force</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">dpath</span><span class="p">):</span>
@@ -678,11 +797,12 @@
 
     <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">dpath</span><span class="p">)</span>
 
-<span class="k">class</span> <span class="nc">Store</span><span class="p">(</span><span class="n">Store_</span><span class="p">):</span>
+
+<span class="k">class</span> <span class="nc">Store</span><span class="p">(</span><span class="n">BaseStore</span><span class="p">):</span>
 <div class="viewcode-block" id="Store"><a class="viewcode-back" href="../../../gf.html#pyrocko.gf.store.Store">[docs]</a>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Green&#39;s function disk storage and summation machine.</span>
-<span class="sd">    </span>
+
 <span class="sd">    The `Store` can be used to efficiently store, retrieve, and sum Green&#39;s</span>
 <span class="sd">    function traces. A `Store` contains many 1D time traces sampled at even</span>
 <span class="sd">    multiples of a global sampling rate, where each time trace has an</span>
@@ -692,27 +812,53 @@
 <span class="sd">    traces and to extract parts of the traces. The main purpose of this class</span>
 <span class="sd">    is to provide a fast, easy to use, and flexible machanism to compute</span>
 <span class="sd">    weighted delay-and-sum stacks with many Green&#39;s function traces involved.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Individual Green&#39;s functions are accessed through a single integer index at</span>
-<span class="sd">    low level.  At higher level, various indexing schemes can be implemented by</span>
-<span class="sd">    providing a mapping from physical coordinates to the low level index. E.g.</span>
-<span class="sd">    for a problem with cylindrical symmetry, one might define a mapping from</span>
-<span class="sd">    (z1, z2, r) -&gt; i. Index translation is done in the</span>
-<span class="sd">    :py:class:`pyrocko.gf.meta.Config` subclass object associated with the Store.</span>
+<span class="sd">    low level. On top of that, various indexing schemes can be implemented by</span>
+<span class="sd">    providing a mapping from physical coordinates to the low level index `i`.</span>
+<span class="sd">    E.g. for a problem with cylindrical symmetry, one might define a mapping</span>
+<span class="sd">    from the coordinates (`receiver_depth`, `source_depth`, `distance`) to the</span>
+<span class="sd">    low level index. Index translation is done in the</span>
+<span class="sd">    :py:class:`pyrocko.gf.meta.Config` subclass object associated with the</span>
+<span class="sd">    Store. It is accessible through the store&#39;s :py:attr:`config` attribute,</span>
+<span class="sd">    and contains all meta information about the store, including physical</span>
+<span class="sd">    extent, geometry, sampling rate, and information about the type of the</span>
+<span class="sd">    stored Green&#39;s functions. Information about the underlying earth model</span>
+<span class="sd">    can also be found there.</span>
+
+<span class="sd">    A GF store can also contain tabulated phase arrivals. In basic cases, these</span>
+<span class="sd">    can be created with the :py:meth:`make_ttt` and evaluated with the</span>
+<span class="sd">    :py:func:`t` methods.</span>
+
+<span class="sd">    .. attribute:: config</span>
+
+<span class="sd">        The :py:class:`pyrocko.gf.meta.Config` derived object associated with</span>
+<span class="sd">        the store which contains all meta information about the store and</span>
+<span class="sd">        provides the high-level to low-level index mapping.</span>
+
+<span class="sd">    .. attribute:: store_dir</span>
+
+<span class="sd">        Path to the store&#39;s data directory.</span>
+
+<span class="sd">    .. attribute:: mode</span>
+
+<span class="sd">        The mode in which the store is opened: ``&#39;r&#39;``: read-only, ``&#39;w&#39;``:</span>
+<span class="sd">        writeable.</span>
 <span class="sd">    &#39;&#39;&#39;</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="n">store_dir</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">extra</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
 <div class="viewcode-block" id="Store.create"><a class="viewcode-back" href="../../../gf.html#pyrocko.gf.store.Store.create">[docs]</a>        <span class="sd">&#39;&#39;&#39;Create new GF store.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Creates a new GF store at path `store_dir`. The layout of the GF is</span>
-<span class="sd">        defined with the parameters given in `config`, which should be an object</span>
-<span class="sd">        of a subclass of :py:class:`pyrocko.gf.meta.Config`. This function will</span>
-<span class="sd">        refuse to overwrite an existing GF store, unless `force` is set  to</span>
-<span class="sd">        ``True``. If more information, e.g. parameters used for the modelling</span>
-<span class="sd">        code, earth models or other, should be saved along with the GF store,</span>
-<span class="sd">        these may be provided though a dict given to `extra`. The keys of this</span>
-<span class="sd">        dict must be names and the values must be *guts* type objects.  &#39;&#39;&#39;</span>
+<span class="sd">        defined with the parameters given in `config`, which should be an</span>
+<span class="sd">        object of a subclass of :py:class:`pyrocko.gf.meta.Config`. This</span>
+<span class="sd">        function will refuse to overwrite an existing GF store, unless `force`</span>
+<span class="sd">        is set  to ``True``. If more information, e.g. parameters used for the</span>
+<span class="sd">        modelling code, earth models or other, should be saved along with the</span>
+<span class="sd">        GF store, these may be provided though a dict given to `extra`. The</span>
+<span class="sd">        keys of this dict must be names and the values must be *guts* type</span>
+<span class="sd">        objects.  &#39;&#39;&#39;</span>
 
         <span class="n">Store</span><span class="o">.</span><span class="n">create_editables</span><span class="p">(</span><span class="n">store_dir</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">,</span> <span class="n">extra</span><span class="o">=</span><span class="n">extra</span><span class="p">)</span>
         <span class="n">Store</span><span class="o">.</span><span class="n">create_dependants</span><span class="p">(</span><span class="n">store_dir</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">)</span>
@@ -737,7 +883,7 @@
             <span class="n">remake_dir</span><span class="p">(</span><span class="n">dpath</span><span class="p">,</span> <span class="n">force</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">extra</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="n">extra</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">extra</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
                 <span class="n">check_string_id</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
                 <span class="n">fn</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">store_dir</span><span class="p">,</span> <span class="s">&#39;extra&#39;</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
                 <span class="n">remove_if_exists</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">force</span><span class="p">)</span>
@@ -752,20 +898,26 @@
         <span class="n">config_fn</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">store_dir</span><span class="p">,</span> <span class="s">&#39;config&#39;</span><span class="p">)</span>
         <span class="n">config</span> <span class="o">=</span> <span class="n">meta</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">config_fn</span><span class="p">)</span>
 
-        <span class="n">Store_</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">store_dir</span><span class="p">,</span> <span class="n">config</span><span class="o">.</span><span class="n">deltat</span><span class="p">,</span> <span class="n">config</span><span class="o">.</span><span class="n">nrecords</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">)</span>
+        <span class="n">BaseStore</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">store_dir</span><span class="p">,</span> <span class="n">config</span><span class="o">.</span><span class="n">deltat</span><span class="p">,</span> <span class="n">config</span><span class="o">.</span><span class="n">nrecords</span><span class="p">,</span>
+                         <span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">sub_dir</span> <span class="ow">in</span> <span class="p">[</span><span class="s">&#39;decimated&#39;</span><span class="p">]:</span>
             <span class="n">dpath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">store_dir</span><span class="p">,</span> <span class="n">sub_dir</span><span class="p">)</span>
             <span class="n">remake_dir</span><span class="p">(</span><span class="n">dpath</span><span class="p">,</span> <span class="n">force</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">store_dir</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s">&#39;r&#39;</span><span class="p">):</span>
-        <span class="n">Store_</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">store_dir</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">)</span>
+        <span class="n">BaseStore</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">store_dir</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">)</span>
         <span class="n">config_fn</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">store_dir</span><span class="p">,</span> <span class="s">&#39;config&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">config_fn</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">StoreError</span><span class="p">(</span>
+                <span class="s">&#39;directory &quot;</span><span class="si">%s</span><span class="s">&quot; does not seem to contain a GF Store &#39;</span>
+                <span class="s">&#39;(&quot;config&quot; file not found)&#39;</span> <span class="o">%</span> <span class="n">store_dir</span><span class="p">)</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">meta</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">config_fn</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_decimated</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_extra</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_phases</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">for</span> <span class="n">decimate</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">9</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">decimate</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">9</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_decimated_store_dir</span><span class="p">(</span><span class="n">decimate</span><span class="p">)):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_decimated</span><span class="p">[</span><span class="n">decimate</span><span class="p">]</span> <span class="o">=</span> <span class="bp">None</span>
 
@@ -789,7 +941,7 @@
 
     <span class="k">def</span> <span class="nf">put</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">trace</span><span class="p">):</span></div>
 <div class="viewcode-block" id="Store.put"><a class="viewcode-back" href="../../../gf.html#pyrocko.gf.store.Store.put">[docs]</a>        <span class="sd">&#39;&#39;&#39;Insert trace into GF store.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Store a single GF trace at (high-level) index `args`.&#39;&#39;&#39;</span>
 
         <span class="n">irecord</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">irecord</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
@@ -799,8 +951,13 @@
         <span class="n">irecord</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">irecord</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_record</span><span class="p">(</span><span class="n">irecord</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">itmin</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">nsamples</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">decimate</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">interpolate</span><span class="o">=</span><span class="s">&#39;nearest_neighbor&#39;</span><span class="p">):</span>
-<div class="viewcode-block" id="Store.get"><a class="viewcode-back" href="../../../gf.html#pyrocko.gf.store.Store.get">[docs]</a>        <span class="sd">&#39;&#39;&#39;Retrieve GF trace from store.</span>
+    <span class="k">def</span> <span class="nf">str_irecord</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">BaseStore</span><span class="o">.</span><span class="n">str_irecord</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">irecord</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">itmin</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">nsamples</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">decimate</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+<div class="viewcode-block" id="Store.get"><a class="viewcode-back" href="../../../gf.html#pyrocko.gf.store.Store.get">[docs]</a>            <span class="n">interpolate</span><span class="o">=</span><span class="s">&#39;nearest_neighbor&#39;</span><span class="p">):</span>
+
+        <span class="sd">&#39;&#39;&#39;Retrieve GF trace from store.</span>
 
 <span class="sd">        Retrieve a single GF trace from the store at (high-level) index `args`.</span>
 <span class="sd">        By default, the full trace is retrieved. Given `itmin` and `nsamples`,</span>
@@ -812,40 +969,49 @@
         <span class="n">store</span><span class="p">,</span> <span class="n">decimate</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_decimated_store</span><span class="p">(</span><span class="n">decimate</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">interpolate</span> <span class="o">==</span> <span class="s">&#39;nearest_neighbor&#39;</span><span class="p">:</span>
             <span class="n">irecord</span> <span class="o">=</span> <span class="n">store</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">irecord</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">store</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="n">irecord</span><span class="p">,</span> <span class="n">itmin</span><span class="o">=</span><span class="n">itmin</span><span class="p">,</span> <span class="n">nsamples</span><span class="o">=</span><span class="n">nsamples</span><span class="p">,</span> <span class="n">decimate</span><span class="o">=</span><span class="n">decimate</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">store</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="n">irecord</span><span class="p">,</span> <span class="n">itmin</span><span class="o">=</span><span class="n">itmin</span><span class="p">,</span> <span class="n">nsamples</span><span class="o">=</span><span class="n">nsamples</span><span class="p">,</span>
+                              <span class="n">decimate</span><span class="o">=</span><span class="n">decimate</span><span class="p">)</span>
 
         <span class="k">else</span><span class="p">:</span>
             <span class="n">irecords</span><span class="p">,</span> <span class="n">weights</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">store</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">vicinity</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">))</span>
             <span class="k">if</span> <span class="n">interpolate</span> <span class="o">==</span> <span class="s">&#39;off&#39;</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">irecords</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="n">NotAllowedToInterpolate</span><span class="p">()</span>
 
-            <span class="k">return</span> <span class="n">store</span><span class="o">.</span><span class="n">_sum</span><span class="p">(</span><span class="n">irecords</span><span class="p">,</span> <span class="n">num</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">irecords</span><span class="p">)),</span> <span class="n">weights</span><span class="p">,</span> <span class="n">itmin</span><span class="p">,</span> <span class="n">nsamples</span><span class="p">,</span> <span class="n">decimate</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">store</span><span class="o">.</span><span class="n">_sum</span><span class="p">(</span><span class="n">irecords</span><span class="p">,</span> <span class="n">num</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">irecords</span><span class="p">)),</span> <span class="n">weights</span><span class="p">,</span>
+                              <span class="n">itmin</span><span class="p">,</span> <span class="n">nsamples</span><span class="p">,</span> <span class="n">decimate</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">sum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">delays</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">itmin</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">nsamples</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">decimate</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span></div>
-<div class="viewcode-block" id="Store.sum"><a class="viewcode-back" href="../../../gf.html#pyrocko.gf.store.Store.sum">[docs]</a>        <span class="sd">&#39;&#39;&#39;Sum delayed and weighted GF traces.</span>
+    <span class="k">def</span> <span class="nf">sum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">delays</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">itmin</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">nsamples</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span></div>
+<div class="viewcode-block" id="Store.sum"><a class="viewcode-back" href="../../../gf.html#pyrocko.gf.store.Store.sum">[docs]</a>            <span class="n">decimate</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+
+        <span class="sd">&#39;&#39;&#39;Sum delayed and weighted GF traces.</span>
 
 <span class="sd">        Calculate sum of delayed and weighted GF traces. `args` is a tuple of</span>
 <span class="sd">        arrays forming the (high-level) indices of the GF traces to be</span>
 <span class="sd">        selected.  Delays and weights for the summation are given in the arrays</span>
 <span class="sd">        `delays` and `weights`. If `itmin` and `nsamples` are given,</span>
-<span class="sd">        computation is restricted to the output time range *(decimated) sampling</span>
-<span class="sd">        interval x [ itmin, (itmin + nsamples - 1) ]*.  If `decimate` is an</span>
-<span class="sd">        integer in the range [2,8], decimated traces are used in the summation.</span>
-<span class="sd">        &#39;&#39;&#39;</span>
+<span class="sd">        computation is restricted to the output time range *(decimated)</span>
+<span class="sd">        sampling interval x [ itmin, (itmin + nsamples - 1) ]*.  If `decimate`</span>
+<span class="sd">        is an integer in the range [2,8], decimated traces are used in the</span>
+<span class="sd">        summation.&#39;&#39;&#39;</span>
 
         <span class="n">store</span><span class="p">,</span> <span class="n">decimate</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_decimated_store</span><span class="p">(</span><span class="n">decimate</span><span class="p">)</span>
         <span class="n">irecords</span> <span class="o">=</span> <span class="n">store</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">irecords</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">store</span><span class="o">.</span><span class="n">_sum</span><span class="p">(</span><span class="n">irecords</span><span class="p">,</span> <span class="n">delays</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">itmin</span><span class="p">,</span> <span class="n">nsamples</span><span class="p">,</span> <span class="n">decimate</span><span class="p">)</span>
-    
-    <span class="k">def</span> <span class="nf">sum_reference</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">delays</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">itmin</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">nsamples</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">decimate</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span></div>
-<div class="viewcode-block" id="Store.sum_reference"><a class="viewcode-back" href="../../../gf.html#pyrocko.gf.store.Store.sum_reference">[docs]</a>        <span class="sd">&#39;&#39;&#39;Alternative version of :py:meth:`sum`.&#39;&#39;&#39;</span>
+
+    <span class="k">def</span> <span class="nf">sum_reference</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">delays</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">itmin</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">nsamples</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span></div>
+<div class="viewcode-block" id="Store.sum_reference"><a class="viewcode-back" href="../../../gf.html#pyrocko.gf.store.Store.sum_reference">[docs]</a>                      <span class="n">decimate</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+
+        <span class="sd">&#39;&#39;&#39;Alternative version of :py:meth:`sum`, for comparison.&#39;&#39;&#39;</span>
 
         <span class="n">store</span><span class="p">,</span> <span class="n">decimate</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_decimated_store</span><span class="p">(</span><span class="n">decimate</span><span class="p">)</span>
         <span class="n">irecords</span> <span class="o">=</span> <span class="n">store</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">irecords</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">store</span><span class="o">.</span><span class="n">_sum_reference</span><span class="p">(</span><span class="n">irecords</span><span class="p">,</span> <span class="n">delays</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">itmin</span><span class="p">,</span> <span class="n">nsamples</span><span class="p">,</span> <span class="n">decimate</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">store</span><span class="o">.</span><span class="n">_sum_reference</span><span class="p">(</span><span class="n">irecords</span><span class="p">,</span> <span class="n">delays</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">itmin</span><span class="p">,</span> <span class="n">nsamples</span><span class="p">,</span>
+                                    <span class="n">decimate</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">make_decimated</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">decimate</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span></div>
-<div class="viewcode-block" id="Store.make_decimated"><a class="viewcode-back" href="../../../gf.html#pyrocko.gf.store.Store.make_decimated">[docs]</a>        <span class="sd">&#39;&#39;&#39;Create decimated version of GF store.</span>
+    <span class="k">def</span> <span class="nf">make_decimated</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">decimate</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span></div>
+<div class="viewcode-block" id="Store.make_decimated"><a class="viewcode-back" href="../../../gf.html#pyrocko.gf.store.Store.make_decimated">[docs]</a>                       <span class="n">show_progress</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+
+        <span class="sd">&#39;&#39;&#39;Create decimated version of GF store.</span>
 
 <span class="sd">        Create a downsampled version of the GF store. Downsampling is done for</span>
 <span class="sd">        the integer factor `decimate` which should be in the range [2,8].  If</span>
@@ -860,7 +1026,8 @@
 <span class="sd">        computation are done for lower frequency signals.</span>
 <span class="sd">        &#39;&#39;&#39;</span>
 
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_f_index</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_f_index</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="mi">2</span> <span class="o">&lt;=</span> <span class="n">decimate</span> <span class="o">&lt;=</span> <span class="mi">8</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">StoreError</span><span class="p">(</span><span class="s">&#39;decimate argument must be in the range [2,8]&#39;</span><span class="p">)</span>
@@ -883,14 +1050,22 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="n">CannotCreate</span><span class="p">(</span><span class="s">&#39;store already exists at </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">store_dir</span><span class="p">)</span>
 
-
         <span class="n">store_dir_incomplete</span> <span class="o">=</span> <span class="n">store_dir</span> <span class="o">+</span> <span class="s">&#39;-incomplete&#39;</span>
         <span class="n">Store</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">store_dir_incomplete</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="n">force</span><span class="p">)</span>
 
         <span class="n">decimated</span> <span class="o">=</span> <span class="n">Store</span><span class="p">(</span><span class="n">store_dir_incomplete</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">args</span> <span class="ow">in</span> <span class="n">decimated</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">iter_nodes</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">show_progress</span><span class="p">:</span>
+            <span class="n">pbar</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">progressbar</span><span class="p">(</span><span class="s">&#39;decimating store&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">nrecords</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">args</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">decimated</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">iter_nodes</span><span class="p">()):</span>
             <span class="n">tr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">decimate</span><span class="o">=</span><span class="n">decimate</span><span class="p">)</span>
             <span class="n">decimated</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">tr</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">show_progress</span><span class="p">:</span>
+                <span class="n">pbar</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">show_progress</span><span class="p">:</span>
+            <span class="n">pbar</span><span class="o">.</span><span class="n">finish</span><span class="p">()</span>
 
         <span class="n">decimated</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
@@ -899,28 +1074,37 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_decimated</span><span class="p">[</span><span class="n">decimate</span><span class="p">]</span> <span class="o">=</span> <span class="bp">None</span>
 
     <span class="k">def</span> <span class="nf">stats</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
-        <span class="n">stats</span> <span class="o">=</span> <span class="n">Store_</span><span class="o">.</span><span class="n">stats</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">stats</span> <span class="o">=</span> <span class="n">BaseStore</span><span class="o">.</span><span class="n">stats</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="n">stats</span><span class="p">[</span><span class="s">&#39;decimated&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_decimated</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
         <span class="k">return</span> <span class="n">stats</span>
 
-    <span class="n">stats_keys</span> <span class="o">=</span> <span class="n">Store_</span><span class="o">.</span><span class="n">stats_keys</span> <span class="o">+</span> <span class="p">[</span> <span class="s">&#39;decimated&#39;</span> <span class="p">]</span>
+    <span class="n">stats_keys</span> <span class="o">=</span> <span class="n">BaseStore</span><span class="o">.</span><span class="n">stats_keys</span> <span class="o">+</span> <span class="p">[</span><span class="s">&#39;decimated&#39;</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">check</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">show_progress</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">show_progress</span><span class="p">:</span>
+            <span class="n">pbar</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">progressbar</span><span class="p">(</span><span class="s">&#39;checking store&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">nrecords</span><span class="p">)</span>
 
         <span class="n">problems</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="n">i</span> <span class="o">=</span><span class="mi">0</span>
-        <span class="k">for</span> <span class="n">args</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">iter_nodes</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">args</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">iter_nodes</span><span class="p">()):</span>
             <span class="n">tr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">tr</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">tr</span><span class="o">.</span><span class="n">is_zero</span><span class="p">:</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">tr</span><span class="o">.</span><span class="n">begin_value</span> <span class="o">==</span> <span class="n">tr</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&#39;wrong begin value for trace at </span><span class="si">%s</span><span class="s"> (data corruption?)&#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">args</span><span class="p">))</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&#39;wrong begin value for trace at </span><span class="si">%s</span><span class="s"> &#39;</span>
+                                <span class="s">&#39;(data corruption?)&#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">args</span><span class="p">))</span>
                     <span class="n">problems</span> <span class="o">+=</span> <span class="mi">1</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">tr</span><span class="o">.</span><span class="n">end_value</span> <span class="o">==</span> <span class="n">tr</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
-                    <span class="n">logger</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&#39;wrong end value for trace at </span><span class="si">%s</span><span class="s"> (data corruption?)&#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">args</span><span class="p">))</span>
+                    <span class="n">logger</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&#39;wrong end value for trace at </span><span class="si">%s</span><span class="s"> &#39;</span>
+                                <span class="s">&#39;(data corruption?)&#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">args</span><span class="p">))</span>
                     <span class="n">problems</span> <span class="o">+=</span> <span class="mi">1</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">num</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">num</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">tr</span><span class="o">.</span><span class="n">data</span><span class="p">)):</span>
                     <span class="n">logger</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&#39;nans or infs in trace at </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">args</span><span class="p">))</span>
                     <span class="n">problems</span> <span class="o">+=</span> <span class="mi">1</span>
+
+            <span class="k">if</span> <span class="n">show_progress</span><span class="p">:</span>
+                <span class="n">pbar</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">show_progress</span><span class="p">:</span>
+            <span class="n">pbar</span><span class="o">.</span><span class="n">finish</span><span class="p">()</span>
 
         <span class="k">return</span> <span class="n">problems</span>
 
@@ -948,7 +1132,7 @@
         <span class="k">return</span> <span class="n">fn</span>
 
     <span class="k">def</span> <span class="nf">get_phase</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phase_id</span><span class="p">):</span>
-        
+
         <span class="k">if</span> <span class="n">phase_id</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_phases</span><span class="p">:</span>
             <span class="n">fn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_phase_filename</span><span class="p">(</span><span class="n">phase_id</span><span class="p">)</span>
             <span class="n">spt</span> <span class="o">=</span> <span class="n">spit</span><span class="o">.</span><span class="n">SPTree</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">fn</span><span class="p">)</span>
@@ -957,25 +1141,43 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_phases</span><span class="p">[</span><span class="n">phase_id</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">t</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timing</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+<div class="viewcode-block" id="Store.t"><a class="viewcode-back" href="../../../gf.html#pyrocko.gf.store.Store.t">[docs]</a>        <span class="sd">&#39;&#39;&#39;Compute interpolated phase arrivals.</span>
+
+<span class="sd">        **Examples:**</span>
+
+<span class="sd">        If ``test_store`` is of :py:class:`pyrocko.gf.meta.ConfigTypeA`:</span>
+
+<span class="sd">        * ``test_store.t(&#39;p&#39;, (1000, 10000))``</span>
+<span class="sd">        * ``test_store.t(&#39;last(P|Pdiff)&#39;, (1000, 10000))`` - the later arrival</span>
+<span class="sd">          of P and the diffracted P</span>
+
+<span class="sd">        If ``test_store`` is of :py:class:`pyrocko.gf.meta.ConfigTypeB`:</span>
+
+<span class="sd">        * ``test_store.t(&#39;S&#39;, (1000, 1000, 10000))``</span>
+<span class="sd">        * ``test_store.t(&#39;first(P|p|Pdiff|sP)&#39;, (1000, 1000, 10000))`` -</span>
+<span class="sd">          the first arrival of the given phases is selected</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">timing</span><span class="p">,</span> <span class="n">meta</span><span class="o">.</span><span class="n">Timing</span><span class="p">):</span>
             <span class="n">timing</span> <span class="o">=</span> <span class="n">meta</span><span class="o">.</span><span class="n">Timing</span><span class="p">(</span><span class="n">timing</span><span class="p">)</span>
+
         <span class="k">return</span> <span class="n">timing</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_phase</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">make_timing_params</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">begin</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">snap_vred</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
-<div class="viewcode-block" id="Store.make_timing_params"><a class="viewcode-back" href="../../../gf.html#pyrocko.gf.store.Store.make_timing_params">[docs]</a>        
+    <span class="k">def</span> <span class="nf">make_timing_params</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">begin</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">snap_vred</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span></div>
+<div class="viewcode-block" id="Store.make_timing_params"><a class="viewcode-back" href="../../../gf.html#pyrocko.gf.store.Store.make_timing_params">[docs]</a>
         <span class="sd">&#39;&#39;&#39;Compute tight parameterized time ranges to include given timings.</span>
 
 <span class="sd">        Calculates appropriate time ranges to cover given begin and end timings</span>
-<span class="sd">        over all GF points in the store. A dict with the following keys is </span>
+<span class="sd">        over all GF points in the store. A dict with the following keys is</span>
 <span class="sd">        returned:</span>
 
-<span class="sd">          tmin: time [s] minimum of begin timing over all GF points</span>
-<span class="sd">          tmax: time [s] maximum of end timing over all GF points</span>
-<span class="sd">          vred, tmin_vred: slope [m/s] and offset [s] of reduction velocity [m/s] </span>
-<span class="sd">              appropriate to catch begin timing over all GF points</span>
-<span class="sd">          tlenmax_vred: maximum time length needed to cover all end timings,</span>
-<span class="sd">              when using linear slope given with (vred, tmin_vred) as start</span>
-<span class="sd">        </span>
+<span class="sd">        * ``&#39;tmin&#39;``: time [s], minimum of begin timing over all GF points</span>
+<span class="sd">        * ``&#39;tmax&#39;``: time [s], maximum of end timing over all GF points</span>
+<span class="sd">        * ``&#39;vred&#39;``, ``&#39;tmin_vred&#39;``: slope [m/s] and offset [s] of reduction</span>
+<span class="sd">          velocity [m/s] appropriate to catch begin timing over all GF points</span>
+<span class="sd">        * ``&#39;tlenmax_vred&#39;``: maximum time length needed to cover all end</span>
+<span class="sd">          timings, when using linear slope given with (`vred`, `tmin_vred`) as</span>
+<span class="sd">          start</span>
 <span class="sd">        &#39;&#39;&#39;</span>
 
         <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
@@ -984,46 +1186,58 @@
             <span class="n">tmax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">t</span><span class="p">(</span><span class="n">end</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span>
             <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">get_distance</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
             <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">x</span><span class="p">,</span> <span class="n">tmin</span><span class="p">,</span> <span class="n">tmax</span><span class="p">))</span>
-        
+
         <span class="n">xs</span><span class="p">,</span> <span class="n">tmins</span><span class="p">,</span> <span class="n">tmaxs</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">num</span><span class="o">.</span><span class="n">float</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
 
         <span class="n">i</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">nanargmin</span><span class="p">(</span><span class="n">tmins</span><span class="p">)</span>
         <span class="n">tminmin</span> <span class="o">=</span> <span class="n">tmins</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
         <span class="n">x_tminmin</span> <span class="o">=</span> <span class="n">xs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
         <span class="n">dx</span> <span class="o">=</span> <span class="p">(</span><span class="n">xs</span> <span class="o">-</span> <span class="n">x_tminmin</span><span class="p">)</span>
-        <span class="n">dx</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">where</span><span class="p">(</span> <span class="n">dx</span> <span class="o">!=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">num</span><span class="o">.</span><span class="n">nan</span> <span class="p">)</span>
-        <span class="n">s</span> <span class="o">=</span> <span class="p">(</span><span class="n">tmin</span> <span class="o">-</span> <span class="n">tminmin</span><span class="p">)</span> <span class="o">/</span> <span class="n">dx</span>
+        <span class="n">dx</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">dx</span> <span class="o">!=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">dx</span><span class="p">,</span> <span class="n">num</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="p">(</span><span class="n">tmins</span> <span class="o">-</span> <span class="n">tminmin</span><span class="p">)</span> <span class="o">/</span> <span class="n">dx</span>
         <span class="n">sred</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">num</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="n">num</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">s</span><span class="p">)]))</span>
-        
+
         <span class="k">if</span> <span class="n">snap_vred</span><span class="p">:</span>
             <span class="n">tdif</span> <span class="o">=</span> <span class="n">sred</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">distance_delta</span>
             <span class="n">tdif2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">deltat</span> <span class="o">*</span> <span class="nb">int</span><span class="p">(</span><span class="n">tdif</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">deltat</span><span class="p">)</span>
             <span class="n">sred</span> <span class="o">=</span> <span class="n">tdif2</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">distance_delta</span>
 
-        <span class="n">tmin_vred</span> <span class="o">=</span> <span class="n">tminmin</span> <span class="o">-</span> <span class="n">sred</span><span class="o">*</span><span class="n">x_tminmin</span> 
+        <span class="n">tmin_vred</span> <span class="o">=</span> <span class="n">tminmin</span> <span class="o">-</span> <span class="n">sred</span><span class="o">*</span><span class="n">x_tminmin</span>
         <span class="k">if</span> <span class="n">snap_vred</span><span class="p">:</span>
-            <span class="n">tmin_vred</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">deltat</span> <span class="o">*</span> <span class="nb">int</span><span class="p">(</span><span class="n">tmin_vred</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">deltat</span><span class="p">)</span>
+            <span class="n">tmin_vred</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">deltat</span> <span class="o">*</span> \
+                <span class="nb">int</span><span class="p">(</span><span class="n">tmin_vred</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">deltat</span><span class="p">)</span>
 
-        <span class="n">tlenmax_vred</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span> <span class="n">tmax</span> <span class="o">-</span> <span class="p">(</span><span class="n">tmin_vred</span> <span class="o">+</span> <span class="n">sred</span><span class="o">*</span><span class="n">x</span><span class="p">)</span> <span class="p">)</span>
+        <span class="n">tlenmax_vred</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">tmax</span> <span class="o">-</span> <span class="p">(</span><span class="n">tmin_vred</span> <span class="o">+</span> <span class="n">sred</span><span class="o">*</span><span class="n">x</span><span class="p">))</span>
         <span class="k">if</span> <span class="n">sred</span> <span class="o">!=</span> <span class="mf">0.0</span><span class="p">:</span>
             <span class="n">vred</span> <span class="o">=</span> <span class="mf">1.0</span><span class="o">/</span><span class="n">sred</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">vred</span> <span class="o">=</span> <span class="mf">0.0</span>
 
         <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span>
-                <span class="n">tmin</span> <span class="o">=</span> <span class="n">tminmin</span><span class="p">,</span>
-                <span class="n">tmax</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">tmaxs</span><span class="p">),</span>
-                <span class="n">tmin_vred</span> <span class="o">=</span> <span class="n">tmin_vred</span><span class="p">,</span>
-                <span class="n">tlenmax_vred</span> <span class="o">=</span> <span class="n">tlenmax_vred</span><span class="p">,</span>
-                <span class="n">vred</span> <span class="o">=</span> <span class="n">vred</span><span class="p">)</span>
+            <span class="n">tmin</span><span class="o">=</span><span class="n">tminmin</span><span class="p">,</span>
+            <span class="n">tmax</span><span class="o">=</span><span class="n">num</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">tmaxs</span><span class="p">),</span>
+            <span class="n">tmin_vred</span><span class="o">=</span><span class="n">tmin_vred</span><span class="p">,</span>
+            <span class="n">tlenmax_vred</span><span class="o">=</span><span class="n">tlenmax_vred</span><span class="p">,</span>
+            <span class="n">vred</span><span class="o">=</span><span class="n">vred</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">make_ttt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span></div>
+<div class="viewcode-block" id="Store.make_ttt"><a class="viewcode-back" href="../../../gf.html#pyrocko.gf.store.Store.make_ttt">[docs]</a>        <span class="sd">&#39;&#39;&#39;Compute travel time tables.</span>
+
+<span class="sd">        Travel time tables are computed using the 1D earth model defined in</span>
+<span class="sd">        :py:attr:`pyrocko.gf.meta.Config.earthmodel_1d` for each defined phase</span>
+<span class="sd">        in :py:attr:`pyrocko.gf.meta.Config.tabulated_phases`. The accuracy of</span>
+<span class="sd">        the tablulated times is adjusted to the sampling rate of the store.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
         <span class="kn">from</span> <span class="nn">pyrocko</span> <span class="kn">import</span> <span class="n">cake</span>
         <span class="n">config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span>
 
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">config</span><span class="o">.</span><span class="n">tabulated_phases</span><span class="p">:</span>
+            <span class="k">return</span>
+
         <span class="n">mod</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">earthmodel_1d</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">mod</span><span class="p">:</span>
-            <span class="n">die</span><span class="p">(</span><span class="s">&#39;no earth model found&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">StoreError</span><span class="p">(</span><span class="s">&#39;no earth model found&#39;</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">pdef</span> <span class="ow">in</span> <span class="n">config</span><span class="o">.</span><span class="n">tabulated_phases</span><span class="p">:</span>
 
@@ -1031,7 +1245,7 @@
             <span class="n">phases</span> <span class="o">=</span> <span class="n">pdef</span><span class="o">.</span><span class="n">phases</span>
             <span class="n">horvels</span> <span class="o">=</span> <span class="n">pdef</span><span class="o">.</span><span class="n">horizontal_velocities</span>
 
-            <span class="n">fn</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span> <span class="bp">self</span><span class="o">.</span><span class="n">store_dir</span><span class="p">,</span> <span class="s">&#39;phases&#39;</span><span class="p">,</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s">.phase&#39;</span> <span class="o">%</span> <span class="n">phase_id</span><span class="p">)</span>
+            <span class="n">fn</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">store_dir</span><span class="p">,</span> <span class="s">&#39;phases&#39;</span><span class="p">,</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s">.phase&#39;</span> <span class="o">%</span> <span class="n">phase_id</span><span class="p">)</span>
 
             <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">force</span><span class="p">:</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;file already exists: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">fn</span><span class="p">)</span>
@@ -1049,34 +1263,58 @@
                 <span class="n">t</span> <span class="o">=</span> <span class="p">[]</span>
                 <span class="k">if</span> <span class="n">phases</span><span class="p">:</span>
                     <span class="n">rays</span> <span class="o">=</span> <span class="n">mod</span><span class="o">.</span><span class="n">arrivals</span><span class="p">(</span>
-                            <span class="n">phases</span> <span class="o">=</span> <span class="n">phases</span><span class="p">,</span>
-                            <span class="n">distances</span> <span class="o">=</span> <span class="p">[</span> <span class="n">x</span><span class="o">*</span><span class="n">cake</span><span class="o">.</span><span class="n">m2d</span> <span class="p">],</span>
-                            <span class="n">zstart</span> <span class="o">=</span> <span class="n">zs</span><span class="p">,</span>
-                            <span class="n">zstop</span> <span class="o">=</span> <span class="n">zr</span><span class="p">)</span>
+                        <span class="n">phases</span><span class="o">=</span><span class="n">phases</span><span class="p">,</span>
+                        <span class="n">distances</span><span class="o">=</span><span class="p">[</span><span class="n">x</span><span class="o">*</span><span class="n">cake</span><span class="o">.</span><span class="n">m2d</span><span class="p">],</span>
+                        <span class="n">zstart</span><span class="o">=</span><span class="n">zs</span><span class="p">,</span>
+                        <span class="n">zstop</span><span class="o">=</span><span class="n">zr</span><span class="p">)</span>
 
                     <span class="k">for</span> <span class="n">ray</span> <span class="ow">in</span> <span class="n">rays</span><span class="p">:</span>
                         <span class="n">t</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ray</span><span class="o">.</span><span class="n">t</span><span class="p">)</span>
 
-                <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">pdef</span><span class="o">.</span><span class="n">horizontal_velocities</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">horvels</span><span class="p">:</span>
                     <span class="n">t</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="o">/</span><span class="p">(</span><span class="n">v</span><span class="o">*</span><span class="mf">1000.</span><span class="p">))</span>
-                
+
                 <span class="k">if</span> <span class="n">t</span><span class="p">:</span>
                     <span class="k">return</span> <span class="nb">min</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">return</span> <span class="bp">None</span>
 
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;making travel time table for phasegroup &quot;</span><span class="si">%s</span><span class="s">&quot;&#39;</span> <span class="o">%</span> <span class="n">phase_id</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;making travel time table for phasegroup &quot;</span><span class="si">%s</span><span class="s">&quot;&#39;</span> <span class="o">%</span>
+                        <span class="n">phase_id</span><span class="p">)</span>
+
             <span class="n">ip</span> <span class="o">=</span> <span class="n">spit</span><span class="o">.</span><span class="n">SPTree</span><span class="p">(</span>
-                <span class="n">f</span> <span class="o">=</span> <span class="n">evaluate</span><span class="p">,</span>
-                <span class="n">ftol</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">deltat</span><span class="o">*</span><span class="mf">0.5</span><span class="p">,</span>
-                <span class="n">xbounds</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">transpose</span><span class="p">((</span><span class="n">config</span><span class="o">.</span><span class="n">mins</span><span class="p">,</span> <span class="n">config</span><span class="o">.</span><span class="n">maxs</span><span class="p">)),</span>
-                <span class="n">xtols</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">deltas</span><span class="p">)</span>
+                <span class="n">f</span><span class="o">=</span><span class="n">evaluate</span><span class="p">,</span>
+                <span class="n">ftol</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">deltat</span><span class="o">*</span><span class="mf">0.5</span><span class="p">,</span>
+                <span class="n">xbounds</span><span class="o">=</span><span class="n">num</span><span class="o">.</span><span class="n">transpose</span><span class="p">((</span><span class="n">config</span><span class="o">.</span><span class="n">mins</span><span class="p">,</span> <span class="n">config</span><span class="o">.</span><span class="n">maxs</span><span class="p">)),</span>
+                <span class="n">xtols</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">deltas</span><span class="p">)</span>
 
             <span class="n">util</span><span class="o">.</span><span class="n">ensuredirs</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
             <span class="n">ip</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
 
+    <span class="k">def</span> <span class="nf">seismogram</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">receiver</span><span class="p">):</span></div>
+        <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">channel</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">delays</span><span class="p">,</span> <span class="n">weights</span><span class="p">)</span> <span class="ow">in</span> \
+                <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">make_sum_params</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">receiver</span><span class="p">):</span>
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="s">&#39;Store GFTrace Zero StoreError CannotCreate CannotOpen&#39;</span><span class="o">.</span><span class="n">split</span><span class="p">()</span></div>
+            <span class="n">gtr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">delays</span><span class="p">,</span> <span class="n">weights</span><span class="p">)</span>
+            <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">gtr</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">out</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="s">&#39;&#39;&#39;</span></div>
+<span class="s">gf_dtype</span>
+<span class="s">NotMultipleOfSamplingInterval</span>
+<span class="s">GFTrace</span>
+<span class="s">StoreError</span>
+<span class="s">CannotCreate</span>
+<span class="s">CannotOpen</span>
+<span class="s">DuplicateInsert</span>
+<span class="s">NotAllowedToInterpolate</span>
+<span class="s">NoSuchExtra</span>
+<span class="s">NoSuchPhase</span>
+<span class="s">BaseStore</span>
+<span class="s">Store</span>
+<span class="s">&#39;&#39;&#39;</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
 </pre></div>
 
           </div>

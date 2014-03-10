@@ -71,6 +71,8 @@
 <span class="sd">KAN          kan                         yes                [#f3]_</span>
 <span class="sd">YAFF         yaff                        yes       yes      [#f4]_</span>
 <span class="sd">ASCII Table  text                                  yes      [#f5]_</span>
+<span class="sd">GSE1         gse1                        some</span>
+<span class="sd">GSE2         gse2                        some</span>
 <span class="sd">============ =========================== ========= ======== ======</span>
 
 <span class="sd">.. rubric:: Notes</span>
@@ -82,11 +84,10 @@
 <span class="sd">.. [#f5] ASCII tables with two columns (time and amplitude) are output - meta information will be lost.</span>
 <span class="sd">&#39;&#39;&#39;</span>
 
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">mseed</span><span class="o">,</span> <span class="nn">sac</span><span class="o">,</span> <span class="nn">kan</span><span class="o">,</span> <span class="nn">segy</span><span class="o">,</span> <span class="nn">yaff</span><span class="o">,</span> <span class="nn">file</span><span class="o">,</span> <span class="nn">seisan_waveform</span><span class="o">,</span> <span class="nn">util</span><span class="o">,</span> <span class="nn">logging</span>
-<span class="kn">import</span> <span class="nn">trace</span>
-<span class="kn">from</span> <span class="nn">pyrocko.mseed_ext</span> <span class="kn">import</span> <span class="n">MSeedError</span>
-<span class="kn">from</span> <span class="nn">io_common</span> <span class="kn">import</span> <span class="n">FileLoadError</span>
+<span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">pyrocko</span> <span class="kn">import</span> <span class="n">mseed</span><span class="p">,</span> <span class="n">sac</span><span class="p">,</span> <span class="n">kan</span><span class="p">,</span> <span class="n">segy</span><span class="p">,</span> <span class="n">yaff</span><span class="p">,</span> <span class="nb">file</span><span class="p">,</span> <span class="n">seisan_waveform</span><span class="p">,</span> <span class="n">gse1</span><span class="p">,</span> <span class="n">gse2</span><span class="p">,</span> <span class="n">gcf</span>
+<span class="kn">from</span> <span class="nn">pyrocko</span> <span class="kn">import</span> <span class="n">util</span><span class="p">,</span> <span class="n">trace</span>
+<span class="kn">from</span> <span class="nn">pyrocko.io_common</span> <span class="kn">import</span> <span class="n">FileLoadError</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">num</span>
 
@@ -95,13 +96,13 @@
 <div class="viewcode-block" id="load"><a class="viewcode-back" href="../../io.html#pyrocko.io.load">[docs]</a><span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="s">&#39;mseed&#39;</span><span class="p">,</span> <span class="n">getdata</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">substitutions</span><span class="o">=</span><span class="bp">None</span> <span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Load traces from file.</span>
 
-<span class="sd">    :param format: format of the file (``&#39;mseed&#39;``, ``&#39;sac&#39;``, ``&#39;segy&#39;``, ``&#39;seisan_l&#39;``, ``&#39;seisan_b&#39;``, ``&#39;kan&#39;``, ``&#39;yaff&#39;``, ``&#39;from_extension&#39;``)</span>
+<span class="sd">    :param format: format of the file (``&#39;mseed&#39;``, ``&#39;sac&#39;``, ``&#39;segy&#39;``, ``&#39;seisan_l&#39;``, ``&#39;seisan_b&#39;``, ``&#39;kan&#39;``, ``&#39;yaff&#39;``, ``&#39;gse1&#39;``, ``&#39;gcf&#39;``, ``&#39;from_extension&#39;``)</span>
 <span class="sd">    :param getdata: if ``True`` (the default), read data, otherwise only read traces metadata</span>
 <span class="sd">    :param substitutions:  dict with substitutions to be applied to the traces metadata</span>
 <span class="sd">    </span>
 <span class="sd">    :returns: list of loaded traces</span>
 <span class="sd">    </span>
-<span class="sd">    When *format* is set to ``&#39;detect&#39;``, the file type is guessed from the first 512 bytes of the file. Only Mini-SEED, SAC, and YAFF format are detected.</span>
+<span class="sd">    When *format* is set to ``&#39;detect&#39;``, the file type is guessed from the first 512 bytes of the file. Only Mini-SEED, SAC, GSE1, and YAFF format are detected.</span>
 <span class="sd">    When *format* is set to ``&#39;from_extension&#39;``, the filename extension is used to decide what format should be assumed. The filename extensions</span>
 <span class="sd">    considered are (matching is case insensitiv): ``&#39;.sac&#39;``, ``&#39;.kan&#39;``, ``&#39;.sgy&#39;``, ``&#39;.segy&#39;``, ``&#39;.yaff&#39;``, everything else is assumed to be in Mini-SEED format.</span>
 <span class="sd">    </span>
@@ -119,7 +120,7 @@
         <span class="k">raise</span> <span class="n">FileLoadError</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
 
     <span class="n">format</span> <span class="o">=</span> <span class="bp">None</span>
-    <span class="k">for</span> <span class="n">mod</span><span class="p">,</span> <span class="n">fmt</span> <span class="ow">in</span> <span class="p">((</span><span class="n">yaff</span><span class="p">,</span> <span class="s">&#39;yaff&#39;</span><span class="p">),</span> <span class="p">(</span><span class="n">mseed</span><span class="p">,</span> <span class="s">&#39;mseed&#39;</span><span class="p">),</span> <span class="p">(</span><span class="n">sac</span><span class="p">,</span> <span class="s">&#39;sac&#39;</span><span class="p">)):</span>
+    <span class="k">for</span> <span class="n">mod</span><span class="p">,</span> <span class="n">fmt</span> <span class="ow">in</span> <span class="p">((</span><span class="n">yaff</span><span class="p">,</span> <span class="s">&#39;yaff&#39;</span><span class="p">),</span> <span class="p">(</span><span class="n">mseed</span><span class="p">,</span> <span class="s">&#39;mseed&#39;</span><span class="p">),</span> <span class="p">(</span><span class="n">sac</span><span class="p">,</span> <span class="s">&#39;sac&#39;</span><span class="p">),</span> <span class="p">(</span><span class="n">gse1</span><span class="p">,</span> <span class="s">&#39;gse1&#39;</span><span class="p">),</span> <span class="p">(</span><span class="n">gse2</span><span class="p">,</span> <span class="s">&#39;gse2&#39;</span><span class="p">)):</span>
         <span class="k">if</span> <span class="n">mod</span><span class="o">.</span><span class="n">detect</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">fmt</span>
 
@@ -153,7 +154,8 @@
             <span class="s">&#39;.sac&#39;</span><span class="p">:</span> <span class="s">&#39;sac&#39;</span><span class="p">,</span>
             <span class="s">&#39;.kan&#39;</span><span class="p">:</span> <span class="s">&#39;kan&#39;</span><span class="p">,</span>
             <span class="s">&#39;.segy&#39;</span><span class="p">:</span> <span class="s">&#39;segy&#39;</span><span class="p">,</span>
-            <span class="s">&#39;.sgy&#39;</span><span class="p">:</span> <span class="s">&#39;segy&#39;</span><span class="p">}</span>
+            <span class="s">&#39;.sgy&#39;</span><span class="p">:</span> <span class="s">&#39;segy&#39;</span><span class="p">,</span>
+            <span class="s">&#39;.gse&#39;</span><span class="p">:</span> <span class="s">&#39;gse2&#39;</span><span class="p">}</span>
 
     <span class="k">if</span> <span class="n">format</span> <span class="o">==</span> <span class="s">&#39;from_extension&#39;</span><span class="p">:</span>
         <span class="n">format</span> <span class="o">=</span> <span class="s">&#39;mseed&#39;</span>
@@ -170,6 +172,9 @@
             <span class="s">&#39;sac&#39;</span><span class="p">:</span> <span class="n">sac</span><span class="p">,</span>
             <span class="s">&#39;mseed&#39;</span><span class="p">:</span> <span class="n">mseed</span><span class="p">,</span>
             <span class="s">&#39;seisan&#39;</span><span class="p">:</span> <span class="n">seisan_waveform</span><span class="p">,</span>
+            <span class="s">&#39;gse1&#39;</span><span class="p">:</span> <span class="n">gse1</span><span class="p">,</span>
+            <span class="s">&#39;gse2&#39;</span><span class="p">:</span> <span class="n">gse2</span><span class="p">,</span>
+            <span class="s">&#39;gcf&#39;</span><span class="p">:</span> <span class="n">gcf</span><span class="p">,</span>
     <span class="p">}</span>
 
     <span class="n">add_args</span> <span class="o">=</span> <span class="p">{</span>
@@ -238,9 +243,11 @@
         <span class="n">fns</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">tr</span> <span class="ow">in</span> <span class="n">traces</span><span class="p">:</span>
             <span class="n">fn</span> <span class="o">=</span> <span class="n">tr</span><span class="o">.</span><span class="n">fill_template</span><span class="p">(</span><span class="n">filename_template</span><span class="p">,</span> <span class="o">**</span><span class="n">additional</span><span class="p">)</span>
+            <span class="n">util</span><span class="o">.</span><span class="n">ensuredirs</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
             <span class="n">x</span><span class="p">,</span><span class="n">y</span> <span class="o">=</span> <span class="n">tr</span><span class="o">.</span><span class="n">get_xdata</span><span class="p">(),</span> <span class="n">tr</span><span class="o">.</span><span class="n">get_ydata</span><span class="p">()</span>
             <span class="n">num</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">num</span><span class="o">.</span><span class="n">transpose</span><span class="p">((</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">)))</span>
             <span class="n">fns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">fns</span>
             
     <span class="k">elif</span> <span class="n">format</span> <span class="o">==</span> <span class="s">&#39;yaff&#39;</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">yaff</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">traces</span><span class="p">,</span> <span class="n">filename_template</span><span class="p">,</span> <span class="n">additional</span><span class="p">)</span>

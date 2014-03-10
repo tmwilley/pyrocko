@@ -126,6 +126,18 @@ characters, respectively.</p>
 <td>yes</td>
 <td><a class="footnote-reference" href="#f5" id="id5">[5]</a></td>
 </tr>
+<tr class="row-odd"><td>GSE1</td>
+<td>gse1</td>
+<td>some</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+<tr class="row-even"><td>GSE2</td>
+<td>gse2</td>
+<td>some</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
 </tbody>
 </table>
 <p class="rubric">Notes</p>
@@ -168,7 +180,7 @@ characters, respectively.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>format</strong> &#8211; format of the file (<tt class="docutils literal"><span class="pre">'mseed'</span></tt>, <tt class="docutils literal"><span class="pre">'sac'</span></tt>, <tt class="docutils literal"><span class="pre">'segy'</span></tt>, <tt class="docutils literal"><span class="pre">'seisan_l'</span></tt>, <tt class="docutils literal"><span class="pre">'seisan_b'</span></tt>, <tt class="docutils literal"><span class="pre">'kan'</span></tt>, <tt class="docutils literal"><span class="pre">'yaff'</span></tt>, <tt class="docutils literal"><span class="pre">'from_extension'</span></tt>)</li>
+<li><strong>format</strong> &#8211; format of the file (<tt class="docutils literal"><span class="pre">'mseed'</span></tt>, <tt class="docutils literal"><span class="pre">'sac'</span></tt>, <tt class="docutils literal"><span class="pre">'segy'</span></tt>, <tt class="docutils literal"><span class="pre">'seisan_l'</span></tt>, <tt class="docutils literal"><span class="pre">'seisan_b'</span></tt>, <tt class="docutils literal"><span class="pre">'kan'</span></tt>, <tt class="docutils literal"><span class="pre">'yaff'</span></tt>, <tt class="docutils literal"><span class="pre">'gse1'</span></tt>, <tt class="docutils literal"><span class="pre">'gcf'</span></tt>, <tt class="docutils literal"><span class="pre">'from_extension'</span></tt>)</li>
 <li><strong>getdata</strong> &#8211; if <tt class="docutils literal"><span class="pre">True</span></tt> (the default), read data, otherwise only read traces metadata</li>
 <li><strong>substitutions</strong> &#8211; dict with substitutions to be applied to the traces metadata</li>
 </ul>
@@ -179,7 +191,7 @@ characters, respectively.</p>
 </tr>
 </tbody>
 </table>
-<p>When <em>format</em> is set to <tt class="docutils literal"><span class="pre">'detect'</span></tt>, the file type is guessed from the first 512 bytes of the file. Only Mini-SEED, SAC, and YAFF format are detected.
+<p>When <em>format</em> is set to <tt class="docutils literal"><span class="pre">'detect'</span></tt>, the file type is guessed from the first 512 bytes of the file. Only Mini-SEED, SAC, GSE1, and YAFF format are detected.
 When <em>format</em> is set to <tt class="docutils literal"><span class="pre">'from_extension'</span></tt>, the filename extension is used to decide what format should be assumed. The filename extensions
 considered are (matching is case insensitiv): <tt class="docutils literal"><span class="pre">'.sac'</span></tt>, <tt class="docutils literal"><span class="pre">'.kan'</span></tt>, <tt class="docutils literal"><span class="pre">'.sgy'</span></tt>, <tt class="docutils literal"><span class="pre">'.segy'</span></tt>, <tt class="docutils literal"><span class="pre">'.yaff'</span></tt>, everything else is assumed to be in Mini-SEED format.</p>
 <p>This function calls <a class="reference internal" href="#pyrocko.io.iload" title="pyrocko.io.iload"><tt class="xref py py-func docutils literal"><span class="pre">iload()</span></tt></a> and aggregates the loaded traces in a list.</p>

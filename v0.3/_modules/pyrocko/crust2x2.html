@@ -294,7 +294,7 @@
             <span class="n">path_keys</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_directory</span><span class="p">,</span> <span class="n">Crust2</span><span class="o">.</span><span class="n">fn_keys</span><span class="p">)</span>
             <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">path_keys</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">crust2x2_data</span> <span class="kn">import</span> <span class="n">decode</span><span class="p">,</span> <span class="n">type2_key</span><span class="p">,</span> <span class="n">type2</span><span class="p">,</span> <span class="n">elevation</span>
+            <span class="kn">from</span> <span class="nn">pyrocko.crust2x2_data</span> <span class="kn">import</span> <span class="n">decode</span><span class="p">,</span> <span class="n">type2_key</span><span class="p">,</span> <span class="n">type2</span><span class="p">,</span> <span class="n">elevation</span>
             <span class="n">f</span> <span class="o">=</span> <span class="n">StringIO</span><span class="p">(</span><span class="n">decode</span><span class="p">(</span><span class="n">type2_key</span><span class="p">))</span>
 
         <span class="c"># skip header</span>

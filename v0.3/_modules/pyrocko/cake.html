@@ -108,7 +108,7 @@
 <span class="k">class</span> <span class="nc">InvalidArguments</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
     <span class="k">pass</span>
 
-<div class="viewcode-block" id="Material"><a class="viewcode-back" href="../../cake.html#pyrocko.cake.Material">[docs]</a><span class="k">class</span> <span class="nc">Material</span><span class="p">:</span>
+<div class="viewcode-block" id="Material"><a class="viewcode-back" href="../../cake.html#pyrocko.cake.Material">[docs]</a><span class="k">class</span> <span class="nc">Material</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Isotropic elastic material.</span>
 
 <span class="sd">    :param vp: P-wave velocity [m/s]</span>
@@ -547,7 +547,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">phasename</span> <span class="o">=</span> <span class="n">phasename</span>
 
     <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s">&#39;Cake does not know this phase: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">phasename</span>
+        <span class="k">return</span> <span class="s">&#39;Unknown classic phase name: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">phasename</span>
 
 <div class="viewcode-block" id="PhaseDefParseError"><a class="viewcode-back" href="../../cake.html#pyrocko.cake.PhaseDefParseError">[docs]</a><span class="k">class</span> <span class="nc">PhaseDefParseError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Exception raised when an error occures during parsing of a phase definition string.&#39;&#39;&#39;</span>
@@ -1136,7 +1136,7 @@
     <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s">&#39;Cannot enter layer </span><span class="si">%i</span><span class="s"> from </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ilayer</span><span class="p">,</span> <span class="p">{</span><span class="n">UP</span><span class="p">:</span> <span class="s">&#39;below&#39;</span><span class="p">,</span> <span class="n">DOWN</span><span class="p">:</span> <span class="s">&#39;above&#39;</span><span class="p">}[</span><span class="bp">self</span><span class="o">.</span><span class="n">_direction</span><span class="p">])</span>
 
-<div class="viewcode-block" id="Layer"><a class="viewcode-back" href="../../cake.html#pyrocko.cake.Layer">[docs]</a><span class="k">class</span> <span class="nc">Layer</span><span class="p">:</span>
+<div class="viewcode-block" id="Layer"><a class="viewcode-back" href="../../cake.html#pyrocko.cake.Layer">[docs]</a><span class="k">class</span> <span class="nc">Layer</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Representation of a layer in a layered earth model.</span>
 <span class="sd">    </span>
 <span class="sd">    :param ztop: depth of top of layer</span>
@@ -1509,7 +1509,7 @@
 
         <span class="k">return</span> <span class="s">&#39;  (</span><span class="si">%i</span><span class="s">) gradient layer </span><span class="si">%s</span><span class="s">(</span><span class="si">%g</span><span class="s"> km - </span><span class="si">%g</span><span class="s"> km) [</span><span class="si">%s</span><span class="s">]</span><span class="se">\n</span><span class="s">    </span><span class="si">%s</span><span class="se">\n</span><span class="s">    </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ilayer</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ztop</span><span class="o">/</span><span class="n">km</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">zbot</span><span class="o">/</span><span class="n">km</span><span class="p">,</span> <span class="n">calcmode</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mtop</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mbot</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="Discontinuity"><a class="viewcode-back" href="../../cake.html#pyrocko.cake.Discontinuity">[docs]</a><span class="k">class</span> <span class="nc">Discontinuity</span><span class="p">:</span>
+<div class="viewcode-block" id="Discontinuity"><a class="viewcode-back" href="../../cake.html#pyrocko.cake.Discontinuity">[docs]</a><span class="k">class</span> <span class="nc">Discontinuity</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Base class for discontinuities in layered earth model.</span>
 <span class="sd">    </span>
 <span class="sd">    Subclasses are: :py:class:`Interface` and :py:class:`Surface`.</span>
@@ -1604,7 +1604,7 @@
     <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s">&#39;surface&#39;</span>
 </div>
-<span class="k">class</span> <span class="nc">Walker</span><span class="p">:</span>
+<span class="k">class</span> <span class="nc">Walker</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elements</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_elements</span> <span class="o">=</span> <span class="n">elements</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_i</span> <span class="o">=</span> <span class="mi">0</span>
@@ -1847,7 +1847,7 @@
 <span class="k">class</span> <span class="nc">PRangeNotSet</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
     <span class="k">pass</span>
 
-<div class="viewcode-block" id="RayPath"><a class="viewcode-back" href="../../cake.html#pyrocko.cake.RayPath">[docs]</a><span class="k">class</span> <span class="nc">RayPath</span><span class="p">:</span>
+<div class="viewcode-block" id="RayPath"><a class="viewcode-back" href="../../cake.html#pyrocko.cake.RayPath">[docs]</a><span class="k">class</span> <span class="nc">RayPath</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Representation of a fan of rays running through a common sequence of layers / interfaces.&#39;&#39;&#39;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">phase</span><span class="p">):</span>
@@ -2382,7 +2382,7 @@
 <span class="k">class</span> <span class="nc">RefineFailed</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
     <span class="k">pass</span>
 
-<div class="viewcode-block" id="Ray"><a class="viewcode-back" href="../../cake.html#pyrocko.cake.Ray">[docs]</a><span class="k">class</span> <span class="nc">Ray</span><span class="p">:</span>
+<div class="viewcode-block" id="Ray"><a class="viewcode-back" href="../../cake.html#pyrocko.cake.Ray">[docs]</a><span class="k">class</span> <span class="nc">Ray</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Representation of a ray with a specific (path, ray parameter, distance, arrival time) choice.</span>
 <span class="sd">   </span>
 <span class="sd">    **Attributes:**</span>
@@ -2525,7 +2525,7 @@
         <span class="k">return</span> <span class="s">&#39;Cannot find discontinuity from given depth or name: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">depth_or_name</span>
 
 
-<div class="viewcode-block" id="LayeredModel"><a class="viewcode-back" href="../../cake.html#pyrocko.cake.LayeredModel">[docs]</a><span class="k">class</span> <span class="nc">LayeredModel</span><span class="p">:</span>
+<div class="viewcode-block" id="LayeredModel"><a class="viewcode-back" href="../../cake.html#pyrocko.cake.LayeredModel">[docs]</a><span class="k">class</span> <span class="nc">LayeredModel</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Representation of a layer cake model.</span>
 <span class="sd">    </span>
 <span class="sd">    There are several ways to initialize an instance of this class.</span>
@@ -2854,64 +2854,67 @@
                     <span class="n">phase_paths</span> <span class="o">=</span> <span class="p">[</span> <span class="n">path</span> <span class="p">]</span> 
                     
                 <span class="k">else</span><span class="p">:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">pmax_start</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span> <span class="p">[</span> <span class="n">radius</span><span class="p">(</span><span class="n">z</span><span class="p">)</span><span class="o">/</span><span class="n">layer_start</span><span class="o">.</span><span class="n">v</span><span class="p">(</span><span class="n">phase</span><span class="o">.</span><span class="n">first_leg</span><span class="p">()</span><span class="o">.</span><span class="n">mode</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span> <span class="k">for</span> <span class="n">z</span> <span class="ow">in</span> <span class="p">(</span><span class="n">layer_start</span><span class="o">.</span><span class="n">ztop</span><span class="p">,</span> <span class="n">layer_start</span><span class="o">.</span><span class="n">zbot</span><span class="p">)</span> <span class="p">]</span> <span class="p">)</span>
+                        <span class="n">pmax_stop</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span> <span class="p">[</span> <span class="n">radius</span><span class="p">(</span><span class="n">z</span><span class="p">)</span><span class="o">/</span><span class="n">layer_stop</span><span class="o">.</span><span class="n">v</span><span class="p">(</span><span class="n">phase</span><span class="o">.</span><span class="n">last_leg</span><span class="p">()</span><span class="o">.</span><span class="n">mode</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span> <span class="k">for</span> <span class="n">z</span> <span class="ow">in</span> <span class="p">(</span><span class="n">layer_stop</span><span class="o">.</span><span class="n">ztop</span><span class="p">,</span> <span class="n">layer_stop</span><span class="o">.</span><span class="n">zbot</span><span class="p">)</span> <span class="p">]</span> <span class="p">)</span>
+                        <span class="n">pmax</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">pmax_start</span><span class="p">,</span> <span class="n">pmax_stop</span><span class="p">)</span>
 
-                    <span class="n">pmax_start</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span> <span class="p">[</span> <span class="n">radius</span><span class="p">(</span><span class="n">z</span><span class="p">)</span><span class="o">/</span><span class="n">layer_start</span><span class="o">.</span><span class="n">v</span><span class="p">(</span><span class="n">phase</span><span class="o">.</span><span class="n">first_leg</span><span class="p">()</span><span class="o">.</span><span class="n">mode</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span> <span class="k">for</span> <span class="n">z</span> <span class="ow">in</span> <span class="p">(</span><span class="n">layer_start</span><span class="o">.</span><span class="n">ztop</span><span class="p">,</span> <span class="n">layer_start</span><span class="o">.</span><span class="n">zbot</span><span class="p">)</span> <span class="p">]</span> <span class="p">)</span>
-                    <span class="n">pmax_stop</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span> <span class="p">[</span> <span class="n">radius</span><span class="p">(</span><span class="n">z</span><span class="p">)</span><span class="o">/</span><span class="n">layer_stop</span><span class="o">.</span><span class="n">v</span><span class="p">(</span><span class="n">phase</span><span class="o">.</span><span class="n">last_leg</span><span class="p">()</span><span class="o">.</span><span class="n">mode</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span> <span class="k">for</span> <span class="n">z</span> <span class="ow">in</span> <span class="p">(</span><span class="n">layer_stop</span><span class="o">.</span><span class="n">ztop</span><span class="p">,</span> <span class="n">layer_stop</span><span class="o">.</span><span class="n">zbot</span><span class="p">)</span> <span class="p">]</span> <span class="p">)</span>
-                    <span class="n">pmax</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">pmax_start</span><span class="p">,</span> <span class="n">pmax_stop</span><span class="p">)</span>
+                        <span class="n">pedges</span> <span class="o">=</span> <span class="p">[</span> <span class="mf">0.</span> <span class="p">]</span>
+                        <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">():</span>
+                            <span class="k">for</span> <span class="n">z</span> <span class="ow">in</span> <span class="p">(</span><span class="n">l</span><span class="o">.</span><span class="n">ztop</span><span class="p">,</span> <span class="n">l</span><span class="o">.</span><span class="n">zbot</span><span class="p">):</span>
+                                <span class="k">for</span> <span class="n">mode</span> <span class="ow">in</span> <span class="p">(</span><span class="n">P</span><span class="p">,</span><span class="n">S</span><span class="p">):</span>
+                                    <span class="k">for</span> <span class="n">eps2</span> <span class="ow">in</span> <span class="p">[</span> <span class="n">eps</span> <span class="p">]:</span>
+                                        <span class="n">v</span> <span class="o">=</span> <span class="n">l</span><span class="o">.</span><span class="n">v</span><span class="p">(</span><span class="n">mode</span><span class="p">,</span><span class="n">z</span><span class="p">)</span>
+                                        <span class="k">if</span> <span class="n">v</span> <span class="o">!=</span> <span class="mf">0.0</span><span class="p">:</span>
+                                            <span class="n">p</span> <span class="o">=</span> <span class="n">radius</span><span class="p">(</span><span class="n">z</span><span class="p">)</span><span class="o">/</span><span class="n">v</span>
+                                            <span class="k">if</span> <span class="n">p</span> <span class="o">&lt;=</span> <span class="n">pmax</span><span class="p">:</span>
+                                                <span class="n">pedges</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">eps2</span><span class="p">))</span>
+                                                <span class="n">pedges</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+                                                <span class="n">pedges</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">+</span><span class="n">eps2</span><span class="p">))</span>
 
-                    <span class="n">pedges</span> <span class="o">=</span> <span class="p">[</span> <span class="mf">0.</span> <span class="p">]</span>
-                    <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">():</span>
-                        <span class="k">for</span> <span class="n">z</span> <span class="ow">in</span> <span class="p">(</span><span class="n">l</span><span class="o">.</span><span class="n">ztop</span><span class="p">,</span> <span class="n">l</span><span class="o">.</span><span class="n">zbot</span><span class="p">):</span>
-                            <span class="k">for</span> <span class="n">mode</span> <span class="ow">in</span> <span class="p">(</span><span class="n">P</span><span class="p">,</span><span class="n">S</span><span class="p">):</span>
-                                <span class="k">for</span> <span class="n">eps2</span> <span class="ow">in</span> <span class="p">[</span> <span class="n">eps</span> <span class="p">]:</span>
-                                    <span class="n">v</span> <span class="o">=</span> <span class="n">l</span><span class="o">.</span><span class="n">v</span><span class="p">(</span><span class="n">mode</span><span class="p">,</span><span class="n">z</span><span class="p">)</span>
-                                    <span class="k">if</span> <span class="n">v</span> <span class="o">!=</span> <span class="mf">0.0</span><span class="p">:</span>
-                                        <span class="n">p</span> <span class="o">=</span> <span class="n">radius</span><span class="p">(</span><span class="n">z</span><span class="p">)</span><span class="o">/</span><span class="n">v</span>
-                                        <span class="k">if</span> <span class="n">p</span> <span class="o">&lt;=</span> <span class="n">pmax</span><span class="p">:</span>
-                                            <span class="n">pedges</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="n">eps2</span><span class="p">))</span>
-                                            <span class="n">pedges</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
-                                            <span class="n">pedges</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p</span><span class="o">*</span><span class="p">(</span><span class="mf">1.0</span><span class="o">+</span><span class="n">eps2</span><span class="p">))</span>
+                        <span class="n">pedges</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">pedges</span><span class="p">)</span> <span class="p">)</span>
 
-                    <span class="n">pedges</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">pedges</span><span class="p">)</span> <span class="p">)</span>
+                        <span class="n">phase_paths</span> <span class="o">=</span> <span class="p">{}</span>
+                        <span class="n">cached</span> <span class="o">=</span> <span class="p">{}</span>
+                        <span class="n">counter</span> <span class="o">=</span> <span class="p">[</span> <span class="mi">0</span> <span class="p">]</span>
+                        <span class="k">def</span> <span class="nf">p_to_path</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
+                            <span class="k">if</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">cached</span><span class="p">:</span>
+                                <span class="k">return</span> <span class="n">cached</span><span class="p">[</span><span class="n">p</span><span class="p">]</span>
 
-                    <span class="n">phase_paths</span> <span class="o">=</span> <span class="p">{}</span>
-                    <span class="n">cached</span> <span class="o">=</span> <span class="p">{}</span>
-                    <span class="n">counter</span> <span class="o">=</span> <span class="p">[</span> <span class="mi">0</span> <span class="p">]</span>
-                    <span class="k">def</span> <span class="nf">p_to_path</span><span class="p">(</span><span class="n">p</span><span class="p">):</span>
-                        <span class="k">if</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">cached</span><span class="p">:</span>
-                            <span class="k">return</span> <span class="n">cached</span><span class="p">[</span><span class="n">p</span><span class="p">]</span>
+                            <span class="k">try</span><span class="p">:</span>
+                                <span class="n">counter</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+                                <span class="n">path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">phase</span><span class="p">,</span> <span class="n">layer_start</span><span class="p">,</span> <span class="n">layer_stop</span><span class="p">)</span>
+                                <span class="k">if</span> <span class="n">path</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">phase_paths</span><span class="p">:</span>
+                                    <span class="n">phase_paths</span><span class="p">[</span><span class="n">path</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+                                <span class="n">phase_paths</span><span class="p">[</span><span class="n">path</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
 
-                        <span class="k">try</span><span class="p">:</span>
-                            <span class="n">counter</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
-                            <span class="n">path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">phase</span><span class="p">,</span> <span class="n">layer_start</span><span class="p">,</span> <span class="n">layer_stop</span><span class="p">)</span>
-                            <span class="k">if</span> <span class="n">path</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">phase_paths</span><span class="p">:</span>
-                                <span class="n">phase_paths</span><span class="p">[</span><span class="n">path</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
-                            <span class="n">phase_paths</span><span class="p">[</span><span class="n">path</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
-
-                        <span class="k">except</span> <span class="n">PathFailed</span><span class="p">:</span>
-                            <span class="n">path</span> <span class="o">=</span> <span class="bp">None</span>
+                            <span class="k">except</span> <span class="n">PathFailed</span><span class="p">:</span>
+                                <span class="n">path</span> <span class="o">=</span> <span class="bp">None</span>
+                            
+                            <span class="n">cached</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="o">=</span> <span class="n">path</span>
+                            <span class="k">return</span> <span class="n">path</span>
                         
-                        <span class="n">cached</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="o">=</span> <span class="n">path</span>
-                        <span class="k">return</span> <span class="n">path</span>
-                    
-                    <span class="k">def</span> <span class="nf">recurse</span><span class="p">(</span><span class="n">pmin</span><span class="p">,</span> <span class="n">pmax</span><span class="p">,</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
-                        <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pdepth</span><span class="p">:</span>
-                            <span class="k">return</span>
-                        <span class="n">path1</span> <span class="o">=</span> <span class="n">p_to_path</span><span class="p">(</span><span class="n">pmin</span><span class="p">)</span>
-                        <span class="n">path2</span> <span class="o">=</span> <span class="n">p_to_path</span><span class="p">(</span><span class="n">pmax</span><span class="p">)</span>
-                        <span class="k">if</span> <span class="n">path1</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">path2</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                            <span class="k">return</span>
-                        <span class="k">if</span> <span class="n">path1</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="n">path2</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="nb">hash</span><span class="p">(</span><span class="n">path1</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">hash</span><span class="p">(</span><span class="n">path2</span><span class="p">):</span>
-                            <span class="n">recurse</span><span class="p">(</span><span class="n">pmin</span><span class="p">,</span> <span class="p">(</span><span class="n">pmin</span><span class="o">+</span><span class="n">pmax</span><span class="p">)</span><span class="o">/</span><span class="mf">2.</span><span class="p">,</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
-                            <span class="n">recurse</span><span class="p">((</span><span class="n">pmin</span><span class="o">+</span><span class="n">pmax</span><span class="p">)</span><span class="o">/</span><span class="mf">2.</span><span class="p">,</span> <span class="n">pmax</span><span class="p">,</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+                        <span class="k">def</span> <span class="nf">recurse</span><span class="p">(</span><span class="n">pmin</span><span class="p">,</span> <span class="n">pmax</span><span class="p">,</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+                            <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pdepth</span><span class="p">:</span>
+                                <span class="k">return</span>
+                            <span class="n">path1</span> <span class="o">=</span> <span class="n">p_to_path</span><span class="p">(</span><span class="n">pmin</span><span class="p">)</span>
+                            <span class="n">path2</span> <span class="o">=</span> <span class="n">p_to_path</span><span class="p">(</span><span class="n">pmax</span><span class="p">)</span>
+                            <span class="k">if</span> <span class="n">path1</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">path2</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                                <span class="k">return</span>
+                            <span class="k">if</span> <span class="n">path1</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="n">path2</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="nb">hash</span><span class="p">(</span><span class="n">path1</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">hash</span><span class="p">(</span><span class="n">path2</span><span class="p">):</span>
+                                <span class="n">recurse</span><span class="p">(</span><span class="n">pmin</span><span class="p">,</span> <span class="p">(</span><span class="n">pmin</span><span class="o">+</span><span class="n">pmax</span><span class="p">)</span><span class="o">/</span><span class="mf">2.</span><span class="p">,</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+                                <span class="n">recurse</span><span class="p">((</span><span class="n">pmin</span><span class="o">+</span><span class="n">pmax</span><span class="p">)</span><span class="o">/</span><span class="mf">2.</span><span class="p">,</span> <span class="n">pmax</span><span class="p">,</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
 
-                    <span class="k">for</span> <span class="p">(</span><span class="n">pl</span><span class="p">,</span> <span class="n">ph</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">pedges</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">pedges</span><span class="p">[</span><span class="mi">1</span><span class="p">:]):</span>
-                        <span class="n">recurse</span><span class="p">(</span><span class="n">pl</span><span class="p">,</span><span class="n">ph</span><span class="p">)</span>
+                        <span class="k">for</span> <span class="p">(</span><span class="n">pl</span><span class="p">,</span> <span class="n">ph</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">pedges</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">pedges</span><span class="p">[</span><span class="mi">1</span><span class="p">:]):</span>
+                            <span class="n">recurse</span><span class="p">(</span><span class="n">pl</span><span class="p">,</span><span class="n">ph</span><span class="p">)</span>
 
-                    <span class="k">for</span> <span class="n">path</span><span class="p">,</span> <span class="n">ps</span> <span class="ow">in</span> <span class="n">phase_paths</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
-                        <span class="n">path</span><span class="o">.</span><span class="n">set_prange</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">ps</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="n">ps</span><span class="p">),</span> <span class="n">pmax</span><span class="o">/</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_np</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
-               
-                    <span class="n">phase_paths</span> <span class="o">=</span> <span class="n">phase_paths</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+                        <span class="k">for</span> <span class="n">path</span><span class="p">,</span> <span class="n">ps</span> <span class="ow">in</span> <span class="n">phase_paths</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+                            <span class="n">path</span><span class="o">.</span><span class="n">set_prange</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">ps</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="n">ps</span><span class="p">),</span> <span class="n">pmax</span><span class="o">/</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_np</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+                   
+                        <span class="n">phase_paths</span> <span class="o">=</span> <span class="n">phase_paths</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+
+                    <span class="k">except</span> <span class="ne">ZeroDivisionError</span><span class="p">:</span>
+                        <span class="n">phase_paths</span> <span class="o">=</span> <span class="p">[]</span>
 
                 <span class="bp">self</span><span class="o">.</span><span class="n">_pathcache</span><span class="p">[</span><span class="n">pathcachekey</span><span class="p">]</span> <span class="o">=</span> <span class="n">phase_paths</span>
 
@@ -3197,7 +3200,7 @@
         <span class="k">return</span> <span class="n">mod_extracted</span>
 
     <span class="k">def</span> <span class="nf">replaced_crust</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">crust2_profile</span><span class="p">):</span>
-        <span class="kn">import</span> <span class="nn">crust2x2</span>
+        <span class="kn">from</span> <span class="nn">pyrocko</span> <span class="kn">import</span> <span class="n">crust2x2</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">crust2_profile</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
             <span class="n">lat</span><span class="p">,</span> <span class="n">lon</span> <span class="o">=</span> <span class="p">[</span> <span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">crust2_profile</span> <span class="p">]</span>
             <span class="n">profile</span> <span class="o">=</span> <span class="n">crust2x2</span><span class="o">.</span><span class="n">get_profile</span><span class="p">(</span><span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">)</span>
@@ -3309,7 +3312,7 @@
     <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
 <span class="k">def</span> <span class="nf">from_crust2x2_profile</span><span class="p">(</span><span class="n">profile</span><span class="p">,</span> <span class="n">depthmantle</span><span class="o">=</span><span class="mi">50000</span><span class="p">):</span>
-    <span class="kn">import</span> <span class="nn">crust2x2</span>
+    <span class="kn">from</span> <span class="nn">pyrocko</span> <span class="kn">import</span> <span class="n">crust2x2</span>
     <span class="n">z</span> <span class="o">=</span> <span class="mf">0.</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">8</span><span class="p">):</span>
         <span class="n">dz</span><span class="p">,</span> <span class="n">vp</span><span class="p">,</span> <span class="n">vs</span><span class="p">,</span> <span class="n">rho</span> <span class="o">=</span> <span class="n">profile</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>

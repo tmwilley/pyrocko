@@ -79,6 +79,24 @@
 </tbody>
 </table>
 <dl class="staticmethod">
+<dt id="pyrocko.gui_util.Marker.save_markers">
+<em class="property">static </em><tt class="descname">save_markers</tt><big>(</big><em>markers</em>, <em>fn</em>, <em>fdigits=3</em><big>)</big><a class="reference internal" href="_modules/pyrocko/gui_util.html#Marker.save_markers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.gui_util.Marker.save_markers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save <a class="reference internal" href="#pyrocko.gui_util.Marker" title="pyrocko.gui_util.Marker"><tt class="xref py py-class docutils literal"><span class="pre">Marker</span></tt></a> to file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>markers</strong> &#8211; list of <a class="reference internal" href="#pyrocko.gui_util.Marker" title="pyrocko.gui_util.Marker"><tt class="xref py py-class docutils literal"><span class="pre">Marker</span></tt></a> Objects</li>
+<li><strong>fn</strong> &#8211; filename as string</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="staticmethod">
 <dt id="pyrocko.gui_util.Marker.load_markers">
 <em class="property">static </em><tt class="descname">load_markers</tt><big>(</big><em>fn</em><big>)</big><a class="reference internal" href="_modules/pyrocko/gui_util.html#Marker.load_markers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.gui_util.Marker.load_markers" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load markers from a file.</p>
@@ -121,6 +139,12 @@
 <dd><p>See documentation of <a class="reference internal" href="util.html#pyrocko.util.match_nslc" title="pyrocko.util.match_nslc"><tt class="xref py py-func docutils literal"><span class="pre">pyrocko.util.match_nslc()</span></tt></a></p>
 </dd></dl>
 
+<dl class="method">
+<dt id="pyrocko.gui_util.Marker.copy">
+<tt class="descname">copy</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/gui_util.html#Marker.copy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.gui_util.Marker.copy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a copy of this marker.</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="class">
@@ -158,7 +182,7 @@ of a seismological event</li>
 
 <dl class="class">
 <dt id="pyrocko.gui_util.PhaseMarker">
-<em class="property">class </em><tt class="descname">PhaseMarker</tt><big>(</big><em>nslc_ids</em>, <em>tmin</em>, <em>tmax</em>, <em>kind</em>, <em>event=None</em>, <em>event_hash=None</em>, <em>phasename=None</em>, <em>polarity=None</em>, <em>automatic=None</em>, <em>incidence_angle=None</em>, <em>takeoff_angle=None</em><big>)</big><a class="reference internal" href="_modules/pyrocko/gui_util.html#PhaseMarker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.gui_util.PhaseMarker" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descname">PhaseMarker</tt><big>(</big><em>nslc_ids</em>, <em>tmin</em>, <em>tmax</em>, <em>kind</em>, <em>event=None</em>, <em>event_hash=None</em>, <em>event_time=None</em>, <em>phasename=None</em>, <em>polarity=None</em>, <em>automatic=None</em>, <em>incidence_angle=None</em>, <em>takeoff_angle=None</em><big>)</big><a class="reference internal" href="_modules/pyrocko/gui_util.html#PhaseMarker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.gui_util.PhaseMarker" title="Permalink to this definition">¶</a></dt>
 <dd><p>A PhaseMarker as a GUI-element represents the arrival of a seismological phase within snuffler.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -172,6 +196,7 @@ of a seismological event</li>
 <li><strong>event</strong> &#8211; a <a class="reference internal" href="model.html#pyrocko.model.Event" title="pyrocko.model.Event"><tt class="xref py py-class docutils literal"><span class="pre">pyrocko.model.Event</span></tt></a> object containing meta information 
 of a seismological event</li>
 <li><strong>event_hash</strong> &#8211; (optional) hash code of event (see: <a class="reference internal" href="model.html#pyrocko.model.Event.get_hash" title="pyrocko.model.Event.get_hash"><tt class="xref py py-meth docutils literal"><span class="pre">pyrocko.model.Event.get_hash()</span></tt></a>)</li>
+<li><strong>event_time</strong> &#8211; (optional) time of the associated event</li>
 <li><strong>phasename</strong> &#8211; (optional) name of the phase associated with the marker</li>
 <li><strong>polarity</strong> &#8211; (optional) polarity of arriving phase</li>
 <li><strong>automatic</strong> &#8211; (optional)</li>

@@ -53,11 +53,14 @@
   <h1>Source code for pyrocko.trace</h1><div class="highlight"><pre>
 <span class="sd">&#39;&#39;&#39;This module provides basic signal processing for seismic traces.&#39;&#39;&#39;</span>
 
-<span class="kn">import</span> <span class="nn">time</span><span class="o">,</span> <span class="nn">math</span><span class="o">,</span> <span class="nn">copy</span><span class="o">,</span> <span class="nn">logging</span><span class="o">,</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">time</span><span class="o">,</span> <span class="nn">math</span><span class="o">,</span> <span class="nn">copy</span><span class="o">,</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">num</span>
 <span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">signal</span>
 <span class="kn">from</span> <span class="nn">pyrocko</span> <span class="kn">import</span> <span class="n">util</span><span class="p">,</span> <span class="n">evalresp</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">orthodrome</span>
-<span class="kn">from</span> <span class="nn">pyrocko.util</span> <span class="kn">import</span> <span class="n">reuse</span><span class="p">,</span> <span class="n">hpfloat</span>
+<span class="kn">from</span> <span class="nn">pyrocko.util</span> <span class="kn">import</span> <span class="n">reuse</span><span class="p">,</span> <span class="n">hpfloat</span><span class="p">,</span> <span class="n">UnavailableDecimation</span>
+<span class="kn">from</span> <span class="nn">pyrocko.pchain</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">guts</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">guts_array</span> <span class="kn">import</span> <span class="o">*</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s">&#39;pyrocko.trace&#39;</span><span class="p">)</span>
 
@@ -119,7 +122,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">ydata</span> <span class="o">=</span> <span class="n">ydata</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mtime</span> <span class="o">=</span> <span class="n">mtime</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_update_ids</span><span class="p">()</span>
-        
+        <span class="bp">self</span><span class="o">.</span><span class="n">file</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pchain</span> <span class="o">=</span> <span class="bp">None</span>
+
     <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">fmt</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="nb">int</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">deltat</span><span class="p">)))))</span>
         <span class="n">s</span> <span class="o">=</span> <span class="s">&#39;Trace (</span><span class="si">%s</span><span class="s">, </span><span class="si">%s</span><span class="s">, </span><span class="si">%s</span><span class="s">, </span><span class="si">%s</span><span class="s">)</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">nslc_id</span>
@@ -343,11 +348,12 @@
 <div class="viewcode-block" id="Trace.drop_growbuffer"><a class="viewcode-back" href="../../trace.html#pyrocko.trace.Trace.drop_growbuffer">[docs]</a>    <span class="k">def</span> <span class="nf">drop_growbuffer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Detach the traces grow buffer.&#39;&#39;&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_growbuffer</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pchain</span> <span class="o">=</span> <span class="bp">None</span>
 </div>
 <div class="viewcode-block" id="Trace.copy"><a class="viewcode-back" href="../../trace.html#pyrocko.trace.Trace.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Make a deep copy of the trace.&#39;&#39;&#39;</span>
         <span class="n">tracecopy</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">drop_growbuffer</span><span class="p">()</span>
+        <span class="n">tracecopy</span><span class="o">.</span><span class="n">drop_growbuffer</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">data</span><span class="p">:</span>
             <span class="n">tracecopy</span><span class="o">.</span><span class="n">ydata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ydata</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="n">tracecopy</span><span class="o">.</span><span class="n">meta</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">meta</span><span class="p">)</span>
@@ -438,7 +444,7 @@
         
         <span class="k">return</span> <span class="n">obj</span>
     </div>
-<div class="viewcode-block" id="Trace.downsample"><a class="viewcode-back" href="../../trace.html#pyrocko.trace.Trace.downsample">[docs]</a>    <span class="k">def</span> <span class="nf">downsample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ndecimate</span><span class="p">,</span> <span class="n">snap</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">initials</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">demean</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+<div class="viewcode-block" id="Trace.downsample"><a class="viewcode-back" href="../../trace.html#pyrocko.trace.Trace.downsample">[docs]</a>    <span class="k">def</span> <span class="nf">downsample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ndecimate</span><span class="p">,</span> <span class="n">snap</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">initials</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">demean</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Downsample trace by a given integer factor.</span>
 <span class="sd">        </span>
 <span class="sd">        :param ndecimate: decimation factor, avoid values larger than 8</span>
@@ -473,7 +479,7 @@
         
         <span class="k">return</span> <span class="n">finals</span>
         </div>
-<div class="viewcode-block" id="Trace.downsample_to"><a class="viewcode-back" href="../../trace.html#pyrocko.trace.Trace.downsample_to">[docs]</a>    <span class="k">def</span> <span class="nf">downsample_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">deltat</span><span class="p">,</span> <span class="n">snap</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">allow_upsample_max</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">initials</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">demean</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+<div class="viewcode-block" id="Trace.downsample_to"><a class="viewcode-back" href="../../trace.html#pyrocko.trace.Trace.downsample_to">[docs]</a>    <span class="k">def</span> <span class="nf">downsample_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">deltat</span><span class="p">,</span> <span class="n">snap</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">allow_upsample_max</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">initials</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">demean</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Downsample to given sampling rate.</span>
 
 <span class="sd">        Tries to downsample the trace to a target sampling interval of</span>
@@ -513,7 +519,10 @@
                  <span class="n">xinitials</span> <span class="o">=</span> <span class="bp">None</span>
                  <span class="k">if</span> <span class="n">initials</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
                      <span class="n">xinitials</span> <span class="o">=</span> <span class="n">initials</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-                 <span class="n">finals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">downsample</span><span class="p">(</span><span class="n">ndecimate</span><span class="p">,</span> <span class="n">snap</span><span class="o">=</span><span class="n">snap</span><span class="p">,</span> <span class="n">initials</span><span class="o">=</span><span class="n">xinitials</span><span class="p">,</span> <span class="n">demean</span><span class="o">=</span><span class="n">demean</span><span class="p">))</span>
+                 <span class="n">finals</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">downsample</span><span class="p">(</span><span class="n">ndecimate</span><span class="p">,</span> 
+                                               <span class="n">snap</span><span class="o">=</span><span class="n">snap</span><span class="p">,</span> 
+                                               <span class="n">initials</span><span class="o">=</span><span class="n">xinitials</span><span class="p">,</span> 
+                                               <span class="n">demean</span><span class="o">=</span><span class="n">demean</span><span class="p">))</span>
 
         <span class="k">if</span> <span class="n">initials</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">finals</span>
@@ -664,14 +673,19 @@
             <span class="n">data</span> <span class="o">-=</span> <span class="n">num</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">drop_growbuffer</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ydata</span> <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">lfilter</span><span class="p">(</span><span class="n">b</span><span class="p">,</span><span class="n">a</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
-    </div>
+</div>
 <div class="viewcode-block" id="Trace.abshilbert"><a class="viewcode-back" href="../../trace.html#pyrocko.trace.Trace.abshilbert">[docs]</a>    <span class="k">def</span> <span class="nf">abshilbert</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">drop_growbuffer</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ydata</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">hilbert</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ydata</span><span class="p">))</span>
     </div>
-<div class="viewcode-block" id="Trace.envelope"><a class="viewcode-back" href="../../trace.html#pyrocko.trace.Trace.envelope">[docs]</a>    <span class="k">def</span> <span class="nf">envelope</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">drop_growbuffer</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ydata</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ydata</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">hilbert</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ydata</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+<div class="viewcode-block" id="Trace.envelope"><a class="viewcode-back" href="../../trace.html#pyrocko.trace.Trace.envelope">[docs]</a>    <span class="k">def</span> <span class="nf">envelope</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">inplace</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">drop_growbuffer</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ydata</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ydata</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">hilbert</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ydata</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">tr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+            <span class="n">tr</span><span class="o">.</span><span class="n">ydata</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ydata</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">hilbert</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ydata</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">tr</span>
 </div>
 <div class="viewcode-block" id="Trace.taper"><a class="viewcode-back" href="../../trace.html#pyrocko.trace.Trace.taper">[docs]</a>    <span class="k">def</span> <span class="nf">taper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">taperer</span><span class="p">):</span>
         <span class="n">taperer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ydata</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tmin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">deltat</span><span class="p">)</span>
@@ -791,12 +805,32 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">tmax</span> <span class="o">+=</span> <span class="n">tshift</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_update_ids</span><span class="p">()</span>
         </div>
-<div class="viewcode-block" id="Trace.snap"><a class="viewcode-back" href="../../trace.html#pyrocko.trace.Trace.snap">[docs]</a>    <span class="k">def</span> <span class="nf">snap</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;Shift trace samples to nearest even multiples of the sampling rate.&#39;&#39;&#39;</span>
+<div class="viewcode-block" id="Trace.snap"><a class="viewcode-back" href="../../trace.html#pyrocko.trace.Trace.snap">[docs]</a>    <span class="k">def</span> <span class="nf">snap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Shift trace samples to nearest even multiples of the sampling rate.</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">tmin</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tmin</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">deltat</span><span class="p">)</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">deltat</span> 
-        <span class="bp">self</span><span class="o">.</span><span class="n">tmax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tmin</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ydata</span><span class="o">.</span><span class="n">size</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">deltat</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_update_ids</span><span class="p">()</span>
+<span class="sd">        :param inplace: (boolean) snap traces inplace</span>
+
+<span class="sd">        If *inplace* is ``False`` and the difference of tmin and tmax of both,</span>
+<span class="sd">        the snapped and the original trace is smaller than 0.01 x deltat, :py:func:`snap` </span>
+<span class="sd">        returns the unsnapped instance of the original trace.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="k">if</span> <span class="n">inplace</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tmin</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tmin</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">deltat</span><span class="p">)</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">deltat</span> 
+            <span class="bp">self</span><span class="o">.</span><span class="n">tmax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tmin</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ydata</span><span class="o">.</span><span class="n">size</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">deltat</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_update_ids</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">tmin</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tmin</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">deltat</span><span class="p">)</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">deltat</span>
+
+            <span class="n">tmax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tmin</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ydata</span><span class="o">.</span><span class="n">size</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">deltat</span>
+            <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tmin</span> <span class="o">-</span> <span class="n">tmin</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">1e-2</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">deltat</span> <span class="ow">and</span> \
+                    <span class="nb">abs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tmax</span> <span class="o">-</span> <span class="n">tmax</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">1e-2</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">deltat</span><span class="p">:</span>
+                        <span class="k">return</span> <span class="bp">self</span>
+            <span class="n">snapped_trace</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="n">snapped_trace</span><span class="o">.</span><span class="n">tmin</span> <span class="o">=</span> <span class="n">tmin</span>
+            <span class="n">snapped_trace</span><span class="o">.</span><span class="n">tmax</span> <span class="o">=</span> <span class="n">tmax</span>
+            <span class="n">snapped_trace</span><span class="o">.</span><span class="n">_update_ids</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">snapped_trace</span>
 </div>
 <div class="viewcode-block" id="Trace.sta_lta_centered"><a class="viewcode-back" href="../../trace.html#pyrocko.trace.Trace.sta_lta_centered">[docs]</a>    <span class="k">def</span> <span class="nf">sta_lta_centered</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tshort</span><span class="p">,</span> <span class="n">tlong</span><span class="p">,</span> <span class="n">quad</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">scalingmethod</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Run special STA/LTA filter where the short time window is centered on the long time window.</span>
@@ -971,7 +1005,193 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">output</span><span class="o">.</span><span class="n">ydata</span> <span class="o">=</span> <span class="n">output</span><span class="o">.</span><span class="n">ydata</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">output</span>
-        </div>
+</div>
+<div class="viewcode-block" id="Trace.misfit"><a class="viewcode-back" href="../../trace.html#pyrocko.trace.Trace.misfit">[docs]</a>    <span class="k">def</span> <span class="nf">misfit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">candidates</span><span class="p">,</span> <span class="n">setups</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generator function, yielding misfit values m and normalization divisors n.</span>
+
+<span class="sd">        :param candidate: iterable object of :py:class:`trace` objects</span>
+<span class="sd">        :param setup: (List of) :py:class:`MisfitSetup` objects</span>
+
+<span class="sd">        *setups* can either be a single or list of :py:class:`MisfitSetup` objects. </span>
+<span class="sd">        If setup is a single :py:class:`MisfitSetup` :py:func:`misfit` yields a single m and n. </span>
+<span class="sd">        Otherwise, :py:func:`misfit` yields a list of *m* and *n* for each misfit setup. </span>
+
+<span class="sd">        In order to preserve the original traces, any modification will be performed on copies of these traces. </span>
+<span class="sd">        If the sampling rate of the by *self* determined :py:class:`Trace` differs from an individual candidate, </span>
+<span class="sd">        both sampling rates will be equalized (by downsampling the higher sampled trace). </span>
+
+<span class="sd">        .. seealso:: One application can be found in the Programming Examples section.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">def</span> <span class="nf">do_downsample</span><span class="p">(</span><span class="n">tr</span><span class="p">,</span> <span class="n">deltat</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">tr</span><span class="o">.</span><span class="n">deltat</span> <span class="o">-</span> <span class="n">deltat</span><span class="p">)</span> <span class="o">/</span> <span class="n">tr</span><span class="o">.</span><span class="n">deltat</span> <span class="o">&gt;</span> <span class="mf">1e-6</span><span class="p">:</span>
+                <span class="n">tr</span> <span class="o">=</span> <span class="n">tr</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+                <span class="n">tr</span><span class="o">.</span><span class="n">downsample_to</span><span class="p">(</span><span class="n">deltat</span><span class="p">,</span> <span class="n">snap</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">demean</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">tr</span><span class="o">.</span><span class="n">tmin</span><span class="o">/</span><span class="n">tr</span><span class="o">.</span><span class="n">deltat</span><span class="o">&gt;</span><span class="mf">1e-6</span> <span class="ow">or</span> <span class="n">tr</span><span class="o">.</span><span class="n">tmax</span><span class="o">/</span><span class="n">tr</span><span class="o">.</span><span class="n">deltat</span><span class="o">&gt;</span><span class="mf">1e-6</span><span class="p">:</span>
+                    <span class="n">tr</span> <span class="o">=</span> <span class="n">tr</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+                    <span class="n">tr</span><span class="o">.</span><span class="n">snap</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">tr</span>
+
+        <span class="k">def</span> <span class="nf">do_extend</span><span class="p">(</span><span class="n">tr</span><span class="p">,</span> <span class="n">tmin</span><span class="p">,</span> <span class="n">tmax</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">tmin</span> <span class="o">&lt;</span> <span class="n">tr</span><span class="o">.</span><span class="n">tmin</span> <span class="ow">or</span> <span class="n">tmax</span> <span class="o">&gt;</span> <span class="n">tr</span><span class="o">.</span><span class="n">tmax</span><span class="p">:</span>
+                <span class="n">tr</span> <span class="o">=</span> <span class="n">tr</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+                <span class="n">tr</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">tmin</span><span class="o">=</span><span class="n">tmin</span><span class="p">,</span> <span class="n">tmax</span><span class="o">=</span><span class="n">tmax</span><span class="p">,</span> <span class="n">fillmethod</span><span class="o">=</span><span class="s">&#39;repeat&#39;</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">tr</span>
+
+        <span class="k">def</span> <span class="nf">do_pre_taper</span><span class="p">(</span><span class="n">tr</span><span class="p">,</span> <span class="n">taper</span><span class="p">):</span>
+            <span class="n">tr</span> <span class="o">=</span> <span class="n">tr</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+            <span class="n">tr</span><span class="o">.</span><span class="n">taper</span><span class="p">(</span><span class="n">taper</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">tr</span>
+            
+        <span class="k">def</span> <span class="nf">do_fft</span><span class="p">(</span><span class="n">tr</span><span class="p">,</span> <span class="nb">filter</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">filter</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">tr</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">ndata</span> <span class="o">=</span> <span class="n">tr</span><span class="o">.</span><span class="n">ydata</span><span class="o">.</span><span class="n">size</span>
+                <span class="n">nfft</span> <span class="o">=</span> <span class="n">nextpow2</span><span class="p">(</span><span class="n">ndata</span><span class="p">)</span>
+                <span class="n">padded</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">nfft</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">num</span><span class="o">.</span><span class="n">float</span><span class="p">)</span>
+                <span class="n">padded</span><span class="p">[:</span><span class="n">ndata</span><span class="p">]</span> <span class="o">=</span> <span class="n">tr</span><span class="o">.</span><span class="n">ydata</span>
+                <span class="n">spectrum</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">rfft</span><span class="p">(</span><span class="n">padded</span><span class="p">)</span>
+                <span class="n">df</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="n">tr</span><span class="o">.</span><span class="n">deltat</span> <span class="o">*</span> <span class="n">nfft</span><span class="p">)</span>
+                <span class="n">frequencies</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">spectrum</span><span class="o">.</span><span class="n">size</span><span class="p">)</span><span class="o">*</span><span class="n">df</span>
+                <span class="k">return</span> <span class="p">[</span><span class="n">tr</span><span class="p">,</span> <span class="n">frequencies</span><span class="p">,</span> <span class="n">spectrum</span><span class="p">]</span>
+
+        <span class="k">def</span> <span class="nf">do_filter</span><span class="p">(</span><span class="n">inp</span><span class="p">,</span> <span class="nb">filter</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">filter</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">inp</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">tr</span><span class="p">,</span> <span class="n">frequencies</span><span class="p">,</span> <span class="n">spectrum</span> <span class="o">=</span> <span class="n">inp</span>
+                <span class="n">spectrum</span> <span class="o">*=</span> <span class="nb">filter</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">frequencies</span><span class="p">)</span>
+                <span class="k">return</span> <span class="p">[</span><span class="n">tr</span><span class="p">,</span> <span class="n">frequencies</span><span class="p">,</span> <span class="n">spectrum</span><span class="p">]</span>
+
+        <span class="k">def</span> <span class="nf">do_ifft</span><span class="p">(</span><span class="n">inp</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">inp</span><span class="p">,</span> <span class="n">Trace</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">inp</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">tr</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">spectrum</span> <span class="o">=</span> <span class="n">inp</span>
+                <span class="n">ndata</span> <span class="o">=</span> <span class="n">tr</span><span class="o">.</span><span class="n">ydata</span><span class="o">.</span><span class="n">size</span>
+                <span class="n">tr</span> <span class="o">=</span> <span class="n">tr</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+                <span class="n">tr</span><span class="o">.</span><span class="n">set_ydata</span><span class="p">(</span><span class="n">num</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">irfft</span><span class="p">(</span><span class="n">spectrum</span><span class="p">)[:</span><span class="n">ndata</span><span class="p">])</span>
+                <span class="k">return</span> <span class="n">tr</span>
+
+        <span class="k">def</span> <span class="nf">check_alignment</span><span class="p">(</span><span class="n">t1</span><span class="p">,</span> <span class="n">t2</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">t1</span><span class="o">.</span><span class="n">tmin</span><span class="o">-</span><span class="n">t2</span><span class="o">.</span><span class="n">tmin</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">t1</span><span class="o">.</span><span class="n">deltat</span> <span class="o">*</span> <span class="mf">1e-4</span> <span class="ow">or</span> \
+                    <span class="nb">abs</span><span class="p">(</span><span class="n">t1</span><span class="o">.</span><span class="n">tmax</span> <span class="o">-</span> <span class="n">t2</span><span class="o">.</span><span class="n">tmax</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">t1</span><span class="o">.</span><span class="n">deltat</span> <span class="o">*</span> <span class="mf">1e-4</span> <span class="ow">or</span> \
+                    <span class="n">t1</span><span class="o">.</span><span class="n">ydata</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="n">t2</span><span class="o">.</span><span class="n">ydata</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="n">MisalignedTraces</span><span class="p">(</span><span class="s">&#39;Cannot calculate misfit of </span><span class="si">%s</span><span class="s"> and </span><span class="si">%s</span><span class="s"> due to misaligned traces.&#39;</span> <span class="o">%</span>\
+                                <span class="p">(</span><span class="s">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">t1</span><span class="o">.</span><span class="n">nslc_id</span><span class="p">),</span> <span class="s">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">t2</span><span class="o">.</span><span class="n">nslc_id</span><span class="p">)))</span>
+
+        <span class="k">def</span> <span class="nf">init_chain</span><span class="p">(</span><span class="n">tr</span><span class="p">):</span>
+            <span class="n">tr</span><span class="o">.</span><span class="n">_pchain</span> <span class="o">=</span> <span class="n">Chain</span><span class="p">(</span><span class="n">do_downsample</span><span class="p">,</span> 
+                           <span class="n">do_extend</span><span class="p">,</span>
+                           <span class="n">do_pre_taper</span><span class="p">,</span>
+                           <span class="n">do_fft</span><span class="p">,</span>
+                           <span class="n">do_filter</span><span class="p">,</span>
+                           <span class="n">do_ifft</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pchain</span><span class="p">:</span>
+            <span class="n">init_chain</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">setups</span><span class="p">,</span> <span class="n">MisfitSetup</span><span class="p">):</span>
+            <span class="n">setups</span> <span class="o">=</span> <span class="p">[</span><span class="n">setups</span><span class="p">]</span>
+            <span class="n">single_setup</span> <span class="o">=</span> <span class="bp">True</span>            
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">single_setup</span> <span class="o">=</span> <span class="bp">False</span>
+
+        <span class="k">for</span> <span class="n">setup</span> <span class="ow">in</span> <span class="n">setups</span><span class="p">:</span>
+            <span class="n">r_data</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">c_data</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">m</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">n</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">candidate</span> <span class="ow">in</span> <span class="n">candidates</span><span class="p">:</span>
+
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">candidate</span><span class="o">.</span><span class="n">_pchain</span><span class="p">:</span>
+                    <span class="n">init_chain</span><span class="p">(</span><span class="n">candidate</span><span class="p">)</span>
+                
+                <span class="k">if</span> <span class="p">(</span><span class="n">candidate</span><span class="o">.</span><span class="n">tmax</span><span class="o">&lt;</span><span class="bp">self</span><span class="o">.</span><span class="n">tmin</span> <span class="ow">or</span> <span class="n">candidate</span><span class="o">.</span><span class="n">tmin</span><span class="o">&gt;</span><span class="bp">self</span><span class="o">.</span><span class="n">tmax</span><span class="p">):</span>
+                        <span class="n">logger</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&#39;Cannot calculate misfit: </span><span class="si">%s</span><span class="s"> and </span><span class="si">%s</span><span class="s"> have no overlapping data.&#39;</span><span class="o">%</span><span class="p">(</span><span class="s">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nslc_id</span><span class="p">),</span> <span class="s">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">candidate</span><span class="o">.</span><span class="n">nslc_id</span><span class="p">)))</span>
+                        <span class="k">yield</span> <span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="bp">None</span>
+                        <span class="k">break</span>
+
+                <span class="n">wanted_deltat</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">candidate</span><span class="o">.</span><span class="n">deltat</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">deltat</span><span class="p">)</span>
+                <span class="n">wanted_tmin</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">candidate</span><span class="o">.</span><span class="n">tmin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tmin</span><span class="p">)</span> <span class="o">-</span>\
+                                              <span class="nb">max</span><span class="p">(</span><span class="n">candidate</span><span class="o">.</span><span class="n">deltat</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">deltat</span><span class="p">)</span>
+                <span class="n">wanted_tmax</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">candidate</span><span class="o">.</span><span class="n">tmax</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tmax</span><span class="p">)</span> <span class="o">+</span>\
+                                              <span class="nb">max</span><span class="p">(</span><span class="n">candidate</span><span class="o">.</span><span class="n">deltat</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">deltat</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">setup</span><span class="o">.</span><span class="n">domain</span><span class="o">==</span><span class="s">&#39;frequency_domain&#39;</span><span class="p">:</span>
+                    <span class="n">cand</span><span class="p">,</span> <span class="n">cand_f</span><span class="p">,</span> <span class="n">cand_data</span> <span class="o">=</span> <span class="n">candidate</span><span class="o">.</span><span class="n">_pchain</span><span class="p">((</span><span class="n">candidate</span><span class="p">,</span> 
+                                                                <span class="n">wanted_deltat</span><span class="p">),</span>
+                                                <span class="p">(</span><span class="n">wanted_tmin</span><span class="p">,</span> <span class="n">wanted_tmax</span><span class="p">),</span>
+                                                <span class="p">(</span><span class="n">setup</span><span class="o">.</span><span class="n">taper</span><span class="p">,),</span>
+                                                <span class="p">(</span><span class="n">setup</span><span class="o">.</span><span class="n">filter</span><span class="p">,),</span>
+                                                <span class="p">(</span><span class="n">setup</span><span class="o">.</span><span class="n">filter</span><span class="p">,),</span>
+                                                <span class="n">nocache</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+
+                    <span class="n">ref</span><span class="p">,</span> <span class="n">ref_f</span><span class="p">,</span> <span class="n">ref_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pchain</span><span class="p">((</span><span class="bp">self</span><span class="p">,</span> <span class="n">wanted_deltat</span><span class="p">),</span>
+                                                <span class="p">(</span><span class="n">wanted_tmin</span><span class="p">,</span> <span class="n">wanted_tmax</span><span class="p">),</span>
+                                                <span class="p">(</span><span class="n">setup</span><span class="o">.</span><span class="n">taper</span><span class="p">,),</span>
+                                                <span class="p">(</span><span class="n">setup</span><span class="o">.</span><span class="n">filter</span><span class="p">,),</span>
+                                                <span class="p">(</span><span class="n">setup</span><span class="o">.</span><span class="n">filter</span><span class="p">,),</span>
+                                                <span class="n">nocache</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+
+                    <span class="n">return_cand</span> <span class="o">=</span> <span class="p">[</span><span class="n">cand</span><span class="p">,</span> <span class="n">cand_f</span><span class="p">,</span> <span class="n">cand_data</span><span class="p">]</span>
+                    <span class="n">return_ref</span> <span class="o">=</span> <span class="p">[</span><span class="n">ref</span><span class="p">,</span> <span class="n">ref_f</span><span class="p">,</span> <span class="n">ref_data</span><span class="p">]</span>
+
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">processed_candidate</span> <span class="o">=</span> <span class="n">candidate</span><span class="o">.</span><span class="n">_pchain</span><span class="p">((</span><span class="n">candidate</span><span class="p">,</span> 
+                                                                <span class="n">wanted_deltat</span><span class="p">),</span>
+                                                <span class="p">(</span><span class="n">wanted_tmin</span><span class="p">,</span> <span class="n">wanted_tmax</span><span class="p">),</span>
+                                                <span class="p">(</span><span class="n">setup</span><span class="o">.</span><span class="n">taper</span><span class="p">,),</span>
+                                                <span class="p">(</span><span class="n">setup</span><span class="o">.</span><span class="n">filter</span><span class="p">,),</span>
+                                                <span class="p">(</span><span class="n">setup</span><span class="o">.</span><span class="n">filter</span><span class="p">,),</span>
+                                                <span class="p">(),</span> <span class="n">nocache</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+
+                    <span class="n">processed_reference</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pchain</span><span class="p">((</span><span class="bp">self</span><span class="p">,</span> <span class="n">wanted_deltat</span><span class="p">),</span>
+                                                <span class="p">(</span><span class="n">wanted_tmin</span><span class="p">,</span> <span class="n">wanted_tmax</span><span class="p">),</span>
+                                                <span class="p">(</span><span class="n">setup</span><span class="o">.</span><span class="n">taper</span><span class="p">,),</span>
+                                                <span class="p">(</span><span class="n">setup</span><span class="o">.</span><span class="n">filter</span><span class="p">,),</span>
+                                                <span class="p">(</span><span class="n">setup</span><span class="o">.</span><span class="n">filter</span><span class="p">,),</span>
+                                                <span class="p">(),</span> <span class="n">nocache</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+
+                    <span class="n">check_alignment</span><span class="p">(</span><span class="n">processed_candidate</span><span class="p">,</span> <span class="n">processed_reference</span><span class="p">)</span>
+
+                    <span class="k">if</span> <span class="n">setup</span><span class="o">.</span><span class="n">domain</span><span class="o">==</span><span class="s">&#39;time_domain&#39;</span><span class="p">:</span>
+                        <span class="n">return_cand</span> <span class="o">=</span> <span class="n">processed_candidate</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+                        <span class="n">return_ref</span> <span class="o">=</span> <span class="n">processed_reference</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+                        <span class="n">cand_data</span> <span class="o">=</span> <span class="n">processed_candidate</span><span class="o">.</span><span class="n">get_ydata</span><span class="p">()</span>
+                        <span class="n">ref_data</span> <span class="o">=</span> <span class="n">processed_reference</span><span class="o">.</span><span class="n">get_ydata</span><span class="p">()</span>
+
+                    <span class="k">elif</span> <span class="n">setup</span><span class="o">.</span><span class="n">domain</span><span class="o">==</span><span class="s">&#39;envelope&#39;</span><span class="p">:</span>
+                        <span class="n">return_cand</span> <span class="o">=</span> <span class="n">processed_candidate</span><span class="o">.</span><span class="n">envelope</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+                        <span class="n">return_ref</span> <span class="o">=</span> <span class="n">processed_reference</span><span class="o">.</span><span class="n">envelope</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+                        <span class="n">cand_data</span> <span class="o">=</span> <span class="n">return_cand</span><span class="o">.</span><span class="n">get_ydata</span><span class="p">()</span>
+                        <span class="n">ref_data</span> <span class="o">=</span> <span class="n">return_ref</span><span class="o">.</span><span class="n">get_ydata</span><span class="p">()</span>
+
+                    <span class="k">elif</span> <span class="n">setup</span><span class="o">.</span><span class="n">domain</span><span class="o">==</span><span class="s">&#39;absolute&#39;</span><span class="p">:</span>
+                        <span class="n">cand_data</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">processed_candidate</span><span class="o">.</span><span class="n">get_ydata</span><span class="p">())</span>
+                        <span class="n">ref_data</span> <span class="o">=</span>  <span class="n">num</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">processed_reference</span><span class="o">.</span><span class="n">get_ydata</span><span class="p">())</span>
+                        <span class="n">return_cand</span> <span class="o">=</span> <span class="n">processed_candidate</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+                        <span class="n">return_ref</span> <span class="o">=</span> <span class="n">processed_reference</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+                        <span class="n">return_cand</span><span class="o">.</span><span class="n">set_ydata</span><span class="p">(</span><span class="n">cand_data</span><span class="p">)</span>
+                        <span class="n">return_ref</span><span class="o">.</span><span class="n">set_ydata</span><span class="p">(</span><span class="n">ref_data</span><span class="p">)</span>
+
+                <span class="n">mtmp</span><span class="p">,</span> <span class="n">ntmp</span> <span class="o">=</span> <span class="n">Lx_norm</span><span class="p">(</span><span class="n">cand_data</span><span class="p">,</span> <span class="n">ref_data</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="n">setup</span><span class="o">.</span><span class="n">norm</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">single_setup</span><span class="p">:</span>
+                    <span class="k">yield</span> <span class="n">return_cand</span><span class="p">,</span> <span class="n">return_ref</span><span class="p">,</span> <span class="n">mtmp</span><span class="p">,</span> <span class="n">ntmp</span>
+
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">c_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">return_cand</span><span class="p">)</span>
+                    <span class="n">r_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">return_ref</span><span class="p">)</span>
+                    <span class="n">m</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">mtmp</span><span class="p">)</span>
+                    <span class="n">n</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ntmp</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">single_setup</span><span class="p">:</span>
+                <span class="k">yield</span> <span class="n">c_data</span><span class="p">,</span> <span class="n">r_data</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">n</span>
+</div>
 <div class="viewcode-block" id="Trace.spectrum"><a class="viewcode-back" href="../../trace.html#pyrocko.trace.Trace.spectrum">[docs]</a>    <span class="k">def</span> <span class="nf">spectrum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pad_to_pow2</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">tfade</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Get FFT spectrum of trace.</span>
 
@@ -1056,7 +1276,7 @@
 <div class="viewcode-block" id="Trace.fill_template"><a class="viewcode-back" href="../../trace.html#pyrocko.trace.Trace.fill_template">[docs]</a>    <span class="k">def</span> <span class="nf">fill_template</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">template</span><span class="p">,</span> <span class="o">**</span><span class="n">additional</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Fill string template with trace metadata.</span>
 <span class="sd">        </span>
-<span class="sd">        Uses normal pyton &#39;%(placeholder)s&#39; string templates. The following</span>
+<span class="sd">        Uses normal python &#39;%(placeholder)s&#39; string templates. The following</span>
 <span class="sd">        placeholders are considered: ``network``, ``station``, ``location``,</span>
 <span class="sd">        ``channel``, ``tmin`` (time of first sample), ``tmax`` (time of last</span>
 <span class="sd">        sample), ``tmin_ms``, ``tmax_ms``, ``tmin_us``, ``tmax_us``. The</span>
@@ -1114,9 +1334,13 @@
     <span class="kn">from</span> <span class="nn">pyrocko</span> <span class="kn">import</span> <span class="n">pile</span><span class="p">,</span> <span class="n">snuffler</span>
     <span class="n">p</span> <span class="o">=</span> <span class="n">pile</span><span class="o">.</span><span class="n">Pile</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">traces</span><span class="p">:</span>
-        <span class="n">trf</span> <span class="o">=</span> <span class="n">pile</span><span class="o">.</span><span class="n">MemTracesFile</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">traces</span><span class="p">)</span>
+        <span class="n">trf</span> <span class="o">=</span> <span class="n">pile</span><span class="o">.</span><span class="n">MemTracesFile</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="n">traces</span><span class="p">)</span>
         <span class="n">p</span><span class="o">.</span><span class="n">add_file</span><span class="p">(</span><span class="n">trf</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">snuffler</span><span class="o">.</span><span class="n">snuffle</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="MisalignedTraces"><a class="viewcode-back" href="../../trace.html#pyrocko.trace.MisalignedTraces">[docs]</a><span class="k">class</span> <span class="nc">MisalignedTraces</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;This exception is raised by some :py:class:`Trace` operations when tmin, tmax or number of samples do not match.&#39;&#39;&#39;</span>
+    <span class="k">pass</span>
 </div>
 <div class="viewcode-block" id="NoData"><a class="viewcode-back" href="../../trace.html#pyrocko.trace.NoData">[docs]</a><span class="k">class</span> <span class="nc">NoData</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;This exception is raised by some :py:class:`Trace` operations when no or not enough data is available.&#39;&#39;&#39;</span>
@@ -1140,7 +1364,7 @@
 <span class="sd">    :param key: a callable which takes as single argument a trace and returns a key for the grouping of the results.</span>
 <span class="sd">                If this is ``None``, the default, ``lambda tr: (tr.network, tr.station, tr.location, tr.channel)`` is used.</span>
 <span class="sd">    :param mode: &#39;minmax&#39; or floating point number. If this is &#39;minmax&#39;, minimum and maximum of the traces are used, </span>
-<span class="sd">                 if it is a number, mean +- stdandard deviation times *mode* is used.</span>
+<span class="sd">                 if it is a number, mean +- standard deviation times *mode* is used.</span>
 <span class="sd">    </span>
 <span class="sd">    :returns: a dict with the combined data ranges.</span>
 
@@ -1583,7 +1807,7 @@
                 <span class="n">projected</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ac</span><span class="p">)</span>
                 <span class="n">projected</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bc</span><span class="p">)</span>
                 <span class="n">projected</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">cc</span><span class="p">)</span>
-     
+
     <span class="k">return</span> <span class="n">projected</span>
 
 
@@ -1715,88 +1939,121 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">o</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sep</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="n">xa</span><span class="p">,</span><span class="n">xb</span><span class="p">)))</span>
     <span class="k">return</span> <span class="n">o</span>
+
 </div>
-<div class="viewcode-block" id="Taper"><a class="viewcode-back" href="../../trace.html#pyrocko.trace.Taper">[docs]</a><span class="k">class</span> <span class="nc">Taper</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="Taper"><a class="viewcode-back" href="../../trace.html#pyrocko.trace.Taper">[docs]</a><span class="k">class</span> <span class="nc">Taper</span><span class="p">(</span><span class="n">Object</span><span class="p">):</span>
 
     <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">dx</span><span class="p">):</span>
         <span class="k">pass</span>
+
 </div>
 <div class="viewcode-block" id="CosTaper"><a class="viewcode-back" href="../../trace.html#pyrocko.trace.CosTaper">[docs]</a><span class="k">class</span> <span class="nc">CosTaper</span><span class="p">(</span><span class="n">Taper</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">d</span><span class="p">):</span>
+
+    <span class="n">a</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="n">d</span><span class="p">):</span>
+        <span class="n">Object</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="o">=</span><span class="n">d</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_corners</span> <span class="o">=</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">d</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">dx</span><span class="p">):</span>
-        <span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_corners</span>
+        <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_corners</span>
         <span class="n">apply_costaper</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">dx</span><span class="p">)</span>
+
 </div>
 <div class="viewcode-block" id="CosFader"><a class="viewcode-back" href="../../trace.html#pyrocko.trace.CosFader">[docs]</a><span class="k">class</span> <span class="nc">CosFader</span><span class="p">(</span><span class="n">Taper</span><span class="p">):</span>
+
+    <span class="n">xfade</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">xfrac</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xfade</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">xfrac</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="n">Object</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xfade</span><span class="o">=</span><span class="n">xfade</span><span class="p">,</span> <span class="n">xfrac</span><span class="o">=</span><span class="n">xfrac</span><span class="p">)</span>
         <span class="k">assert</span> <span class="p">(</span><span class="n">xfade</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">)</span> <span class="o">!=</span> <span class="p">(</span><span class="n">xfrac</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_xfade</span> <span class="o">=</span> <span class="n">xfade</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_xfrac</span> <span class="o">=</span> <span class="n">xfrac</span>
-    
+
     <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">dx</span><span class="p">):</span>
+
         <span class="n">xfade</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_xfade</span>
 
         <span class="n">xlen</span> <span class="o">=</span> <span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">size</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">dx</span>
         <span class="k">if</span> <span class="n">xfade</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="n">xfade</span> <span class="o">=</span> <span class="n">xlen</span> <span class="o">*</span> <span class="n">xfrac</span>
+            <span class="n">xfade</span> <span class="o">=</span> <span class="n">xlen</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_xfrac</span>
 
         <span class="n">a</span> <span class="o">=</span> <span class="n">x0</span>
-        <span class="n">b</span> <span class="o">=</span> <span class="n">x0</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_xfade</span>
-        <span class="n">c</span> <span class="o">=</span> <span class="n">x0</span> <span class="o">+</span> <span class="n">xlen</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_xfade</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="n">x0</span> <span class="o">+</span> <span class="n">xfade</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="n">x0</span> <span class="o">+</span> <span class="n">xlen</span> <span class="o">-</span> <span class="n">xfade</span>
         <span class="n">d</span> <span class="o">=</span> <span class="n">x0</span> <span class="o">+</span> <span class="n">xlen</span>
 
         <span class="n">apply_costaper</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">dx</span><span class="p">)</span>
+
 </div>
 <div class="viewcode-block" id="GaussTaper"><a class="viewcode-back" href="../../trace.html#pyrocko.trace.GaussTaper">[docs]</a><span class="k">class</span> <span class="nc">GaussTaper</span><span class="p">(</span><span class="n">Taper</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39; Frequency domain Gaussian filter. &#39;&#39;&#39;</span>
+    <span class="n">alpha</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">alpha</span><span class="p">):</span>
+        <span class="n">Object</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_alpha</span> <span class="o">=</span> <span class="n">alpha</span>
 
     <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">dx</span><span class="p">):</span>
         <span class="n">f</span> <span class="o">=</span> <span class="n">x0</span> <span class="o">+</span> <span class="n">num</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span> <span class="n">y</span><span class="o">.</span><span class="n">size</span> <span class="p">)</span><span class="o">*</span><span class="n">dx</span>
-        <span class="n">y</span> <span class="o">*=</span> <span class="n">num</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="mf">2.</span><span class="o">*</span><span class="n">num</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="o">/</span><span class="p">(</span><span class="mf">4.</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_alpha</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">f</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">y</span> <span class="o">*=</span> <span class="n">num</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">num</span><span class="o">.</span><span class="n">pi</span><span class="o">**</span><span class="mi">2</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_alpha</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">f</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+
 </div>
-<div class="viewcode-block" id="FrequencyResponse"><a class="viewcode-back" href="../../trace.html#pyrocko.trace.FrequencyResponse">[docs]</a><span class="k">class</span> <span class="nc">FrequencyResponse</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="FrequencyResponse"><a class="viewcode-back" href="../../trace.html#pyrocko.trace.FrequencyResponse">[docs]</a><span class="k">class</span> <span class="nc">FrequencyResponse</span><span class="p">(</span><span class="n">Object</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Evaluates frequency response at given frequencies.&#39;&#39;&#39;</span>
     
+    <span class="n">freqs</span> <span class="o">=</span> <span class="n">List</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
+
 <div class="viewcode-block" id="FrequencyResponse.evaluate"><a class="viewcode-back" href="../../trace.html#pyrocko.trace.FrequencyResponse.evaluate">[docs]</a>    <span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">freqs</span><span class="p">):</span>
         <span class="n">coefs</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">freqs</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">num</span><span class="o">.</span><span class="n">complex</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">coefs</span>
    </div></div>
 <div class="viewcode-block" id="InverseEvalresp"><a class="viewcode-back" href="../../trace.html#pyrocko.trace.InverseEvalresp">[docs]</a><span class="k">class</span> <span class="nc">InverseEvalresp</span><span class="p">(</span><span class="n">FrequencyResponse</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;Calls evalresp and generates values of the inverse instrument response for </span>
-<span class="sd">       deconvolution of instrument response.</span>
-<span class="sd">       </span>
-<span class="sd">       :param respfile: response file in evalresp format</span>
-<span class="sd">       :param trace: trace for which the response is to be extracted from the file</span>
-<span class="sd">       :param target: ``&#39;dis&#39;`` for displacement or ``&#39;vel&#39;`` for velocity</span>
-<span class="sd">       &#39;&#39;&#39;</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Calls evalresp and generates values of the inverse instrument response for </span>
+<span class="sd">    deconvolution of instrument response.</span>
+<span class="sd">   </span>
+<span class="sd">    :param respfile: response file in evalresp format</span>
+<span class="sd">    :param trace: trace for which the response is to be extracted from the file</span>
+<span class="sd">    :param target: ``&#39;dis&#39;`` for displacement or ``&#39;vel&#39;`` for velocity</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">respfile</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
+    <span class="n">nslc_id</span> <span class="o">=</span> <span class="n">Tuple</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">())</span>
+    <span class="n">target</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s">&#39;dis&#39;</span><span class="p">)</span>
+    <span class="n">instant</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
     
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">respfile</span><span class="p">,</span> <span class="n">trace</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="s">&#39;dis&#39;</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">respfile</span> <span class="o">=</span> <span class="n">respfile</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">nslc_id</span> <span class="o">=</span> <span class="n">trace</span><span class="o">.</span><span class="n">nslc_id</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">instant</span> <span class="o">=</span> <span class="p">(</span><span class="n">trace</span><span class="o">.</span><span class="n">tmin</span> <span class="o">+</span> <span class="n">trace</span><span class="o">.</span><span class="n">tmax</span><span class="p">)</span><span class="o">/</span><span class="mf">2.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">target</span> <span class="o">=</span> <span class="n">target</span>
+        <span class="n">Object</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                        <span class="n">respfile</span><span class="o">=</span><span class="n">respfile</span><span class="p">,</span>
+                        <span class="n">nslc_id</span><span class="o">=</span><span class="n">trace</span><span class="o">.</span><span class="n">nslc_id</span><span class="p">,</span>
+                        <span class="n">instant</span><span class="o">=</span><span class="p">(</span><span class="n">trace</span><span class="o">.</span><span class="n">tmin</span> <span class="o">+</span> <span class="n">trace</span><span class="o">.</span><span class="n">tmax</span><span class="p">)</span><span class="o">/</span><span class="mf">2.</span><span class="p">,</span>
+                        <span class="n">target</span><span class="o">=</span><span class="n">target</span><span class="p">)</span>
         
 <div class="viewcode-block" id="InverseEvalresp.evaluate"><a class="viewcode-back" href="../../trace.html#pyrocko.trace.InverseEvalresp.evaluate">[docs]</a>    <span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">freqs</span><span class="p">):</span>
         <span class="n">network</span><span class="p">,</span> <span class="n">station</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">channel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nslc_id</span>
         <span class="n">x</span> <span class="o">=</span> <span class="n">evalresp</span><span class="o">.</span><span class="n">evalresp</span><span class="p">(</span><span class="n">sta_list</span><span class="o">=</span><span class="n">station</span><span class="p">,</span>
-                          <span class="n">cha_list</span><span class="o">=</span><span class="n">channel</span><span class="p">,</span>
-                          <span class="n">net_code</span><span class="o">=</span><span class="n">network</span><span class="p">,</span>
-                          <span class="n">locid</span><span class="o">=</span><span class="n">location</span><span class="p">,</span>
-                          <span class="n">instant</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">instant</span><span class="p">,</span>
-                          <span class="n">freqs</span><span class="o">=</span><span class="n">freqs</span><span class="p">,</span>
-                          <span class="n">units</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span>
-                          <span class="nb">file</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">respfile</span><span class="p">,</span>
-                          <span class="n">rtype</span><span class="o">=</span><span class="s">&#39;CS&#39;</span><span class="p">)</span>
+                              <span class="n">cha_list</span><span class="o">=</span><span class="n">channel</span><span class="p">,</span>
+                              <span class="n">net_code</span><span class="o">=</span><span class="n">network</span><span class="p">,</span>
+                              <span class="n">locid</span><span class="o">=</span><span class="n">location</span><span class="p">,</span>
+                              <span class="n">instant</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">instant</span><span class="p">,</span>
+                              <span class="n">freqs</span><span class="o">=</span><span class="n">freqs</span><span class="p">,</span>
+                              <span class="n">units</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span>
+                              <span class="nb">file</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">respfile</span><span class="p">,</span>
+                              <span class="n">rtype</span><span class="o">=</span><span class="s">&#39;CS&#39;</span><span class="p">)</span>
         
         <span class="n">transfer</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">4</span><span class="p">]</span>
         <span class="k">return</span> <span class="mf">1.</span><span class="o">/</span><span class="n">transfer</span>
 </div></div>
 <div class="viewcode-block" id="PoleZeroResponse"><a class="viewcode-back" href="../../trace.html#pyrocko.trace.PoleZeroResponse">[docs]</a><span class="k">class</span> <span class="nc">PoleZeroResponse</span><span class="p">(</span><span class="n">FrequencyResponse</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Evaluates frequency response from pole-zero representation.</span>
+
+<span class="sd">    :param zeros: :py:class:`numpy.array` containing complex positions of zeros</span>
+<span class="sd">    :param poles: :py:class:`numpy.array` containing complex positions of poles</span>
+<span class="sd">    :param constant: gain as floating point number</span>
 
 <span class="sd">    ::</span>
 
@@ -1808,10 +2065,12 @@
 <span class="sd">    The poles and zeros should be given as angular frequencies, not in Hz.</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     
+    <span class="n">zeros</span> <span class="o">=</span> <span class="n">Array</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="bp">None</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">num</span><span class="o">.</span><span class="n">complex</span><span class="p">)</span>
+    <span class="n">poles</span> <span class="o">=</span> <span class="n">Array</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="bp">None</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">num</span><span class="o">.</span><span class="n">complex</span><span class="p">)</span>
+    <span class="n">constant</span> <span class="o">=</span> <span class="n">Complex</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
+
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">zeros</span><span class="p">,</span> <span class="n">poles</span><span class="p">,</span> <span class="n">constant</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">zeros</span> <span class="o">=</span> <span class="n">zeros</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">poles</span> <span class="o">=</span> <span class="n">poles</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">constant</span> <span class="o">=</span> <span class="n">constant</span>
+        <span class="n">Object</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">zeros</span><span class="o">=</span><span class="n">zeros</span><span class="p">,</span> <span class="n">poles</span><span class="o">=</span><span class="n">poles</span><span class="p">,</span> <span class="n">constant</span><span class="o">=</span><span class="n">constant</span><span class="p">)</span>
         
 <div class="viewcode-block" id="PoleZeroResponse.evaluate"><a class="viewcode-back" href="../../trace.html#pyrocko.trace.PoleZeroResponse.evaluate">[docs]</a>    <span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">freqs</span><span class="p">):</span>
         <span class="n">jomeg</span> <span class="o">=</span> <span class="mf">1.0j</span><span class="o">*</span> <span class="mf">2.</span><span class="o">*</span><span class="n">num</span><span class="o">.</span><span class="n">pi</span><span class="o">*</span><span class="n">freqs</span>
@@ -1830,12 +2089,15 @@
 <span class="sd">    :param freqs,vals: frequencies and values of the sampled response function.</span>
 <span class="sd">    :param left,right: values to return when input is out of range. If set to ``None`` (the default) the endpoints are returned.</span>
 <span class="sd">    &#39;&#39;&#39;</span>
-    
+
+    <span class="n">freqs</span> <span class="o">=</span> <span class="n">Array</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
+    <span class="n">vals</span> <span class="o">=</span> <span class="n">Array</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
+    <span class="n">left</span> <span class="o">=</span> <span class="n">Bool</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
+    <span class="n">right</span> <span class="o">=</span> <span class="n">Bool</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
+
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">freqs</span><span class="p">,</span> <span class="n">vals</span><span class="p">,</span> <span class="n">left</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">freqs</span> <span class="o">=</span> <span class="n">freqs</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">vals</span> <span class="o">=</span> <span class="n">vals</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">left</span> <span class="o">=</span> <span class="n">left</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">right</span> <span class="o">=</span> <span class="n">right</span>
+    
+        <span class="n">Object</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">freqs</span><span class="o">=</span><span class="n">freqs</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span> <span class="n">vals</span><span class="o">=</span><span class="n">vals</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span> <span class="n">left</span><span class="o">=</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="n">right</span><span class="p">)</span>
         
 <div class="viewcode-block" id="SampledResponse.evaluate"><a class="viewcode-back" href="../../trace.html#pyrocko.trace.SampledResponse.evaluate">[docs]</a>    <span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">freqs</span><span class="p">):</span>
         <span class="n">ereal</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="n">freqs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">freqs</span><span class="p">,</span> <span class="n">num</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">vals</span><span class="p">),</span> <span class="n">left</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">right</span><span class="p">)</span>
@@ -1861,16 +2123,20 @@
 <div class="viewcode-block" id="IntegrationResponse"><a class="viewcode-back" href="../../trace.html#pyrocko.trace.IntegrationResponse">[docs]</a><span class="k">class</span> <span class="nc">IntegrationResponse</span><span class="p">(</span><span class="n">FrequencyResponse</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;The integration response, optionally multiplied by a constant gain.</span>
 
+<span class="sd">    :param n: exponent (integer) </span>
+<span class="sd">    :param gain: gain factor (float) </span>
+
 <span class="sd">    ::</span>
 
 <span class="sd">                    gain</span>
 <span class="sd">        T(f) = --------------</span>
 <span class="sd">               (j*2*pi * f)^n</span>
 <span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">_n</span> <span class="o">=</span> <span class="n">Int</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">_gain</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">gain</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_n</span> <span class="o">=</span> <span class="n">n</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_gain</span> <span class="o">=</span> <span class="n">gain</span>
+        <span class="n">Object</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_n</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="n">_gain</span><span class="o">=</span><span class="n">gain</span><span class="p">)</span>
         
 <div class="viewcode-block" id="IntegrationResponse.evaluate"><a class="viewcode-back" href="../../trace.html#pyrocko.trace.IntegrationResponse.evaluate">[docs]</a>    <span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">freqs</span><span class="p">):</span>
         
@@ -1885,14 +2151,19 @@
 <div class="viewcode-block" id="DifferentiationResponse"><a class="viewcode-back" href="../../trace.html#pyrocko.trace.DifferentiationResponse">[docs]</a><span class="k">class</span> <span class="nc">DifferentiationResponse</span><span class="p">(</span><span class="n">FrequencyResponse</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;The differentiation response, optionally multiplied by a constant gain.</span>
 
+<span class="sd">    :param n: exponent (integer)</span>
+<span class="sd">    :param gain: gain factor (float) </span>
+
 <span class="sd">    ::</span>
 
 <span class="sd">        T(f) = gain * (j*2*pi * f)^n</span>
 <span class="sd">    &#39;&#39;&#39;</span>
 
+    <span class="n">_n</span> <span class="o">=</span> <span class="n">Int</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">_gain</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">gain</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_n</span> <span class="o">=</span> <span class="n">n</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_gain</span> <span class="o">=</span> <span class="n">gain</span>
+        <span class="n">Object</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_n</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="n">_gain</span><span class="o">=</span><span class="n">gain</span><span class="p">)</span>
         
 <div class="viewcode-block" id="DifferentiationResponse.evaluate"><a class="viewcode-back" href="../../trace.html#pyrocko.trace.DifferentiationResponse.evaluate">[docs]</a>    <span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">freqs</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gain</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.0j</span> <span class="o">*</span> <span class="mf">2.</span> <span class="o">*</span> <span class="n">num</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">freqs</span><span class="p">)</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_n</span>
@@ -1901,13 +2172,14 @@
     <span class="sd">&#39;&#39;&#39;Frequency response of an analog filter.</span>
 <span class="sd">    </span>
 <span class="sd">    (see :py:func:`scipy.signal.freqs`).&#39;&#39;&#39;</span>
+    <span class="n">_a</span> <span class="o">=</span> <span class="n">Array</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
+    <span class="n">_b</span> <span class="o">=</span> <span class="n">Array</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span><span class="n">a</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_b</span> <span class="o">=</span> <span class="n">b</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_a</span> <span class="o">=</span> <span class="n">a</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">a</span><span class="p">):</span>
+        <span class="n">Object</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_b</span><span class="o">=</span><span class="n">b</span><span class="p">,</span> <span class="n">_a</span><span class="o">=</span><span class="n">a</span><span class="p">)</span>
     
 <div class="viewcode-block" id="AnalogFilterResponse.evaluate"><a class="viewcode-back" href="../../trace.html#pyrocko.trace.AnalogFilterResponse.evaluate">[docs]</a>    <span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">freqs</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">signal</span><span class="o">.</span><span class="n">freqs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_b</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_a</span><span class="p">,</span> <span class="n">freqs</span><span class="o">/</span><span class="p">(</span><span class="mf">2.</span><span class="o">*</span><span class="n">pi</span><span class="p">))[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">signal</span><span class="o">.</span><span class="n">freqs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_b</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_a</span><span class="p">,</span> <span class="n">freqs</span><span class="o">/</span><span class="p">(</span><span class="mf">2.</span><span class="o">*</span><span class="n">num</span><span class="o">.</span><span class="n">pi</span><span class="p">))[</span><span class="mi">1</span><span class="p">]</span>
 </div></div>
 <div class="viewcode-block" id="MultiplyResponse"><a class="viewcode-back" href="../../trace.html#pyrocko.trace.MultiplyResponse">[docs]</a><span class="k">class</span> <span class="nc">MultiplyResponse</span><span class="p">(</span><span class="n">FrequencyResponse</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Multiplication of two :py:class:`FrequencyResponse` objects.&#39;&#39;&#39;</span>
@@ -1919,8 +2191,6 @@
 <div class="viewcode-block" id="MultiplyResponse.evaluate"><a class="viewcode-back" href="../../trace.html#pyrocko.trace.MultiplyResponse.evaluate">[docs]</a>    <span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">freqs</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_a</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">freqs</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_b</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">freqs</span><span class="p">)</span>
 </div></div>
-<span class="k">print</span> <span class="s">&#39;xxx&#39;</span>
-
 <span class="n">cached_coefficients</span> <span class="o">=</span> <span class="p">{}</span>
 <span class="k">def</span> <span class="nf">_get_cached_filter_coefs</span><span class="p">(</span><span class="n">order</span><span class="p">,</span> <span class="n">corners</span><span class="p">,</span> <span class="n">btype</span><span class="p">):</span>
     <span class="n">ck</span> <span class="o">=</span> <span class="p">(</span><span class="n">order</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">corners</span><span class="p">),</span> <span class="n">btype</span><span class="p">)</span>
@@ -2145,7 +2415,7 @@
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">,</span> <span class="s">&quot;N must be positive.&quot;</span>
     <span class="k">if</span> <span class="n">num</span><span class="o">.</span><span class="n">iscomplexobj</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&#39;imaginary part of x ignored.&#39;</span><span class="p">)</span>
-        <span class="n">x</span> <span class="o">=</span> <span class="n">real</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">real</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
     <span class="n">Xf</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">fft</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">N</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
     <span class="n">h</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">N</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">N</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
@@ -2156,7 +2426,7 @@
         <span class="n">h</span><span class="p">[</span><span class="mi">1</span><span class="p">:(</span><span class="n">N</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span>
 
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="n">h</span> <span class="o">=</span> <span class="n">h</span><span class="p">[:,</span> <span class="n">newaxis</span><span class="p">]</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="n">h</span><span class="p">[:,</span> <span class="n">num</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span>
     <span class="n">x</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">fft</span><span class="o">.</span><span class="n">ifft</span><span class="p">(</span><span class="n">Xf</span><span class="o">*</span><span class="n">h</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">x</span>
     </div>
@@ -2336,7 +2606,68 @@
     <span class="k">except</span> <span class="ne">GeneratorExit</span><span class="p">:</span>
         <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">decimators</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
             <span class="n">g</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-</pre></div></div>
+
+</div>
+<div class="viewcode-block" id="MisfitSetup"><a class="viewcode-back" href="../../trace.html#pyrocko.trace.MisfitSetup">[docs]</a><span class="k">class</span> <span class="nc">MisfitSetup</span><span class="p">(</span><span class="n">Object</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Contains misfit setup to be used in :py:func:`trace.misfit`</span>
+
+<span class="sd">    :param description: Description of the setup</span>
+<span class="sd">    :param norm: L-norm classifier</span>
+<span class="sd">    :param taper: Object of :py:class:`Taper`</span>
+<span class="sd">    :param filter: Object of :py:class:`FrequencyResponse`</span>
+<span class="sd">    :param domain: [&#39;time_domain&#39;, &#39;frequency_domain&#39;, &#39;envelope&#39;, &#39;absolute&#39;]</span>
+
+<span class="sd">    Can be dumped to a yaml file.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">xmltagname</span> <span class="o">=</span> <span class="s">&#39;misfitsetup&#39;</span>
+    <span class="n">description</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">norm</span> <span class="o">=</span> <span class="n">Int</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">optional</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+    <span class="n">taper</span> <span class="o">=</span> <span class="n">Taper</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">optional</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+    <span class="nb">filter</span> <span class="o">=</span> <span class="n">FrequencyResponse</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">domain</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s">&#39;time_domain&#39;</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="equalize_sampling_rates"><a class="viewcode-back" href="../../trace.html#pyrocko.trace.equalize_sampling_rates">[docs]</a><span class="k">def</span> <span class="nf">equalize_sampling_rates</span><span class="p">(</span><span class="n">trace_1</span><span class="p">,</span> <span class="n">trace_2</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Equalize sampling rates of two traces (reduce higher sampling rate to lower). </span>
+<span class="sd">    </span>
+<span class="sd">    :param trace_1: :py:class:`trace` </span>
+<span class="sd">    :param trace_2: :py:class:`trace` </span>
+
+<span class="sd">    Returns a copy of the resampled trace if resampling is needed.  </span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="n">same_sampling_rate</span><span class="p">(</span><span class="n">trace_1</span><span class="p">,</span> <span class="n">trace_2</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">trace_1</span><span class="p">,</span> <span class="n">trace_2</span>
+
+    <span class="k">if</span> <span class="n">trace_1</span><span class="o">.</span><span class="n">deltat</span> <span class="o">&lt;</span> <span class="n">trace_2</span><span class="o">.</span><span class="n">deltat</span><span class="p">:</span>
+        <span class="n">t1_out</span> <span class="o">=</span> <span class="n">trace_1</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">t1_out</span><span class="o">.</span><span class="n">downsample_to</span><span class="p">(</span><span class="n">deltat</span><span class="o">=</span><span class="n">trace_2</span><span class="o">.</span><span class="n">deltat</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s">&#39;Trace downsampled (return copy of trace): </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span>
+                                                        <span class="s">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">t1_out</span><span class="o">.</span><span class="n">nslc_id</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">t1_out</span><span class="p">,</span> <span class="n">trace_2</span>
+    
+    <span class="k">elif</span> <span class="n">trace_1</span><span class="o">.</span><span class="n">deltat</span> <span class="o">&gt;</span> <span class="n">trace_2</span><span class="o">.</span><span class="n">deltat</span><span class="p">:</span>
+        <span class="n">t2_out</span> <span class="o">=</span> <span class="n">trace_2</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">t2_out</span><span class="o">.</span><span class="n">downsample_to</span><span class="p">(</span><span class="n">deltat</span><span class="o">=</span><span class="n">trace_1</span><span class="o">.</span><span class="n">deltat</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s">&#39;Trace downsampled (return copy of trace): </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> 
+                                                        <span class="s">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">t2_out</span><span class="o">.</span><span class="n">nslc_id</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">trace_1</span><span class="p">,</span> <span class="n">t2_out</span>
+</div>
+<div class="viewcode-block" id="Lx_norm"><a class="viewcode-back" href="../../trace.html#pyrocko.trace.Lx_norm">[docs]</a><span class="k">def</span> <span class="nf">Lx_norm</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Calculate the misfit denominator *m* and the normalization devisor *n* according </span>
+<span class="sd">    to norm.</span>
+<span class="sd">    The normalization divisor *n* is calculated from *v*.</span>
+
+<span class="sd">    :param u: :py:class:`numpy.array`</span>
+<span class="sd">    :param v: :py:class:`numpy.array`</span>
+<span class="sd">    :param norm: (default = 2)</span>
+
+<span class="sd">    *u* and *v* must be of same size. </span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">return</span> <span class="n">num</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">num</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">num</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">v</span> <span class="o">-</span> <span class="n">u</span><span class="p">,</span> <span class="n">norm</span><span class="p">))),</span> <span class="mf">1.</span><span class="o">/</span><span class="n">norm</span><span class="p">),</span> \
+           <span class="n">num</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">num</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">num</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">norm</span><span class="p">))),</span> <span class="mf">1.</span><span class="o">/</span><span class="n">norm</span><span class="p">)</span></div>
+</pre></div>
 
           </div>
       </div>

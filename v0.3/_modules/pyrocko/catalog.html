@@ -51,8 +51,8 @@
           <div class="body">
             
   <h1>Source code for pyrocko.catalog</h1><div class="highlight"><pre>
-<span class="kn">import</span> <span class="nn">model</span><span class="o">,</span> <span class="nn">util</span>
-<span class="kn">from</span> <span class="nn">moment_tensor</span> <span class="kn">import</span> <span class="n">MomentTensor</span><span class="p">,</span> <span class="n">symmat6</span>
+<span class="kn">from</span> <span class="nn">pyrocko</span> <span class="kn">import</span> <span class="n">model</span><span class="p">,</span> <span class="n">util</span>
+<span class="kn">from</span> <span class="nn">pyrocko.moment_tensor</span> <span class="kn">import</span> <span class="n">MomentTensor</span><span class="p">,</span> <span class="n">symmat6</span>
 <span class="kn">import</span> <span class="nn">urllib2</span>
 <span class="kn">import</span> <span class="nn">urllib</span>
 <span class="kn">import</span> <span class="nn">time</span>
@@ -652,6 +652,7 @@
             <span class="n">tref_eq</span> <span class="o">=</span> <span class="n">calendar</span><span class="o">.</span><span class="n">timegm</span><span class="p">(</span><span class="n">eq</span><span class="p">[</span><span class="s">&#39;reference_time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">timetuple</span><span class="p">())</span>
             <span class="n">pset</span> <span class="o">=</span> <span class="n">eq</span><span class="p">[</span><span class="s">&#39;parametersets&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
             <span class="n">tref</span> <span class="o">=</span> <span class="n">calendar</span><span class="o">.</span><span class="n">timegm</span><span class="p">(</span><span class="n">pset</span><span class="p">[</span><span class="s">&#39;reference_time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">timetuple</span><span class="p">())</span>
+            <span class="n">tpost</span> <span class="o">=</span> <span class="n">calendar</span><span class="o">.</span><span class="n">timegm</span><span class="p">(</span><span class="n">pset</span><span class="p">[</span><span class="s">&#39;posted_time&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">timetuple</span><span class="p">())</span>
             <span class="n">params</span> <span class="o">=</span> <span class="n">pset</span><span class="p">[</span><span class="s">&#39;parameters&#39;</span><span class="p">]</span>
 
             <span class="n">mt</span> <span class="o">=</span> <span class="n">MomentTensor</span><span class="p">(</span>
@@ -675,6 +676,8 @@
             <span class="k">for</span> <span class="n">par</span> <span class="ow">in</span> <span class="s">&#39;latitude longitude depth magnitude&#39;</span><span class="o">.</span><span class="n">split</span><span class="p">():</span>
                 <span class="n">event</span><span class="o">.</span><span class="n">ext_confidence_intervals</span><span class="p">[</span><span class="n">trans</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">par</span><span class="p">,</span> <span class="n">par</span><span class="p">)]</span> <span class="o">=</span> \
                         <span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="n">par</span><span class="o">+</span><span class="s">&#39;_ci_low&#39;</span><span class="p">],</span> <span class="n">params</span><span class="p">[</span><span class="n">par</span><span class="o">+</span><span class="s">&#39;_ci_high&#39;</span><span class="p">])</span>
+
+            <span class="n">event</span><span class="o">.</span><span class="n">ext_posted_time</span> <span class="o">=</span> <span class="n">tpost</span>
             
             <span class="n">name</span> <span class="o">=</span> <span class="n">eq</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">events</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">event</span>

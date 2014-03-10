@@ -51,11 +51,11 @@
           <div class="body">
             
   <h1>Source code for pyrocko.model</h1><div class="highlight"><pre>
-<span class="kn">import</span> <span class="nn">catalog</span><span class="o">,</span> <span class="nn">orthodrome</span><span class="o">,</span> <span class="nn">config</span><span class="o">,</span> <span class="nn">util</span><span class="o">,</span> <span class="nn">moment_tensor</span>
+<span class="kn">from</span> <span class="nn">pyrocko</span> <span class="kn">import</span> <span class="n">orthodrome</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">util</span><span class="p">,</span> <span class="n">moment_tensor</span>
 <span class="kn">import</span> <span class="nn">math</span><span class="o">,</span> <span class="nn">copy</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">num</span>
 
-<span class="kn">from</span> <span class="nn">orthodrome</span> <span class="kn">import</span> <span class="n">wrap</span>
+<span class="kn">from</span> <span class="nn">pyrocko.orthodrome</span> <span class="kn">import</span> <span class="n">wrap</span>
 
 <span class="n">d2r</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mf">180.</span>
 
@@ -579,6 +579,7 @@
     <span class="k">return</span> <span class="n">elist</span>
         </div>
 <div class="viewcode-block" id="load_gfz_event_list"><a class="viewcode-back" href="../../model.html#pyrocko.model.load_gfz_event_list">[docs]</a><span class="k">def</span> <span class="nf">load_gfz_event_list</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+    <span class="kn">from</span> <span class="nn">pyrocko</span> <span class="kn">import</span> <span class="n">catalog</span>
     <span class="n">cat</span> <span class="o">=</span> <span class="n">catalog</span><span class="o">.</span><span class="n">Geofon</span><span class="p">()</span>
     
     <span class="n">elist</span> <span class="o">=</span><span class="p">[]</span>

@@ -80,7 +80,7 @@ travel time tables for seismic phases and the earth model used, together with
 the Green&#8217;s function in order to have a complete and consistent framework to
 play with.</p>
 <p>Pyrocko contains a flexible framework to store and work with pre-calculated
-Green&#8217;s functions. It is implemented in the <tt class="xref py py-mod docutils literal"><span class="pre">pyrocko.gf</span></tt> subpackage.
+Green&#8217;s functions. It is implemented in the <a class="reference internal" href="gf.html#module-pyrocko.gf" title="pyrocko.gf"><tt class="xref py py-mod docutils literal"><span class="pre">pyrocko.gf</span></tt></a> subpackage.
 Also included, is a powerful front end tool to create, inspect, and manipulate
 Green&#8217;s function stores: the <strong class="program">fomosto</strong> tool (&#8220;<em>forward model storage
 tool</em>&#8221;).</p>
@@ -101,7 +101,9 @@ started without any arguments.</p>
 <span class="go">    decimate      build decimated variant of a GF store</span>
 <span class="go">    redeploy      copy traces from one GF store into another</span>
 <span class="go">    view          view selected traces</span>
+<span class="go">    extract       extract selected traces</span>
 <span class="go">    import        convert Kiwi GFDB to GF store format</span>
+<span class="go">    export        convert GF store to Kiwi GFDB format</span>
 <span class="go">    ttt           create travel time tables</span>
 <span class="go">    tttview       plot travel time table</span>
 
@@ -247,11 +249,11 @@ the class <a class="reference internal" href="gf.html#pyrocko.gf.meta.ConfigType
 <span class="c1"># seconds, where &#39;begin&#39; and  &#39;end&#39; are tabulated phases as defined in the</span>
 <span class="c1"># main main configuration</span>
 
-<span class="l-Scalar-Plain">time_region</span><span class="p-Indicator">:</span> <span class="p-Indicator">[</span><span class="nv">begin-50</span><span class="p-Indicator">,</span> <span class="nv">end+100</span><span class="p-Indicator">]</span>
+<span class="l-Scalar-Plain">time_region</span><span class="p-Indicator">:</span> <span class="p-Indicator">[</span><span class="nv">begin-50</span><span class="p-Indicator">,</span> <span class="nv">end+100</span><span class="p-Indicator">]</span>  <span class="c1"># see note below</span>
 
 <span class="c1"># cut the Green&#39;s functions to the same time span</span>
 
-<span class="l-Scalar-Plain">cut</span><span class="p-Indicator">:</span> <span class="p-Indicator">[</span><span class="nv">begin-50</span><span class="p-Indicator">,</span> <span class="nv">end+100</span><span class="p-Indicator">]</span>
+<span class="l-Scalar-Plain">cut</span><span class="p-Indicator">:</span> <span class="p-Indicator">[</span><span class="nv">begin-50</span><span class="p-Indicator">,</span> <span class="nv">end+100</span><span class="p-Indicator">]</span>  <span class="c1"># see note below</span>
 
 <span class="c1"># following docs are excerpts from the QSEIS documentation</span>
 
@@ -323,6 +325,11 @@ the class <a class="reference internal" href="gf.html#pyrocko.gf.meta.ConfigType
 
 <span class="l-Scalar-Plain">wavelet_type</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">2</span>
 </pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The syntax for the timings in the <tt class="docutils literal"><span class="pre">time_region</span></tt> and <tt class="docutils literal"><span class="pre">cut</span></tt> in the above
+example configuration is described in <a class="reference internal" href="gf.html#pyrocko.gf.meta.Timing" title="pyrocko.gf.meta.Timing"><tt class="xref py py-class docutils literal"><span class="pre">pyrocko.gf.meta.Timing</span></tt></a>.</p>
 </div>
 <p>If configuration values have been changed, it may be neccessary to rebuild the
 tabulated phase arrivals or the Green&#8217;s functions. By default, fomosto will

@@ -318,6 +318,63 @@ deconvolve the transfer function from an example seismogram:</p>
 </pre></div>
 </div>
 </div>
+<div class="section" id="misfit-of-one-trace-against-two-other-traces">
+<h2>Misfit of one trace against two other traces<a class="headerlink" href="#misfit-of-one-trace-against-two-other-traces" title="Permalink to this headline">¶</a></h2>
+<p>Three traces will be created. One of these traces will be assumed to be the reference trace (rt) that we want to know the misfit of in comparison to two other traces (tt1 and tt2). The traces rt and tt1 will be provided with the same random y-data. Hence, their misfit will be zero, in the end.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">pyrocko</span> <span class="kn">import</span> <span class="n">trace</span>
+<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">sqrt</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">num</span>
+
+<span class="c"># let&#39;s create three traces: One trace as the reference (rt) and two as test traces (tt1 and tt2):</span>
+<span class="n">ydata1</span> <span class="o">=</span> <span class="n">data</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>
+<span class="n">ydata2</span> <span class="o">=</span> <span class="n">data</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>
+<span class="n">rt</span> <span class="o">=</span> <span class="n">trace</span><span class="o">.</span><span class="n">Trace</span><span class="p">(</span><span class="n">station</span><span class="o">=</span><span class="s">&#39;REF&#39;</span><span class="p">,</span> <span class="n">ydata</span><span class="o">=</span><span class="n">ydata1</span><span class="p">)</span>
+<span class="n">tt1</span> <span class="o">=</span> <span class="n">trace</span><span class="o">.</span><span class="n">Trace</span><span class="p">(</span><span class="n">station</span><span class="o">=</span><span class="s">&#39;TT1&#39;</span><span class="p">,</span> <span class="n">ydata</span><span class="o">=</span><span class="n">ydata1</span><span class="p">)</span>
+<span class="n">tt2</span> <span class="o">=</span> <span class="n">trace</span><span class="o">.</span><span class="n">Trace</span><span class="p">(</span><span class="n">station</span><span class="o">=</span><span class="s">&#39;TT2&#39;</span><span class="p">,</span> <span class="n">ydata</span><span class="o">=</span><span class="n">ydata2</span><span class="p">)</span>
+
+<span class="c"># the misfit method needs an iterable object containing traces:</span>
+<span class="n">test_candidates</span> <span class="o">=</span> <span class="p">[</span><span class="n">tt1</span><span class="p">,</span> <span class="n">tt2</span><span class="p">]</span>
+
+<span class="c"># define a fader to apply before fft.</span>
+<span class="n">taper</span> <span class="o">=</span> <span class="n">trace</span><span class="o">.</span><span class="n">CosFader</span><span class="p">(</span><span class="n">xfade</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+
+<span class="c"># define a frequency response to apply before performing the inverse fft.</span>
+<span class="c"># This can be basically any funtion, as long as it contains a function called *evaluate*,</span>
+<span class="c"># which evaluates the frequency response function at a given list of frequencies.</span>
+<span class="c"># Please refer to the :py:class:`FrequencyResponse` class or its subclasses for examples.</span>
+<span class="n">fresponse</span> <span class="o">=</span> <span class="n">trace</span><span class="o">.</span><span class="n">FrequencyResponse</span><span class="p">()</span>
+
+<span class="c"># combine all information in one misfit setup:</span>
+<span class="n">setup</span> <span class="o">=</span> <span class="n">trace</span><span class="o">.</span><span class="n">MisfitSetup</span><span class="p">(</span><span class="n">norm</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                          <span class="n">taper</span><span class="o">=</span><span class="n">taper</span><span class="p">,</span>
+                          <span class="n">domain</span><span class="o">=</span><span class="s">&#39;time_domain&#39;</span><span class="p">,</span>
+                          <span class="n">freqlimits</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">20</span><span class="p">,</span><span class="mi">40</span><span class="p">),</span>
+                          <span class="n">frequency_response</span><span class="o">=</span><span class="n">fresponse</span><span class="p">)</span>
+
+<span class="c"># calculate the misfit for each test candidate:</span>
+<span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="k">for</span> <span class="n">m</span><span class="p">,</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">rt</span><span class="o">.</span><span class="n">misfit</span><span class="p">(</span><span class="n">candidates</span><span class="o">=</span><span class="n">test_candidates</span><span class="p">,</span> <span class="n">setups</span><span class="o">=</span><span class="n">setup</span><span class="p">):</span>
+    <span class="n">M</span> <span class="o">=</span> <span class="n">m</span><span class="o">/</span><span class="n">n</span>
+    <span class="k">print</span> <span class="s">&#39;L2 misfit of </span><span class="si">%s</span><span class="s"> and </span><span class="si">%s</span><span class="s"> is </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">rt</span><span class="o">.</span><span class="n">station</span><span class="p">,</span> <span class="n">test_candidates</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">station</span><span class="p">,</span> <span class="n">M</span><span class="p">)</span>
+    <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+
+<span class="c"># finally, we want to dump the misfit setup that has been used in a yaml file:</span>
+<span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s">&#39;my_misfit_setup.txt&#39;</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">)</span>
+<span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">setup</span><span class="o">.</span><span class="n">dump</span><span class="p">())</span>
+<span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>If we wanted to reload our misfit setup, guts provides the iload_all() method for
+that purpose:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">guts</span> <span class="kn">import</span> <span class="n">iload_all</span>
+<span class="k">for</span> <span class="n">ms</span> <span class="ow">in</span> <span class="n">iload_all</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="s">&#39;my_misfit_setup.txt&#39;</span><span class="p">):</span>
+    <span class="n">setup</span> <span class="o">=</span> <span class="n">ms</span>
+
+<span class="c"># now, we can change for example only the domain:</span>
+<span class="n">setup</span><span class="o">.</span><span class="n">domain</span> <span class="o">=</span> <span class="s">&#39;frequency_domain&#39;</span>
+</pre></div>
+</div>
+</div>
 </div>
 
 

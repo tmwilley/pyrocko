@@ -107,6 +107,9 @@
     <span class="n">house</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">-</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">v</span> <span class="o">*</span> <span class="n">v</span><span class="o">.</span><span class="n">T</span>
     <span class="k">return</span> <span class="o">-</span><span class="n">house</span><span class="o">*</span><span class="n">zrot</span>
 
+<span class="k">def</span> <span class="nf">to6</span><span class="p">(</span><span class="n">m</span><span class="p">):</span></div>
+<div class="viewcode-block" id="to6"><a class="viewcode-back" href="../../moment_tensor.html#pyrocko.moment_tensor.to6">[docs]</a>    <span class="k">return</span> <span class="n">num</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">m</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span> <span class="n">m</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span> <span class="n">m</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span> <span class="n">m</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span> <span class="n">m</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span> <span class="n">m</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">]])</span>
+
 <span class="k">def</span> <span class="nf">symmat6</span><span class="p">(</span><span class="o">*</span><span class="n">vals</span><span class="p">):</span></div>
 <div class="viewcode-block" id="symmat6"><a class="viewcode-back" href="../../moment_tensor.html#pyrocko.moment_tensor.symmat6">[docs]</a>    <span class="sd">&#39;&#39;&#39;Create symmetric 3x3 matrix from its 6 non-redundant values.</span>
 <span class="sd">     </span>
@@ -123,8 +126,10 @@
 
 <span class="k">def</span> <span class="nf">magnitude_to_moment</span><span class="p">(</span> <span class="n">magnitude</span> <span class="p">):</span></div>
 <div class="viewcode-block" id="magnitude_to_moment"><a class="viewcode-back" href="../../moment_tensor.html#pyrocko.moment_tensor.magnitude_to_moment">[docs]</a>    <span class="k">return</span> <span class="mf">10.0</span><span class="o">**</span><span class="p">(</span><span class="mf">1.5</span><span class="o">*</span><span class="p">(</span><span class="n">magnitude</span><span class="o">+</span><span class="mf">10.7</span><span class="p">))</span><span class="o">*</span><span class="mf">1.0e-7</span>
+
+<span class="n">magnitude_1Nm</span> <span class="o">=</span> <span class="n">moment_to_magnitude</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span></div>
     
-<span class="k">def</span> <span class="nf">euler_to_matrix</span><span class="p">(</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">gamma</span> <span class="p">):</span></div>
+<span class="k">def</span> <span class="nf">euler_to_matrix</span><span class="p">(</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">gamma</span> <span class="p">):</span>
 <div class="viewcode-block" id="euler_to_matrix"><a class="viewcode-back" href="../../moment_tensor.html#pyrocko.moment_tensor.euler_to_matrix">[docs]</a>    <span class="sd">&#39;&#39;&#39;Given the euler angles alpha,beta,gamma, create rotation matrix</span>
 <span class="sd">        </span>
 <span class="sd">    Given coordinate system (x,y,z) and rotated system (xs,ys,zs)</span>
@@ -362,9 +367,15 @@
     <span class="k">def</span> <span class="nf">m</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
 <div class="viewcode-block" id="MomentTensor.m"><a class="viewcode-back" href="../../moment_tensor.html#pyrocko.moment_tensor.MomentTensor.m">[docs]</a>        <span class="sd">&#39;&#39;&#39;Get plain moment tensor as 3x3 matrix.&#39;&#39;&#39;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_m</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">m6</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
+<div class="viewcode-block" id="MomentTensor.m6"><a class="viewcode-back" href="../../moment_tensor.html#pyrocko.moment_tensor.MomentTensor.m6">[docs]</a>        <span class="k">return</span> <span class="n">to6</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_m</span><span class="p">)</span>
     
     <span class="k">def</span> <span class="nf">m_up_south_east</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
 <div class="viewcode-block" id="MomentTensor.m_up_south_east"><a class="viewcode-back" href="../../moment_tensor.html#pyrocko.moment_tensor.MomentTensor.m_up_south_east">[docs]</a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_to_up_south_east</span><span class="o">.</span><span class="n">T</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_m</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_to_up_south_east</span>
+
+    <span class="k">def</span> <span class="nf">m6_up_south_east</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
+<div class="viewcode-block" id="MomentTensor.m6_up_south_east"><a class="viewcode-back" href="../../moment_tensor.html#pyrocko.moment_tensor.MomentTensor.m6_up_south_east">[docs]</a>        <span class="k">return</span> <span class="n">to6</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">m_up_south_east</span><span class="p">())</span>
     
     <span class="k">def</span> <span class="nf">m_plain_double_couple</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
 <div class="viewcode-block" id="MomentTensor.m_plain_double_couple"><a class="viewcode-back" href="../../moment_tensor.html#pyrocko.moment_tensor.MomentTensor.m_plain_double_couple">[docs]</a>        <span class="sd">&#39;&#39;&#39;Get plain double couple with same scalar moment as moment tensor.&#39;&#39;&#39;</span>
