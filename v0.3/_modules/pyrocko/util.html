@@ -58,6 +58,7 @@
 <span class="kn">from</span> <span class="nn">os.path</span> <span class="kn">import</span> <span class="n">join</span> <span class="k">as</span> <span class="n">pjoin</span>
 <span class="kn">from</span> <span class="nn">pyrocko</span> <span class="kn">import</span> <span class="n">config</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">num</span>
+<span class="kn">import</span> <span class="nn">util_ext</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s">&#39;pyrocko.util&#39;</span><span class="p">)</span>
 
@@ -96,9 +97,11 @@
 </div>
 <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">num</span><span class="p">,</span> <span class="s">&#39;float128&#39;</span><span class="p">):</span>
     <span class="n">hpfloat</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">float128</span>
+<span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">num</span><span class="p">,</span> <span class="s">&#39;float96&#39;</span><span class="p">):</span>
+    <span class="n">hpfloat</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">float96</span>
 <span class="k">else</span><span class="p">:</span>
-    <span class="k">def</span> <span class="nf">hpfloat</span><span class="p">():</span>
-        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&#39;NumPy lacks support for float128 data type on this platform.&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">hpfloat</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&#39;NumPy lacks support for float128 or float96 data type on this platform.&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Stopwatch"><a class="viewcode-back" href="../../util.html#pyrocko.util.Stopwatch">[docs]</a><span class="k">class</span> <span class="nc">Stopwatch</span><span class="p">:</span>
     <span class="sd">&#39;&#39;&#39;Simple stopwatch to measure elapsed wall clock time.</span>
@@ -579,6 +582,9 @@
 <span class="sd">    with ``&#39;.xFRAC&#39;`` where x is 1, 2, or 3, it is ensured, that exactly that</span>
 <span class="sd">    number of digits are present in the fractional seconds.</span>
 <span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="n">util_ext</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">t</span><span class="p">,</span> <span class="n">tfrac</span> <span class="o">=</span> <span class="n">util_ext</span><span class="o">.</span><span class="n">stt</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">format</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">t</span><span class="o">+</span><span class="n">tfrac</span>
         
     <span class="n">fracsec</span> <span class="o">=</span> <span class="mf">0.</span>
     <span class="n">fixed_endings</span> <span class="o">=</span> <span class="s">&#39;.FRAC&#39;</span><span class="p">,</span> <span class="s">&#39;.1FRAC&#39;</span><span class="p">,</span> <span class="s">&#39;.2FRAC&#39;</span><span class="p">,</span> <span class="s">&#39;.3FRAC&#39;</span>
@@ -622,6 +628,10 @@
     
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">format</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
         <span class="n">format</span> <span class="o">=</span> <span class="s">&#39;%Y-%m-</span><span class="si">%d</span><span class="s"> %H:%M:%S.&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">format</span><span class="p">)</span><span class="o">+</span><span class="s">&#39;FRAC&#39;</span>
+
+    <span class="k">if</span> <span class="n">util_ext</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">t0</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">util_ext</span><span class="o">.</span><span class="n">tts</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">t0</span><span class="p">),</span> <span class="n">t</span> <span class="o">-</span> <span class="n">t0</span><span class="p">,</span> <span class="n">format</span><span class="p">)</span>
     
     <span class="k">if</span> <span class="ow">not</span> <span class="n">GlobalVars</span><span class="o">.</span><span class="n">re_frac</span><span class="p">:</span>
         <span class="n">GlobalVars</span><span class="o">.</span><span class="n">re_frac</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s">r&#39;\.[1-9]FRAC&#39;</span><span class="p">)</span>
@@ -1130,7 +1140,36 @@
         <span class="k">if</span> <span class="nb">round</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">1000.</span><span class="p">:</span>
             <span class="k">return</span> <span class="s">&#39;</span><span class="si">%.0f</span><span class="s"> </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">ext</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="s">&#39;</span><span class="si">%i</span><span class="s"> Bytes&#39;</span> <span class="o">%</span> <span class="n">value</span></div>
+    <span class="k">return</span> <span class="s">&#39;</span><span class="si">%i</span><span class="s"> Bytes&#39;</span> <span class="o">%</span> <span class="n">value</span>
+</div>
+<span class="n">re_compatibility</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
+    <span class="s">r&#39;!pyrocko\.(trace|gf\.(meta|seismosizer)|fomosto\.(dummy|poel|qseis|qssp))\.&#39;</span>
+<span class="p">)</span>
+
+<div class="viewcode-block" id="pf_is_old"><a class="viewcode-back" href="../../util.html#pyrocko.util.pf_is_old">[docs]</a><span class="k">def</span> <span class="nf">pf_is_old</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
+    <span class="n">oldstyle</span> <span class="o">=</span> <span class="bp">False</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">re_compatibility</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">line</span><span class="p">):</span>
+                <span class="n">oldstyle</span> <span class="o">=</span> <span class="bp">True</span>
+
+    <span class="k">return</span> <span class="n">oldstyle</span>
+
+</div>
+<div class="viewcode-block" id="pf_upgrade"><a class="viewcode-back" href="../../util.html#pyrocko.util.pf_upgrade">[docs]</a><span class="k">def</span> <span class="nf">pf_upgrade</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
+    <span class="n">need</span> <span class="o">=</span> <span class="n">pf_is_old</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">need</span><span class="p">:</span>
+        <span class="n">fn_temp</span> <span class="o">=</span> <span class="n">fn</span> <span class="o">+</span> <span class="s">&#39;.temp&#39;</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fin</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fn_temp</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fout</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">fin</span><span class="p">:</span>
+                    <span class="n">line</span> <span class="o">=</span> <span class="n">re_compatibility</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s">&#39;!pf.&#39;</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span>
+                    <span class="n">fout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+
+        <span class="n">os</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">fn_temp</span><span class="p">,</span> <span class="n">fn</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">need</span></div>
 </pre></div>
 
           </div>

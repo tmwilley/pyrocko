@@ -122,7 +122,7 @@
 
 <span class="n">LICE</span><span class="p">,</span> <span class="n">LWATER</span><span class="p">,</span> <span class="n">LSOFTSED</span><span class="p">,</span> <span class="n">LHARDSED</span><span class="p">,</span> <span class="n">LUPPERCRUST</span><span class="p">,</span> <span class="n">LMIDDLECRUST</span><span class="p">,</span> <span class="n">LLOWERCRUST</span><span class="p">,</span> <span class="n">LBELOWCRUST</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
 
-<div class="viewcode-block" id="Crust2Profile"><a class="viewcode-back" href="../../crust2x2.html#pyrocko.crust2x2.Crust2Profile">[docs]</a><span class="k">class</span> <span class="nc">Crust2Profile</span><span class="p">:</span>
+<div class="viewcode-block" id="Crust2Profile"><a class="viewcode-back" href="../../crust2x2.html#pyrocko.crust2x2.Crust2Profile">[docs]</a><span class="k">class</span> <span class="nc">Crust2Profile</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Representation of a CRUST2.0 key profile.&#39;&#39;&#39;</span>
     
     <span class="n">layer_names</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;ice&#39;</span><span class="p">,</span> <span class="s">&#39;water&#39;</span><span class="p">,</span> <span class="s">&#39;soft sed.&#39;</span><span class="p">,</span> <span class="s">&#39;hard sed.&#39;</span><span class="p">,</span> <span class="s">&#39;upper crust&#39;</span><span class="p">,</span> <span class="s">&#39;middle crust&#39;</span><span class="p">,</span> <span class="s">&#39;lower crust&#39;</span><span class="p">,</span> <span class="s">&#39;mantle&#39;</span><span class="p">)</span>
@@ -242,7 +242,7 @@
 <span class="k">def</span> <span class="nf">_clip</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">mi</span><span class="p">,</span> <span class="n">ma</span><span class="p">):</span>
     <span class="k">return</span> <span class="nb">min</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">mi</span><span class="p">,</span><span class="n">x</span><span class="p">),</span><span class="n">ma</span><span class="p">)</span>
 
-<div class="viewcode-block" id="Crust2"><a class="viewcode-back" href="../../crust2x2.html#pyrocko.crust2x2.Crust2">[docs]</a><span class="k">class</span> <span class="nc">Crust2</span><span class="p">:</span>
+<div class="viewcode-block" id="Crust2"><a class="viewcode-back" href="../../crust2x2.html#pyrocko.crust2x2.Crust2">[docs]</a><span class="k">class</span> <span class="nc">Crust2</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Access CRUST2.0 model.</span>
 <span class="sd">        </span>
 <span class="sd">        :param directory: Directory with the data files which contain the </span>

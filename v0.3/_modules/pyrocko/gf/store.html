@@ -67,31 +67,41 @@
 
 <span class="kn">from</span> <span class="nn">pyrocko</span> <span class="kn">import</span> <span class="n">util</span><span class="p">,</span> <span class="n">spit</span>
 <span class="kn">from</span> <span class="nn">pyrocko.gf</span> <span class="kn">import</span> <span class="n">meta</span>
+<span class="kn">from</span> <span class="nn">pyrocko.gf</span> <span class="kn">import</span> <span class="n">store_ext</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s">&#39;pyrocko.gf.store&#39;</span><span class="p">)</span>
 
+<span class="c"># gf store endianness</span>
+<span class="n">E</span> <span class="o">=</span> <span class="s">&#39;&lt;&#39;</span>
+
 <span class="n">gf_dtype</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="n">num</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+<span class="n">gf_dtype_store</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="n">E</span> <span class="o">+</span> <span class="s">&#39;f4&#39;</span><span class="p">)</span>
+
 <span class="n">gf_dtype_nbytes_per_sample</span> <span class="o">=</span> <span class="mi">4</span>
 
 <span class="n">gf_store_header_dtype</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="p">(</span><span class="s">&#39;nrecords&#39;</span><span class="p">,</span> <span class="s">&#39;&lt;u8&#39;</span><span class="p">),</span>
-    <span class="p">(</span><span class="s">&#39;deltat&#39;</span><span class="p">,</span> <span class="s">&#39;&lt;f4&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">&#39;nrecords&#39;</span><span class="p">,</span> <span class="n">E</span> <span class="o">+</span> <span class="s">&#39;u8&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">&#39;deltat&#39;</span><span class="p">,</span> <span class="n">E</span> <span class="o">+</span> <span class="s">&#39;f4&#39;</span><span class="p">),</span>
 <span class="p">]</span>
 
-<span class="n">gf_store_header_fmt</span> <span class="o">=</span> <span class="s">&#39;&lt;Qf&#39;</span>
+<span class="n">gf_store_header_fmt</span> <span class="o">=</span> <span class="n">E</span> <span class="o">+</span> <span class="s">&#39;Qf&#39;</span>
 <span class="n">gf_store_header_fmt_size</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">calcsize</span><span class="p">(</span><span class="n">gf_store_header_fmt</span><span class="p">)</span>
 
 <span class="n">gf_record_dtype</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">dtype</span><span class="p">([</span>
-    <span class="p">(</span><span class="s">&#39;data_offset&#39;</span><span class="p">,</span> <span class="s">&#39;&lt;u8&#39;</span><span class="p">),</span>
-    <span class="p">(</span><span class="s">&#39;itmin&#39;</span><span class="p">,</span> <span class="s">&#39;&lt;i4&#39;</span><span class="p">),</span>
-    <span class="p">(</span><span class="s">&#39;nsamples&#39;</span><span class="p">,</span> <span class="s">&#39;&lt;u4&#39;</span><span class="p">),</span>
-    <span class="p">(</span><span class="s">&#39;begin_value&#39;</span><span class="p">,</span> <span class="s">&#39;&lt;f4&#39;</span><span class="p">),</span>
-    <span class="p">(</span><span class="s">&#39;end_value&#39;</span><span class="p">,</span> <span class="s">&#39;&lt;f4&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">&#39;data_offset&#39;</span><span class="p">,</span> <span class="n">E</span> <span class="o">+</span> <span class="s">&#39;u8&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">&#39;itmin&#39;</span><span class="p">,</span> <span class="n">E</span> <span class="o">+</span> <span class="s">&#39;i4&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">&#39;nsamples&#39;</span><span class="p">,</span> <span class="n">E</span> <span class="o">+</span> <span class="s">&#39;u4&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">&#39;begin_value&#39;</span><span class="p">,</span> <span class="n">E</span> <span class="o">+</span> <span class="s">&#39;f4&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s">&#39;end_value&#39;</span><span class="p">,</span> <span class="n">E</span> <span class="o">+</span> <span class="s">&#39;f4&#39;</span><span class="p">),</span>
 <span class="p">])</span>
 
 
+<span class="k">def</span> <span class="nf">valid_string_id</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">meta</span><span class="o">.</span><span class="n">StringID</span><span class="o">.</span><span class="n">pattern</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+
+
 <span class="k">def</span> <span class="nf">check_string_id</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">meta</span><span class="o">.</span><span class="n">StringID</span><span class="o">.</span><span class="n">pattern</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">valid_string_id</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&#39;invalid name </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">s</span><span class="p">)</span>
 
 <span class="c"># - data_offset</span>
@@ -185,18 +195,21 @@
         <span class="k">return</span> <span class="s">&#39;|&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">make_same_span</span><span class="p">(</span><span class="n">traces</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">make_same_span</span><span class="p">(</span><span class="n">tracesdict</span><span class="p">):</span>
+
+    <span class="n">traces</span> <span class="o">=</span> <span class="n">tracesdict</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+
     <span class="n">nonzero</span> <span class="o">=</span> <span class="p">[</span><span class="n">tr</span> <span class="k">for</span> <span class="n">tr</span> <span class="ow">in</span> <span class="n">traces</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">tr</span><span class="o">.</span><span class="n">is_zero</span><span class="p">]</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">nonzero</span><span class="p">:</span>
-        <span class="k">return</span> <span class="p">[</span><span class="n">Zero</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">traces</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">dict</span><span class="p">((</span><span class="n">k</span><span class="p">,</span> <span class="n">Zero</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">tracesdict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
 
     <span class="n">deltat</span> <span class="o">=</span> <span class="n">nonzero</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">deltat</span>
 
     <span class="n">itmin</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">tr</span><span class="o">.</span><span class="n">itmin</span> <span class="k">for</span> <span class="n">tr</span> <span class="ow">in</span> <span class="n">nonzero</span><span class="p">)</span>
     <span class="n">itmax</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">tr</span><span class="o">.</span><span class="n">itmin</span><span class="o">+</span><span class="n">tr</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">size</span> <span class="k">for</span> <span class="n">tr</span> <span class="ow">in</span> <span class="n">nonzero</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
 
-    <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">tr</span> <span class="ow">in</span> <span class="n">traces</span><span class="p">:</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">tr</span> <span class="ow">in</span> <span class="n">tracesdict</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
         <span class="n">n</span> <span class="o">=</span> <span class="n">itmax</span> <span class="o">-</span> <span class="n">itmin</span> <span class="o">+</span> <span class="mi">1</span>
         <span class="k">if</span> <span class="n">tr</span><span class="o">.</span><span class="n">itmin</span> <span class="o">!=</span> <span class="n">itmin</span> <span class="ow">or</span> <span class="n">tr</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">size</span> <span class="o">!=</span> <span class="n">n</span><span class="p">:</span>
             <span class="n">data</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">gf_dtype</span><span class="p">)</span>
@@ -209,7 +222,7 @@
 
             <span class="n">tr</span> <span class="o">=</span> <span class="n">GFTrace</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">itmin</span><span class="p">,</span> <span class="n">deltat</span><span class="p">)</span>
 
-        <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tr</span><span class="p">)</span>
+        <span class="n">out</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">tr</span>
 
     <span class="k">return</span> <span class="n">out</span>
 
@@ -231,9 +244,11 @@
 <span class="k">class</span> <span class="nc">DuplicateInsert</span><span class="p">(</span><span class="n">StoreError</span><span class="p">):</span>
     <span class="k">pass</span>
 
+
 <span class="k">class</span> <span class="nc">ShortRead</span><span class="p">(</span><span class="n">StoreError</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s">&#39;unexpected end of data (truncated traces file?)&#39;</span>
+
 
 <span class="k">class</span> <span class="nc">NotAllowedToInterpolate</span><span class="p">(</span><span class="n">StoreError</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -327,6 +342,13 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
             <span class="k">raise</span> <span class="n">CannotOpen</span><span class="p">(</span><span class="s">&#39;cannot open gf store: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">store_dir</span><span class="p">)</span>
 
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="s">&#39;r&#39;</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">cstore</span> <span class="o">=</span> <span class="n">store_ext</span><span class="o">.</span><span class="n">store_init</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_f_index</span><span class="o">.</span><span class="n">fileno</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_f_data</span><span class="o">.</span><span class="n">fileno</span><span class="p">())</span>
+            <span class="k">except</span> <span class="n">store_ext</span><span class="o">.</span><span class="n">StoreExtError</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">StoreError</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+
         <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">dataheader</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_f_index</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">gf_store_header_fmt_size</span><span class="p">)</span>
@@ -377,20 +399,16 @@
     <span class="k">def</span> <span class="nf">get_span</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">irecord</span><span class="p">,</span> <span class="n">decimate</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_span</span><span class="p">(</span><span class="n">irecord</span><span class="p">,</span> <span class="n">decimate</span><span class="o">=</span><span class="n">decimate</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">irecord</span><span class="p">,</span> <span class="n">itmin</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">nsamples</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">decimate</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="n">irecord</span><span class="p">,</span> <span class="n">itmin</span><span class="o">=</span><span class="n">itmin</span><span class="p">,</span> <span class="n">nsamples</span><span class="o">=</span><span class="n">nsamples</span><span class="p">,</span>
-                         <span class="n">decimate</span><span class="o">=</span><span class="n">decimate</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">irecord</span><span class="p">,</span> <span class="n">itmin</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">nsamples</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">decimate</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">implementation</span><span class="o">=</span><span class="s">&#39;c&#39;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="n">irecord</span><span class="p">,</span> <span class="n">itmin</span><span class="p">,</span> <span class="n">nsamples</span><span class="p">,</span> <span class="n">decimate</span><span class="p">,</span> <span class="n">implementation</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">sum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">irecords</span><span class="p">,</span> <span class="n">delays</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">itmin</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">nsamples</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
-            <span class="n">decimate</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">sum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">irecords</span><span class="p">,</span> <span class="n">delays</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">itmin</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+            <span class="n">nsamples</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">decimate</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">implementation</span><span class="o">=</span><span class="s">&#39;c&#39;</span><span class="p">,</span>
+            <span class="n">optimization</span><span class="o">=</span><span class="s">&#39;enable&#39;</span><span class="p">):</span>
 
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sum</span><span class="p">(</span><span class="n">irecords</span><span class="p">,</span> <span class="n">delays</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">itmin</span><span class="p">,</span> <span class="n">nsamples</span><span class="p">,</span> <span class="n">decimate</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">sum_reference</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">irecords</span><span class="p">,</span> <span class="n">delays</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">itmin</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
-                      <span class="n">nsamples</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">decimate</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
-
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sum_reference</span><span class="p">(</span>
-            <span class="n">irecords</span><span class="p">,</span> <span class="n">delays</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">itmin</span><span class="p">,</span> <span class="n">nsamples</span><span class="p">,</span> <span class="n">decimate</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sum</span><span class="p">(</span><span class="n">irecords</span><span class="p">,</span> <span class="n">delays</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">itmin</span><span class="p">,</span> <span class="n">nsamples</span><span class="p">,</span> <span class="n">decimate</span><span class="p">,</span>
+                         <span class="n">implementation</span><span class="p">,</span> <span class="n">optimization</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">irecord_format</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">util</span><span class="o">.</span><span class="n">zfmt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_nrecords</span><span class="p">)</span>
@@ -421,15 +439,38 @@
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_records</span><span class="p">[</span><span class="n">irecord</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">_get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">irecord</span><span class="p">,</span> <span class="n">itmin</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">nsamples</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">decimate</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">irecord</span><span class="p">,</span> <span class="n">itmin</span><span class="p">,</span> <span class="n">nsamples</span><span class="p">,</span> <span class="n">decimate</span><span class="p">,</span> <span class="n">implementation</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Retrieve complete GF trace from storage.&#39;&#39;&#39;</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_f_index</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
 
-        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="s">&#39;r&#39;</span>
-        <span class="k">assert</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">irecord</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nrecords</span><span class="p">,</span> \
-            <span class="s">&#39;irecord = </span><span class="si">%i</span><span class="s">, nrecords = </span><span class="si">%i</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">irecord</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nrecords</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="s">&#39;r&#39;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">StoreError</span><span class="p">(</span><span class="s">&#39;store not open in read mode&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">implementation</span> <span class="o">==</span> <span class="s">&#39;c&#39;</span> <span class="ow">and</span> <span class="n">decimate</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+
+            <span class="k">if</span> <span class="n">nsamples</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">nsamples</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+
+            <span class="k">if</span> <span class="n">itmin</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">itmin</span> <span class="o">=</span> <span class="mi">0</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">GFTrace</span><span class="p">(</span><span class="o">*</span><span class="n">store_ext</span><span class="o">.</span><span class="n">store_get</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">cstore</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">irecord</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">itmin</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">nsamples</span><span class="p">)))</span>
+            <span class="k">except</span> <span class="n">store_ext</span><span class="o">.</span><span class="n">StoreExtError</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">StoreError</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_impl_reference</span><span class="p">(</span><span class="n">irecord</span><span class="p">,</span> <span class="n">itmin</span><span class="p">,</span> <span class="n">nsamples</span><span class="p">,</span> <span class="n">decimate</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_get_impl_reference</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">irecord</span><span class="p">,</span> <span class="n">itmin</span><span class="p">,</span> <span class="n">nsamples</span><span class="p">,</span> <span class="n">decimate</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">irecord</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nrecords</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">StoreError</span><span class="p">(</span><span class="s">&#39;invalid record number requested &#39;</span>
+                             <span class="s">&#39;(irecord = </span><span class="si">%i</span><span class="s">, nrecords = </span><span class="si">%i</span><span class="s">)&#39;</span> <span class="o">%</span>
+                             <span class="p">(</span><span class="n">irecord</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nrecords</span><span class="p">))</span>
 
         <span class="n">ipos</span><span class="p">,</span> <span class="n">itmin_data</span><span class="p">,</span> <span class="n">nsamples_data</span><span class="p">,</span> <span class="n">begin_value</span><span class="p">,</span> <span class="n">end_value</span> <span class="o">=</span> \
             <span class="bp">self</span><span class="o">.</span><span class="n">_records</span><span class="p">[</span><span class="n">irecord</span><span class="p">]</span>
@@ -542,15 +583,15 @@
         <span class="k">if</span> <span class="n">ndata</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_f_data</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
             <span class="n">ipos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_f_data</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span>
-            <span class="n">trace</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">tofile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_f_data</span><span class="p">)</span>
+            <span class="n">trace</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">gf_dtype_store</span><span class="p">)</span><span class="o">.</span><span class="n">tofile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_f_data</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">ipos</span> <span class="o">=</span> <span class="mi">2</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_records</span><span class="p">[</span><span class="n">irecord</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">ipos</span><span class="p">,</span> <span class="n">trace</span><span class="o">.</span><span class="n">itmin</span><span class="p">,</span> <span class="n">ndata</span><span class="p">,</span>
                                   <span class="n">trace</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">trace</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
 
-    <span class="k">def</span> <span class="nf">_sum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">irecords</span><span class="p">,</span> <span class="n">delays</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">itmin</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">nsamples</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
-             <span class="n">decimate</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_sum_impl_alternative</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">irecords</span><span class="p">,</span> <span class="n">delays</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">itmin</span><span class="p">,</span> <span class="n">nsamples</span><span class="p">,</span>
+                              <span class="n">decimate</span><span class="p">):</span>
 
         <span class="sd">&#39;&#39;&#39;Sum delayed and weighted GF traces.&#39;&#39;&#39;</span>
 
@@ -581,7 +622,10 @@
         <span class="k">if</span> <span class="n">nsamples</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">GFTrace</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">itmin</span><span class="p">,</span> <span class="n">deltat</span><span class="p">)</span>
 
-        <span class="k">for</span> <span class="n">irecord</span><span class="p">,</span> <span class="n">delay</span><span class="p">,</span> <span class="n">weight</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">irecords</span><span class="p">,</span> <span class="n">delays</span><span class="p">,</span> <span class="n">weights</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">ii</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">irecords</span><span class="p">)):</span>
+            <span class="n">irecord</span> <span class="o">=</span> <span class="n">irecords</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span>
+            <span class="n">delay</span> <span class="o">=</span> <span class="n">delays</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span>
+            <span class="n">weight</span> <span class="o">=</span> <span class="n">weights</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span>
 
             <span class="k">if</span> <span class="n">weight</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">:</span>
                 <span class="k">continue</span>
@@ -593,7 +637,8 @@
                 <span class="n">irecord</span><span class="p">,</span>
                 <span class="n">itmin</span> <span class="o">-</span> <span class="n">idelay_ceil</span><span class="p">,</span>
                 <span class="n">nsamples</span> <span class="o">+</span> <span class="n">idelay_ceil</span> <span class="o">-</span> <span class="n">idelay_floor</span><span class="p">,</span>
-                <span class="n">decimate</span><span class="o">=</span><span class="n">decimate</span><span class="p">)</span>
+                <span class="n">decimate</span><span class="p">,</span>
+                <span class="s">&#39;reference&#39;</span><span class="p">)</span>
 
             <span class="k">assert</span> <span class="n">gf_trace</span><span class="o">.</span><span class="n">itmin</span> <span class="o">&gt;=</span> <span class="n">itmin</span> <span class="o">-</span> <span class="n">idelay_ceil</span>
             <span class="k">assert</span> <span class="n">gf_trace</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">size</span> <span class="o">&lt;=</span> <span class="n">nsamples</span> <span class="o">+</span> <span class="n">idelay_ceil</span> <span class="o">-</span> <span class="n">idelay_floor</span>
@@ -635,8 +680,8 @@
 
         <span class="k">return</span> <span class="n">GFTrace</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">itmin</span><span class="p">,</span> <span class="n">deltat</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_sum_reference</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">irecords</span><span class="p">,</span> <span class="n">delays</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">itmin</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
-                       <span class="n">nsamples</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">decimate</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_sum_impl_reference</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">irecords</span><span class="p">,</span> <span class="n">delays</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">itmin</span><span class="p">,</span> <span class="n">nsamples</span><span class="p">,</span>
+                            <span class="n">decimate</span><span class="p">):</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_f_index</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
@@ -646,7 +691,10 @@
         <span class="n">datas</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">itmins</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">delay</span><span class="p">,</span> <span class="n">weight</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">irecords</span><span class="p">,</span> <span class="n">delays</span><span class="p">,</span> <span class="n">weights</span><span class="p">):</span>
-            <span class="n">tr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">decimate</span><span class="o">=</span><span class="n">decimate</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">weight</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="n">tr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="n">decimate</span><span class="p">,</span> <span class="s">&#39;reference&#39;</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">tr</span><span class="o">.</span><span class="n">is_zero</span><span class="p">:</span>
                 <span class="k">continue</span>
 
@@ -697,6 +745,91 @@
 
         <span class="k">return</span> <span class="n">GFTrace</span><span class="p">(</span><span class="n">sum_arr</span><span class="p">,</span> <span class="n">itmin</span><span class="p">,</span> <span class="n">deltat</span><span class="p">)</span>
 
+    <span class="k">def</span> <span class="nf">_optimize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">irecords</span><span class="p">,</span> <span class="n">delays</span><span class="p">,</span> <span class="n">weights</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">irecords</span><span class="o">.</span><span class="n">size</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">irecords</span><span class="p">,</span> <span class="n">delays</span><span class="p">,</span> <span class="n">weights</span>
+
+        <span class="n">deltat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_deltat</span>
+
+        <span class="n">delays</span> <span class="o">=</span> <span class="n">delays</span> <span class="o">/</span> <span class="n">deltat</span>
+        <span class="n">irecords2</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">irecords</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">delays2</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">irecords2</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">num</span><span class="o">.</span><span class="n">float</span><span class="p">)</span>
+        <span class="n">delays2</span><span class="p">[</span><span class="mi">0</span><span class="p">::</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">delays</span><span class="p">)</span>
+        <span class="n">delays2</span><span class="p">[</span><span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">delays</span><span class="p">)</span>
+        <span class="n">weights2</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">weights</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">weights2</span><span class="p">[</span><span class="mi">0</span><span class="p">::</span><span class="mi">2</span><span class="p">]</span> <span class="o">*=</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="p">(</span><span class="n">delays</span> <span class="o">-</span> <span class="n">delays2</span><span class="p">[</span><span class="mi">0</span><span class="p">::</span><span class="mi">2</span><span class="p">])</span>
+        <span class="n">weights2</span><span class="p">[</span><span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span class="p">]</span> <span class="o">*=</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">-</span> <span class="p">(</span><span class="n">delays2</span><span class="p">[</span><span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">delays</span><span class="p">))</span> <span class="o">*</span> \
+                          <span class="p">(</span><span class="n">delays2</span><span class="p">[</span><span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">delays2</span><span class="p">[</span><span class="mi">0</span><span class="p">::</span><span class="mi">2</span><span class="p">])</span>
+
+        <span class="n">delays2</span> <span class="o">*=</span> <span class="n">deltat</span>
+
+        <span class="n">iorder</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">lexsort</span><span class="p">((</span><span class="n">delays2</span><span class="p">,</span> <span class="n">irecords2</span><span class="p">))</span>
+
+        <span class="n">irecords2</span> <span class="o">=</span> <span class="n">irecords2</span><span class="p">[</span><span class="n">iorder</span><span class="p">]</span>
+        <span class="n">delays2</span> <span class="o">=</span> <span class="n">delays2</span><span class="p">[</span><span class="n">iorder</span><span class="p">]</span>
+        <span class="n">weights2</span> <span class="o">=</span> <span class="n">weights2</span><span class="p">[</span><span class="n">iorder</span><span class="p">]</span>
+
+        <span class="n">ui</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">irecords2</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">num</span><span class="o">.</span><span class="n">bool</span><span class="p">)</span>
+        <span class="n">ui</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">logical_or</span><span class="p">(</span><span class="n">num</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">irecords2</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">,</span>
+                                <span class="n">num</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">delays2</span><span class="p">)</span> <span class="o">!=</span> <span class="mf">0.</span><span class="p">)</span>
+
+        <span class="n">ui</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">ind2</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">ui</span><span class="p">)</span>
+        <span class="n">ui</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">ind1</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">ui</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="n">irecords3</span> <span class="o">=</span> <span class="n">irecords2</span><span class="p">[</span><span class="n">ind1</span><span class="p">]</span>
+        <span class="n">delays3</span> <span class="o">=</span> <span class="n">delays2</span><span class="p">[</span><span class="n">ind1</span><span class="p">]</span>
+        <span class="n">weights3</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">bincount</span><span class="p">(</span><span class="n">ind2</span><span class="p">,</span> <span class="n">weights2</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">irecords3</span><span class="p">,</span> <span class="n">delays3</span><span class="p">,</span> <span class="n">weights3</span>
+
+    <span class="k">def</span> <span class="nf">_sum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">irecords</span><span class="p">,</span> <span class="n">delays</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">itmin</span><span class="p">,</span> <span class="n">nsamples</span><span class="p">,</span> <span class="n">decimate</span><span class="p">,</span>
+             <span class="n">implementation</span><span class="p">,</span> <span class="n">optimization</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_f_index</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">optimization</span> <span class="o">==</span> <span class="s">&#39;enable&#39;</span><span class="p">:</span>
+            <span class="n">irecords</span><span class="p">,</span> <span class="n">delays</span><span class="p">,</span> <span class="n">weights</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_optimize</span><span class="p">(</span>
+                <span class="n">irecords</span><span class="p">,</span> <span class="n">delays</span><span class="p">,</span> <span class="n">weights</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="n">optimization</span> <span class="o">==</span> <span class="s">&#39;disable&#39;</span>
+
+        <span class="k">if</span> <span class="n">implementation</span> <span class="o">==</span> <span class="s">&#39;c&#39;</span> <span class="ow">and</span> <span class="n">decimate</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">delays</span><span class="o">.</span><span class="n">size</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">itoffset</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">num</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">num</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">delays</span><span class="p">)</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">_deltat</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">itoffset</span> <span class="o">=</span> <span class="mi">0</span>
+
+            <span class="k">if</span> <span class="n">nsamples</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">nsamples</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+
+            <span class="k">if</span> <span class="n">itmin</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">itmin</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">itmin</span> <span class="o">-=</span> <span class="n">itoffset</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">tr</span> <span class="o">=</span> <span class="n">GFTrace</span><span class="p">(</span><span class="o">*</span><span class="n">store_ext</span><span class="o">.</span><span class="n">store_sum</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">cstore</span><span class="p">,</span> <span class="n">irecords</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">num</span><span class="o">.</span><span class="n">uint64</span><span class="p">),</span>
+                    <span class="p">(</span><span class="n">delays</span> <span class="o">-</span> <span class="n">itoffset</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_deltat</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">num</span><span class="o">.</span><span class="n">float32</span><span class="p">),</span>
+                    <span class="n">weights</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">num</span><span class="o">.</span><span class="n">float32</span><span class="p">),</span>
+                    <span class="nb">int</span><span class="p">(</span><span class="n">itmin</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">nsamples</span><span class="p">)))</span>
+                <span class="n">tr</span><span class="o">.</span><span class="n">itmin</span> <span class="o">+=</span> <span class="n">itoffset</span>
+                <span class="k">return</span> <span class="n">tr</span>
+
+            <span class="k">except</span> <span class="n">store_ext</span><span class="o">.</span><span class="n">StoreExtError</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">StoreError</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+
+        <span class="k">elif</span> <span class="n">implementation</span> <span class="o">==</span> <span class="s">&#39;alternative&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sum_impl_alternative</span><span class="p">(</span><span class="n">irecords</span><span class="p">,</span> <span class="n">delays</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span>
+                                              <span class="n">itmin</span><span class="p">,</span> <span class="n">nsamples</span><span class="p">,</span> <span class="n">decimate</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sum_impl_reference</span><span class="p">(</span><span class="n">irecords</span><span class="p">,</span> <span class="n">delays</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span>
+                                            <span class="n">itmin</span><span class="p">,</span> <span class="n">nsamples</span><span class="p">,</span> <span class="n">decimate</span><span class="p">)</span>
+
     <span class="k">def</span> <span class="nf">_load_index</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_use_memmap</span><span class="p">:</span>
             <span class="n">records</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">memmap</span><span class="p">(</span>
@@ -732,8 +865,11 @@
                 <span class="n">data_orig</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">end_value</span>
                 <span class="k">return</span> <span class="n">data_orig</span><span class="p">[</span><span class="n">ilo</span><span class="p">:</span><span class="n">ihi</span><span class="p">]</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_f_data</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">ipos</span> <span class="o">+</span> <span class="n">ilo</span><span class="o">*</span><span class="n">gf_dtype_nbytes_per_sample</span><span class="p">))</span>
-                <span class="n">arr</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">fromfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_f_data</span><span class="p">,</span> <span class="n">gf_dtype</span><span class="p">,</span> <span class="n">ihi</span><span class="o">-</span><span class="n">ilo</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_f_data</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span>
+                    <span class="nb">int</span><span class="p">(</span><span class="n">ipos</span> <span class="o">+</span> <span class="n">ilo</span><span class="o">*</span><span class="n">gf_dtype_nbytes_per_sample</span><span class="p">))</span>
+                <span class="n">arr</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">fromfile</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_f_data</span><span class="p">,</span> <span class="n">gf_dtype_store</span><span class="p">,</span> <span class="n">ihi</span><span class="o">-</span><span class="n">ilo</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">gf_dtype</span><span class="p">)</span>
+
                 <span class="k">if</span> <span class="n">arr</span><span class="o">.</span><span class="n">size</span> <span class="o">!=</span> <span class="n">ihi</span><span class="o">-</span><span class="n">ilo</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="n">ShortRead</span><span class="p">()</span>
                 <span class="k">return</span> <span class="n">arr</span>
@@ -771,7 +907,6 @@
 
     <span class="k">def</span> <span class="nf">stats</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">counter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">count_special_records</span><span class="p">()</span>
-
 
         <span class="n">stats</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
             <span class="n">total</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_nrecords</span><span class="p">,</span>
@@ -905,8 +1040,8 @@
             <span class="n">dpath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">store_dir</span><span class="p">,</span> <span class="n">sub_dir</span><span class="p">)</span>
             <span class="n">remake_dir</span><span class="p">(</span><span class="n">dpath</span><span class="p">,</span> <span class="n">force</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">store_dir</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s">&#39;r&#39;</span><span class="p">):</span>
-        <span class="n">BaseStore</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">store_dir</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">store_dir</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s">&#39;r&#39;</span><span class="p">,</span> <span class="n">use_memmap</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="n">BaseStore</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">store_dir</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">,</span> <span class="n">use_memmap</span><span class="o">=</span><span class="n">use_memmap</span><span class="p">)</span>
         <span class="n">config_fn</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">store_dir</span><span class="p">,</span> <span class="s">&#39;config&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">config_fn</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">StoreError</span><span class="p">(</span>
@@ -939,7 +1074,22 @@
 
         <span class="k">return</span> <span class="n">x</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">put</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">trace</span><span class="p">):</span></div>
+    <span class="k">def</span> <span class="nf">upgrade</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
+        <span class="n">fns</span> <span class="o">=</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">store_dir</span><span class="p">,</span> <span class="s">&#39;config&#39;</span><span class="p">)]</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">extra_keys</span><span class="p">():</span>
+            <span class="n">fns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">store_dir</span><span class="p">,</span> <span class="s">&#39;extra&#39;</span><span class="p">,</span> <span class="n">key</span><span class="p">))</span>
+
+        <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">fn</span> <span class="ow">in</span> <span class="n">fns</span><span class="p">:</span>
+            <span class="n">i</span> <span class="o">+=</span> <span class="n">util</span><span class="o">.</span><span class="n">pf_upgrade</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">i</span>
+
+    <span class="k">def</span> <span class="nf">extra_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">store_dir</span><span class="p">,</span> <span class="s">&#39;extra&#39;</span><span class="p">))</span>
+                <span class="k">if</span> <span class="n">valid_string_id</span><span class="p">(</span><span class="n">x</span><span class="p">)]</span>
+
+    <span class="k">def</span> <span class="nf">put</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">trace</span><span class="p">):</span>
 <div class="viewcode-block" id="Store.put"><a class="viewcode-back" href="../../../gf.html#pyrocko.gf.store.Store.put">[docs]</a>        <span class="sd">&#39;&#39;&#39;Insert trace into GF store.</span>
 
 <span class="sd">        Store a single GF trace at (high-level) index `args`.&#39;&#39;&#39;</span>
@@ -955,7 +1105,7 @@
         <span class="k">return</span> <span class="n">BaseStore</span><span class="o">.</span><span class="n">str_irecord</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">irecord</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">itmin</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">nsamples</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">decimate</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-<div class="viewcode-block" id="Store.get"><a class="viewcode-back" href="../../../gf.html#pyrocko.gf.store.Store.get">[docs]</a>            <span class="n">interpolate</span><span class="o">=</span><span class="s">&#39;nearest_neighbor&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="Store.get"><a class="viewcode-back" href="../../../gf.html#pyrocko.gf.store.Store.get">[docs]</a>            <span class="n">interpolation</span><span class="o">=</span><span class="s">&#39;nearest_neighbor&#39;</span><span class="p">,</span> <span class="n">implementation</span><span class="o">=</span><span class="s">&#39;c&#39;</span><span class="p">):</span>
 
         <span class="sd">&#39;&#39;&#39;Retrieve GF trace from store.</span>
 
@@ -967,21 +1117,23 @@
 <span class="sd">        &#39;&#39;&#39;</span>
 
         <span class="n">store</span><span class="p">,</span> <span class="n">decimate</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_decimated_store</span><span class="p">(</span><span class="n">decimate</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">interpolate</span> <span class="o">==</span> <span class="s">&#39;nearest_neighbor&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">interpolation</span> <span class="o">==</span> <span class="s">&#39;nearest_neighbor&#39;</span><span class="p">:</span>
             <span class="n">irecord</span> <span class="o">=</span> <span class="n">store</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">irecord</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">store</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="n">irecord</span><span class="p">,</span> <span class="n">itmin</span><span class="o">=</span><span class="n">itmin</span><span class="p">,</span> <span class="n">nsamples</span><span class="o">=</span><span class="n">nsamples</span><span class="p">,</span>
-                              <span class="n">decimate</span><span class="o">=</span><span class="n">decimate</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">store</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="n">irecord</span><span class="p">,</span> <span class="n">itmin</span><span class="p">,</span> <span class="n">nsamples</span><span class="p">,</span> <span class="n">decimate</span><span class="p">,</span>
+                              <span class="n">implementation</span><span class="p">)</span>
 
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">irecords</span><span class="p">,</span> <span class="n">weights</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">store</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">vicinity</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">))</span>
-            <span class="k">if</span> <span class="n">interpolate</span> <span class="o">==</span> <span class="s">&#39;off&#39;</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">irecords</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="n">interpolation</span> <span class="o">==</span> <span class="s">&#39;multilinear&#39;</span>
+            <span class="n">irecords</span><span class="p">,</span> <span class="n">weights</span> <span class="o">=</span> <span class="n">store</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">vicinity</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">interpolation</span> <span class="o">==</span> <span class="s">&#39;off&#39;</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">irecords</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="n">NotAllowedToInterpolate</span><span class="p">()</span>
 
             <span class="k">return</span> <span class="n">store</span><span class="o">.</span><span class="n">_sum</span><span class="p">(</span><span class="n">irecords</span><span class="p">,</span> <span class="n">num</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">irecords</span><span class="p">)),</span> <span class="n">weights</span><span class="p">,</span>
-                              <span class="n">itmin</span><span class="p">,</span> <span class="n">nsamples</span><span class="p">,</span> <span class="n">decimate</span><span class="p">)</span>
+                              <span class="n">itmin</span><span class="p">,</span> <span class="n">nsamples</span><span class="p">,</span> <span class="n">decimate</span><span class="p">,</span> <span class="n">implementation</span><span class="p">,</span> <span class="bp">False</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">sum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">delays</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">itmin</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">nsamples</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span></div>
-<div class="viewcode-block" id="Store.sum"><a class="viewcode-back" href="../../../gf.html#pyrocko.gf.store.Store.sum">[docs]</a>            <span class="n">decimate</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<div class="viewcode-block" id="Store.sum"><a class="viewcode-back" href="../../../gf.html#pyrocko.gf.store.Store.sum">[docs]</a>            <span class="n">decimate</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="s">&#39;nearest_neighbor&#39;</span><span class="p">,</span> <span class="n">implementation</span><span class="o">=</span><span class="s">&#39;c&#39;</span><span class="p">,</span>
+            <span class="n">optimization</span><span class="o">=</span><span class="s">&#39;enable&#39;</span><span class="p">):</span>
 
         <span class="sd">&#39;&#39;&#39;Sum delayed and weighted GF traces.</span>
 
@@ -995,18 +1147,18 @@
 <span class="sd">        summation.&#39;&#39;&#39;</span>
 
         <span class="n">store</span><span class="p">,</span> <span class="n">decimate</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_decimated_store</span><span class="p">(</span><span class="n">decimate</span><span class="p">)</span>
-        <span class="n">irecords</span> <span class="o">=</span> <span class="n">store</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">irecords</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">store</span><span class="o">.</span><span class="n">_sum</span><span class="p">(</span><span class="n">irecords</span><span class="p">,</span> <span class="n">delays</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">itmin</span><span class="p">,</span> <span class="n">nsamples</span><span class="p">,</span> <span class="n">decimate</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">sum_reference</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">delays</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">itmin</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">nsamples</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span></div>
-<div class="viewcode-block" id="Store.sum_reference"><a class="viewcode-back" href="../../../gf.html#pyrocko.gf.store.Store.sum_reference">[docs]</a>                      <span class="n">decimate</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">interpolation</span> <span class="o">==</span> <span class="s">&#39;nearest_neighbor&#39;</span><span class="p">:</span>
+            <span class="n">irecords</span> <span class="o">=</span> <span class="n">store</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">irecords</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="n">interpolation</span> <span class="o">==</span> <span class="s">&#39;multilinear&#39;</span>
+            <span class="n">irecords</span><span class="p">,</span> <span class="n">ip_weights</span> <span class="o">=</span> <span class="n">store</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">vicinities</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+            <span class="n">neach</span> <span class="o">=</span> <span class="n">irecords</span><span class="o">.</span><span class="n">size</span> <span class="o">/</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">size</span>
+            <span class="n">weights</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">weights</span><span class="p">,</span> <span class="n">neach</span><span class="p">)</span> <span class="o">*</span> <span class="n">ip_weights</span>
+            <span class="n">delays</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">delays</span><span class="p">,</span> <span class="n">neach</span><span class="p">)</span>
 
-        <span class="sd">&#39;&#39;&#39;Alternative version of :py:meth:`sum`, for comparison.&#39;&#39;&#39;</span>
-
-        <span class="n">store</span><span class="p">,</span> <span class="n">decimate</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_decimated_store</span><span class="p">(</span><span class="n">decimate</span><span class="p">)</span>
-        <span class="n">irecords</span> <span class="o">=</span> <span class="n">store</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">irecords</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">store</span><span class="o">.</span><span class="n">_sum_reference</span><span class="p">(</span><span class="n">irecords</span><span class="p">,</span> <span class="n">delays</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">itmin</span><span class="p">,</span> <span class="n">nsamples</span><span class="p">,</span>
-                                    <span class="n">decimate</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">store</span><span class="o">.</span><span class="n">_sum</span><span class="p">(</span><span class="n">irecords</span><span class="p">,</span> <span class="n">delays</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span> <span class="n">itmin</span><span class="p">,</span> <span class="n">nsamples</span><span class="p">,</span> <span class="n">decimate</span><span class="p">,</span>
+                          <span class="n">implementation</span><span class="p">,</span> <span class="n">optimization</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">make_decimated</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">decimate</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span></div>
 <div class="viewcode-block" id="Store.make_decimated"><a class="viewcode-back" href="../../../gf.html#pyrocko.gf.store.Store.make_decimated">[docs]</a>                       <span class="n">show_progress</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
@@ -1063,7 +1215,7 @@
 
             <span class="k">if</span> <span class="n">show_progress</span><span class="p">:</span>
                 <span class="n">pbar</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
-        
+
         <span class="k">if</span> <span class="n">show_progress</span><span class="p">:</span>
             <span class="n">pbar</span><span class="o">.</span><span class="n">finish</span><span class="p">()</span>
 
@@ -1102,7 +1254,7 @@
 
             <span class="k">if</span> <span class="n">show_progress</span><span class="p">:</span>
                 <span class="n">pbar</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
-        
+
         <span class="k">if</span> <span class="n">show_progress</span><span class="p">:</span>
             <span class="n">pbar</span><span class="o">.</span><span class="n">finish</span><span class="p">()</span>
 
@@ -1140,7 +1292,7 @@
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_phases</span><span class="p">[</span><span class="n">phase_id</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">t</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timing</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">t</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timing</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
 <div class="viewcode-block" id="Store.t"><a class="viewcode-back" href="../../../gf.html#pyrocko.gf.store.Store.t">[docs]</a>        <span class="sd">&#39;&#39;&#39;Compute interpolated phase arrivals.</span>
 
 <span class="sd">        **Examples:**</span>
@@ -1157,6 +1309,11 @@
 <span class="sd">        * ``test_store.t(&#39;first(P|p|Pdiff|sP)&#39;, (1000, 1000, 10000))`` -</span>
 <span class="sd">          the first arrival of the given phases is selected</span>
 <span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">args</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">make_indexing_args1</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">timing</span><span class="p">,</span> <span class="n">meta</span><span class="o">.</span><span class="n">Timing</span><span class="p">):</span>
             <span class="n">timing</span> <span class="o">=</span> <span class="n">meta</span><span class="o">.</span><span class="n">Timing</span><span class="p">(</span><span class="n">timing</span><span class="p">)</span>
@@ -1197,15 +1354,19 @@
         <span class="n">s</span> <span class="o">=</span> <span class="p">(</span><span class="n">tmins</span> <span class="o">-</span> <span class="n">tminmin</span><span class="p">)</span> <span class="o">/</span> <span class="n">dx</span>
         <span class="n">sred</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">num</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="n">num</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">s</span><span class="p">)]))</span>
 
+        <span class="n">deltax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">distance_delta</span>
+
         <span class="k">if</span> <span class="n">snap_vred</span><span class="p">:</span>
-            <span class="n">tdif</span> <span class="o">=</span> <span class="n">sred</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">distance_delta</span>
-            <span class="n">tdif2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">deltat</span> <span class="o">*</span> <span class="nb">int</span><span class="p">(</span><span class="n">tdif</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">deltat</span><span class="p">)</span>
+            <span class="n">tdif</span> <span class="o">=</span> <span class="n">sred</span><span class="o">*</span><span class="n">deltax</span>
+            <span class="n">tdif2</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">deltat</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">tdif</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">deltat</span><span class="p">)</span>
             <span class="n">sred</span> <span class="o">=</span> <span class="n">tdif2</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">distance_delta</span>
 
         <span class="n">tmin_vred</span> <span class="o">=</span> <span class="n">tminmin</span> <span class="o">-</span> <span class="n">sred</span><span class="o">*</span><span class="n">x_tminmin</span>
         <span class="k">if</span> <span class="n">snap_vred</span><span class="p">:</span>
-            <span class="n">tmin_vred</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">deltat</span> <span class="o">*</span> \
-                <span class="nb">int</span><span class="p">(</span><span class="n">tmin_vred</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">deltat</span><span class="p">)</span>
+            <span class="n">xe</span> <span class="o">=</span> <span class="n">x_tminmin</span> <span class="o">-</span> <span class="nb">int</span><span class="p">(</span><span class="n">x_tminmin</span> <span class="o">/</span> <span class="n">deltax</span><span class="p">)</span> <span class="o">*</span> <span class="n">deltax</span>
+            <span class="n">tmin_vred</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">deltat</span> <span class="o">*</span>
+                <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">tmin_vred</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">deltat</span><span class="p">)</span> <span class="o">-</span> <span class="n">xe</span> <span class="o">*</span> <span class="n">sred</span><span class="p">)</span>
 
         <span class="n">tlenmax_vred</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">tmax</span> <span class="o">-</span> <span class="p">(</span><span class="n">tmin_vred</span> <span class="o">+</span> <span class="n">sred</span><span class="o">*</span><span class="n">x</span><span class="p">))</span>
         <span class="k">if</span> <span class="n">sred</span> <span class="o">!=</span> <span class="mf">0.0</span><span class="p">:</span>
@@ -1291,13 +1452,18 @@
             <span class="n">util</span><span class="o">.</span><span class="n">ensuredirs</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
             <span class="n">ip</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">seismogram</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">receiver</span><span class="p">):</span></div>
-        <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="p">(</span><span class="n">channel</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">delays</span><span class="p">,</span> <span class="n">weights</span><span class="p">)</span> <span class="ow">in</span> \
+    <span class="k">def</span> <span class="nf">seismogram</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">receiver</span><span class="p">,</span> <span class="n">components</span><span class="p">,</span></div>
+                   <span class="n">interpolation</span><span class="o">=</span><span class="s">&#39;nearest_neighbor&#39;</span><span class="p">,</span> <span class="n">optimization</span><span class="o">=</span><span class="s">&#39;enable&#39;</span><span class="p">):</span>
+
+        <span class="n">out</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">component</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">delays</span><span class="p">,</span> <span class="n">weights</span><span class="p">)</span> <span class="ow">in</span> \
                 <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">make_sum_params</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="n">receiver</span><span class="p">):</span>
 
-            <span class="n">gtr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">delays</span><span class="p">,</span> <span class="n">weights</span><span class="p">)</span>
-            <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">gtr</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">component</span> <span class="ow">in</span> <span class="n">components</span><span class="p">:</span>
+                <span class="n">gtr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">delays</span><span class="p">,</span> <span class="n">weights</span><span class="p">,</span>
+                               <span class="n">interpolation</span><span class="o">=</span><span class="n">interpolation</span><span class="p">,</span>
+                               <span class="n">optimization</span><span class="o">=</span><span class="n">optimization</span><span class="p">)</span>
+                <span class="n">out</span><span class="p">[</span><span class="n">component</span><span class="p">]</span> <span class="o">=</span> <span class="n">gtr</span>
 
         <span class="k">return</span> <span class="n">out</span>
 

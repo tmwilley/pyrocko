@@ -332,8 +332,11 @@
                     <span class="bp">self</span><span class="o">.</span><span class="n">_bar</span><span class="o">.</span><span class="n">finish</span><span class="p">()</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_bar</span> <span class="o">=</span> <span class="bp">None</span>
             
+            <span class="n">abort</span> <span class="o">=</span> <span class="bp">False</span>
             <span class="k">if</span> <span class="n">update_progress</span><span class="p">:</span>
-                <span class="n">update_progress</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_label</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n</span><span class="p">)</span>
+                <span class="n">abort</span> <span class="o">=</span> <span class="n">update_progress</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_label</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">abort</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">filenames</span><span class="p">:</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&#39;No files to load from&#39;</span><span class="p">)</span>
@@ -372,7 +375,11 @@
         <span class="k">except</span> <span class="p">(</span><span class="ne">OSError</span><span class="p">,</span> <span class="n">FilenameAttributeError</span><span class="p">),</span> <span class="n">xerror</span><span class="p">:</span>
             <span class="n">failures</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">abspath</span><span class="p">)</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">xerror</span><span class="p">)</span>
-        <span class="n">progress</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="n">abort</span> <span class="o">=</span> <span class="n">progress</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">abort</span><span class="p">:</span>
+            <span class="n">progress</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">filenames</span><span class="p">))</span>
+            <span class="k">return</span>
 
     <span class="n">progress</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">filenames</span><span class="p">))</span>
 
@@ -408,7 +415,9 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">yield</span> <span class="n">tfile</span>
             
-            <span class="n">progress</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">iload</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">abort</span> <span class="o">=</span> <span class="n">progress</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">iload</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">abort</span><span class="p">:</span>
+                <span class="k">break</span>
         
         <span class="n">progress</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">nload</span><span class="p">)</span>
 

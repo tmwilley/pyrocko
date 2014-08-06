@@ -1153,13 +1153,22 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
 
     <span class="k">def</span> <span class="nf">_update_potint_coefs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_use_potential_interpolation</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="n">potint_p</span> <span class="o">=</span> <span class="n">potint_s</span> <span class="o">=</span> <span class="bp">False</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_ppic</span> <span class="o">=</span> <span class="n">potint_coefs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mbot</span><span class="o">.</span><span class="n">vp</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mtop</span><span class="o">.</span><span class="n">vp</span><span class="p">,</span> <span class="n">radius</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">zbot</span><span class="p">),</span> <span class="n">radius</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ztop</span><span class="p">))</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_spic</span> <span class="o">=</span> <span class="n">potint_coefs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mbot</span><span class="o">.</span><span class="n">vs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mtop</span><span class="o">.</span><span class="n">vs</span><span class="p">,</span> <span class="n">radius</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">zbot</span><span class="p">),</span> <span class="n">radius</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ztop</span><span class="p">))</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_use_potential_interpolation</span> <span class="o">=</span> <span class="bp">True</span>
+            <span class="n">potint_p</span> <span class="o">=</span> <span class="bp">True</span>
         <span class="k">except</span> <span class="n">BadPotIntCoefs</span><span class="p">:</span>
             <span class="k">pass</span>
+
+        <span class="n">potint_s</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_spic</span> <span class="o">=</span> <span class="n">potint_coefs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mbot</span><span class="o">.</span><span class="n">vs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mtop</span><span class="o">.</span><span class="n">vs</span><span class="p">,</span> <span class="n">radius</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">zbot</span><span class="p">),</span> <span class="n">radius</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ztop</span><span class="p">))</span>
+            <span class="n">potint_s</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="k">except</span> <span class="n">BadPotIntCoefs</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="k">assert</span> <span class="n">P</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">S</span> <span class="o">==</span> <span class="mi">2</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_use_potential_interpolation</span> <span class="o">=</span> <span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="n">potint_p</span><span class="p">,</span> <span class="n">potint_s</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Layer.potint_coefs"><a class="viewcode-back" href="../../cake.html#pyrocko.cake.Layer.potint_coefs">[docs]</a>    <span class="k">def</span> <span class="nf">potint_coefs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Get coefficients for potential interpolation.</span>
@@ -1322,7 +1331,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">m</span>
 
     <span class="k">def</span> <span class="nf">u</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_use_potential_interpolation</span> <span class="ow">and</span> <span class="n">z</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_use_potential_interpolation</span><span class="p">[</span><span class="n">mode</span><span class="p">]</span> <span class="ow">and</span> <span class="n">z</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">u_potint</span><span class="p">(</span><span class="n">mode</span><span class="p">,</span><span class="n">z</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="n">P</span><span class="p">:</span>
@@ -1335,7 +1344,7 @@
         <span class="k">return</span> <span class="n">u</span><span class="p">,</span> <span class="n">u</span>
 
     <span class="k">def</span> <span class="nf">v</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_use_potential_interpolation</span> <span class="ow">and</span> <span class="n">z</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_use_potential_interpolation</span><span class="p">[</span><span class="n">mode</span><span class="p">]</span> <span class="ow">and</span> <span class="n">z</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">v_potint</span><span class="p">(</span><span class="n">mode</span><span class="p">,</span><span class="n">z</span><span class="p">)</span>
         
         <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="n">P</span><span class="p">:</span>
@@ -1353,7 +1362,7 @@
         <span class="k">return</span> <span class="n">v</span><span class="p">,</span> <span class="n">v</span>
 
     <span class="k">def</span> <span class="nf">xt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">zpart</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_use_potential_interpolation</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_use_potential_interpolation</span><span class="p">[</span><span class="n">mode</span><span class="p">]:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">xt_potint</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">zpart</span><span class="p">)</span>
         
         <span class="n">u</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">(</span><span class="n">mode</span><span class="p">)</span>
@@ -1372,7 +1381,7 @@
         <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">t</span>
 
     <span class="k">def</span> <span class="nf">zturn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">mode</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_use_potential_interpolation</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_use_potential_interpolation</span><span class="p">[</span><span class="n">mode</span><span class="p">]:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">zturn_potint</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">mode</span><span class="p">)</span>
         
         <span class="k">raise</span> <span class="n">DoesNotTurn</span><span class="p">()</span>
@@ -1390,10 +1399,8 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_use_potential_interpolation</span><span class="p">:</span>
-            <span class="n">calcmode</span> <span class="o">=</span> <span class="s">&#39;P&#39;</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">calcmode</span> <span class="o">=</span> <span class="s">&#39;H&#39;</span>
+        <span class="n">calcmode</span> <span class="o">=</span> <span class="s">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s">&#39;HP&#39;</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_use_potential_interpolation</span><span class="p">[</span><span class="n">mode</span><span class="p">]]</span>
+                           <span class="k">for</span> <span class="n">mode</span> <span class="ow">in</span> <span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="n">S</span><span class="p">))</span>
 
         <span class="k">return</span> <span class="s">&#39;  (</span><span class="si">%i</span><span class="s">) homogeneous layer </span><span class="si">%s</span><span class="s">(</span><span class="si">%g</span><span class="s"> km - </span><span class="si">%g</span><span class="s"> km) [</span><span class="si">%s</span><span class="s">]</span><span class="se">\n</span><span class="s">    </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ilayer</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ztop</span><span class="o">/</span><span class="n">km</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">zbot</span><span class="o">/</span><span class="n">km</span><span class="p">,</span> <span class="n">calcmode</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">m</span><span class="p">)</span>
 </div>
@@ -1430,7 +1437,7 @@
             <span class="k">return</span> <span class="mf">1.</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">mtop</span><span class="o">.</span><span class="n">vs</span><span class="p">,</span> <span class="mf">1.</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">mbot</span><span class="o">.</span><span class="n">vs</span>
 
     <span class="k">def</span> <span class="nf">u</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_use_potential_interpolation</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_use_potential_interpolation</span><span class="p">[</span><span class="n">mode</span><span class="p">]:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">u_potint</span><span class="p">(</span><span class="n">mode</span><span class="p">,</span><span class="n">z</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="n">P</span><span class="p">:</span>
@@ -1445,7 +1452,7 @@
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mtop</span><span class="o">.</span><span class="n">vs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mbot</span><span class="o">.</span><span class="n">vs</span>
 
     <span class="k">def</span> <span class="nf">v</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_use_potential_interpolation</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_use_potential_interpolation</span><span class="p">[</span><span class="n">mode</span><span class="p">]:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">v_potint</span><span class="p">(</span><span class="n">mode</span><span class="p">,</span><span class="n">z</span><span class="p">)</span>
         
         <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="n">P</span><span class="p">:</span>
@@ -1454,11 +1461,12 @@
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mtop</span><span class="o">.</span><span class="n">vs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mbot</span><span class="o">.</span><span class="n">vs</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">xt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">zpart</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_use_potential_interpolation</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_use_potential_interpolation</span><span class="p">[</span><span class="n">mode</span><span class="p">]:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">xt_potint</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">zpart</span><span class="p">)</span>
 
         <span class="n">utop</span><span class="p">,</span> <span class="n">ubot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">u_top_bottom</span><span class="p">(</span><span class="n">mode</span><span class="p">)</span>
         <span class="n">b</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.</span><span class="o">/</span><span class="n">ubot</span> <span class="o">-</span> <span class="mf">1.</span><span class="o">/</span><span class="n">utop</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">zbot</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">ztop</span><span class="p">)</span>
+
         <span class="n">pflat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pflat_bottom</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">zpart</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
             <span class="n">utop</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">u</span><span class="p">(</span><span class="n">mode</span><span class="p">,</span> <span class="n">zpart</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
@@ -1482,7 +1490,7 @@
         <span class="k">return</span> <span class="n">x</span><span class="p">,</span> <span class="n">t</span>
    
     <span class="k">def</span> <span class="nf">zturn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">mode</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_use_potential_interpolation</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_use_potential_interpolation</span><span class="p">[</span><span class="n">mode</span><span class="p">]:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">zturn_potint</span><span class="p">(</span><span class="n">p</span><span class="p">,</span><span class="n">mode</span><span class="p">)</span>
         <span class="n">pflat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pflat_bottom</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
         <span class="n">vtop</span><span class="p">,</span> <span class="n">vbot</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">v_top_bottom</span><span class="p">(</span><span class="n">mode</span><span class="p">)</span>
@@ -1502,10 +1510,8 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_use_potential_interpolation</span><span class="p">:</span>
-            <span class="n">calcmode</span> <span class="o">=</span> <span class="s">&#39;P&#39;</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">calcmode</span> <span class="o">=</span> <span class="s">&#39;G&#39;</span>
+        <span class="n">calcmode</span> <span class="o">=</span> <span class="s">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s">&#39;HP&#39;</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_use_potential_interpolation</span><span class="p">[</span><span class="n">mode</span><span class="p">]]</span>
+                           <span class="k">for</span> <span class="n">mode</span> <span class="ow">in</span> <span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="n">S</span><span class="p">))</span>
 
         <span class="k">return</span> <span class="s">&#39;  (</span><span class="si">%i</span><span class="s">) gradient layer </span><span class="si">%s</span><span class="s">(</span><span class="si">%g</span><span class="s"> km - </span><span class="si">%g</span><span class="s"> km) [</span><span class="si">%s</span><span class="s">]</span><span class="se">\n</span><span class="s">    </span><span class="si">%s</span><span class="se">\n</span><span class="s">    </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ilayer</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ztop</span><span class="o">/</span><span class="n">km</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">zbot</span><span class="o">/</span><span class="n">km</span><span class="p">,</span> <span class="n">calcmode</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mtop</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mbot</span><span class="p">)</span>
 </div>
@@ -2287,9 +2293,9 @@
             <span class="n">xp</span> <span class="o">=</span> <span class="n">interp</span><span class="p">(</span> <span class="n">x</span><span class="p">,</span> <span class="n">rx</span><span class="p">,</span> <span class="n">rp</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
             <span class="n">xt</span> <span class="o">=</span> <span class="n">interp</span><span class="p">(</span> <span class="n">x</span><span class="p">,</span> <span class="n">rx</span><span class="p">,</span> <span class="n">rt</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 
-            <span class="k">if</span> <span class="n">rp</span><span class="o">.</span><span class="n">size</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">xp</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">rx</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mf">0.0</span> <span class="ow">and</span> <span class="n">x</span> <span class="o">==</span> <span class="mf">0.0</span> <span class="ow">and</span> <span class="n">rp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">:</span>
-                <span class="n">xp</span> <span class="o">=</span> <span class="p">[</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">rp</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="p">]</span>
-                <span class="n">xt</span> <span class="o">=</span> <span class="p">[</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">rt</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="p">]</span>
+            <span class="k">if</span> <span class="n">rp</span><span class="o">.</span><span class="n">size</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">xp</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">rx</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mf">0.0</span> <span class="ow">and</span> <span class="nb">any</span><span class="p">(</span><span class="n">x</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">)</span> <span class="ow">and</span> <span class="n">rp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mf">0.0</span><span class="p">:</span>
+                <span class="n">xp</span> <span class="o">=</span> <span class="p">[</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">rp</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="p">]</span>
+                <span class="n">xt</span> <span class="o">=</span> <span class="p">[</span> <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">rt</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="p">]</span>
 
             <span class="k">return</span> <span class="p">[</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">p</span><span class="p">,</span><span class="n">t</span><span class="p">,</span> <span class="p">(</span><span class="n">rp</span><span class="p">,</span><span class="n">rx</span><span class="p">,</span><span class="n">rt</span><span class="p">))</span> <span class="k">for</span> <span class="p">((</span><span class="n">x</span><span class="p">,</span><span class="n">p</span><span class="p">),</span> <span class="p">(</span><span class="n">_</span><span class="p">,</span><span class="n">t</span><span class="p">))</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">xp</span><span class="p">,</span> <span class="n">xt</span><span class="p">)</span>  <span class="p">]</span> 
     </div>
@@ -3204,7 +3210,7 @@
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">crust2_profile</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
             <span class="n">lat</span><span class="p">,</span> <span class="n">lon</span> <span class="o">=</span> <span class="p">[</span> <span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">crust2_profile</span> <span class="p">]</span>
             <span class="n">profile</span> <span class="o">=</span> <span class="n">crust2x2</span><span class="o">.</span><span class="n">get_profile</span><span class="p">(</span><span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">crust2_profile</span><span class="p">,</span> <span class="nb">basestring</span><span class="p">):</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">crust2_profile</span><span class="p">,</span> <span class="nb">basestring</span><span class="p">):</span>
             <span class="n">profile</span> <span class="o">=</span> <span class="n">crust2x2</span><span class="o">.</span><span class="n">get_profile</span><span class="p">(</span><span class="n">crust2_profile</span><span class="p">)</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">crust2_profile</span><span class="p">,</span> <span class="n">crust2x2</span><span class="o">.</span><span class="n">Crust2Profile</span><span class="p">):</span>
             <span class="n">profile</span> <span class="o">=</span> <span class="n">crust2_profile</span>
@@ -3313,11 +3319,23 @@
 
 <span class="k">def</span> <span class="nf">from_crust2x2_profile</span><span class="p">(</span><span class="n">profile</span><span class="p">,</span> <span class="n">depthmantle</span><span class="o">=</span><span class="mi">50000</span><span class="p">):</span>
     <span class="kn">from</span> <span class="nn">pyrocko</span> <span class="kn">import</span> <span class="n">crust2x2</span>
+
+    <span class="n">default_qp_qs</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s">&#39;soft sed.&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mf">50.</span><span class="p">,</span> <span class="mf">50.</span><span class="p">),</span>
+        <span class="s">&#39;hard sed.&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mf">200.</span><span class="p">,</span> <span class="mf">200.</span><span class="p">),</span>
+        <span class="s">&#39;upper crust&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mf">600.</span><span class="p">,</span> <span class="mf">400.</span><span class="p">),</span>
+    <span class="p">}</span>
+
     <span class="n">z</span> <span class="o">=</span> <span class="mf">0.</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">8</span><span class="p">):</span>
         <span class="n">dz</span><span class="p">,</span> <span class="n">vp</span><span class="p">,</span> <span class="n">vs</span><span class="p">,</span> <span class="n">rho</span> <span class="o">=</span> <span class="n">profile</span><span class="o">.</span><span class="n">get_layer</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
         <span class="n">name</span> <span class="o">=</span> <span class="n">crust2x2</span><span class="o">.</span><span class="n">Crust2Profile</span><span class="o">.</span><span class="n">layer_names</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-        <span class="n">material</span> <span class="o">=</span> <span class="n">Material</span><span class="p">(</span><span class="n">vp</span><span class="p">,</span> <span class="n">vs</span><span class="p">,</span> <span class="n">rho</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">default_qp_qs</span><span class="p">:</span>
+            <span class="n">qp</span><span class="p">,</span> <span class="n">qs</span> <span class="o">=</span> <span class="n">default_qp_qs</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">qp</span><span class="p">,</span> <span class="n">qs</span> <span class="o">=</span> <span class="bp">None</span><span class="p">,</span> <span class="bp">None</span>
+
+        <span class="n">material</span> <span class="o">=</span> <span class="n">Material</span><span class="p">(</span><span class="n">vp</span><span class="p">,</span> <span class="n">vs</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">qp</span><span class="p">,</span> <span class="n">qs</span><span class="p">)</span>
         <span class="n">iname</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">7</span><span class="p">:</span>
             <span class="n">iname</span> <span class="o">=</span> <span class="s">&#39;moho&#39;</span>
