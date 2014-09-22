@@ -648,6 +648,16 @@ points.</p>
 <dd><p>Compute distances to receiver for all contained points.</p>
 </dd></dl>
 
+<dl class="classmethod">
+<dt id="pyrocko.gf.meta.DiscretizedSource.combine">
+<em class="property">classmethod </em><tt class="descname">combine</tt><big>(</big><em>sources</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/pyrocko/gf/meta.html#DiscretizedSource.combine"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.gf.meta.DiscretizedSource.combine" title="Permalink to this definition">¶</a></dt>
+<dd><p>Combine several discretized source models.</p>
+<p>Concatenenates all point sources in the given discretized <tt class="docutils literal"><span class="pre">sources</span></tt>.
+Care must be taken when using this function that the external amplitude
+factors and reference times of the parameterized (undiscretized)
+sources match or are accounted for.</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="class">
@@ -661,6 +671,16 @@ points.</p>
 <dd><p><tt class="xref py py-class docutils literal"><span class="pre">pyrocko.guts_array.Array</span></tt></p>
 </dd></dl>
 
+<dl class="classmethod">
+<dt id="pyrocko.gf.meta.DiscretizedExplosionSource.combine">
+<em class="property">classmethod </em><tt class="descname">combine</tt><big>(</big><em>sources</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/pyrocko/gf/meta.html#DiscretizedExplosionSource.combine"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.gf.meta.DiscretizedExplosionSource.combine" title="Permalink to this definition">¶</a></dt>
+<dd><p>Combine several discretized source models.</p>
+<p>Concatenenates all point sources in the given discretized <tt class="docutils literal"><span class="pre">sources</span></tt>.
+Care must be taken when using this function that the external amplitude
+factors and reference times of the parameterized (undiscretized)
+sources match or are accounted for.</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="class">
@@ -672,6 +692,16 @@ points.</p>
 <dt id="pyrocko.gf.meta.DiscretizedMTSource.m6s">
 <tt class="descname">m6s</tt><a class="headerlink" href="#pyrocko.gf.meta.DiscretizedMTSource.m6s" title="Permalink to this definition">¶</a></dt>
 <dd><p><tt class="xref py py-class docutils literal"><span class="pre">pyrocko.guts_array.Array</span></tt></p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="pyrocko.gf.meta.DiscretizedMTSource.combine">
+<em class="property">classmethod </em><tt class="descname">combine</tt><big>(</big><em>sources</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/pyrocko/gf/meta.html#DiscretizedMTSource.combine"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.gf.meta.DiscretizedMTSource.combine" title="Permalink to this definition">¶</a></dt>
+<dd><p>Combine several discretized source models.</p>
+<p>Concatenenates all point sources in the given discretized <tt class="docutils literal"><span class="pre">sources</span></tt>.
+Care must be taken when using this function that the external amplitude
+factors and reference times of the parameterized (undiscretized)
+sources match or are accounted for.</p>
 </dd></dl>
 
 </dd></dl>
@@ -1417,6 +1447,37 @@ parameters.</p>
 </dd></dl>
 
 <dl class="class">
+<dt id="pyrocko.gf.seismosizer.CLVDSource">
+<em class="property">class </em><tt class="descname">CLVDSource</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/pyrocko/gf/seismosizer.html#CLVDSource"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.gf.seismosizer.CLVDSource" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyrocko.gf.seismosizer.Source" title="pyrocko.gf.seismosizer.Source"><tt class="xref py py-class docutils literal"><span class="pre">pyrocko.gf.seismosizer.Source</span></tt></a></p>
+<p>A pure CLVD point source.</p>
+<dl class="attribute">
+<dt id="pyrocko.gf.seismosizer.CLVDSource.amplitude">
+<tt class="descname">amplitude</tt><a class="headerlink" href="#pyrocko.gf.seismosizer.CLVDSource.amplitude" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">float</span></tt>, <em>default:</em> <tt class="docutils literal"><span class="pre">1.0</span></tt>, value of the largest eigenvalue of moment tensor [Nm]</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.seismosizer.CLVDSource.azimuth">
+<tt class="descname">azimuth</tt><a class="headerlink" href="#pyrocko.gf.seismosizer.CLVDSource.azimuth" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">float</span></tt>, <em>default:</em> <tt class="docutils literal"><span class="pre">0.0</span></tt>, azimuth direction of largest dipole, clockwise from north [deg]</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.seismosizer.CLVDSource.dip">
+<tt class="descname">dip</tt><a class="headerlink" href="#pyrocko.gf.seismosizer.CLVDSource.dip" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">float</span></tt>, <em>default:</em> <tt class="docutils literal"><span class="pre">90.0</span></tt>, dip direction of largest dipole, downward from horizontal [deg]</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.seismosizer.CLVDSource.discretized_source_class">
+<tt class="descname">discretized_source_class</tt><a class="headerlink" href="#pyrocko.gf.seismosizer.CLVDSource.discretized_source_class" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <tt class="xref py py-class docutils literal"><span class="pre">DiscretizedMTSource</span></tt></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
 <dt id="pyrocko.gf.seismosizer.MTSource">
 <em class="property">class </em><tt class="descname">MTSource</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/pyrocko/gf/seismosizer.html#MTSource"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.gf.seismosizer.MTSource" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#pyrocko.gf.seismosizer.Source" title="pyrocko.gf.seismosizer.Source"><tt class="xref py py-class docutils literal"><span class="pre">pyrocko.gf.seismosizer.Source</span></tt></a></p>
@@ -1895,9 +1956,14 @@ brought into a small source volume.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>use_env</strong> &#8211; if <tt class="docutils literal"><span class="pre">True</span></tt>, fill <a class="reference internal" href="#pyrocko.gf.seismosizer.LocalEngine.store_superdirs" title="pyrocko.gf.seismosizer.LocalEngine.store_superdirs"><tt class="xref py py-attr docutils literal"><span class="pre">store_superdirs</span></tt></a> and
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>use_env</strong> &#8211; if <tt class="docutils literal"><span class="pre">True</span></tt>, fill <a class="reference internal" href="#pyrocko.gf.seismosizer.LocalEngine.store_superdirs" title="pyrocko.gf.seismosizer.LocalEngine.store_superdirs"><tt class="xref py py-attr docutils literal"><span class="pre">store_superdirs</span></tt></a> and
 <a class="reference internal" href="#pyrocko.gf.seismosizer.LocalEngine.store_dirs" title="pyrocko.gf.seismosizer.LocalEngine.store_dirs"><tt class="xref py py-attr docutils literal"><span class="pre">store_dirs</span></tt></a> with paths set in environment variables
-GF_STORE_SUPERDIRS AND GF_STORE_DIRS</td>
+GF_STORE_SUPERDIRS AND GF_STORE_DIRS</li>
+<li><strong>use_config</strong> &#8211; if <tt class="docutils literal"><span class="pre">True</span></tt>, fill <a class="reference internal" href="#pyrocko.gf.seismosizer.LocalEngine.store_superdirs" title="pyrocko.gf.seismosizer.LocalEngine.store_superdirs"><tt class="xref py py-attr docutils literal"><span class="pre">store_superdirs</span></tt></a> and
+<a class="reference internal" href="#pyrocko.gf.seismosizer.LocalEngine.store_dirs" title="pyrocko.gf.seismosizer.LocalEngine.store_dirs"><tt class="xref py py-attr docutils literal"><span class="pre">store_dirs</span></tt></a> with paths set in the user&#8217;s config file.</li>
+</ul>
+</td>
 </tr>
 </tbody>
 </table>

@@ -85,7 +85,7 @@
 
 
 <span class="kn">import</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">copy</span><span class="o">,</span> <span class="nn">inspect</span><span class="o">,</span> <span class="nn">math</span><span class="o">,</span> <span class="nn">cmath</span><span class="o">,</span> <span class="nn">operator</span><span class="o">,</span> <span class="nn">StringIO</span><span class="o">,</span> <span class="nn">glob</span>
-<span class="kn">from</span> <span class="nn">pyrocko</span> <span class="kn">import</span> <span class="n">util</span>
+<span class="kn">from</span> <span class="nn">pyrocko</span> <span class="kn">import</span> <span class="n">util</span><span class="p">,</span> <span class="n">config</span>
 <span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="kn">import</span> <span class="n">bisect</span><span class="p">,</span> <span class="n">brentq</span>
 <span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="kn">import</span> <span class="n">fitpack</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">num</span>
@@ -96,7 +96,7 @@
 <span class="n">DOWN</span> <span class="o">=</span> <span class="mi">4</span>
 <span class="n">UP</span> <span class="o">=</span> <span class="o">-</span><span class="mi">4</span>
 
-<span class="n">earthradius</span> <span class="o">=</span> <span class="mf">6371.</span><span class="o">*</span><span class="mf">1000.</span>
+<span class="n">earthradius</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">config</span><span class="p">()</span><span class="o">.</span><span class="n">earthradius</span>
 
 <span class="n">r2d</span> <span class="o">=</span> <span class="mf">180.</span><span class="o">/</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span>
 <span class="n">d2r</span> <span class="o">=</span> <span class="mf">1.</span><span class="o">/</span><span class="n">r2d</span>

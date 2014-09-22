@@ -56,7 +56,6 @@
 <span class="kn">import</span> <span class="nn">time</span><span class="o">,</span> <span class="nn">logging</span><span class="o">,</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">re</span><span class="o">,</span> <span class="nn">calendar</span><span class="o">,</span> <span class="nn">math</span><span class="o">,</span> <span class="nn">fnmatch</span><span class="o">,</span> <span class="nn">errno</span><span class="o">,</span> <span class="nn">fcntl</span><span class="o">,</span> <span class="nn">shlex</span><span class="o">,</span> <span class="nn">optparse</span>
 <span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">signal</span>
 <span class="kn">from</span> <span class="nn">os.path</span> <span class="kn">import</span> <span class="n">join</span> <span class="k">as</span> <span class="n">pjoin</span>
-<span class="kn">from</span> <span class="nn">pyrocko</span> <span class="kn">import</span> <span class="n">config</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">num</span>
 <span class="kn">import</span> <span class="nn">util_ext</span>
 
@@ -614,6 +613,8 @@
     <span class="k">return</span> <span class="n">calendar</span><span class="o">.</span><span class="n">timegm</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">format</span><span class="p">))</span> <span class="o">+</span> <span class="n">fracsec</span>
 
 </div>
+<span class="n">stt</span> <span class="o">=</span> <span class="n">str_to_time</span>
+
 <div class="viewcode-block" id="time_to_str"><a class="viewcode-back" href="../../util.html#pyrocko.util.time_to_str">[docs]</a><span class="k">def</span> <span class="nf">time_to_str</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="s">&#39;%Y-%m-</span><span class="si">%d</span><span class="s"> %H:%M:%S.3FRAC&#39;</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Get string representation for floating point system time.</span>
 <span class="sd">    </span>
@@ -649,7 +650,9 @@
         <span class="n">format</span><span class="p">,</span> <span class="n">nsub</span> <span class="o">=</span> <span class="n">GlobalVars</span><span class="o">.</span><span class="n">re_frac</span><span class="o">.</span><span class="n">subn</span><span class="p">(</span><span class="n">sfrac</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">format</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
    
     <span class="k">return</span> <span class="n">time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="n">format</span><span class="p">,</span> <span class="n">time</span><span class="o">.</span><span class="n">gmtime</span><span class="p">(</span><span class="n">ts</span><span class="p">))</span>
-    </div>
+</div>
+<span class="n">tts</span> <span class="o">=</span> <span class="n">time_to_str</span>
+    
 <div class="viewcode-block" id="plural_s"><a class="viewcode-back" href="../../util.html#pyrocko.util.plural_s">[docs]</a><span class="k">def</span> <span class="nf">plural_s</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
         <span class="k">return</span> <span class="s">&#39;&#39;</span>

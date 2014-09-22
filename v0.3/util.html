@@ -498,8 +498,60 @@ number of digits are present in the fractional seconds.</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="pyrocko.util.stt">
+<tt class="descname">stt</tt><big>(</big><em>s</em>, <em>format='%Y-%m-%d %H:%M:%S.OPTFRAC'</em><big>)</big><a class="headerlink" href="#pyrocko.util.stt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert string representing UTC time to floating point system time.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>s</strong> &#8211; string representing UTC time</li>
+<li><strong>format</strong> &#8211; time string format</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">system time stamp as floating point value</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Uses the semantics of <tt class="xref py py-func docutils literal"><span class="pre">time.strptime()</span></tt> but allows for fractional seconds.
+If the format ends with <tt class="docutils literal"><span class="pre">'.FRAC'</span></tt>, anything after a dot is interpreted as
+fractional seconds. If the format ends with <tt class="docutils literal"><span class="pre">'.OPTFRAC'</span></tt>, the fractional part,
+including the dot is made optional. The latter has the consequence, that the time 
+strings and the format may not contain any other dots. If the format ends
+with <tt class="docutils literal"><span class="pre">'.xFRAC'</span></tt> where x is 1, 2, or 3, it is ensured, that exactly that
+number of digits are present in the fractional seconds.</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="pyrocko.util.time_to_str">
 <tt class="descname">time_to_str</tt><big>(</big><em>t</em>, <em>format='%Y-%m-%d %H:%M:%S.3FRAC'</em><big>)</big><a class="reference internal" href="_modules/pyrocko/util.html#time_to_str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.util.time_to_str" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get string representation for floating point system time.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>t</strong> &#8211; floating point system time</li>
+<li><strong>format</strong> &#8211; time string format</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">string representing UTC time</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Uses the semantics of <tt class="xref py py-func docutils literal"><span class="pre">time.strftime()</span></tt> but additionally allows 
+for fractional seconds. If <em>format</em> contains <tt class="docutils literal"><span class="pre">'.xFRAC'</span></tt>, where <tt class="docutils literal"><span class="pre">x</span></tt> is a digit between 1 and 9, 
+this is replaced with the fractional part of <em>t</em> with <tt class="docutils literal"><span class="pre">x</span></tt> digits precision.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pyrocko.util.tts">
+<tt class="descname">tts</tt><big>(</big><em>t</em>, <em>format='%Y-%m-%d %H:%M:%S.3FRAC'</em><big>)</big><a class="headerlink" href="#pyrocko.util.tts" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get string representation for floating point system time.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
