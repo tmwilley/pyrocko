@@ -557,13 +557,7 @@
         <span class="k">return</span> <span class="n">Marker</span><span class="p">(</span><span class="n">nslc_ids</span><span class="p">,</span> <span class="n">tmin</span><span class="p">,</span> <span class="n">tmax</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">kind</span><span class="p">)</span>
 
     <span class="nd">@staticmethod</span>
-<div class="viewcode-block" id="Marker.save_markers"><a class="viewcode-back" href="../../gui_util.html#pyrocko.gui_util.Marker.save_markers">[docs]</a>    <span class="k">def</span> <span class="nf">save_markers</span><span class="p">(</span><span class="n">markers</span><span class="p">,</span> <span class="n">fn</span><span class="p">,</span> <span class="n">fdigits</span><span class="o">=</span><span class="mi">3</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;Save :py:class:`Marker` to file.</span>
-
-<span class="sd">        :param markers: list of :py:class:`Marker` Objects</span>
-<span class="sd">        :param fn: filename as string</span>
-<span class="sd">        &#39;&#39;&#39;</span>
-
+    <span class="k">def</span> <span class="nf">save_markers</span><span class="p">(</span><span class="n">markers</span><span class="p">,</span> <span class="n">fn</span><span class="p">,</span> <span class="n">fdigits</span><span class="o">=</span><span class="mi">3</span><span class="p">):</span>
         <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span><span class="s">&#39;w&#39;</span><span class="p">)</span>
         <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;# Snuffler Markers File Version 0.2</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
         <span class="n">writer</span> <span class="o">=</span> <span class="n">TableWriter</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
@@ -580,15 +574,9 @@
             <span class="n">writer</span><span class="o">.</span><span class="n">writerow</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span>
 
         <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-</div>
+
     <span class="nd">@staticmethod</span>
-<div class="viewcode-block" id="Marker.load_markers"><a class="viewcode-back" href="../../gui_util.html#pyrocko.gui_util.Marker.load_markers">[docs]</a>    <span class="k">def</span> <span class="nf">load_markers</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;Load markers from a file. </span>
-
-<span class="sd">        :param fn:  filename as string</span>
-<span class="sd">        :returns:   list of :py:class:`Marker` Objects</span>
-<span class="sd">        &#39;&#39;&#39;</span>
-
+    <span class="k">def</span> <span class="nf">load_markers</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
         <span class="n">markers</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">)</span>
         <span class="n">line</span>  <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
@@ -625,7 +613,7 @@
             <span class="n">logger</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&#39;Unsupported Markers File Version&#39;</span><span class="p">)</span>
         
         <span class="k">return</span> <span class="n">markers</span>
-</div>
+
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nslc_ids</span><span class="p">,</span> <span class="n">tmin</span><span class="p">,</span> <span class="n">tmax</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">nslc_ids</span><span class="p">,</span> <span class="n">tmin</span><span class="p">,</span> <span class="n">tmax</span><span class="p">)</span>
         <span class="n">c</span> <span class="o">=</span> <span class="n">pyrocko</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">color</span>
@@ -923,8 +911,7 @@
     <span class="k">def</span> <span class="nf">set_active</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">active</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_active</span> <span class="o">=</span> <span class="n">active</span>
 
-<div class="viewcode-block" id="EventMarker.label"><a class="viewcode-back" href="../../gui_util.html#pyrocko.gui_util.EventMarker.label">[docs]</a>    <span class="k">def</span> <span class="nf">label</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; :return: string representation of an event. &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">label</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">t</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">mag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_event</span><span class="o">.</span><span class="n">magnitude</span>
         <span class="k">if</span> <span class="n">mag</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
@@ -942,7 +929,7 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">s</span><span class="p">:</span>
             <span class="n">s</span> <span class="o">=</span> <span class="s">&#39;(Event)&#39;</span>
         <span class="k">return</span> <span class="n">s</span>
-</div>
+
     <span class="k">def</span> <span class="nf">draw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">time_projection</span><span class="p">,</span> <span class="n">y_projection</span><span class="p">):</span>
       
         <span class="n">Marker</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">time_projection</span><span class="p">,</span> <span class="n">y_projection</span><span class="p">,</span> <span class="n">draw_line</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">draw_triangle</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
@@ -1140,6 +1127,30 @@
                              <span class="n">phasename</span><span class="o">=</span><span class="n">phasename</span><span class="p">,</span> <span class="n">polarity</span><span class="o">=</span><span class="n">polarity</span><span class="p">,</span>
                              <span class="n">automatic</span><span class="o">=</span><span class="n">automatic</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">marker</span>
+
+</div>
+<div class="viewcode-block" id="load_markers"><a class="viewcode-back" href="../../gui_util.html#pyrocko.gui_util.load_markers">[docs]</a><span class="k">def</span> <span class="nf">load_markers</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Load markers from file. </span>
+
+<span class="sd">    :param filename:  filename as string</span>
+<span class="sd">    :returns: list of :py:class:`Marker` Objects</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="k">return</span> <span class="n">Marker</span><span class="o">.</span><span class="n">load_markers</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="save_markers"><a class="viewcode-back" href="../../gui_util.html#pyrocko.gui_util.save_markers">[docs]</a><span class="k">def</span> <span class="nf">save_markers</span><span class="p">(</span><span class="n">markers</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">fdigits</span><span class="o">=</span><span class="mi">3</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Save markers to file.</span>
+
+<span class="sd">    :param markers: list of :py:class:`Marker` Objects</span>
+<span class="sd">    :param filename: filename as string</span>
+<span class="sd">    :param fdigits: number of decimal digits to use for sub-second time strings</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="k">return</span> <span class="n">Marker</span><span class="o">.</span><span class="n">save_markers</span><span class="p">(</span><span class="n">markers</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">fdigits</span><span class="o">=</span><span class="n">fdigits</span><span class="p">)</span>
+
 </div>
 <span class="k">def</span> <span class="nf">tohex</span><span class="p">(</span><span class="n">c</span><span class="p">):</span>
     <span class="k">return</span> <span class="s">&#39;</span><span class="si">%02x%02x%02x</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">c</span>
@@ -1246,6 +1257,10 @@
         <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">web_widget</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">url</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">web_widget</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">QUrl</span><span class="p">(</span><span class="n">url</span><span class="p">))</span>
+
+<span class="k">del</span> <span class="nb">bin</span>
+<span class="k">del</span> <span class="nb">hex</span>
+<span class="k">del</span> <span class="nb">oct</span>
 </pre></div>
 
           </div>

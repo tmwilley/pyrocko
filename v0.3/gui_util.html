@@ -78,40 +78,6 @@
 </tr>
 </tbody>
 </table>
-<dl class="staticmethod">
-<dt id="pyrocko.gui_util.Marker.save_markers">
-<em class="property">static </em><tt class="descname">save_markers</tt><big>(</big><em>markers</em>, <em>fn</em>, <em>fdigits=3</em><big>)</big><a class="reference internal" href="_modules/pyrocko/gui_util.html#Marker.save_markers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.gui_util.Marker.save_markers" title="Permalink to this definition">¶</a></dt>
-<dd><p>Save <a class="reference internal" href="#pyrocko.gui_util.Marker" title="pyrocko.gui_util.Marker"><tt class="xref py py-class docutils literal"><span class="pre">Marker</span></tt></a> to file.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>markers</strong> &#8211; list of <a class="reference internal" href="#pyrocko.gui_util.Marker" title="pyrocko.gui_util.Marker"><tt class="xref py py-class docutils literal"><span class="pre">Marker</span></tt></a> Objects</li>
-<li><strong>fn</strong> &#8211; filename as string</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="staticmethod">
-<dt id="pyrocko.gui_util.Marker.load_markers">
-<em class="property">static </em><tt class="descname">load_markers</tt><big>(</big><em>fn</em><big>)</big><a class="reference internal" href="_modules/pyrocko/gui_util.html#Marker.load_markers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.gui_util.Marker.load_markers" title="Permalink to this definition">¶</a></dt>
-<dd><p>Load markers from a file.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fn</strong> &#8211; filename as string</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">list of <a class="reference internal" href="#pyrocko.gui_util.Marker" title="pyrocko.gui_util.Marker"><tt class="xref py py-class docutils literal"><span class="pre">Marker</span></tt></a> Objects</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
 <dl class="method">
 <dt id="pyrocko.gui_util.Marker.get_nslc_ids">
 <tt class="descname">get_nslc_ids</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/gui_util.html#Marker.get_nslc_ids"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.gui_util.Marker.get_nslc_ids" title="Permalink to this definition">¶</a></dt>
@@ -165,19 +131,6 @@ of a seismological event</li>
 </tr>
 </tbody>
 </table>
-<dl class="method">
-<dt id="pyrocko.gui_util.EventMarker.label">
-<tt class="descname">label</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/gui_util.html#EventMarker.label"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.gui_util.EventMarker.label" title="Permalink to this definition">¶</a></dt>
-<dd><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">string representation of an event.</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
 </dd></dl>
 
 <dl class="class">
@@ -210,19 +163,39 @@ of a seismological event</li>
 </dd></dl>
 
 <dl class="function">
-<dt id="pyrocko.gui_util.bin">
-<tt class="descname">bin</tt><big>(</big><em>QTextStream</em><big>)</big> &rarr; QTextStream<a class="headerlink" href="#pyrocko.gui_util.bin" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dt id="pyrocko.gui_util.load_markers">
+<tt class="descname">load_markers</tt><big>(</big><em>filename</em><big>)</big><a class="reference internal" href="_modules/pyrocko/gui_util.html#load_markers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.gui_util.load_markers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load markers from file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filename</strong> &#8211; filename as string</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">list of <a class="reference internal" href="#pyrocko.gui_util.Marker" title="pyrocko.gui_util.Marker"><tt class="xref py py-class docutils literal"><span class="pre">Marker</span></tt></a> Objects</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
-<dt id="pyrocko.gui_util.hex">
-<tt class="descname">hex</tt><big>(</big><em>QTextStream</em><big>)</big> &rarr; QTextStream<a class="headerlink" href="#pyrocko.gui_util.hex" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="pyrocko.gui_util.oct">
-<tt class="descname">oct</tt><big>(</big><em>QTextStream</em><big>)</big> &rarr; QTextStream<a class="headerlink" href="#pyrocko.gui_util.oct" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dt id="pyrocko.gui_util.save_markers">
+<tt class="descname">save_markers</tt><big>(</big><em>markers</em>, <em>filename</em>, <em>fdigits=3</em><big>)</big><a class="reference internal" href="_modules/pyrocko/gui_util.html#save_markers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.gui_util.save_markers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save markers to file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>markers</strong> &#8211; list of <a class="reference internal" href="#pyrocko.gui_util.Marker" title="pyrocko.gui_util.Marker"><tt class="xref py py-class docutils literal"><span class="pre">Marker</span></tt></a> Objects</li>
+<li><strong>filename</strong> &#8211; filename as string</li>
+<li><strong>fdigits</strong> &#8211; number of decimal digits to use for sub-second time strings</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 </div>
 

@@ -66,7 +66,7 @@
 <span class="kn">from</span> <span class="nn">pyrocko</span> <span class="kn">import</span> <span class="n">pile</span>
 
 <span class="kn">from</span> <span class="nn">pyrocko.gui_util</span> <span class="kn">import</span> <span class="n">ValControl</span><span class="p">,</span> <span class="n">LinValControl</span><span class="p">,</span> <span class="n">FigureFrame</span><span class="p">,</span> \
-    <span class="n">WebKitFrame</span><span class="p">,</span> <span class="n">EventMarker</span><span class="p">,</span> <span class="n">PhaseMarker</span>
+    <span class="n">WebKitFrame</span><span class="p">,</span> <span class="n">Marker</span><span class="p">,</span> <span class="n">EventMarker</span><span class="p">,</span> <span class="n">PhaseMarker</span><span class="p">,</span> <span class="n">load_markers</span><span class="p">,</span> <span class="n">save_markers</span>
 
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s">&#39;pyrocko.snuffling&#39;</span><span class="p">)</span>
@@ -1197,7 +1197,7 @@
 <div class="viewcode-block" id="Snuffling.add_markers"><a class="viewcode-back" href="../../snuffling.html#pyrocko.snuffling.Snuffling.add_markers">[docs]</a>    <span class="k">def</span> <span class="nf">add_markers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">markers</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Add some markers to the display.</span>
 <span class="sd">        </span>
-<span class="sd">        Takes a list of objects of type :py:class:`pyrocko.pile_viewer.Marker` and adds</span>
+<span class="sd">        Takes a list of objects of type :py:class:`pyrocko.gui_util.Marker` and adds</span>
 <span class="sd">        these to the viewer.</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         
@@ -1445,6 +1445,10 @@
             <span class="k">if</span> <span class="n">choice</span> <span class="o">==</span> <span class="n">v</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">cbox</span><span class="o">.</span><span class="n">setCurrentIndex</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cbox</span><span class="o">.</span><span class="n">blockSignals</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
+
+<span class="k">del</span> <span class="nb">bin</span>
+<span class="k">del</span> <span class="nb">hex</span>
+<span class="k">del</span> <span class="nb">oct</span>
 </pre></div>
 
           </div>
