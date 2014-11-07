@@ -3076,6 +3076,10 @@
 <div class="viewcode-block" id="LineEditWithAbort.keyPressEvent"><a class="viewcode-back" href="../../pile_viewer.html#pyrocko.pile_viewer.LineEditWithAbort.keyPressEvent">[docs]</a>    <span class="k">def</span> <span class="nf">keyPressEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key_event</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">key_event</span><span class="o">.</span><span class="n">key</span><span class="p">()</span> <span class="o">==</span> <span class="n">Qt</span><span class="o">.</span><span class="n">Key_Escape</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span> <span class="n">SIGNAL</span><span class="p">(</span><span class="s">&#39;aborted()&#39;</span><span class="p">)</span> <span class="p">)</span>
+        <span class="k">elif</span> <span class="n">key_event</span><span class="o">.</span><span class="n">key</span><span class="p">()</span> <span class="o">==</span> <span class="n">Qt</span><span class="o">.</span><span class="n">Key_Down</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span> <span class="n">SIGNAL</span><span class="p">(</span><span class="s">&#39;history_down()&#39;</span><span class="p">))</span>
+        <span class="k">elif</span> <span class="n">key_event</span><span class="o">.</span><span class="n">key</span><span class="p">()</span> <span class="o">==</span> <span class="n">Qt</span><span class="o">.</span><span class="n">Key_Up</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span> <span class="n">SIGNAL</span><span class="p">(</span><span class="s">&#39;history_up()&#39;</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">QLineEdit</span><span class="o">.</span><span class="n">keyPressEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key_event</span><span class="p">)</span>
 </div></div>
@@ -3098,6 +3102,8 @@
         <span class="c">#self.setFrameShape(QFrame.StyledPanel)</span>
         <span class="c">#self.setFrameShadow(QFrame.Sunken)</span>
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">history</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;&#39;</span><span class="p">]</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">input_area</span> <span class="o">=</span> <span class="n">QFrame</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="n">ia_layout</span> <span class="o">=</span> <span class="n">QGridLayout</span><span class="p">()</span>
         <span class="n">ia_layout</span><span class="o">.</span><span class="n">setContentsMargins</span><span class="p">(</span><span class="mi">11</span><span class="p">,</span><span class="mi">11</span><span class="p">,</span><span class="mi">11</span><span class="p">,</span><span class="mi">11</span><span class="p">)</span>
@@ -3107,6 +3113,13 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputline</span><span class="p">,</span> <span class="n">SIGNAL</span><span class="p">(</span><span class="s">&#39;returnPressed()&#39;</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputline_returnpressed</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputline</span><span class="p">,</span> <span class="n">SIGNAL</span><span class="p">(</span><span class="s">&#39;editingFinished()&#39;</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputline_finished</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputline</span><span class="p">,</span> <span class="n">SIGNAL</span><span class="p">(</span><span class="s">&#39;aborted()&#39;</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputline_aborted</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputline</span><span class="p">,</span> 
+                     <span class="n">SIGNAL</span><span class="p">(</span><span class="s">&#39;history_down()&#39;</span><span class="p">),</span> 
+                     <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputline_history</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputline</span><span class="p">,</span> 
+                     <span class="n">SIGNAL</span><span class="p">(</span><span class="s">&#39;history_up()&#39;</span><span class="p">),</span> 
+                     <span class="k">lambda</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputline_history</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputline</span><span class="p">,</span> <span class="n">SIGNAL</span><span class="p">(</span><span class="s">&#39;textEdited(QString)&#39;</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputline_changed</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">inputline</span><span class="o">.</span><span class="n">setFocusPolicy</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">ClickFocus</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">input_area</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
@@ -3139,6 +3152,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">progressbars</span>
 </div>
 <div class="viewcode-block" id="PileViewer.inputline_show"><a class="viewcode-back" href="../../pile_viewer.html#pyrocko.pile_viewer.PileViewer.inputline_show">[docs]</a>    <span class="k">def</span> <span class="nf">inputline_show</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hist_ind</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">input_area</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">inputline</span><span class="o">.</span><span class="n">setFocus</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">OtherFocusReason</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">inputline</span><span class="o">.</span><span class="n">selectAll</span><span class="p">()</span>
@@ -3170,6 +3184,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">inputline_set_error</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
         
         <span class="k">if</span> <span class="n">clearit</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">history</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">inputline</span><span class="o">.</span><span class="n">blockSignals</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
             <span class="n">qpat</span><span class="p">,</span> <span class="n">qinp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">viewer</span><span class="o">.</span><span class="n">get_quick_filter_patterns</span><span class="p">()</span>
             <span class="k">if</span> <span class="n">qpat</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
@@ -3185,6 +3200,12 @@
 <div class="viewcode-block" id="PileViewer.inputline_aborted"><a class="viewcode-back" href="../../pile_viewer.html#pyrocko.pile_viewer.PileViewer.inputline_aborted">[docs]</a>    <span class="k">def</span> <span class="nf">inputline_aborted</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">viewer</span><span class="o">.</span><span class="n">setFocus</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">OtherFocusReason</span><span class="p">)</span> 
         <span class="bp">self</span><span class="o">.</span><span class="n">input_area</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="PileViewer.inputline_history"><a class="viewcode-back" href="../../pile_viewer.html#pyrocko.pile_viewer.PileViewer.inputline_history">[docs]</a>    <span class="k">def</span> <span class="nf">inputline_history</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ud</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hist_ind</span> <span class="o">+=</span> <span class="n">ud</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">history</span><span class="p">)</span><span class="o">!=</span><span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">inputline</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">history</span><span class="p">[</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">hist_ind</span><span class="o">%</span> \
+                                                <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">history</span><span class="p">)])</span>
 </div>
 <div class="viewcode-block" id="PileViewer.inputline_finished"><a class="viewcode-back" href="../../pile_viewer.html#pyrocko.pile_viewer.PileViewer.inputline_finished">[docs]</a>    <span class="k">def</span> <span class="nf">inputline_finished</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">pass</span>
