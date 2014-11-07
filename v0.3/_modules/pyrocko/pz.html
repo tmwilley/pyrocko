@@ -62,7 +62,7 @@
 <div class="viewcode-block" id="SacPoleZeroError"><a class="viewcode-back" href="../../pz.html#pyrocko.pz.SacPoleZeroError">[docs]</a><span class="k">class</span> <span class="nc">SacPoleZeroError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
     <span class="k">pass</span>
 </div>
-<div class="viewcode-block" id="read_sac_zpk"><a class="viewcode-back" href="../../pz.html#pyrocko.pz.read_sac_zpk">[docs]</a><span class="k">def</span> <span class="nf">read_sac_zpk</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="nb">file</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">string</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="read_sac_zpk"><a class="viewcode-back" href="../../pz.html#pyrocko.pz.read_sac_zpk">[docs]</a><span class="k">def</span> <span class="nf">read_sac_zpk</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="nb">file</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">string</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">get_comments</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Read SAC Pole-Zero file.</span>
 <span class="sd">    </span>
 <span class="sd">       Returns (zeros, poles, constant).</span>
@@ -83,10 +83,13 @@
     <span class="n">nzeros</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">constant</span> <span class="o">=</span> <span class="mf">1.0</span>
     <span class="n">atsect</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">comments</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">iline</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
         <span class="n">toks</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">toks</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span> <span class="k">continue</span>
-        <span class="k">if</span> <span class="n">toks</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="s">&#39;*#&#39;</span><span class="p">:</span> <span class="k">continue</span>
+        <span class="k">if</span> <span class="n">toks</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="s">&#39;*#&#39;</span><span class="p">:</span> 
+            <span class="n">comments</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+            <span class="k">continue</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">toks</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
             <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
             <span class="k">raise</span> <span class="n">SacPoleZeroError</span><span class="p">(</span><span class="s">&#39;Expected 2 tokens in line </span><span class="si">%i</span><span class="s"> of file </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">iline</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">filename</span><span class="p">))</span>
@@ -131,7 +134,10 @@
     <span class="k">if</span> <span class="ow">not</span> <span class="n">num</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">constant</span><span class="p">):</span>
         <span class="k">raise</span> <span class="n">SacPoleZeroError</span><span class="p">(</span><span class="s">&#39;Ivalid constant (</span><span class="si">%g</span><span class="s">) found in pole-zero file &quot;</span><span class="si">%s</span><span class="s">&quot;&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">constant</span><span class="p">,</span> <span class="n">filename</span><span class="p">))</span>
     
-    <span class="k">return</span> <span class="n">zeros</span><span class="p">,</span> <span class="n">poles</span><span class="p">,</span> <span class="n">constant</span>
+    <span class="k">if</span> <span class="n">get_comments</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">zeros</span><span class="p">,</span> <span class="n">poles</span><span class="p">,</span> <span class="n">constant</span><span class="p">,</span> <span class="n">comments</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">zeros</span><span class="p">,</span> <span class="n">poles</span><span class="p">,</span> <span class="n">constant</span>
 </div>
 <div class="viewcode-block" id="write_sac_zpk"><a class="viewcode-back" href="../../pz.html#pyrocko.pz.write_sac_zpk">[docs]</a><span class="k">def</span> <span class="nf">write_sac_zpk</span><span class="p">(</span><span class="n">zeros</span><span class="p">,</span> <span class="n">poles</span><span class="p">,</span> <span class="n">constant</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
     <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s">&#39;write&#39;</span><span class="p">):</span>

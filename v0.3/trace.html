@@ -583,8 +583,8 @@ in combination with recursive STA/LTA filters.</p>
 
 <dl class="method">
 <dt id="pyrocko.trace.Trace.transfer">
-<tt class="descname">transfer</tt><big>(</big><em>tfade</em>, <em>freqlimits</em>, <em>transfer_function=None</em>, <em>cut_off_fading=True</em><big>)</big><a class="reference internal" href="_modules/pyrocko/trace.html#Trace.transfer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.trace.Trace.transfer" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return new trace with transfer function applied.</p>
+<tt class="descname">transfer</tt><big>(</big><em>tfade</em>, <em>freqlimits</em>, <em>transfer_function=None</em>, <em>cut_off_fading=True</em>, <em>invert=False</em><big>)</big><a class="reference internal" href="_modules/pyrocko/trace.html#Trace.transfer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.trace.Trace.transfer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return new trace with transfer function applied (convolution).</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -595,6 +595,7 @@ in combination with recursive STA/LTA filters.</p>
 <li><strong>transfer_function</strong> &#8211; FrequencyResponse object; must provide a method &#8216;evaluate(freqs)&#8217;, which returns the
 transfer function coefficients at the frequencies &#8216;freqs&#8217;.</li>
 <li><strong>cut_off_fading</strong> &#8211; whether to cut off rise/fall interval in output trace.</li>
+<li><strong>invert</strong> &#8211; set to True to do a deconvolution</li>
 </ul>
 </td>
 </tr>
@@ -1016,7 +1017,7 @@ correlation can be viewed directly as a function of time lag.</p>
 
 <dl class="attribute">
 <dt>
-<tt class="descname">Taper.T.instance -&gt; &lt;pyrocko.guts.T object at 0x4ac9c50&gt;</tt></dt>
+<tt class="descname">Taper.T.instance -&gt; &lt;pyrocko.guts.T object at 0x57e2450&gt;</tt></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -1055,7 +1056,7 @@ correlation can be viewed directly as a function of time lag.</p>
 
 <dl class="class">
 <dt id="pyrocko.trace.CosTaper">
-<em class="property">class </em><tt class="descname">CosTaper</tt><big>(</big><em>a=&lt;pyrocko.guts.__T object at 0x4ac9c90&gt;</em>, <em>b=&lt;pyrocko.guts.__T object at 0x4ac9d10&gt;</em>, <em>c=&lt;pyrocko.guts.__T object at 0x4ac9d50&gt;</em>, <em>d=&lt;pyrocko.guts.__T object at 0x4ac9d90&gt;</em><big>)</big><a class="reference internal" href="_modules/pyrocko/trace.html#CosTaper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.trace.CosTaper" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descname">CosTaper</tt><big>(</big><em>a=&lt;pyrocko.guts.__T object at 0x57e2490&gt;</em>, <em>b=&lt;pyrocko.guts.__T object at 0x57e2510&gt;</em>, <em>c=&lt;pyrocko.guts.__T object at 0x57e2550&gt;</em>, <em>d=&lt;pyrocko.guts.__T object at 0x57e2590&gt;</em><big>)</big><a class="reference internal" href="_modules/pyrocko/trace.html#CosTaper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.trace.CosTaper" title="Permalink to this definition">¶</a></dt>
 <dd><p>Undocumented.</p>
 <dl class="attribute">
 <dt id="pyrocko.trace.CosTaper.a">
@@ -1083,22 +1084,22 @@ correlation can be viewed directly as a function of time lag.</p>
 
 <dl class="attribute">
 <dt>
-<tt class="descname">CosTaper.a -&gt; &lt;pyrocko.guts.__T object at 0x4ac9c90&gt;</tt></dt>
+<tt class="descname">CosTaper.a -&gt; &lt;pyrocko.guts.__T object at 0x57e2490&gt;</tt></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt>
-<tt class="descname">CosTaper.b -&gt; &lt;pyrocko.guts.__T object at 0x4ac9d10&gt;</tt></dt>
+<tt class="descname">CosTaper.b -&gt; &lt;pyrocko.guts.__T object at 0x57e2510&gt;</tt></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt>
-<tt class="descname">CosTaper.c -&gt; &lt;pyrocko.guts.__T object at 0x4ac9d50&gt;</tt></dt>
+<tt class="descname">CosTaper.c -&gt; &lt;pyrocko.guts.__T object at 0x57e2550&gt;</tt></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt>
-<tt class="descname">CosTaper.d -&gt; &lt;pyrocko.guts.__T object at 0x4ac9d90&gt;</tt></dt>
+<tt class="descname">CosTaper.d -&gt; &lt;pyrocko.guts.__T object at 0x57e2590&gt;</tt></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -1133,12 +1134,12 @@ correlation can be viewed directly as a function of time lag.</p>
 
 <dl class="attribute">
 <dt>
-<tt class="descname">CosTaper.T.instance -&gt; &lt;pyrocko.guts.T object at 0x4ac9e10&gt;</tt></dt>
+<tt class="descname">CosTaper.T.instance -&gt; &lt;pyrocko.guts.T object at 0x57e2610&gt;</tt></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="pyrocko.trace.CosTaper.T.properties">
-<tt class="descname">properties</tt><em class="property"> = [&lt;pyrocko.guts.__T object at 0x4ac9c90&gt;, &lt;pyrocko.guts.__T object at 0x4ac9d10&gt;, &lt;pyrocko.guts.__T object at 0x4ac9d50&gt;, &lt;pyrocko.guts.__T object at 0x4ac9d90&gt;]</em><a class="headerlink" href="#pyrocko.trace.CosTaper.T.properties" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">properties</tt><em class="property"> = [&lt;pyrocko.guts.__T object at 0x57e2490&gt;, &lt;pyrocko.guts.__T object at 0x57e2510&gt;, &lt;pyrocko.guts.__T object at 0x57e2550&gt;, &lt;pyrocko.guts.__T object at 0x57e2590&gt;]</em><a class="headerlink" href="#pyrocko.trace.CosTaper.T.properties" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -1193,12 +1194,12 @@ correlation can be viewed directly as a function of time lag.</p>
 
 <dl class="attribute">
 <dt>
-<tt class="descname">CosFader.xfade -&gt; &lt;pyrocko.guts.__T object at 0x4ac9e90&gt;</tt></dt>
+<tt class="descname">CosFader.xfade -&gt; &lt;pyrocko.guts.__T object at 0x57e2690&gt;</tt></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt>
-<tt class="descname">CosFader.xfrac -&gt; &lt;pyrocko.guts.__T object at 0x4ac9f10&gt;</tt></dt>
+<tt class="descname">CosFader.xfrac -&gt; &lt;pyrocko.guts.__T object at 0x57e2710&gt;</tt></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -1233,12 +1234,12 @@ correlation can be viewed directly as a function of time lag.</p>
 
 <dl class="attribute">
 <dt>
-<tt class="descname">CosFader.T.instance -&gt; &lt;pyrocko.guts.T object at 0x4ac9e50&gt;</tt></dt>
+<tt class="descname">CosFader.T.instance -&gt; &lt;pyrocko.guts.T object at 0x57e2650&gt;</tt></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="pyrocko.trace.CosFader.T.properties">
-<tt class="descname">properties</tt><em class="property"> = [&lt;pyrocko.guts.__T object at 0x4ac9e90&gt;, &lt;pyrocko.guts.__T object at 0x4ac9f10&gt;]</em><a class="headerlink" href="#pyrocko.trace.CosFader.T.properties" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">properties</tt><em class="property"> = [&lt;pyrocko.guts.__T object at 0x57e2690&gt;, &lt;pyrocko.guts.__T object at 0x57e2710&gt;]</em><a class="headerlink" href="#pyrocko.trace.CosFader.T.properties" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -1287,7 +1288,7 @@ correlation can be viewed directly as a function of time lag.</p>
 
 <dl class="attribute">
 <dt>
-<tt class="descname">GaussTaper.alpha -&gt; &lt;pyrocko.guts.__T object at 0x4ac9fd0&gt;</tt></dt>
+<tt class="descname">GaussTaper.alpha -&gt; &lt;pyrocko.guts.__T object at 0x57e27d0&gt;</tt></dt>
 <dd></dd></dl>
 
 <dl class="class">
@@ -1317,12 +1318,12 @@ correlation can be viewed directly as a function of time lag.</p>
 
 <dl class="attribute">
 <dt>
-<tt class="descname">GaussTaper.T.instance -&gt; &lt;pyrocko.guts.T object at 0x4acf590&gt;</tt></dt>
+<tt class="descname">GaussTaper.T.instance -&gt; &lt;pyrocko.guts.T object at 0x57e28d0&gt;</tt></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="pyrocko.trace.GaussTaper.T.properties">
-<tt class="descname">properties</tt><em class="property"> = [&lt;pyrocko.guts.__T object at 0x4ac9fd0&gt;]</em><a class="headerlink" href="#pyrocko.trace.GaussTaper.T.properties" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">properties</tt><em class="property"> = [&lt;pyrocko.guts.__T object at 0x57e27d0&gt;]</em><a class="headerlink" href="#pyrocko.trace.GaussTaper.T.properties" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -1395,7 +1396,7 @@ correlation can be viewed directly as a function of time lag.</p>
 
 <dl class="attribute">
 <dt>
-<tt class="descname">FrequencyResponse.T.instance -&gt; &lt;pyrocko.guts.T object at 0x4acf490&gt;</tt></dt>
+<tt class="descname">FrequencyResponse.T.instance -&gt; &lt;pyrocko.guts.T object at 0x57e2990&gt;</tt></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -1426,6 +1427,141 @@ correlation can be viewed directly as a function of time lag.</p>
 <dl class="attribute">
 <dt id="pyrocko.trace.FrequencyResponse.T.xmltagname_to_name_multivalued">
 <tt class="descname">xmltagname_to_name_multivalued</tt><em class="property"> = {}</em><a class="headerlink" href="#pyrocko.trace.FrequencyResponse.T.xmltagname_to_name_multivalued" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pyrocko.trace.Evalresp">
+<em class="property">class </em><tt class="descname">Evalresp</tt><big>(</big><em>respfile</em>, <em>trace=None</em>, <em>target='dis'</em>, <em>nslc_id=None</em>, <em>time=None</em><big>)</big><a class="reference internal" href="_modules/pyrocko/trace.html#Evalresp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.trace.Evalresp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calls evalresp and generates values of the instrument response transfer function.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>respfile</strong> &#8211; response file in evalresp format</li>
+<li><strong>trace</strong> &#8211; trace for which the response is to be extracted from the file</li>
+<li><strong>target</strong> &#8211; <tt class="docutils literal"><span class="pre">'dis'</span></tt> for displacement or <tt class="docutils literal"><span class="pre">'vel'</span></tt> for velocity</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="pyrocko.trace.Evalresp.respfile">
+<tt class="descname">respfile</tt><a class="headerlink" href="#pyrocko.trace.Evalresp.respfile" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">str</span></tt></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.trace.Evalresp.nslc_id">
+<tt class="descname">nslc_id</tt><a class="headerlink" href="#pyrocko.trace.Evalresp.nslc_id" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">tuple</span></tt> of 4 <tt class="docutils literal"><span class="pre">str</span></tt> objects, <em>default:</em> <tt class="docutils literal"><span class="pre">(None,</span> <span class="pre">None,</span> <span class="pre">None,</span> <span class="pre">None)</span></tt></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.trace.Evalresp.target">
+<tt class="descname">target</tt><a class="headerlink" href="#pyrocko.trace.Evalresp.target" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">str</span></tt>, <em>default:</em> <tt class="docutils literal"><span class="pre">'dis'</span></tt></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.trace.Evalresp.instant">
+<tt class="descname">instant</tt><a class="headerlink" href="#pyrocko.trace.Evalresp.instant" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">float</span></tt></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<tt class="descname">Evalresp.respfile -&gt; &lt;pyrocko.guts.T object at 0x57e29d0&gt;</tt></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<tt class="descname">Evalresp.target -&gt; &lt;pyrocko.guts.T object at 0x57e2b10&gt;</tt></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<tt class="descname">Evalresp.instant -&gt; &lt;pyrocko.guts.__T object at 0x57e2b50&gt;</tt></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<tt class="descname">Evalresp.nslc_id -&gt; &lt;pyrocko.guts.__T object at 0x57e2a90&gt;</tt></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.trace.Evalresp.evaluate">
+<tt class="descname">evaluate</tt><big>(</big><em>freqs</em><big>)</big><a class="reference internal" href="_modules/pyrocko/trace.html#Evalresp.evaluate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.trace.Evalresp.evaluate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="pyrocko.trace.Evalresp.T">
+<em class="property">class </em><tt class="descname">T</tt><big>(</big><em>default=None</em>, <em>optional=False</em>, <em>xmlstyle='element'</em>, <em>xmltagname=None</em>, <em>help=None</em>, <em>position=None</em><big>)</big><a class="headerlink" href="#pyrocko.trace.Evalresp.T" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="attribute">
+<dt id="pyrocko.trace.Evalresp.T.classname">
+<tt class="descname">classname</tt><em class="property"> = 'Evalresp'</em><a class="headerlink" href="#pyrocko.trace.Evalresp.T.classname" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.trace.Evalresp.T.cls">
+<tt class="descname">cls</tt><a class="headerlink" href="#pyrocko.trace.Evalresp.T.cls" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="#pyrocko.trace.Evalresp" title="pyrocko.trace.Evalresp"><tt class="xref py py-class docutils literal"><span class="pre">Evalresp</span></tt></a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.trace.Evalresp.T.content_property">
+<tt class="descname">content_property</tt><em class="property"> = None</em><a class="headerlink" href="#pyrocko.trace.Evalresp.T.content_property" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.trace.Evalresp.T.dummy_cls">
+<tt class="descname">dummy_cls</tt><a class="headerlink" href="#pyrocko.trace.Evalresp.T.dummy_cls" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="#pyrocko.trace.Evalresp" title="pyrocko.trace.Evalresp"><tt class="xref py py-class docutils literal"><span class="pre">Evalresp</span></tt></a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<tt class="descname">Evalresp.T.instance -&gt; &lt;pyrocko.guts.T object at 0x57e2b90&gt;</tt></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.trace.Evalresp.T.properties">
+<tt class="descname">properties</tt><em class="property"> = [&lt;pyrocko.guts.T object at 0x57e29d0&gt;, &lt;pyrocko.guts.__T object at 0x57e2a90&gt;, &lt;pyrocko.guts.T object at 0x57e2b10&gt;, &lt;pyrocko.guts.__T object at 0x57e2b50&gt;]</em><a class="headerlink" href="#pyrocko.trace.Evalresp.T.properties" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.trace.Evalresp.T.propnames">
+<tt class="descname">propnames</tt><em class="property"> = ['respfile', 'nslc_id', 'target', 'instant']</em><a class="headerlink" href="#pyrocko.trace.Evalresp.T.propnames" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.trace.Evalresp.T.tagname">
+<tt class="descname">tagname</tt><em class="property"> = 'pf.Evalresp'</em><a class="headerlink" href="#pyrocko.trace.Evalresp.T.tagname" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.trace.Evalresp.T.xmltagname">
+<tt class="descname">xmltagname</tt><em class="property"> = 'Evalresp'</em><a class="headerlink" href="#pyrocko.trace.Evalresp.T.xmltagname" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.trace.Evalresp.T.xmltagname_to_class">
+<tt class="descname">xmltagname_to_class</tt><em class="property"> = {'respfile': &lt;type 'str'&gt;, 'nslcId': &lt;type 'str'&gt;, 'instant': &lt;type 'float'&gt;, 'target': &lt;type 'str'&gt;}</em><a class="headerlink" href="#pyrocko.trace.Evalresp.T.xmltagname_to_class" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.trace.Evalresp.T.xmltagname_to_name">
+<tt class="descname">xmltagname_to_name</tt><em class="property"> = {'respfile': 'respfile', 'instant': 'instant', 'target': 'target'}</em><a class="headerlink" href="#pyrocko.trace.Evalresp.T.xmltagname_to_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.trace.Evalresp.T.xmltagname_to_name_multivalued">
+<tt class="descname">xmltagname_to_name_multivalued</tt><em class="property"> = {'nslcId': 'nslc_id'}</em><a class="headerlink" href="#pyrocko.trace.Evalresp.T.xmltagname_to_name_multivalued" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -1476,22 +1612,22 @@ deconvolution of instrument response.</p>
 
 <dl class="attribute">
 <dt>
-<tt class="descname">InverseEvalresp.respfile -&gt; &lt;pyrocko.guts.T object at 0x4acf0d0&gt;</tt></dt>
+<tt class="descname">InverseEvalresp.respfile -&gt; &lt;pyrocko.guts.T object at 0x57e2c10&gt;</tt></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt>
-<tt class="descname">InverseEvalresp.nslc_id -&gt; &lt;pyrocko.guts.__T object at 0x4acf190&gt;</tt></dt>
+<tt class="descname">InverseEvalresp.nslc_id -&gt; &lt;pyrocko.guts.__T object at 0x57e2c90&gt;</tt></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt>
-<tt class="descname">InverseEvalresp.target -&gt; &lt;pyrocko.guts.T object at 0x4acf150&gt;</tt></dt>
+<tt class="descname">InverseEvalresp.target -&gt; &lt;pyrocko.guts.T object at 0x57e2d10&gt;</tt></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt>
-<tt class="descname">InverseEvalresp.instant -&gt; &lt;pyrocko.guts.__T object at 0x4acf690&gt;</tt></dt>
+<tt class="descname">InverseEvalresp.instant -&gt; &lt;pyrocko.guts.__T object at 0x57e2d50&gt;</tt></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -1526,12 +1662,12 @@ deconvolution of instrument response.</p>
 
 <dl class="attribute">
 <dt>
-<tt class="descname">InverseEvalresp.T.instance -&gt; &lt;pyrocko.guts.T object at 0x4acf450&gt;</tt></dt>
+<tt class="descname">InverseEvalresp.T.instance -&gt; &lt;pyrocko.guts.T object at 0x57e2dd0&gt;</tt></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="pyrocko.trace.InverseEvalresp.T.properties">
-<tt class="descname">properties</tt><em class="property"> = [&lt;pyrocko.guts.T object at 0x4acf0d0&gt;, &lt;pyrocko.guts.__T object at 0x4acf190&gt;, &lt;pyrocko.guts.T object at 0x4acf150&gt;, &lt;pyrocko.guts.__T object at 0x4acf690&gt;]</em><a class="headerlink" href="#pyrocko.trace.InverseEvalresp.T.properties" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">properties</tt><em class="property"> = [&lt;pyrocko.guts.T object at 0x57e2c10&gt;, &lt;pyrocko.guts.__T object at 0x57e2c90&gt;, &lt;pyrocko.guts.T object at 0x57e2d10&gt;, &lt;pyrocko.guts.__T object at 0x57e2d50&gt;]</em><a class="headerlink" href="#pyrocko.trace.InverseEvalresp.T.properties" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -1610,17 +1746,17 @@ T(f) = constant * -------------------------------------------------------
 
 <dl class="attribute">
 <dt>
-<tt class="descname">PoleZeroResponse.constant -&gt; &lt;pyrocko.guts.__T object at 0x4acf290&gt;</tt></dt>
+<tt class="descname">PoleZeroResponse.constant -&gt; &lt;pyrocko.guts.__T object at 0x57e2fd0&gt;</tt></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt>
-<tt class="descname">PoleZeroResponse.zeros -&gt; &lt;pyrocko.guts.__T object at 0x4acf610&gt;</tt></dt>
+<tt class="descname">PoleZeroResponse.zeros -&gt; &lt;pyrocko.guts.__T object at 0x57e2e90&gt;</tt></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt>
-<tt class="descname">PoleZeroResponse.poles -&gt; &lt;pyrocko.guts.__T object at 0x4acf650&gt;</tt></dt>
+<tt class="descname">PoleZeroResponse.poles -&gt; &lt;pyrocko.guts.__T object at 0x57e2f90&gt;</tt></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -1655,12 +1791,12 @@ T(f) = constant * -------------------------------------------------------
 
 <dl class="attribute">
 <dt>
-<tt class="descname">PoleZeroResponse.T.instance -&gt; &lt;pyrocko.guts.T object at 0x4acf2d0&gt;</tt></dt>
+<tt class="descname">PoleZeroResponse.T.instance -&gt; &lt;pyrocko.guts.T object at 0x57e5090&gt;</tt></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="pyrocko.trace.PoleZeroResponse.T.properties">
-<tt class="descname">properties</tt><em class="property"> = [&lt;pyrocko.guts.__T object at 0x4acf610&gt;, &lt;pyrocko.guts.__T object at 0x4acf650&gt;, &lt;pyrocko.guts.__T object at 0x4acf290&gt;]</em><a class="headerlink" href="#pyrocko.trace.PoleZeroResponse.T.properties" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">properties</tt><em class="property"> = [&lt;pyrocko.guts.__T object at 0x57e2e90&gt;, &lt;pyrocko.guts.__T object at 0x57e2f90&gt;, &lt;pyrocko.guts.__T object at 0x57e2fd0&gt;]</em><a class="headerlink" href="#pyrocko.trace.PoleZeroResponse.T.properties" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -1691,6 +1827,117 @@ T(f) = constant * -------------------------------------------------------
 <dl class="attribute">
 <dt id="pyrocko.trace.PoleZeroResponse.T.xmltagname_to_name_multivalued">
 <tt class="descname">xmltagname_to_name_multivalued</tt><em class="property"> = {'pole': 'poles', 'zero': 'zeros'}</em><a class="headerlink" href="#pyrocko.trace.PoleZeroResponse.T.xmltagname_to_name_multivalued" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pyrocko.trace.ButterworthResponse">
+<em class="property">class </em><tt class="descname">ButterworthResponse</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/pyrocko/trace.html#ButterworthResponse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.trace.ButterworthResponse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Undocumented.</p>
+<dl class="attribute">
+<dt id="pyrocko.trace.ButterworthResponse.corner">
+<tt class="descname">corner</tt><a class="headerlink" href="#pyrocko.trace.ButterworthResponse.corner" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">float</span></tt>, <em>default:</em> <tt class="docutils literal"><span class="pre">1.0</span></tt></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.trace.ButterworthResponse.order">
+<tt class="descname">order</tt><a class="headerlink" href="#pyrocko.trace.ButterworthResponse.order" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">int</span></tt>, <em>default:</em> <tt class="docutils literal"><span class="pre">4</span></tt></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.trace.ButterworthResponse.typ">
+<tt class="descname">typ</tt><a class="headerlink" href="#pyrocko.trace.ButterworthResponse.typ" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="xref py py-class docutils literal"><span class="pre">pyrocko.guts.StringChoice</span></tt>, <em>default:</em> <tt class="docutils literal"><span class="pre">'low'</span></tt></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<tt class="descname">ButterworthResponse.corner -&gt; &lt;pyrocko.guts.__T object at 0x57e5190&gt;</tt></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<tt class="descname">ButterworthResponse.order -&gt; &lt;pyrocko.guts.__T object at 0x57e5110&gt;</tt></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt>
+<tt class="descname">ButterworthResponse.typ -&gt; &lt;pyrocko.guts.__T object at 0x57e5150&gt;</tt></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.trace.ButterworthResponse.evaluate">
+<tt class="descname">evaluate</tt><big>(</big><em>freqs</em><big>)</big><a class="reference internal" href="_modules/pyrocko/trace.html#ButterworthResponse.evaluate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.trace.ButterworthResponse.evaluate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="pyrocko.trace.ButterworthResponse.T">
+<em class="property">class </em><tt class="descname">T</tt><big>(</big><em>default=None</em>, <em>optional=False</em>, <em>xmlstyle='element'</em>, <em>xmltagname=None</em>, <em>help=None</em>, <em>position=None</em><big>)</big><a class="headerlink" href="#pyrocko.trace.ButterworthResponse.T" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="attribute">
+<dt id="pyrocko.trace.ButterworthResponse.T.classname">
+<tt class="descname">classname</tt><em class="property"> = 'ButterworthResponse'</em><a class="headerlink" href="#pyrocko.trace.ButterworthResponse.T.classname" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.trace.ButterworthResponse.T.cls">
+<tt class="descname">cls</tt><a class="headerlink" href="#pyrocko.trace.ButterworthResponse.T.cls" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="#pyrocko.trace.ButterworthResponse" title="pyrocko.trace.ButterworthResponse"><tt class="xref py py-class docutils literal"><span class="pre">ButterworthResponse</span></tt></a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.trace.ButterworthResponse.T.content_property">
+<tt class="descname">content_property</tt><em class="property"> = None</em><a class="headerlink" href="#pyrocko.trace.ButterworthResponse.T.content_property" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.trace.ButterworthResponse.T.dummy_cls">
+<tt class="descname">dummy_cls</tt><a class="headerlink" href="#pyrocko.trace.ButterworthResponse.T.dummy_cls" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="#pyrocko.trace.ButterworthResponse" title="pyrocko.trace.ButterworthResponse"><tt class="xref py py-class docutils literal"><span class="pre">ButterworthResponse</span></tt></a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt>
+<tt class="descname">ButterworthResponse.T.instance -&gt; &lt;pyrocko.guts.T object at 0x57e5290&gt;</tt></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.trace.ButterworthResponse.T.properties">
+<tt class="descname">properties</tt><em class="property"> = [&lt;pyrocko.guts.__T object at 0x57e5190&gt;, &lt;pyrocko.guts.__T object at 0x57e5110&gt;, &lt;pyrocko.guts.__T object at 0x57e5150&gt;]</em><a class="headerlink" href="#pyrocko.trace.ButterworthResponse.T.properties" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.trace.ButterworthResponse.T.propnames">
+<tt class="descname">propnames</tt><em class="property"> = ['corner', 'order', 'typ']</em><a class="headerlink" href="#pyrocko.trace.ButterworthResponse.T.propnames" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.trace.ButterworthResponse.T.tagname">
+<tt class="descname">tagname</tt><em class="property"> = 'pf.ButterworthResponse'</em><a class="headerlink" href="#pyrocko.trace.ButterworthResponse.T.tagname" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.trace.ButterworthResponse.T.xmltagname">
+<tt class="descname">xmltagname</tt><em class="property"> = 'ButterworthResponse'</em><a class="headerlink" href="#pyrocko.trace.ButterworthResponse.T.xmltagname" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.trace.ButterworthResponse.T.xmltagname_to_class">
+<tt class="descname">xmltagname_to_class</tt><em class="property"> = {'corner': &lt;type 'float'&gt;, 'typ': &lt;type 'str'&gt;, 'order': &lt;type 'int'&gt;}</em><a class="headerlink" href="#pyrocko.trace.ButterworthResponse.T.xmltagname_to_class" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.trace.ButterworthResponse.T.xmltagname_to_name">
+<tt class="descname">xmltagname_to_name</tt><em class="property"> = {'corner': 'corner', 'typ': 'typ', 'order': 'order'}</em><a class="headerlink" href="#pyrocko.trace.ButterworthResponse.T.xmltagname_to_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.trace.ButterworthResponse.T.xmltagname_to_name_multivalued">
+<tt class="descname">xmltagname_to_name_multivalued</tt><em class="property"> = {}</em><a class="headerlink" href="#pyrocko.trace.ButterworthResponse.T.xmltagname_to_name_multivalued" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -1739,22 +1986,22 @@ T(f) = constant * -------------------------------------------------------
 
 <dl class="attribute">
 <dt>
-<tt class="descname">SampledResponse.frequencies -&gt; &lt;pyrocko.guts_array.__T object at 0x4acfa50&gt;</tt></dt>
+<tt class="descname">SampledResponse.frequencies -&gt; &lt;pyrocko.guts_array.__T object at 0x57e5350&gt;</tt></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt>
-<tt class="descname">SampledResponse.values -&gt; &lt;pyrocko.guts_array.__T object at 0x4acf250&gt;</tt></dt>
+<tt class="descname">SampledResponse.values -&gt; &lt;pyrocko.guts_array.__T object at 0x57e52d0&gt;</tt></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt>
-<tt class="descname">SampledResponse.left -&gt; &lt;pyrocko.guts.__T object at 0x4acfe50&gt;</tt></dt>
+<tt class="descname">SampledResponse.left -&gt; &lt;pyrocko.guts.__T object at 0x57e53d0&gt;</tt></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt>
-<tt class="descname">SampledResponse.right -&gt; &lt;pyrocko.guts.__T object at 0x4acfe90&gt;</tt></dt>
+<tt class="descname">SampledResponse.right -&gt; &lt;pyrocko.guts.__T object at 0x57e5410&gt;</tt></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -1795,12 +2042,12 @@ T(f) = constant * -------------------------------------------------------
 
 <dl class="attribute">
 <dt>
-<tt class="descname">SampledResponse.T.instance -&gt; &lt;pyrocko.guts.T object at 0x4acff90&gt;</tt></dt>
+<tt class="descname">SampledResponse.T.instance -&gt; &lt;pyrocko.guts.T object at 0x57e5450&gt;</tt></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="pyrocko.trace.SampledResponse.T.properties">
-<tt class="descname">properties</tt><em class="property"> = [&lt;pyrocko.guts_array.__T object at 0x4acfa50&gt;, &lt;pyrocko.guts_array.__T object at 0x4acf250&gt;, &lt;pyrocko.guts.__T object at 0x4acfe50&gt;, &lt;pyrocko.guts.__T object at 0x4acfe90&gt;]</em><a class="headerlink" href="#pyrocko.trace.SampledResponse.T.properties" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">properties</tt><em class="property"> = [&lt;pyrocko.guts_array.__T object at 0x57e5350&gt;, &lt;pyrocko.guts_array.__T object at 0x57e52d0&gt;, &lt;pyrocko.guts.__T object at 0x57e53d0&gt;, &lt;pyrocko.guts.__T object at 0x57e5410&gt;]</em><a class="headerlink" href="#pyrocko.trace.SampledResponse.T.properties" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -1871,12 +2118,12 @@ T(f) = --------------
 
 <dl class="attribute">
 <dt>
-<tt class="descname">IntegrationResponse.n -&gt; &lt;pyrocko.guts.__T object at 0x4acfd90&gt;</tt></dt>
+<tt class="descname">IntegrationResponse.n -&gt; &lt;pyrocko.guts.__T object at 0x57e54d0&gt;</tt></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt>
-<tt class="descname">IntegrationResponse.gain -&gt; &lt;pyrocko.guts.__T object at 0x4acff10&gt;</tt></dt>
+<tt class="descname">IntegrationResponse.gain -&gt; &lt;pyrocko.guts.__T object at 0x57e5510&gt;</tt></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -1911,12 +2158,12 @@ T(f) = --------------
 
 <dl class="attribute">
 <dt>
-<tt class="descname">IntegrationResponse.T.instance -&gt; &lt;pyrocko.guts.T object at 0x4acfdd0&gt;</tt></dt>
+<tt class="descname">IntegrationResponse.T.instance -&gt; &lt;pyrocko.guts.T object at 0x57e55d0&gt;</tt></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="pyrocko.trace.IntegrationResponse.T.properties">
-<tt class="descname">properties</tt><em class="property"> = [&lt;pyrocko.guts.__T object at 0x4acfd90&gt;, &lt;pyrocko.guts.__T object at 0x4acff10&gt;]</em><a class="headerlink" href="#pyrocko.trace.IntegrationResponse.T.properties" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">properties</tt><em class="property"> = [&lt;pyrocko.guts.__T object at 0x57e54d0&gt;, &lt;pyrocko.guts.__T object at 0x57e5510&gt;]</em><a class="headerlink" href="#pyrocko.trace.IntegrationResponse.T.properties" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -1986,12 +2233,12 @@ T(f) = --------------
 
 <dl class="attribute">
 <dt>
-<tt class="descname">DifferentiationResponse.n -&gt; &lt;pyrocko.guts.__T object at 0x4acffd0&gt;</tt></dt>
+<tt class="descname">DifferentiationResponse.n -&gt; &lt;pyrocko.guts.__T object at 0x57e5650&gt;</tt></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt>
-<tt class="descname">DifferentiationResponse.gain -&gt; &lt;pyrocko.guts.__T object at 0x4acff50&gt;</tt></dt>
+<tt class="descname">DifferentiationResponse.gain -&gt; &lt;pyrocko.guts.__T object at 0x57e5610&gt;</tt></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -2026,12 +2273,12 @@ T(f) = --------------
 
 <dl class="attribute">
 <dt>
-<tt class="descname">DifferentiationResponse.T.instance -&gt; &lt;pyrocko.guts.T object at 0x4acf890&gt;</tt></dt>
+<tt class="descname">DifferentiationResponse.T.instance -&gt; &lt;pyrocko.guts.T object at 0x57e5790&gt;</tt></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="pyrocko.trace.DifferentiationResponse.T.properties">
-<tt class="descname">properties</tt><em class="property"> = [&lt;pyrocko.guts.__T object at 0x4acffd0&gt;, &lt;pyrocko.guts.__T object at 0x4acff50&gt;]</em><a class="headerlink" href="#pyrocko.trace.DifferentiationResponse.T.properties" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">properties</tt><em class="property"> = [&lt;pyrocko.guts.__T object at 0x57e5650&gt;, &lt;pyrocko.guts.__T object at 0x57e5610&gt;]</em><a class="headerlink" href="#pyrocko.trace.DifferentiationResponse.T.properties" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -2087,12 +2334,12 @@ T(f) = --------------
 
 <dl class="attribute">
 <dt>
-<tt class="descname">AnalogFilterResponse.b -&gt; &lt;pyrocko.guts.__T object at 0x4acf9d0&gt;</tt></dt>
+<tt class="descname">AnalogFilterResponse.b -&gt; &lt;pyrocko.guts.__T object at 0x57e57d0&gt;</tt></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt>
-<tt class="descname">AnalogFilterResponse.a -&gt; &lt;pyrocko.guts.__T object at 0x4acfad0&gt;</tt></dt>
+<tt class="descname">AnalogFilterResponse.a -&gt; &lt;pyrocko.guts.__T object at 0x57e5950&gt;</tt></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -2127,12 +2374,12 @@ T(f) = --------------
 
 <dl class="attribute">
 <dt>
-<tt class="descname">AnalogFilterResponse.T.instance -&gt; &lt;pyrocko.guts.T object at 0x4acfc50&gt;</tt></dt>
+<tt class="descname">AnalogFilterResponse.T.instance -&gt; &lt;pyrocko.guts.T object at 0x57e5a10&gt;</tt></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="pyrocko.trace.AnalogFilterResponse.T.properties">
-<tt class="descname">properties</tt><em class="property"> = [&lt;pyrocko.guts.__T object at 0x4acf9d0&gt;, &lt;pyrocko.guts.__T object at 0x4acfad0&gt;]</em><a class="headerlink" href="#pyrocko.trace.AnalogFilterResponse.T.properties" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">properties</tt><em class="property"> = [&lt;pyrocko.guts.__T object at 0x57e57d0&gt;, &lt;pyrocko.guts.__T object at 0x57e5950&gt;]</em><a class="headerlink" href="#pyrocko.trace.AnalogFilterResponse.T.properties" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -2181,7 +2428,7 @@ T(f) = --------------
 
 <dl class="attribute">
 <dt>
-<tt class="descname">MultiplyResponse.responses -&gt; &lt;pyrocko.guts.__T object at 0x4acfb10&gt;</tt></dt>
+<tt class="descname">MultiplyResponse.responses -&gt; &lt;pyrocko.guts.__T object at 0x57e5ad0&gt;</tt></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -2216,12 +2463,12 @@ T(f) = --------------
 
 <dl class="attribute">
 <dt>
-<tt class="descname">MultiplyResponse.T.instance -&gt; &lt;pyrocko.guts.T object at 0x4acfbd0&gt;</tt></dt>
+<tt class="descname">MultiplyResponse.T.instance -&gt; &lt;pyrocko.guts.T object at 0x57e5b90&gt;</tt></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="pyrocko.trace.MultiplyResponse.T.properties">
-<tt class="descname">properties</tt><em class="property"> = [&lt;pyrocko.guts.__T object at 0x4acfb10&gt;]</em><a class="headerlink" href="#pyrocko.trace.MultiplyResponse.T.properties" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">properties</tt><em class="property"> = [&lt;pyrocko.guts.__T object at 0x57e5ad0&gt;]</em><a class="headerlink" href="#pyrocko.trace.MultiplyResponse.T.properties" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -2517,7 +2764,7 @@ sampling interval of the downsampled trace (based on system time).</p>
 
 <dl class="attribute">
 <dt>
-<tt class="descname">DomainChoice.T.instance -&gt; &lt;pyrocko.guts.T object at 0x4ac40d0&gt;</tt></dt>
+<tt class="descname">DomainChoice.T.instance -&gt; &lt;pyrocko.guts.T object at 0x57e5f10&gt;</tt></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -2611,27 +2858,27 @@ sampling interval of the downsampled trace (based on system time).</p>
 
 <dl class="attribute">
 <dt>
-<tt class="descname">MisfitSetup.description -&gt; &lt;pyrocko.guts.T object at 0x4ac4190&gt;</tt></dt>
+<tt class="descname">MisfitSetup.description -&gt; &lt;pyrocko.guts.T object at 0x57e5fd0&gt;</tt></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt>
-<tt class="descname">MisfitSetup.norm -&gt; &lt;pyrocko.guts.__T object at 0x4ac41d0&gt;</tt></dt>
+<tt class="descname">MisfitSetup.norm -&gt; &lt;pyrocko.guts.__T object at 0x57e9050&gt;</tt></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt>
-<tt class="descname">MisfitSetup.taper -&gt; &lt;pyrocko.guts.T object at 0x4ac4210&gt;</tt></dt>
+<tt class="descname">MisfitSetup.taper -&gt; &lt;pyrocko.guts.T object at 0x57e9090&gt;</tt></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt>
-<tt class="descname">MisfitSetup.filter -&gt; &lt;pyrocko.guts.T object at 0x4ac4250&gt;</tt></dt>
+<tt class="descname">MisfitSetup.filter -&gt; &lt;pyrocko.guts.T object at 0x57e90d0&gt;</tt></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt>
-<tt class="descname">MisfitSetup.domain -&gt; &lt;pyrocko.guts.T object at 0x4ac4290&gt;</tt></dt>
+<tt class="descname">MisfitSetup.domain -&gt; &lt;pyrocko.guts.T object at 0x57e9110&gt;</tt></dt>
 <dd></dd></dl>
 
 <dl class="class">
@@ -2661,12 +2908,12 @@ sampling interval of the downsampled trace (based on system time).</p>
 
 <dl class="attribute">
 <dt>
-<tt class="descname">MisfitSetup.T.instance -&gt; &lt;pyrocko.guts.T object at 0x4ac4310&gt;</tt></dt>
+<tt class="descname">MisfitSetup.T.instance -&gt; &lt;pyrocko.guts.T object at 0x57e9190&gt;</tt></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="pyrocko.trace.MisfitSetup.T.properties">
-<tt class="descname">properties</tt><em class="property"> = [&lt;pyrocko.guts.T object at 0x4ac4190&gt;, &lt;pyrocko.guts.__T object at 0x4ac41d0&gt;, &lt;pyrocko.guts.T object at 0x4ac4210&gt;, &lt;pyrocko.guts.T object at 0x4ac4250&gt;, &lt;pyrocko.guts.T object at 0x4ac4290&gt;]</em><a class="headerlink" href="#pyrocko.trace.MisfitSetup.T.properties" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">properties</tt><em class="property"> = [&lt;pyrocko.guts.T object at 0x57e5fd0&gt;, &lt;pyrocko.guts.__T object at 0x57e9050&gt;, &lt;pyrocko.guts.T object at 0x57e9090&gt;, &lt;pyrocko.guts.T object at 0x57e90d0&gt;, &lt;pyrocko.guts.T object at 0x57e9110&gt;]</em><a class="headerlink" href="#pyrocko.trace.MisfitSetup.T.properties" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">

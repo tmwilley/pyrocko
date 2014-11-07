@@ -178,7 +178,7 @@
     <span class="n">nw</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">num</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">w</span> <span class="o">/</span> <span class="n">mindeltagf</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
     <span class="n">ntau</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">num</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">tau</span> <span class="o">/</span> <span class="n">deltat</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
 
-    <span class="n">n</span> <span class="o">=</span> <span class="n">nl</span><span class="o">*</span><span class="n">nw</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">nl</span><span class="o">*</span><span class="n">nw</span><span class="p">)</span>
 
     <span class="n">dl</span> <span class="o">=</span> <span class="n">l</span> <span class="o">/</span> <span class="n">nl</span>
     <span class="n">dw</span> <span class="o">=</span> <span class="n">w</span> <span class="o">/</span> <span class="n">nw</span>
@@ -2031,7 +2031,7 @@
 <span class="k">def</span> <span class="nf">get_engine</span><span class="p">():</span>
     <span class="k">global</span> <span class="n">g_engine</span>
     <span class="k">if</span> <span class="n">g_engine</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-        <span class="n">g_engine</span> <span class="o">=</span> <span class="n">LocalEngine</span><span class="p">(</span><span class="n">use_env</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="n">g_engine</span> <span class="o">=</span> <span class="n">LocalEngine</span><span class="p">(</span><span class="n">use_env</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">use_config</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">g_engine</span>
 

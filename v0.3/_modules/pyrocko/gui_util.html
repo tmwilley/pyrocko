@@ -557,7 +557,14 @@
         <span class="k">return</span> <span class="n">Marker</span><span class="p">(</span><span class="n">nslc_ids</span><span class="p">,</span> <span class="n">tmin</span><span class="p">,</span> <span class="n">tmax</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="n">kind</span><span class="p">)</span>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">save_markers</span><span class="p">(</span><span class="n">markers</span><span class="p">,</span> <span class="n">fn</span><span class="p">,</span> <span class="n">fdigits</span><span class="o">=</span><span class="mi">3</span><span class="p">):</span>
+<div class="viewcode-block" id="Marker.save_markers"><a class="viewcode-back" href="../../gui_util.html#pyrocko.gui_util.Marker.save_markers">[docs]</a>    <span class="k">def</span> <span class="nf">save_markers</span><span class="p">(</span><span class="n">markers</span><span class="p">,</span> <span class="n">fn</span><span class="p">,</span> <span class="n">fdigits</span><span class="o">=</span><span class="mi">3</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Static method to write marker objects to file.</span>
+
+<span class="sd">        :param markers: list of :py:class:`Marker` objects</span>
+<span class="sd">        :param fn: filename as string</span>
+<span class="sd">        :param fdigits: number of decimal digits to use for sub-second time</span>
+<span class="sd">             strings (default 3)</span>
+<span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span><span class="s">&#39;w&#39;</span><span class="p">)</span>
         <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;# Snuffler Markers File Version 0.2</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)</span>
         <span class="n">writer</span> <span class="o">=</span> <span class="n">TableWriter</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
@@ -574,9 +581,16 @@
             <span class="n">writer</span><span class="o">.</span><span class="n">writerow</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span>
 
         <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-
+</div>
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">load_markers</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
+<div class="viewcode-block" id="Marker.load_markers"><a class="viewcode-back" href="../../gui_util.html#pyrocko.gui_util.Marker.load_markers">[docs]</a>    <span class="k">def</span> <span class="nf">load_markers</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Static method to load markers from file. </span>
+
+<span class="sd">        :param filename:  filename as string</span>
+<span class="sd">        :returns: list of :py:class:`Marker`, :py:class:`EventMarker` or</span>
+<span class="sd">            :py:class:`PhaseMarker` objects</span>
+<span class="sd">        &#39;&#39;&#39;</span>
         <span class="n">markers</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">)</span>
         <span class="n">line</span>  <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
@@ -613,7 +627,7 @@
             <span class="n">logger</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&#39;Unsupported Markers File Version&#39;</span><span class="p">)</span>
         
         <span class="k">return</span> <span class="n">markers</span>
-
+</div>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nslc_ids</span><span class="p">,</span> <span class="n">tmin</span><span class="p">,</span> <span class="n">tmax</span><span class="p">,</span> <span class="n">kind</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">nslc_ids</span><span class="p">,</span> <span class="n">tmin</span><span class="p">,</span> <span class="n">tmax</span><span class="p">)</span>
         <span class="n">c</span> <span class="o">=</span> <span class="n">pyrocko</span><span class="o">.</span><span class="n">plot</span><span class="o">.</span><span class="n">color</span>
@@ -628,20 +642,33 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">selected</span> <span class="o">=</span> <span class="bp">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">kind</span> <span class="o">=</span> <span class="n">kind</span>
         
-    <span class="k">def</span> <span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nslc_ids</span><span class="p">,</span> <span class="n">tmin</span><span class="p">,</span><span class="n">tmax</span><span class="p">):</span>
+<div class="viewcode-block" id="Marker.set"><a class="viewcode-back" href="../../gui_util.html#pyrocko.gui_util.Marker.set">[docs]</a>    <span class="k">def</span> <span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nslc_ids</span><span class="p">,</span> <span class="n">tmin</span><span class="p">,</span> <span class="n">tmax</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Set *nslc_ids*, start time and end time of :py:class:`Marker`</span>
+
+<span class="sd">        :param nslc_ids: list or set of (network, station, location, channel) tuples</span>
+<span class="sd">        :param tmin: start time</span>
+<span class="sd">        :param tmax: end time</span>
+<span class="sd">        &#39;&#39;&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">nslc_ids</span> <span class="o">=</span> <span class="n">nslc_ids</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tmin</span> <span class="o">=</span> <span class="n">tmin</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tmax</span> <span class="o">=</span> <span class="n">tmax</span>
-     
-    <span class="k">def</span> <span class="nf">set_kind</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kind</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">kind</span> <span class="o">=</span> <span class="n">kind</span>
-     
-    <span class="k">def</span> <span class="nf">get_tmin</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tmin</span>
-        
-    <span class="k">def</span> <span class="nf">get_tmax</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tmax</span>
+     </div>
+<div class="viewcode-block" id="Marker.set_kind"><a class="viewcode-back" href="../../gui_util.html#pyrocko.gui_util.Marker.set_kind">[docs]</a>    <span class="k">def</span> <span class="nf">set_kind</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">kind</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Set kind of :py:class:`Marker`</span>
 
+<span class="sd">        :param kind: (optional) integer to distinguish groups of markers </span>
+<span class="sd">                        (color-coded)</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kind</span> <span class="o">=</span> <span class="n">kind</span>
+     </div>
+<div class="viewcode-block" id="Marker.get_tmin"><a class="viewcode-back" href="../../gui_util.html#pyrocko.gui_util.Marker.get_tmin">[docs]</a>    <span class="k">def</span> <span class="nf">get_tmin</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Get *start time* of :py:class:`Marker`&#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tmin</span>
+        </div>
+<div class="viewcode-block" id="Marker.get_tmax"><a class="viewcode-back" href="../../gui_util.html#pyrocko.gui_util.Marker.get_tmax">[docs]</a>    <span class="k">def</span> <span class="nf">get_tmax</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Get *end time* of :py:class:`Marker`&#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tmax</span>
+</div>
 <div class="viewcode-block" id="Marker.get_nslc_ids"><a class="viewcode-back" href="../../gui_util.html#pyrocko.gui_util.Marker.get_nslc_ids">[docs]</a>    <span class="k">def</span> <span class="nf">get_nslc_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Get marker&#39;s network-station-location-channel pattern.</span>
 
@@ -664,21 +691,24 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">selected</span> <span class="o">=</span> <span class="n">state</span>
 
 <div class="viewcode-block" id="Marker.match_nsl"><a class="viewcode-back" href="../../gui_util.html#pyrocko.gui_util.Marker.match_nsl">[docs]</a>    <span class="k">def</span> <span class="nf">match_nsl</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nsl</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;See documentation of :py:func:`pyrocko.util.match_nslc`&quot;&quot;&quot;</span>
+        <span class="sd">&#39;&#39;&#39;See documentation of :py:func:`pyrocko.util.match_nslc`&#39;&#39;&#39;</span>
         <span class="n">patterns</span> <span class="o">=</span> <span class="p">[</span> <span class="s">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">x</span><span class="p">[:</span><span class="mi">3</span><span class="p">])</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nslc_ids</span> <span class="p">]</span>
         <span class="k">return</span> <span class="n">pyrocko</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">match_nslc</span><span class="p">(</span><span class="n">patterns</span><span class="p">,</span> <span class="n">nsl</span><span class="p">)</span>
     </div>
 <div class="viewcode-block" id="Marker.match_nslc"><a class="viewcode-back" href="../../gui_util.html#pyrocko.gui_util.Marker.match_nslc">[docs]</a>    <span class="k">def</span> <span class="nf">match_nslc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nslc</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;See documentation of :py:func:`pyrocko.util.match_nslc`&quot;&quot;&quot;</span>
+        <span class="sd">&#39;&#39;&#39;See documentation of :py:func:`pyrocko.util.match_nslc`&#39;&#39;&#39;</span>
         <span class="n">patterns</span> <span class="o">=</span> <span class="p">[</span> <span class="s">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nslc_ids</span> <span class="p">]</span>
         <span class="k">return</span> <span class="n">pyrocko</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">match_nslc</span><span class="p">(</span><span class="n">patterns</span><span class="p">,</span> <span class="n">nslc</span><span class="p">)</span>
 </div>
-    <span class="k">def</span> <span class="nf">one_nslc</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Marker.one_nslc"><a class="viewcode-back" href="../../gui_util.html#pyrocko.gui_util.Marker.one_nslc">[docs]</a>    <span class="k">def</span> <span class="nf">one_nslc</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;If one *nslc_id* defines this marker return this id. </span>
+<span class="sd">        If more than one *nslc_id* is defined in the :py:class:`Marker`s</span>
+<span class="sd">        *nslc_ids* raise :py:exc:`MarkerOneNSLCRequired`.&#39;&#39;&#39;</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nslc_ids</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">MarkerOneNSLCRequired</span><span class="p">()</span>
 
         <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nslc_ids</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-
+</div>
     <span class="k">def</span> <span class="nf">hoover_message</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s">&#39;&#39;</span>
 
@@ -939,9 +969,11 @@
         <span class="n">label_bg</span> <span class="o">=</span> <span class="n">QBrush</span><span class="p">(</span> <span class="n">QColor</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span><span class="mi">255</span><span class="p">,</span><span class="mi">255</span><span class="p">)</span> <span class="p">)</span>
         <span class="n">draw_label</span><span class="p">(</span> <span class="n">p</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">v0</span><span class="o">-</span><span class="mf">10.</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="p">(),</span> <span class="n">label_bg</span><span class="p">,</span> <span class="s">&#39;CB&#39;</span><span class="p">,</span> <span class="n">outline</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_active</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">get_event</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="EventMarker.get_event"><a class="viewcode-back" href="../../gui_util.html#pyrocko.gui_util.EventMarker.get_event">[docs]</a>    <span class="k">def</span> <span class="nf">get_event</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Return an instance of the :py:class:`pyrocko.model.Event` associated</span>
+<span class="sd">        to this :py:class:`EventMarker`&#39;&#39;&#39;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_event</span>
-
+</div>
     <span class="k">def</span> <span class="nf">draw_trace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">viewer</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">trace</span><span class="p">,</span> <span class="n">time_projection</span><span class="p">,</span> <span class="n">track_projection</span><span class="p">,</span> <span class="n">gain</span><span class="p">):</span>
         <span class="k">pass</span>
    
@@ -1030,9 +1062,11 @@
 
         <span class="k">return</span> <span class="s">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">get_event</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="PhaseMarker.get_event"><a class="viewcode-back" href="../../gui_util.html#pyrocko.gui_util.PhaseMarker.get_event">[docs]</a>    <span class="k">def</span> <span class="nf">get_event</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Return an instance of the :py:class:`pyrocko.model.Event` associated</span>
+<span class="sd">        to this :py:class:`EventMarker`&#39;&#39;&#39;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_event</span>
-
+</div>
     <span class="k">def</span> <span class="nf">get_event_hash</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_event_hash</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_event_hash</span>
@@ -1217,18 +1251,22 @@
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
             <span class="k">pass</span>
 
-        <span class="kn">from</span> <span class="nn">matplotlib.backends.backend_qt4agg</span> <span class="kn">import</span> <span class="n">FigureCanvasQTAgg</span> <span class="k">as</span> <span class="n">FigureCanvas</span>
         <span class="kn">from</span> <span class="nn">matplotlib.figure</span> <span class="kn">import</span> <span class="n">Figure</span>
-        
+        <span class="kn">from</span> <span class="nn">matplotlib.backends.backend_qt4agg</span> <span class="kn">import</span> <span class="n">NavigationToolbar2QTAgg</span> <span class="k">as</span> <span class="n">NavigationToolbar</span>
+        <span class="kn">from</span> <span class="nn">matplotlib.backends.backend_qt4agg</span> <span class="kn">import</span> <span class="n">FigureCanvasQTAgg</span> <span class="k">as</span> <span class="n">FigureCanvas</span>
+
         <span class="n">layout</span> <span class="o">=</span> <span class="n">QGridLayout</span><span class="p">()</span>
         <span class="n">layout</span><span class="o">.</span><span class="n">setContentsMargins</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
         <span class="n">layout</span><span class="o">.</span><span class="n">setSpacing</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-        
+
         <span class="bp">self</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span><span class="n">layout</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">figure</span> <span class="o">=</span> <span class="n">Figure</span><span class="p">(</span><span class="n">dpi</span><span class="o">=</span><span class="n">dpi</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span> <span class="o">=</span> <span class="n">FigureCanvas</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">figure</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">setParent</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">toolbar</span> <span class="o">=</span> <span class="n">NavigationToolbar</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">toolbar</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">closed</span> <span class="o">=</span> <span class="bp">False</span>
 
     <span class="k">def</span> <span class="nf">gca</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">axes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
@@ -1241,6 +1279,9 @@
     <span class="k">def</span> <span class="nf">draw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Draw with AGG, then queue for Qt update.&#39;&#39;&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">closeEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ev</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">closed</span> <span class="o">=</span> <span class="bp">True</span>
 
 
 <span class="k">class</span> <span class="nc">WebKitFrame</span><span class="p">(</span><span class="n">QFrame</span><span class="p">):</span>

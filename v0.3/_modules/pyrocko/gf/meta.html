@@ -439,14 +439,21 @@
 <span class="sd">        &#39;&#39;&#39;</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">same_origin</span><span class="p">(</span><span class="n">other</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">north_shift</span> <span class="o">-</span> <span class="n">other</span><span class="o">.</span><span class="n">north_shift</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span>
-                            <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">east_shift</span> <span class="o">-</span> <span class="n">other</span><span class="o">.</span><span class="n">east_shift</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">Location</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">north_shift</span> <span class="o">-</span> <span class="n">other</span><span class="o">.</span><span class="n">north_shift</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span>
+                                <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">east_shift</span> <span class="o">-</span> <span class="n">other</span><span class="o">.</span><span class="n">east_shift</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="mf">0.0</span>
 
         <span class="k">else</span><span class="p">:</span>
             <span class="n">slat</span><span class="p">,</span> <span class="n">slon</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">effective_latlon</span>
-            <span class="n">rlat</span><span class="p">,</span> <span class="n">rlon</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">effective_latlon</span>
-            <span class="k">return</span> <span class="n">orthodrome</span><span class="o">.</span><span class="n">distance_accurate50m_numpy</span><span class="p">(</span><span class="n">slat</span><span class="p">,</span> <span class="n">slon</span><span class="p">,</span>
-                                                         <span class="n">rlat</span><span class="p">,</span> <span class="n">rlon</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">rlat</span><span class="p">,</span> <span class="n">rlon</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">effective_latlon</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="n">rlat</span><span class="p">,</span> <span class="n">rlon</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">lat</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">lon</span>
+
+            <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">orthodrome</span><span class="o">.</span><span class="n">distance_accurate50m_numpy</span><span class="p">(</span>
+                <span class="n">slat</span><span class="p">,</span> <span class="n">slon</span><span class="p">,</span> <span class="n">rlat</span><span class="p">,</span> <span class="n">rlon</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
 
     <span class="k">def</span> <span class="nf">azibazi_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span></div>
 <div class="viewcode-block" id="Location.azibazi_to"><a class="viewcode-back" href="../../../gf.html#pyrocko.gf.meta.Location.azibazi_to">[docs]</a>        <span class="sd">&#39;&#39;&#39;</span>
@@ -454,12 +461,19 @@
 <span class="sd">        &#39;&#39;&#39;</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">same_origin</span><span class="p">(</span><span class="n">other</span><span class="p">):</span>
-            <span class="n">azi</span> <span class="o">=</span> <span class="n">r2d</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">atan2</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">east_shift</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">east_shift</span><span class="p">,</span>
-                                   <span class="n">other</span><span class="o">.</span><span class="n">north_shift</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">north_shift</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">Location</span><span class="p">):</span>
+                <span class="n">azi</span> <span class="o">=</span> <span class="n">r2d</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">atan2</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">east_shift</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">east_shift</span><span class="p">,</span>
+                                       <span class="n">other</span><span class="o">.</span><span class="n">north_shift</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">north_shift</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">azi</span> <span class="o">=</span> <span class="mf">0.0</span>
+
             <span class="n">bazi</span> <span class="o">=</span> <span class="n">azi</span> <span class="o">+</span> <span class="mf">180.</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">slat</span><span class="p">,</span> <span class="n">slon</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">effective_latlon</span>
-            <span class="n">rlat</span><span class="p">,</span> <span class="n">rlon</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">effective_latlon</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">rlat</span><span class="p">,</span> <span class="n">rlon</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">effective_latlon</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="n">rlat</span><span class="p">,</span> <span class="n">rlon</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">lat</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">lon</span>
             <span class="n">azi</span> <span class="o">=</span> <span class="n">orthodrome</span><span class="o">.</span><span class="n">azimuth_numpy</span><span class="p">(</span><span class="n">slat</span><span class="p">,</span> <span class="n">slon</span><span class="p">,</span> <span class="n">rlat</span><span class="p">,</span> <span class="n">rlon</span><span class="p">)</span>
             <span class="n">bazi</span> <span class="o">=</span> <span class="n">orthodrome</span><span class="o">.</span><span class="n">azimuth_numpy</span><span class="p">(</span><span class="n">rlat</span><span class="p">,</span> <span class="n">rlon</span><span class="p">,</span> <span class="n">slat</span><span class="p">,</span> <span class="n">slon</span><span class="p">)</span>
 
@@ -635,7 +649,7 @@
             <span class="n">east_shift</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">east_shifts</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
 
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">north_shift</span> <span class="o">=</span> <span class="n">east_shift</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="n">north_shift</span> <span class="o">=</span> <span class="n">east_shift</span> <span class="o">=</span> <span class="mf">0.0</span>
 
         <span class="k">return</span> <span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">,</span> <span class="n">north_shift</span><span class="p">,</span> <span class="n">east_shift</span>
 
@@ -1261,6 +1275,18 @@
             <span class="n">ib_fl</span> <span class="o">=</span> <span class="n">xb_fl</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">num</span><span class="o">.</span><span class="n">int</span><span class="p">)</span>
             <span class="n">ib_ce</span> <span class="o">=</span> <span class="n">xb_ce</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">num</span><span class="o">.</span><span class="n">int</span><span class="p">)</span>
 
+            <span class="k">if</span> <span class="n">num</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">ia_fl</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="n">num</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">ia_fl</span> <span class="o">&gt;=</span> <span class="n">na</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="n">OutOfBounds</span><span class="p">()</span>
+
+            <span class="k">if</span> <span class="n">num</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">ia_ce</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="n">num</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">ia_ce</span> <span class="o">&gt;=</span> <span class="n">na</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="n">OutOfBounds</span><span class="p">()</span>
+
+            <span class="k">if</span> <span class="n">num</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">ib_fl</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="n">num</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">ib_fl</span> <span class="o">&gt;=</span> <span class="n">nb</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="n">OutOfBounds</span><span class="p">()</span>
+
+            <span class="k">if</span> <span class="n">num</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">ib_ce</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="n">num</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">ib_ce</span> <span class="o">&gt;=</span> <span class="n">nb</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="n">OutOfBounds</span><span class="p">()</span>
+
             <span class="n">irecords</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">size</span><span class="o">*</span><span class="mi">4</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">num</span><span class="o">.</span><span class="n">int</span><span class="p">)</span>
             <span class="n">irecords</span><span class="p">[</span><span class="mi">0</span><span class="p">::</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="n">ia_fl</span><span class="o">*</span><span class="n">nb</span><span class="o">*</span><span class="n">ng</span> <span class="o">+</span> <span class="n">ib_fl</span><span class="o">*</span><span class="n">ng</span> <span class="o">+</span> <span class="n">ig</span>
             <span class="n">irecords</span><span class="p">[</span><span class="mi">1</span><span class="p">::</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="n">ia_ce</span><span class="o">*</span><span class="n">nb</span><span class="o">*</span><span class="n">ng</span> <span class="o">+</span> <span class="n">ib_fl</span><span class="o">*</span><span class="n">ng</span> <span class="o">+</span> <span class="n">ig</span>
@@ -1427,6 +1453,24 @@
             <span class="n">ib_ce</span> <span class="o">=</span> <span class="n">xb_ce</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">num</span><span class="o">.</span><span class="n">int</span><span class="p">)</span>
             <span class="n">ic_fl</span> <span class="o">=</span> <span class="n">xc_fl</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">num</span><span class="o">.</span><span class="n">int</span><span class="p">)</span>
             <span class="n">ic_ce</span> <span class="o">=</span> <span class="n">xc_ce</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">num</span><span class="o">.</span><span class="n">int</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">num</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">ia_fl</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="n">num</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">ia_fl</span> <span class="o">&gt;=</span> <span class="n">na</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="n">OutOfBounds</span><span class="p">()</span>
+
+            <span class="k">if</span> <span class="n">num</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">ia_ce</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="n">num</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">ia_ce</span> <span class="o">&gt;=</span> <span class="n">na</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="n">OutOfBounds</span><span class="p">()</span>
+
+            <span class="k">if</span> <span class="n">num</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">ib_fl</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="n">num</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">ib_fl</span> <span class="o">&gt;=</span> <span class="n">nb</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="n">OutOfBounds</span><span class="p">()</span>
+
+            <span class="k">if</span> <span class="n">num</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">ib_ce</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="n">num</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">ib_ce</span> <span class="o">&gt;=</span> <span class="n">nb</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="n">OutOfBounds</span><span class="p">()</span>
+
+            <span class="k">if</span> <span class="n">num</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">ic_fl</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="n">num</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">ic_fl</span> <span class="o">&gt;=</span> <span class="n">nc</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="n">OutOfBounds</span><span class="p">()</span>
+
+            <span class="k">if</span> <span class="n">num</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">ic_ce</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="n">num</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">ic_ce</span> <span class="o">&gt;=</span> <span class="n">nc</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="n">OutOfBounds</span><span class="p">()</span>
 
             <span class="n">irecords</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">size</span><span class="o">*</span><span class="mi">8</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">num</span><span class="o">.</span><span class="n">int</span><span class="p">)</span>
             <span class="n">irecords</span><span class="p">[</span><span class="mi">0</span><span class="p">::</span><span class="mi">8</span><span class="p">]</span> <span class="o">=</span> <span class="n">ia_fl</span><span class="o">*</span><span class="n">nb</span><span class="o">*</span><span class="n">nc</span><span class="o">*</span><span class="n">ng</span> <span class="o">+</span> <span class="n">ib_fl</span><span class="o">*</span><span class="n">nc</span><span class="o">*</span><span class="n">ng</span> <span class="o">+</span> <span class="n">ic_fl</span><span class="o">*</span><span class="n">ng</span> <span class="o">+</span> <span class="n">ig</span>

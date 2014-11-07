@@ -986,14 +986,15 @@
         
         <span class="bp">self</span><span class="o">.</span><span class="n">_update_ids</span><span class="p">()</span>
      </div>
-<div class="viewcode-block" id="Trace.transfer"><a class="viewcode-back" href="../../trace.html#pyrocko.trace.Trace.transfer">[docs]</a>    <span class="k">def</span> <span class="nf">transfer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tfade</span><span class="p">,</span> <span class="n">freqlimits</span><span class="p">,</span> <span class="n">transfer_function</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">cut_off_fading</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;Return new trace with transfer function applied.</span>
+<div class="viewcode-block" id="Trace.transfer"><a class="viewcode-back" href="../../trace.html#pyrocko.trace.Trace.transfer">[docs]</a>    <span class="k">def</span> <span class="nf">transfer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tfade</span><span class="p">,</span> <span class="n">freqlimits</span><span class="p">,</span> <span class="n">transfer_function</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">cut_off_fading</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">invert</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Return new trace with transfer function applied (convolution).</span>
 <span class="sd">        </span>
 <span class="sd">        :param tfade:             rise/fall time in seconds of taper applied in timedomain at both ends of trace.</span>
 <span class="sd">        :param freqlimits:        4-tuple with corner frequencies in Hz.</span>
 <span class="sd">        :param transfer_function: FrequencyResponse object; must provide a method &#39;evaluate(freqs)&#39;, which returns the</span>
 <span class="sd">                                  transfer function coefficients at the frequencies &#39;freqs&#39;.</span>
 <span class="sd">        :param cut_off_fading:    whether to cut off rise/fall interval in output trace.</span>
+<span class="sd">        :param invert:            set to True to do a deconvolution</span>
 <span class="sd">        &#39;&#39;&#39;</span>
     
         <span class="k">if</span> <span class="n">transfer_function</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
@@ -1004,8 +1005,8 @@
 
         <span class="n">ndata</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ydata</span><span class="o">.</span><span class="n">size</span>
         <span class="n">ntrans</span> <span class="o">=</span> <span class="n">nextpow2</span><span class="p">(</span><span class="n">ndata</span><span class="o">*</span><span class="mf">1.2</span><span class="p">)</span>
-        <span class="n">coefs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_tapered_coefs</span><span class="p">(</span><span class="n">ntrans</span><span class="p">,</span> <span class="n">freqlimits</span><span class="p">,</span> <span class="n">transfer_function</span><span class="p">)</span>
-        
+        <span class="n">coefs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_tapered_coefs</span><span class="p">(</span><span class="n">ntrans</span><span class="p">,</span> <span class="n">freqlimits</span><span class="p">,</span> <span class="n">transfer_function</span><span class="p">,</span> <span class="n">invert</span><span class="o">=</span><span class="n">invert</span><span class="p">)</span>
+
         <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ydata</span>
         <span class="n">data_pad</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">ntrans</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">num</span><span class="o">.</span><span class="n">float</span><span class="p">)</span>
         <span class="n">data_pad</span><span class="p">[:</span><span class="n">ndata</span><span class="p">]</span>  <span class="o">=</span> <span class="n">data</span> <span class="o">-</span> <span class="n">data</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
@@ -1170,24 +1171,27 @@
             <span class="n">centroid_freqs</span><span class="p">[</span><span class="n">ifilt</span><span class="p">]</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">freqs</span><span class="o">*</span><span class="n">enorm</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">centroid_freqs</span><span class="p">,</span> <span class="n">signal_tf</span>
-        </div>
-    <span class="k">def</span> <span class="nf">_get_tapered_coefs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ntrans</span><span class="p">,</span> <span class="n">freqlimits</span><span class="p">,</span> <span class="n">transfer_function</span><span class="p">):</span>
-    
+</div>
+    <span class="k">def</span> <span class="nf">_get_tapered_coefs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ntrans</span><span class="p">,</span> <span class="n">freqlimits</span><span class="p">,</span> <span class="n">transfer_function</span><span class="p">,</span> <span class="n">invert</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+
         <span class="n">deltaf</span> <span class="o">=</span> <span class="mf">1.</span><span class="o">/</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">deltat</span><span class="o">*</span><span class="n">ntrans</span><span class="p">)</span>
         <span class="n">nfreqs</span> <span class="o">=</span> <span class="n">ntrans</span><span class="o">/</span><span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span>
         <span class="n">transfer</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">nfreqs</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">num</span><span class="o">.</span><span class="n">complex</span><span class="p">)</span>
         <span class="n">hi</span> <span class="o">=</span> <span class="n">snapper</span><span class="p">(</span><span class="n">nfreqs</span><span class="p">,</span> <span class="n">deltaf</span><span class="p">)</span>
         <span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">d</span> <span class="o">=</span> <span class="n">freqlimits</span>
         <span class="n">freqs</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">hi</span><span class="p">(</span><span class="n">d</span><span class="p">)</span><span class="o">-</span><span class="n">hi</span><span class="p">(</span><span class="n">a</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">num</span><span class="o">.</span><span class="n">float</span><span class="p">)</span><span class="o">*</span><span class="n">deltaf</span> <span class="o">+</span> <span class="n">hi</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="o">*</span><span class="n">deltaf</span>
-        <span class="n">transfer</span><span class="p">[</span><span class="n">hi</span><span class="p">(</span><span class="n">a</span><span class="p">):</span><span class="n">hi</span><span class="p">(</span><span class="n">d</span><span class="p">)]</span> <span class="o">=</span> <span class="n">transfer_function</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">freqs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">invert</span><span class="p">:</span>
+            <span class="n">transfer</span><span class="p">[</span><span class="n">hi</span><span class="p">(</span><span class="n">a</span><span class="p">):</span><span class="n">hi</span><span class="p">(</span><span class="n">d</span><span class="p">)]</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">transfer_function</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">freqs</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">transfer</span><span class="p">[</span><span class="n">hi</span><span class="p">(</span><span class="n">a</span><span class="p">):</span><span class="n">hi</span><span class="p">(</span><span class="n">d</span><span class="p">)]</span> <span class="o">=</span> <span class="n">transfer_function</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">freqs</span><span class="p">)</span>
 
         <span class="n">tapered_transfer</span> <span class="o">=</span> <span class="n">costaper</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">,</span><span class="n">d</span><span class="p">,</span> <span class="n">nfreqs</span><span class="p">,</span> <span class="n">deltaf</span><span class="p">)</span><span class="o">*</span><span class="n">transfer</span>
         <span class="n">tapered_transfer</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span> <span class="c"># don&#39;t introduce static offsets</span>
         <span class="k">return</span> <span class="n">tapered_transfer</span>
-        
+
 <div class="viewcode-block" id="Trace.fill_template"><a class="viewcode-back" href="../../trace.html#pyrocko.trace.Trace.fill_template">[docs]</a>    <span class="k">def</span> <span class="nf">fill_template</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">template</span><span class="p">,</span> <span class="o">**</span><span class="n">additional</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Fill string template with trace metadata.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Uses normal python &#39;%(placeholder)s&#39; string templates. The following</span>
 <span class="sd">        placeholders are considered: ``network``, ``station``, ``location``,</span>
 <span class="sd">        ``channel``, ``tmin`` (time of first sample), ``tmax`` (time of last</span>
@@ -1925,6 +1929,45 @@
         <span class="n">coefs</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">freqs</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">num</span><span class="o">.</span><span class="n">complex</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">coefs</span>
    </div></div>
+<div class="viewcode-block" id="Evalresp"><a class="viewcode-back" href="../../trace.html#pyrocko.trace.Evalresp">[docs]</a><span class="k">class</span> <span class="nc">Evalresp</span><span class="p">(</span><span class="n">FrequencyResponse</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Calls evalresp and generates values of the instrument response transfer function.</span>
+<span class="sd">   </span>
+<span class="sd">    :param respfile: response file in evalresp format</span>
+<span class="sd">    :param trace: trace for which the response is to be extracted from the file</span>
+<span class="sd">    :param target: ``&#39;dis&#39;`` for displacement or ``&#39;vel&#39;`` for velocity</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">respfile</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
+    <span class="n">nslc_id</span> <span class="o">=</span> <span class="n">Tuple</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">())</span>
+    <span class="n">target</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s">&#39;dis&#39;</span><span class="p">)</span>
+    <span class="n">instant</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">respfile</span><span class="p">,</span> <span class="n">trace</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="s">&#39;dis&#39;</span><span class="p">,</span> <span class="n">nslc_id</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">trace</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">nslc_id</span> <span class="o">=</span> <span class="n">trace</span><span class="o">.</span><span class="n">nslc_id</span>
+            <span class="n">time</span> <span class="o">=</span> <span class="p">(</span><span class="n">trace</span><span class="o">.</span><span class="n">tmin</span> <span class="o">+</span> <span class="n">trace</span><span class="o">.</span><span class="n">tmax</span><span class="p">)</span> <span class="o">/</span> <span class="mf">2.</span>
+            
+        <span class="n">FrequencyResponse</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                        <span class="n">respfile</span><span class="o">=</span><span class="n">respfile</span><span class="p">,</span>
+                        <span class="n">nslc_id</span><span class="o">=</span><span class="n">nslc_id</span><span class="p">,</span>
+                        <span class="n">instant</span><span class="o">=</span><span class="n">time</span><span class="p">,</span>
+                        <span class="n">target</span><span class="o">=</span><span class="n">target</span><span class="p">)</span>
+        
+<div class="viewcode-block" id="Evalresp.evaluate"><a class="viewcode-back" href="../../trace.html#pyrocko.trace.Evalresp.evaluate">[docs]</a>    <span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">freqs</span><span class="p">):</span>
+        <span class="n">network</span><span class="p">,</span> <span class="n">station</span><span class="p">,</span> <span class="n">location</span><span class="p">,</span> <span class="n">channel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nslc_id</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">evalresp</span><span class="o">.</span><span class="n">evalresp</span><span class="p">(</span><span class="n">sta_list</span><span class="o">=</span><span class="n">station</span><span class="p">,</span>
+                              <span class="n">cha_list</span><span class="o">=</span><span class="n">channel</span><span class="p">,</span>
+                              <span class="n">net_code</span><span class="o">=</span><span class="n">network</span><span class="p">,</span>
+                              <span class="n">locid</span><span class="o">=</span><span class="n">location</span><span class="p">,</span>
+                              <span class="n">instant</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">instant</span><span class="p">,</span>
+                              <span class="n">freqs</span><span class="o">=</span><span class="n">freqs</span><span class="p">,</span>
+                              <span class="n">units</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span>
+                              <span class="nb">file</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">respfile</span><span class="p">,</span>
+                              <span class="n">rtype</span><span class="o">=</span><span class="s">&#39;CS&#39;</span><span class="p">)</span>
+        
+        <span class="n">transfer</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">4</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">transfer</span>
+</div></div>
 <div class="viewcode-block" id="InverseEvalresp"><a class="viewcode-back" href="../../trace.html#pyrocko.trace.InverseEvalresp">[docs]</a><span class="k">class</span> <span class="nc">InverseEvalresp</span><span class="p">(</span><span class="n">FrequencyResponse</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">    Calls evalresp and generates values of the inverse instrument response for </span>
@@ -1999,6 +2042,17 @@
             <span class="n">a</span> <span class="o">/=</span> <span class="n">jomeg</span><span class="o">-</span><span class="n">p</span>
         
         <span class="k">return</span> <span class="n">a</span>
+</div></div>
+<div class="viewcode-block" id="ButterworthResponse"><a class="viewcode-back" href="../../trace.html#pyrocko.trace.ButterworthResponse">[docs]</a><span class="k">class</span> <span class="nc">ButterworthResponse</span><span class="p">(</span><span class="n">FrequencyResponse</span><span class="p">):</span>
+
+    <span class="n">corner</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+    <span class="n">order</span> <span class="o">=</span> <span class="n">Int</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+    <span class="n">typ</span> <span class="o">=</span> <span class="n">StringChoice</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">choices</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;low&#39;</span><span class="p">,</span> <span class="s">&#39;high&#39;</span><span class="p">],</span> <span class="n">default</span><span class="o">=</span><span class="s">&#39;low&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ButterworthResponse.evaluate"><a class="viewcode-back" href="../../trace.html#pyrocko.trace.ButterworthResponse.evaluate">[docs]</a>    <span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">freqs</span><span class="p">):</span>
+        <span class="n">b</span><span class="p">,</span> <span class="n">a</span> <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">butter</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">order</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">corner</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">typ</span><span class="p">,</span> <span class="n">analog</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="n">w</span><span class="p">,</span> <span class="n">h</span> <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">freqs</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">freqs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">h</span>
 </div></div>
 <div class="viewcode-block" id="SampledResponse"><a class="viewcode-back" href="../../trace.html#pyrocko.trace.SampledResponse">[docs]</a><span class="k">class</span> <span class="nc">SampledResponse</span><span class="p">(</span><span class="n">FrequencyResponse</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Interpolates frequency response given at a set of sampled frequencies.</span>
