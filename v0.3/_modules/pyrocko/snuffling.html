@@ -183,6 +183,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_live_update</span> <span class="o">=</span> <span class="bp">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_previous_output_filename</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_previous_input_filename</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_previous_input_directory</span> <span class="o">=</span> <span class="bp">None</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_tempdir</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_iplot</span> <span class="o">=</span> <span class="mi">0</span>
@@ -258,8 +259,9 @@
         <span class="n">parser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s">&#39;--format&#39;</span><span class="p">,</span>
                 <span class="n">dest</span><span class="o">=</span><span class="s">&#39;format&#39;</span><span class="p">,</span>
                 <span class="n">default</span><span class="o">=</span><span class="s">&#39;from_extension&#39;</span><span class="p">,</span>
-                <span class="n">choices</span><span class="o">=</span><span class="p">(</span><span class="s">&#39;mseed&#39;</span><span class="p">,</span> <span class="s">&#39;sac&#39;</span><span class="p">,</span> <span class="s">&#39;kan&#39;</span><span class="p">,</span> <span class="s">&#39;segy&#39;</span><span class="p">,</span> 
-                    <span class="s">&#39;seisan&#39;</span><span class="p">,</span> <span class="s">&#39;seisan_l&#39;</span><span class="p">,</span> <span class="s">&#39;seisan_b&#39;</span><span class="p">,</span> <span class="s">&#39;from_extension&#39;</span><span class="p">,</span> <span class="s">&#39;try&#39;</span><span class="p">),</span>
+                <span class="n">choices</span><span class="o">=</span><span class="p">(</span><span class="s">&#39;mseed&#39;</span><span class="p">,</span> <span class="s">&#39;sac&#39;</span><span class="p">,</span> <span class="s">&#39;kan&#39;</span><span class="p">,</span> <span class="s">&#39;segy&#39;</span><span class="p">,</span> <span class="s">&#39;seisan&#39;</span><span class="p">,</span> <span class="s">&#39;seisan.l&#39;</span><span class="p">,</span>
+                    <span class="s">&#39;seisan.b&#39;</span><span class="p">,</span> <span class="s">&#39;gse1&#39;</span><span class="p">,</span> <span class="s">&#39;gcf&#39;</span><span class="p">,</span> <span class="s">&#39;yaff&#39;</span><span class="p">,</span> <span class="s">&#39;datacube&#39;</span><span class="p">,</span>
+                    <span class="s">&#39;from_extension&#39;</span><span class="p">,</span> <span class="s">&#39;detect&#39;</span><span class="p">),</span>
                 <span class="n">help</span><span class="o">=</span><span class="s">&#39;assume files are of given FORMAT [default: </span><span class="se">\&#39;</span><span class="si">%d</span><span class="s">efault</span><span class="se">\&#39;</span><span class="s">]&#39;</span> <span class="p">)</span>
 
         <span class="n">parser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span><span class="s">&#39;--pattern&#39;</span><span class="p">,</span>
@@ -982,8 +984,7 @@
             <span class="k">return</span> <span class="bp">None</span>
     </div>
 <div class="viewcode-block" id="Snuffling.make_helpmenuitem"><a class="viewcode-back" href="../../snuffling.html#pyrocko.snuffling.Snuffling.make_helpmenuitem">[docs]</a>    <span class="k">def</span> <span class="nf">make_helpmenuitem</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;Create the help menu item for the snuffling.</span>
-<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="sd">&#39;&#39;&#39;Create the help menu item for the snuffling.&#39;&#39;&#39;</span>
         
         <span class="n">item</span> <span class="o">=</span> <span class="n">QAction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_name</span><span class="p">(),</span> <span class="bp">None</span><span class="p">)</span>
 
@@ -1003,12 +1004,13 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">get_viewer</span><span class="p">()</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span> <span class="n">item</span><span class="p">,</span> <span class="n">SIGNAL</span><span class="p">(</span><span class="s">&quot;triggered(bool)&quot;</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">menuitem_triggered</span> <span class="p">)</span>
         <span class="k">return</span> <span class="n">item</span>
     </div>
-<div class="viewcode-block" id="Snuffling.output_filename"><a class="viewcode-back" href="../../snuffling.html#pyrocko.snuffling.Snuffling.output_filename">[docs]</a>    <span class="k">def</span> <span class="nf">output_filename</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">caption</span><span class="o">=</span><span class="s">&#39;Save File&#39;</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">selected_filter</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        
+<div class="viewcode-block" id="Snuffling.output_filename"><a class="viewcode-back" href="../../snuffling.html#pyrocko.snuffling.Snuffling.output_filename">[docs]</a>    <span class="k">def</span> <span class="nf">output_filename</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">caption</span><span class="o">=</span><span class="s">&#39;Save File&#39;</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span>\
+                        <span class="n">selected_filter</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Query user for an output filename.</span>
 <span class="sd">        </span>
-<span class="sd">        This is currently just a wrapper to :py:func:`QFileDialog.getSaveFileName`.</span>
-<span class="sd">        A :py:exc:`UserCancelled` exception is raised if the user cancels the dialog.</span>
+<span class="sd">        This is currently a wrapper to :py:func:`QFileDialog.getSaveFileName`.</span>
+<span class="sd">        A :py:exc:`UserCancelled` exception is raised if the user cancels the </span>
+<span class="sd">        dialog.</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">dir</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_previous_output_filename</span><span class="p">:</span>
@@ -1027,12 +1029,34 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_previous_output_filename</span> <span class="o">=</span> <span class="n">fn</span>
         <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="Snuffling.input_filename"><a class="viewcode-back" href="../../snuffling.html#pyrocko.snuffling.Snuffling.input_filename">[docs]</a>    <span class="k">def</span> <span class="nf">input_filename</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">caption</span><span class="o">=</span><span class="s">&#39;Open File&#39;</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">selected_filter</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        
+<div class="viewcode-block" id="Snuffling.input_directory"><a class="viewcode-back" href="../../snuffling.html#pyrocko.snuffling.Snuffling.input_directory">[docs]</a>    <span class="k">def</span> <span class="nf">input_directory</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">caption</span><span class="o">=</span><span class="s">&#39;Open Directory&#39;</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Query user for an input directory.</span>
+
+<span class="sd">        This is a wrapper to :py:func:`QFileDialog.getExistingDirectory`.</span>
+<span class="sd">        A :py:exc:`UserCancelled` exception is raised if the user cancels the </span>
+<span class="sd">        dialog.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">dir</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_previous_input_directory</span><span class="p">:</span>
+            <span class="nb">dir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_previous_input_directory</span>
+
+        <span class="n">dirn</span> <span class="o">=</span> <span class="n">QFileDialog</span><span class="o">.</span><span class="n">getExistingDirectory</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> 
+                                                <span class="n">caption</span><span class="p">,</span> 
+                                                <span class="nb">dir</span><span class="p">,</span>
+                                                <span class="n">QFileDialog</span><span class="o">.</span><span class="n">ShowDirsOnly</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">dirn</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">UserCancelled</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_previous_input_directory</span> <span class="o">=</span> <span class="n">dirn</span> 
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">dirn</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Snuffling.input_filename"><a class="viewcode-back" href="../../snuffling.html#pyrocko.snuffling.Snuffling.input_filename">[docs]</a>    <span class="k">def</span> <span class="nf">input_filename</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">caption</span><span class="o">=</span><span class="s">&#39;Open File&#39;</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> \
+                       <span class="n">selected_filter</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Query user for an input filename.</span>
-<span class="sd">        </span>
-<span class="sd">        This is currently just a wrapper to :py:func:`QFileDialog.getOpenFileName`.</span>
-<span class="sd">        A :py:exc:`UserCancelled` exception is raised if the user cancels the dialog.</span>
+
+<span class="sd">        This is currently a wrapper to :py:func:`QFileDialog.getOpenFileName`.</span>
+<span class="sd">        A :py:exc:`UserCancelled` exception is raised if the user cancels the </span>
+<span class="sd">        dialog.</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">dir</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_previous_input_filename</span><span class="p">:</span>
@@ -1050,13 +1074,13 @@
         
         <span class="bp">self</span><span class="o">.</span><span class="n">_previous_input_filename</span> <span class="o">=</span> <span class="n">fn</span>
         <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
-    </div>
-<div class="viewcode-block" id="Snuffling.input_dialog"><a class="viewcode-back" href="../../snuffling.html#pyrocko.snuffling.Snuffling.input_dialog">[docs]</a>    <span class="k">def</span> <span class="nf">input_dialog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">caption</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">request</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">):</span>
-        
+</div>
+<div class="viewcode-block" id="Snuffling.input_dialog"><a class="viewcode-back" href="../../snuffling.html#pyrocko.snuffling.Snuffling.input_dialog">[docs]</a>    <span class="k">def</span> <span class="nf">input_dialog</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">caption</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">request</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">directory</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Query user for a text input.</span>
-<span class="sd">        </span>
-<span class="sd">        This is currently just a wrapper to :py:func:`QInputDialog.getText`.</span>
-<span class="sd">        A :py:exc:`UserCancelled` exception is raised if the user cancels the dialog.</span>
+
+<span class="sd">        This is currently a wrapper to :py:func:`QInputDialog.getText`.</span>
+<span class="sd">        A :py:exc:`UserCancelled` exception is raised if the user cancels the </span>
+<span class="sd">        dialog.</span>
 <span class="sd">        &#39;&#39;&#39;</span>
             
         <span class="n">inp</span><span class="p">,</span> <span class="n">ok</span> <span class="o">=</span> <span class="n">QInputDialog</span><span class="o">.</span><span class="n">getText</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_viewer</span><span class="p">(),</span> <span class="s">&#39;Input&#39;</span><span class="p">,</span> <span class="n">caption</span><span class="p">)</span>
@@ -1070,7 +1094,8 @@
         <span class="sd">&#39;&#39;&#39;Called when the user has played with an adjustable parameter.</span>
 <span class="sd">        </span>
 <span class="sd">        The default implementation sets the parameter, calls the snuffling&#39;s </span>
-<span class="sd">        :py:meth:`call` method and finally triggers an update on the viewer widget.</span>
+<span class="sd">        :py:meth:`call` method and finally triggers an update on the viewer </span>
+<span class="sd">        widget.</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         
         <span class="n">param</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_parameters</span><span class="p">()[</span><span class="n">iparam</span><span class="p">]</span>

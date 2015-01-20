@@ -470,6 +470,57 @@ nodes which are present in both stores are copied.</p>
 </li>
 </ol>
 </div>
+<div class="section" id="python-script-examples">
+<h2>Python Script Examples<a class="headerlink" href="#python-script-examples" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="retrieve-synthetic-seismograms-from-a-local-store">
+<h3>Retrieve synthetic seismograms from a local store<a class="headerlink" href="#retrieve-synthetic-seismograms-from-a-local-store" title="Permalink to this headline">¶</a></h3>
+<p>It is assumed that a <a class="reference internal" href="gf.html#pyrocko.gf.store.Store" title="pyrocko.gf.store.Store"><tt class="xref py py-class docutils literal"><span class="pre">pyrocko.gf.store.Store</span></tt></a> with store ID
+<em>crust2_dd</em> has been downloaded in advance. A list of currently available
+stores can be found at <a class="reference external" href="http://kinherd.org/gfs.html">http://kinherd.org/gfs.html</a> as well as how to download
+such stores.</p>
+<div class="highlight-console"><pre>from pyrocko.gf.seismosizer import LocalEngine, Target
+from pyrocko.gf.seismosizer import DCSource, ExplosionSource
+from pyrocko import trace
+
+# We need a pyrocko.gf.seismosizer.Engine object which provides us with the
+# traces extracted from the store. In this case we are going to use a local
+# engine since we are going to query a local store.
+engine = LocalEngine(store_superdirs=['/data/stores'])
+
+# The store we are going extract data from:
+store_id = 'crust2_dd'
+
+# Define a list of pyrocko.gf.seismosizer.Target objects, representing the
+# recording devices. In this case one station with a three component sensor
+# will serve fine for demonstation.
+channel_codes = 'ENZ'
+targets = [Target(lat=10.,
+                  lon=10.,
+                  store_id=store_id,
+                  codes=('', 'STA', '', channel_code))
+                        for channel_code in channel_codes]
+
+# Let's use a double couple source representation.
+source_dc = DCSource(lat=11.,
+                     lon=11.,
+                     depth=10000.,
+                     strike=20.,
+                     dip=40.,
+                     rake=60.,
+                     magnitude=4.)
+
+# Processing that data will return a pyrocko.gf.seismosizer.Reponse object.
+response = engine.process(sources=[source_dc],
+                          targets=targets)
+
+# This will return a list of the requested traces:
+synthetic_traces = response.pyrocko_traces()
+
+# Finally, let's scrutinize these traces.
+trace.snuffle(synthetic_traces)</pre>
+</div>
+</div>
+</div>
 </div>
 
 

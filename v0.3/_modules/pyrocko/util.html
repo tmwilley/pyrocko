@@ -93,6 +93,30 @@
 </div>
 <div class="viewcode-block" id="data_file"><a class="viewcode-back" href="../../util.html#pyrocko.util.data_file">[docs]</a><span class="k">def</span> <span class="nf">data_file</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">__file__</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="s">&#39;data&#39;</span><span class="p">,</span> <span class="n">fn</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="download_file"><a class="viewcode-back" href="../../util.html#pyrocko.util.download_file">[docs]</a><span class="k">def</span> <span class="nf">download_file</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">fpath</span><span class="p">):</span>
+    <span class="kn">import</span> <span class="nn">urllib2</span>
+
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;starting download of </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">url</span><span class="p">)</span>
+
+    <span class="n">ensuredirs</span><span class="p">(</span><span class="n">fpath</span><span class="p">)</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+    <span class="n">fpath_tmp</span> <span class="o">=</span> <span class="n">fpath</span> <span class="o">+</span> <span class="s">&#39;.</span><span class="si">%i</span><span class="s">.temp&#39;</span> <span class="o">%</span> <span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">()</span>
+    <span class="n">g</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">fpath_tmp</span><span class="p">,</span> <span class="s">&#39;wb&#39;</span><span class="p">)</span>
+    <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">1024</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">data</span><span class="p">:</span>
+            <span class="k">break</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+    <span class="n">g</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="n">os</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">fpath_tmp</span><span class="p">,</span> <span class="n">fpath</span><span class="p">)</span>
+
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;finished download of </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">url</span><span class="p">)</span>
+
 </div>
 <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">num</span><span class="p">,</span> <span class="s">&#39;float128&#39;</span><span class="p">):</span>
     <span class="n">hpfloat</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">float128</span>
@@ -1172,7 +1196,51 @@
 
         <span class="n">os</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">fn_temp</span><span class="p">,</span> <span class="n">fn</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="n">need</span></div>
+    <span class="k">return</span> <span class="n">need</span>
+
+</div>
+<div class="viewcode-block" id="read_leap_seconds"><a class="viewcode-back" href="../../util.html#pyrocko.util.read_leap_seconds">[docs]</a><span class="k">def</span> <span class="nf">read_leap_seconds</span><span class="p">(</span><span class="n">tzfile</span><span class="o">=</span><span class="s">&#39;/usr/share/zoneinfo/right/UTC&#39;</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Extract leap second information from tzdata.</span>
+<span class="sd">    </span>
+<span class="sd">    Based on example at http://stackoverflow.com/questions/19332902/\</span>
+<span class="sd">            extract-historic-leap-seconds-from-tzdata</span>
+
+<span class="sd">    See also &#39;man 5 tzfile&#39;.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="kn">from</span> <span class="nn">struct</span> <span class="kn">import</span> <span class="n">unpack</span><span class="p">,</span> <span class="n">calcsize</span>
+    <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">tzfile</span><span class="p">,</span> <span class="s">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="c"># read header</span>
+        <span class="n">fmt</span> <span class="o">=</span> <span class="s">&#39;&gt;4s c 15x 6l&#39;</span>
+        <span class="p">(</span><span class="n">magic</span><span class="p">,</span> <span class="n">format</span><span class="p">,</span> <span class="n">ttisgmtcnt</span><span class="p">,</span> <span class="n">ttisstdcnt</span><span class="p">,</span> <span class="n">leapcnt</span><span class="p">,</span> <span class="n">timecnt</span><span class="p">,</span>
+            <span class="n">typecnt</span><span class="p">,</span> <span class="n">charcnt</span><span class="p">)</span> <span class="o">=</span>  <span class="n">unpack</span><span class="p">(</span><span class="n">fmt</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">calcsize</span><span class="p">(</span><span class="n">fmt</span><span class="p">)))</span>
+        <span class="k">assert</span> <span class="n">magic</span> <span class="o">==</span> <span class="s">&#39;TZif&#39;</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s">&#39;US-ASCII&#39;</span><span class="p">),</span> <span class="s">&#39;Not a timezone file&#39;</span>
+
+        <span class="c"># skip over some uninteresting data</span>
+        <span class="n">fmt</span> <span class="o">=</span> <span class="s">&#39;&gt;</span><span class="si">%(timecnt)d</span><span class="s">l </span><span class="si">%(timecnt)d</span><span class="s">B </span><span class="si">%(ttinfo)s</span><span class="s"> </span><span class="si">%(charcnt)d</span><span class="s">s&#39;</span> <span class="o">%</span> <span class="nb">dict</span><span class="p">(</span>
+            <span class="n">timecnt</span><span class="o">=</span><span class="n">timecnt</span><span class="p">,</span> <span class="n">ttinfo</span><span class="o">=</span><span class="s">&#39;lBB&#39;</span><span class="o">*</span><span class="n">typecnt</span><span class="p">,</span> <span class="n">charcnt</span><span class="o">=</span><span class="n">charcnt</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">calcsize</span><span class="p">(</span><span class="n">fmt</span><span class="p">))</span>
+
+        <span class="c">#read leap-seconds</span>
+        <span class="n">fmt</span> <span class="o">=</span> <span class="s">&#39;&gt;2l&#39;</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">leapcnt</span><span class="p">):</span>
+            <span class="n">tleap</span><span class="p">,</span> <span class="n">nleap</span> <span class="o">=</span> <span class="n">unpack</span><span class="p">(</span><span class="n">fmt</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">calcsize</span><span class="p">(</span><span class="n">fmt</span><span class="p">)))</span>
+            <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">tleap</span><span class="o">-</span><span class="n">nleap</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">nleap</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">out</span>
+</div>
+<div class="viewcode-block" id="gps_utc_offset"><a class="viewcode-back" href="../../util.html#pyrocko.util.gps_utc_offset">[docs]</a><span class="k">def</span> <span class="nf">gps_utc_offset</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
+    <span class="n">ls</span> <span class="o">=</span> <span class="n">read_leap_seconds</span><span class="p">()</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">if</span> <span class="n">t</span> <span class="o">&lt;</span> <span class="n">ls</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="n">ls</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">9</span>
+    <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">ls</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">ls</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">t</span> <span class="ow">and</span> <span class="n">t</span> <span class="o">&lt;</span> <span class="n">ls</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="n">ls</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">9</span>
+        <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+    
+    <span class="k">return</span> <span class="n">ls</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">9</span></div>
 </pre></div>
 
           </div>

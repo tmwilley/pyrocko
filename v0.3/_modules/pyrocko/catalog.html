@@ -571,7 +571,7 @@
 
 
             <span class="k">if</span> <span class="n">props</span><span class="p">[</span><span class="s">&#39;place&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">:</span>
-                <span class="n">region</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">props</span><span class="p">[</span><span class="s">&#39;place&#39;</span><span class="p">])</span>
+                <span class="n">region</span> <span class="o">=</span> <span class="n">props</span><span class="p">[</span><span class="s">&#39;place&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s">&#39;ascii&#39;</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s">&#39;replace&#39;</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">region</span> <span class="o">=</span> <span class="bp">None</span>
 

@@ -662,24 +662,36 @@ entry is wanted.</p>
 <dt id="pyrocko.snuffling.Snuffling.output_filename">
 <tt class="descname">output_filename</tt><big>(</big><em>caption='Save File'</em>, <em>dir=''</em>, <em>filter=''</em>, <em>selected_filter=None</em><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#Snuffling.output_filename"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.Snuffling.output_filename" title="Permalink to this definition">¶</a></dt>
 <dd><p>Query user for an output filename.</p>
-<p>This is currently just a wrapper to <tt class="xref py py-func docutils literal"><span class="pre">QFileDialog.getSaveFileName()</span></tt>.
-A <a class="reference internal" href="#pyrocko.snuffling.UserCancelled" title="pyrocko.snuffling.UserCancelled"><tt class="xref py py-exc docutils literal"><span class="pre">UserCancelled</span></tt></a> exception is raised if the user cancels the dialog.</p>
+<p>This is currently a wrapper to <tt class="xref py py-func docutils literal"><span class="pre">QFileDialog.getSaveFileName()</span></tt>.
+A <a class="reference internal" href="#pyrocko.snuffling.UserCancelled" title="pyrocko.snuffling.UserCancelled"><tt class="xref py py-exc docutils literal"><span class="pre">UserCancelled</span></tt></a> exception is raised if the user cancels the 
+dialog.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.snuffling.Snuffling.input_directory">
+<tt class="descname">input_directory</tt><big>(</big><em>caption='Open Directory'</em>, <em>dir=''</em><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#Snuffling.input_directory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.Snuffling.input_directory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Query user for an input directory.</p>
+<p>This is a wrapper to <tt class="xref py py-func docutils literal"><span class="pre">QFileDialog.getExistingDirectory()</span></tt>.
+A <a class="reference internal" href="#pyrocko.snuffling.UserCancelled" title="pyrocko.snuffling.UserCancelled"><tt class="xref py py-exc docutils literal"><span class="pre">UserCancelled</span></tt></a> exception is raised if the user cancels the 
+dialog.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyrocko.snuffling.Snuffling.input_filename">
 <tt class="descname">input_filename</tt><big>(</big><em>caption='Open File'</em>, <em>dir=''</em>, <em>filter=''</em>, <em>selected_filter=None</em><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#Snuffling.input_filename"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.Snuffling.input_filename" title="Permalink to this definition">¶</a></dt>
 <dd><p>Query user for an input filename.</p>
-<p>This is currently just a wrapper to <tt class="xref py py-func docutils literal"><span class="pre">QFileDialog.getOpenFileName()</span></tt>.
-A <a class="reference internal" href="#pyrocko.snuffling.UserCancelled" title="pyrocko.snuffling.UserCancelled"><tt class="xref py py-exc docutils literal"><span class="pre">UserCancelled</span></tt></a> exception is raised if the user cancels the dialog.</p>
+<p>This is currently a wrapper to <tt class="xref py py-func docutils literal"><span class="pre">QFileDialog.getOpenFileName()</span></tt>.
+A <a class="reference internal" href="#pyrocko.snuffling.UserCancelled" title="pyrocko.snuffling.UserCancelled"><tt class="xref py py-exc docutils literal"><span class="pre">UserCancelled</span></tt></a> exception is raised if the user cancels the 
+dialog.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyrocko.snuffling.Snuffling.input_dialog">
-<tt class="descname">input_dialog</tt><big>(</big><em>caption=''</em>, <em>request=''</em><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#Snuffling.input_dialog"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.Snuffling.input_dialog" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">input_dialog</tt><big>(</big><em>caption=''</em>, <em>request=''</em>, <em>directory=False</em><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#Snuffling.input_dialog"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.Snuffling.input_dialog" title="Permalink to this definition">¶</a></dt>
 <dd><p>Query user for a text input.</p>
-<p>This is currently just a wrapper to <tt class="xref py py-func docutils literal"><span class="pre">QInputDialog.getText()</span></tt>.
-A <a class="reference internal" href="#pyrocko.snuffling.UserCancelled" title="pyrocko.snuffling.UserCancelled"><tt class="xref py py-exc docutils literal"><span class="pre">UserCancelled</span></tt></a> exception is raised if the user cancels the dialog.</p>
+<p>This is currently a wrapper to <tt class="xref py py-func docutils literal"><span class="pre">QInputDialog.getText()</span></tt>.
+A <a class="reference internal" href="#pyrocko.snuffling.UserCancelled" title="pyrocko.snuffling.UserCancelled"><tt class="xref py py-exc docutils literal"><span class="pre">UserCancelled</span></tt></a> exception is raised if the user cancels the 
+dialog.</p>
 </dd></dl>
 
 <dl class="method">
@@ -687,7 +699,8 @@ A <a class="reference internal" href="#pyrocko.snuffling.UserCancelled" title="p
 <tt class="descname">modified_snuffling_panel</tt><big>(</big><em>value</em>, <em>iparam</em><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#Snuffling.modified_snuffling_panel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.Snuffling.modified_snuffling_panel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Called when the user has played with an adjustable parameter.</p>
 <p>The default implementation sets the parameter, calls the snuffling&#8217;s 
-<a class="reference internal" href="#pyrocko.snuffling.Snuffling.call" title="pyrocko.snuffling.Snuffling.call"><tt class="xref py py-meth docutils literal"><span class="pre">call()</span></tt></a> method and finally triggers an update on the viewer widget.</p>
+<a class="reference internal" href="#pyrocko.snuffling.Snuffling.call" title="pyrocko.snuffling.Snuffling.call"><tt class="xref py py-meth docutils literal"><span class="pre">call()</span></tt></a> method and finally triggers an update on the viewer 
+widget.</p>
 </dd></dl>
 
 <dl class="method">

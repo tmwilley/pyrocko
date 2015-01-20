@@ -186,7 +186,7 @@ characters, respectively.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>format</strong> &#8211; format of the file (<tt class="docutils literal"><span class="pre">'mseed'</span></tt>, <tt class="docutils literal"><span class="pre">'sac'</span></tt>, <tt class="docutils literal"><span class="pre">'segy'</span></tt>, <tt class="docutils literal"><span class="pre">'seisan_l'</span></tt>, <tt class="docutils literal"><span class="pre">'seisan_b'</span></tt>, <tt class="docutils literal"><span class="pre">'kan'</span></tt>, <tt class="docutils literal"><span class="pre">'yaff'</span></tt>, <tt class="docutils literal"><span class="pre">'gse1'</span></tt>, <tt class="docutils literal"><span class="pre">'gcf'</span></tt>, <tt class="docutils literal"><span class="pre">`'datacube'</span></tt>, <cite>&#8216;from_extension&#8217;`</cite>)</li>
+<li><strong>format</strong> &#8211; format of the file (<tt class="docutils literal"><span class="pre">'mseed'</span></tt>, <tt class="docutils literal"><span class="pre">'sac'</span></tt>, <tt class="docutils literal"><span class="pre">'segy'</span></tt>, <tt class="docutils literal"><span class="pre">'seisan.l'</span></tt>, <tt class="docutils literal"><span class="pre">'seisan.b'</span></tt>, <tt class="docutils literal"><span class="pre">'kan'</span></tt>, <tt class="docutils literal"><span class="pre">'yaff'</span></tt>, <tt class="docutils literal"><span class="pre">'gse1'</span></tt>, <tt class="docutils literal"><span class="pre">'gcf'</span></tt>, <tt class="docutils literal"><span class="pre">`'datacube'</span></tt>, <cite>&#8216;from_extension&#8217;`</cite>)</li>
 <li><strong>getdata</strong> &#8211; if <tt class="docutils literal"><span class="pre">True</span></tt> (the default), read data, otherwise only read traces metadata</li>
 <li><strong>substitutions</strong> &#8211; dict with substitutions to be applied to the traces metadata</li>
 </ul>
@@ -212,7 +212,7 @@ considered are (matching is case insensitiv): <tt class="docutils literal"><span
 
 <dl class="function">
 <dt id="pyrocko.io.save">
-<tt class="descname">save</tt><big>(</big><em>traces</em>, <em>filename_template</em>, <em>format='mseed'</em>, <em>additional={}</em>, <em>stations=None</em><big>)</big><a class="reference internal" href="_modules/pyrocko/io.html#save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.io.save" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">save</tt><big>(</big><em>traces</em>, <em>filename_template</em>, <em>format='mseed'</em>, <em>additional={}</em>, <em>stations=None</em>, <em>overwrite=True</em><big>)</big><a class="reference internal" href="_modules/pyrocko/io.html#save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.io.save" title="Permalink to this definition">¶</a></dt>
 <dd><p>Save traces to file(s).</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -229,6 +229,7 @@ versions with &#8216;_ms&#8217; include milliseconds, the versions with &#8216;_
 include microseconds.</li>
 <li><strong>format</strong> &#8211; <tt class="docutils literal"><span class="pre">mseed</span></tt>, <tt class="docutils literal"><span class="pre">sac</span></tt>, <tt class="docutils literal"><span class="pre">text</span></tt>, or <tt class="docutils literal"><span class="pre">yaff</span></tt>.</li>
 <li><strong>additional</strong> &#8211; dict with custom template placeholder fillins.</li>
+<li><strong>overwrite&#8217;</strong> &#8211; if <tt class="docutils literal"><span class="pre">False</span></tt>, raise an exception if file exists</li>
 </ul>
 </td>
 </tr>

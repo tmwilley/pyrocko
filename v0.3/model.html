@@ -60,56 +60,6 @@
             
   <div class="section" id="module-pyrocko.model">
 <span id="the-model-module"></span><h1>The <tt class="xref py py-mod docutils literal"><span class="pre">model</span></tt> Module<a class="headerlink" href="#module-pyrocko.model" title="Permalink to this headline">¶</a></h1>
-<dl class="exception">
-<dt id="pyrocko.model.ChannelsNotOrthogonal">
-<em class="property">exception </em><tt class="descname">ChannelsNotOrthogonal</tt><a class="reference internal" href="_modules/pyrocko/model.html#ChannelsNotOrthogonal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.model.ChannelsNotOrthogonal" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="pyrocko.model.guess_azimuth_from_name">
-<tt class="descname">guess_azimuth_from_name</tt><big>(</big><em>channel_name</em><big>)</big><a class="reference internal" href="_modules/pyrocko/model.html#guess_azimuth_from_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.model.guess_azimuth_from_name" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="pyrocko.model.guess_dip_from_name">
-<tt class="descname">guess_dip_from_name</tt><big>(</big><em>channel_name</em><big>)</big><a class="reference internal" href="_modules/pyrocko/model.html#guess_dip_from_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.model.guess_dip_from_name" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="pyrocko.model.guess_azimuth_dip_from_name">
-<tt class="descname">guess_azimuth_dip_from_name</tt><big>(</big><em>channel_name</em><big>)</big><a class="reference internal" href="_modules/pyrocko/model.html#guess_azimuth_dip_from_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.model.guess_azimuth_dip_from_name" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="pyrocko.model.mkvec">
-<tt class="descname">mkvec</tt><big>(</big><em>x</em>, <em>y</em>, <em>z</em><big>)</big><a class="reference internal" href="_modules/pyrocko/model.html#mkvec"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.model.mkvec" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="pyrocko.model.are_orthogonal">
-<tt class="descname">are_orthogonal</tt><big>(</big><em>enus</em>, <em>eps=0.001</em><big>)</big><a class="reference internal" href="_modules/pyrocko/model.html#are_orthogonal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.model.are_orthogonal" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="pyrocko.model.fill_orthogonal">
-<tt class="descname">fill_orthogonal</tt><big>(</big><em>enus</em><big>)</big><a class="reference internal" href="_modules/pyrocko/model.html#fill_orthogonal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.model.fill_orthogonal" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="exception">
-<dt id="pyrocko.model.FileParseError">
-<em class="property">exception </em><tt class="descname">FileParseError</tt><a class="reference internal" href="_modules/pyrocko/model.html#FileParseError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.model.FileParseError" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="exception">
-<dt id="pyrocko.model.EOF">
-<em class="property">exception </em><tt class="descname">EOF</tt><a class="reference internal" href="_modules/pyrocko/model.html#EOF"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.model.EOF" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="exception">
-<dt id="pyrocko.model.EmptyEvent">
-<em class="property">exception </em><tt class="descname">EmptyEvent</tt><a class="reference internal" href="_modules/pyrocko/model.html#EmptyEvent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.model.EmptyEvent" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
 <dl class="class">
 <dt id="pyrocko.model.Event">
 <em class="property">class </em><tt class="descname">Event</tt><big>(</big><em>lat=0.0</em>, <em>lon=0.0</em>, <em>time=0.0</em>, <em>name=''</em>, <em>depth=None</em>, <em>magnitude=None</em>, <em>region=None</em>, <em>load=None</em>, <em>loadf=None</em>, <em>catalog=None</em>, <em>moment_tensor=None</em>, <em>duration=None</em><big>)</big><a class="reference internal" href="_modules/pyrocko/model.html#Event"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.model.Event" title="Permalink to this definition">¶</a></dt>
@@ -150,7 +100,7 @@ instance (optional)</li>
 <dl class="attribute">
 <dt id="pyrocko.model.Event.time">
 <tt class="descname">time</tt><a class="headerlink" href="#pyrocko.model.Event.time" title="Permalink to this definition">¶</a></dt>
-<dd><p><tt class="xref py py-class docutils literal"><span class="pre">pyrocko.guts.Timestamp</span></tt>, <em>default:</em> <tt class="docutils literal"><span class="pre">0.0</span></tt></p>
+<dd><p><tt class="xref py py-class docutils literal"><span class="pre">float</span></tt>, <em>default:</em> <tt class="docutils literal"><span class="pre">0.0</span></tt></p>
 </dd></dl>
 
 <dl class="attribute">
@@ -186,185 +136,13 @@ instance (optional)</li>
 <dl class="attribute">
 <dt id="pyrocko.model.Event.moment_tensor">
 <tt class="descname">moment_tensor</tt><a class="headerlink" href="#pyrocko.model.Event.moment_tensor" title="Permalink to this definition">¶</a></dt>
-<dd><p><tt class="xref py py-class docutils literal"><span class="pre">pf.MomentTensor</span></tt>, <em>optional</em></p>
+<dd><p><a class="reference internal" href="moment_tensor.html#pyrocko.moment_tensor.MomentTensor" title="pyrocko.moment_tensor.MomentTensor"><tt class="xref py py-class docutils literal"><span class="pre">pyrocko.moment_tensor.MomentTensor</span></tt></a>, <em>optional</em></p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pyrocko.model.Event.duration">
 <tt class="descname">duration</tt><a class="headerlink" href="#pyrocko.model.Event.duration" title="Permalink to this definition">¶</a></dt>
 <dd><p><tt class="docutils literal"><span class="pre">float</span></tt>, <em>optional</em></p>
-</dd></dl>
-
-<dl class="attribute">
-<dt>
-<tt class="descname">Event.lat -&gt; &lt;pyrocko.guts.__T object at 0x3e67090&gt;</tt></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt>
-<tt class="descname">Event.lon -&gt; &lt;pyrocko.guts.__T object at 0x3e67150&gt;</tt></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt>
-<tt class="descname">Event.time -&gt; &lt;pyrocko.guts.__T object at 0x3e67110&gt;</tt></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt>
-<tt class="descname">Event.name -&gt; &lt;pyrocko.guts.T object at 0x3e671d0&gt;</tt></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt>
-<tt class="descname">Event.depth -&gt; &lt;pyrocko.guts.__T object at 0x3e67190&gt;</tt></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt>
-<tt class="descname">Event.magnitude -&gt; &lt;pyrocko.guts.__T object at 0x3e67250&gt;</tt></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt>
-<tt class="descname">Event.region -&gt; &lt;pyrocko.guts.T object at 0x3e67290&gt;</tt></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt>
-<tt class="descname">Event.catalog -&gt; &lt;pyrocko.guts.T object at 0x3e67210&gt;</tt></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt>
-<tt class="descname">Event.moment_tensor -&gt; &lt;pyrocko.guts.T object at 0x3e67310&gt;</tt></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt>
-<tt class="descname">Event.duration -&gt; &lt;pyrocko.guts.__T object at 0x3e672d0&gt;</tt></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.model.Event.time_as_string">
-<tt class="descname">time_as_string</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/model.html#Event.time_as_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.model.Event.time_as_string" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.model.Event.set_name">
-<tt class="descname">set_name</tt><big>(</big><em>name</em><big>)</big><a class="reference internal" href="_modules/pyrocko/model.html#Event.set_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.model.Event.set_name" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.model.Event.olddump">
-<tt class="descname">olddump</tt><big>(</big><em>filename</em><big>)</big><a class="reference internal" href="_modules/pyrocko/model.html#Event.olddump"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.model.Event.olddump" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.model.Event.olddumpf">
-<tt class="descname">olddumpf</tt><big>(</big><em>file</em><big>)</big><a class="reference internal" href="_modules/pyrocko/model.html#Event.olddumpf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.model.Event.olddumpf" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="staticmethod">
-<dt id="pyrocko.model.Event.unique">
-<em class="property">static </em><tt class="descname">unique</tt><big>(</big><em>events</em>, <em>deltat=10.0</em>, <em>group_cmp=&lt;function &lt;lambda&gt; at 0x3e7f6e0&gt;</em><big>)</big><a class="reference internal" href="_modules/pyrocko/model.html#Event.unique"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.model.Event.unique" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="staticmethod">
-<dt id="pyrocko.model.Event.grouped">
-<em class="property">static </em><tt class="descname">grouped</tt><big>(</big><em>events</em>, <em>deltat=10.0</em><big>)</big><a class="reference internal" href="_modules/pyrocko/model.html#Event.grouped"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.model.Event.grouped" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="staticmethod">
-<dt id="pyrocko.model.Event.dump_catalog">
-<em class="property">static </em><tt class="descname">dump_catalog</tt><big>(</big><em>events</em>, <em>filename</em><big>)</big><a class="reference internal" href="_modules/pyrocko/model.html#Event.dump_catalog"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.model.Event.dump_catalog" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="staticmethod">
-<dt id="pyrocko.model.Event.oldload">
-<em class="property">static </em><tt class="descname">oldload</tt><big>(</big><em>filename</em><big>)</big><a class="reference internal" href="_modules/pyrocko/model.html#Event.oldload"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.model.Event.oldload" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="staticmethod">
-<dt id="pyrocko.model.Event.oldloadf">
-<em class="property">static </em><tt class="descname">oldloadf</tt><big>(</big><em>file</em><big>)</big><a class="reference internal" href="_modules/pyrocko/model.html#Event.oldloadf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.model.Event.oldloadf" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="staticmethod">
-<dt id="pyrocko.model.Event.load_catalog">
-<em class="property">static </em><tt class="descname">load_catalog</tt><big>(</big><em>filename</em><big>)</big><a class="reference internal" href="_modules/pyrocko/model.html#Event.load_catalog"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.model.Event.load_catalog" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.model.Event.get_hash">
-<tt class="descname">get_hash</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/model.html#Event.get_hash"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.model.Event.get_hash" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="class">
-<dt id="pyrocko.model.Event.T">
-<em class="property">class </em><tt class="descname">T</tt><big>(</big><em>default=None</em>, <em>optional=False</em>, <em>xmlstyle='element'</em>, <em>xmltagname=None</em>, <em>help=None</em>, <em>position=None</em><big>)</big><a class="headerlink" href="#pyrocko.model.Event.T" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="attribute">
-<dt id="pyrocko.model.Event.T.classname">
-<tt class="descname">classname</tt><em class="property"> = 'Event'</em><a class="headerlink" href="#pyrocko.model.Event.T.classname" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="pyrocko.model.Event.T.cls">
-<tt class="descname">cls</tt><a class="headerlink" href="#pyrocko.model.Event.T.cls" title="Permalink to this definition">¶</a></dt>
-<dd><p>alias of <a class="reference internal" href="#pyrocko.model.Event" title="pyrocko.model.Event"><tt class="xref py py-class docutils literal"><span class="pre">Event</span></tt></a></p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="pyrocko.model.Event.T.content_property">
-<tt class="descname">content_property</tt><em class="property"> = None</em><a class="headerlink" href="#pyrocko.model.Event.T.content_property" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="pyrocko.model.Event.T.dummy_cls">
-<tt class="descname">dummy_cls</tt><a class="headerlink" href="#pyrocko.model.Event.T.dummy_cls" title="Permalink to this definition">¶</a></dt>
-<dd><p>alias of <a class="reference internal" href="#pyrocko.model.Event" title="pyrocko.model.Event"><tt class="xref py py-class docutils literal"><span class="pre">Event</span></tt></a></p>
-</dd></dl>
-
-<dl class="attribute">
-<dt>
-<tt class="descname">Event.T.instance -&gt; &lt;pyrocko.guts.T object at 0x3e67410&gt;</tt></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="pyrocko.model.Event.T.properties">
-<tt class="descname">properties</tt><em class="property"> = [&lt;pyrocko.guts.__T object at 0x3e67090&gt;, &lt;pyrocko.guts.__T object at 0x3e67150&gt;, &lt;pyrocko.guts.__T object at 0x3e67110&gt;, &lt;pyrocko.guts.T object at 0x3e671d0&gt;, &lt;pyrocko.guts.__T object at 0x3e67190&gt;, &lt;pyrocko.guts.__T object at 0x3e67250&gt;, &lt;pyrocko.guts.T object at 0x3e67290&gt;, &lt;pyrocko.guts.T object at 0x3e67210&gt;, &lt;pyrocko.guts.T object at 0x3e67310&gt;, &lt;pyrocko.guts.__T object at 0x3e672d0&gt;]</em><a class="headerlink" href="#pyrocko.model.Event.T.properties" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="pyrocko.model.Event.T.propnames">
-<tt class="descname">propnames</tt><em class="property"> = ['lat', 'lon', 'time', 'name', 'depth', 'magnitude', 'region', 'catalog', 'moment_tensor', 'duration']</em><a class="headerlink" href="#pyrocko.model.Event.T.propnames" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="pyrocko.model.Event.T.tagname">
-<tt class="descname">tagname</tt><em class="property"> = 'pf.Event'</em><a class="headerlink" href="#pyrocko.model.Event.T.tagname" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="pyrocko.model.Event.T.xmltagname">
-<tt class="descname">xmltagname</tt><em class="property"> = 'Event'</em><a class="headerlink" href="#pyrocko.model.Event.T.xmltagname" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="pyrocko.model.Event.T.xmltagname_to_class">
-<tt class="descname">xmltagname_to_class</tt><em class="property"> = {'name': &lt;type 'str'&gt;, 'region': &lt;type 'str'&gt;, 'momentTensor': &lt;class 'pyrocko.moment_tensor.MomentTensor'&gt;, 'lon': &lt;type 'float'&gt;, 'depth': &lt;type 'float'&gt;, 'lat': &lt;type 'float'&gt;, 'catalog': &lt;type 'str'&gt;, 'magnitude': &lt;type 'float'&gt;, 'time': &lt;type 'float'&gt;, 'duration': &lt;type 'float'&gt;}</em><a class="headerlink" href="#pyrocko.model.Event.T.xmltagname_to_class" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="pyrocko.model.Event.T.xmltagname_to_name">
-<tt class="descname">xmltagname_to_name</tt><em class="property"> = {'name': 'name', 'region': 'region', 'momentTensor': 'moment_tensor', 'lon': 'lon', 'depth': 'depth', 'lat': 'lat', 'catalog': 'catalog', 'magnitude': 'magnitude', 'time': 'time', 'duration': 'duration'}</em><a class="headerlink" href="#pyrocko.model.Event.T.xmltagname_to_name" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="pyrocko.model.Event.T.xmltagname_to_name_multivalued">
-<tt class="descname">xmltagname_to_name_multivalued</tt><em class="property"> = {}</em><a class="headerlink" href="#pyrocko.model.Event.T.xmltagname_to_name_multivalued" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
 </dd></dl>
 
 </dd></dl>
@@ -386,11 +164,6 @@ instance (optional)</li>
 </dd></dl>
 
 <dl class="function">
-<dt id="pyrocko.model.load_one_event">
-<tt class="descname">load_one_event</tt><big>(</big><em>filename</em><big>)</big><a class="reference internal" href="_modules/pyrocko/model.html#load_one_event"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.model.load_one_event" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
 <dt id="pyrocko.model.dump_events">
 <tt class="descname">dump_events</tt><big>(</big><em>events</em>, <em>filename</em><big>)</big><a class="reference internal" href="_modules/pyrocko/model.html#dump_events"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.model.dump_events" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write events file.</p>
@@ -408,96 +181,6 @@ instance (optional)</li>
 </table>
 </dd></dl>
 
-<dl class="class">
-<dt id="pyrocko.model.Station">
-<em class="property">class </em><tt class="descname">Station</tt><big>(</big><em>network=''</em>, <em>station=''</em>, <em>location=''</em>, <em>lat=0.0</em>, <em>lon=0.0</em>, <em>elevation=0.0</em>, <em>depth=None</em>, <em>name=''</em>, <em>channels=None</em><big>)</big><a class="reference internal" href="_modules/pyrocko/model.html#Station"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.model.Station" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="method">
-<dt id="pyrocko.model.Station.copy">
-<tt class="descname">copy</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/model.html#Station.copy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.model.Station.copy" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.model.Station.set_event_relative_data">
-<tt class="descname">set_event_relative_data</tt><big>(</big><em>event</em><big>)</big><a class="reference internal" href="_modules/pyrocko/model.html#Station.set_event_relative_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.model.Station.set_event_relative_data" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.model.Station.set_channels_by_name">
-<tt class="descname">set_channels_by_name</tt><big>(</big><em>*args</em><big>)</big><a class="reference internal" href="_modules/pyrocko/model.html#Station.set_channels_by_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.model.Station.set_channels_by_name" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.model.Station.set_channels">
-<tt class="descname">set_channels</tt><big>(</big><em>channels</em><big>)</big><a class="reference internal" href="_modules/pyrocko/model.html#Station.set_channels"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.model.Station.set_channels" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.model.Station.get_channels">
-<tt class="descname">get_channels</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/model.html#Station.get_channels"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.model.Station.get_channels" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.model.Station.add_channel">
-<tt class="descname">add_channel</tt><big>(</big><em>channel</em><big>)</big><a class="reference internal" href="_modules/pyrocko/model.html#Station.add_channel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.model.Station.add_channel" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.model.Station.get_channel">
-<tt class="descname">get_channel</tt><big>(</big><em>name</em><big>)</big><a class="reference internal" href="_modules/pyrocko/model.html#Station.get_channel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.model.Station.get_channel" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.model.Station.rotation_ne_to_rt">
-<tt class="descname">rotation_ne_to_rt</tt><big>(</big><em>in_channel_names</em>, <em>out_channel_names</em><big>)</big><a class="reference internal" href="_modules/pyrocko/model.html#Station.rotation_ne_to_rt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.model.Station.rotation_ne_to_rt" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.model.Station.guess_channel_groups">
-<tt class="descname">guess_channel_groups</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/model.html#Station.guess_channel_groups"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.model.Station.guess_channel_groups" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.model.Station.guess_projections_to_enu">
-<tt class="descname">guess_projections_to_enu</tt><big>(</big><em>out_channels=('E'</em>, <em>'N'</em>, <em>'U')</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/pyrocko/model.html#Station.guess_projections_to_enu"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.model.Station.guess_projections_to_enu" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.model.Station.guess_projections_to_rtu">
-<tt class="descname">guess_projections_to_rtu</tt><big>(</big><em>out_channels=('R'</em>, <em>'T'</em>, <em>'U')</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/pyrocko/model.html#Station.guess_projections_to_rtu"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.model.Station.guess_projections_to_rtu" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.model.Station.projection_to_enu">
-<tt class="descname">projection_to_enu</tt><big>(</big><em>in_channels</em>, <em>out_channels=('E'</em>, <em>'N'</em>, <em>'U')</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/pyrocko/model.html#Station.projection_to_enu"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.model.Station.projection_to_enu" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.model.Station.projection_to_ned">
-<tt class="descname">projection_to_ned</tt><big>(</big><em>in_channels</em>, <em>out_channels=('N'</em>, <em>'E'</em>, <em>'D')</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/pyrocko/model.html#Station.projection_to_ned"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.model.Station.projection_to_ned" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.model.Station.projection_from_enu">
-<tt class="descname">projection_from_enu</tt><big>(</big><em>in_channels=('E'</em>, <em>'N'</em>, <em>'U')</em>, <em>out_channels=('X'</em>, <em>'Y'</em>, <em>'Z')</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/pyrocko/model.html#Station.projection_from_enu"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.model.Station.projection_from_enu" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.model.Station.projection_from_ned">
-<tt class="descname">projection_from_ned</tt><big>(</big><em>in_channels=('N'</em>, <em>'E'</em>, <em>'D')</em>, <em>out_channels=('X'</em>, <em>'Y'</em>, <em>'Z')</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/pyrocko/model.html#Station.projection_from_ned"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.model.Station.projection_from_ned" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.model.Station.nsl_string">
-<tt class="descname">nsl_string</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/model.html#Station.nsl_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.model.Station.nsl_string" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.model.Station.nsl">
-<tt class="descname">nsl</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/model.html#Station.nsl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.model.Station.nsl" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
 <dl class="function">
 <dt id="pyrocko.model.dump_stations">
 <tt class="descname">dump_stations</tt><big>(</big><em>stations</em>, <em>filename</em><big>)</big><a class="reference internal" href="_modules/pyrocko/model.html#dump_stations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.model.dump_stations" title="Permalink to this definition">¶</a></dt>
@@ -507,7 +190,7 @@ instance (optional)</li>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>stations</strong> &#8211; list of <a class="reference internal" href="#pyrocko.model.Station" title="pyrocko.model.Station"><tt class="xref py py-class docutils literal"><span class="pre">Station</span></tt></a> objects</li>
+<li><strong>stations</strong> &#8211; list of <tt class="xref py py-class docutils literal"><span class="pre">Station</span></tt> objects</li>
 <li><strong>filename</strong> &#8211; filename as str</li>
 </ul>
 </td>
@@ -515,11 +198,6 @@ instance (optional)</li>
 </tbody>
 </table>
 </dd></dl>
-
-<dl class="function">
-<dt id="pyrocko.model.float_or_none">
-<tt class="descname">float_or_none</tt><big>(</big><em>s</em><big>)</big><a class="reference internal" href="_modules/pyrocko/model.html#float_or_none"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.model.float_or_none" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
 
 <dl class="function">
 <dt id="pyrocko.model.load_stations">
@@ -531,31 +209,11 @@ instance (optional)</li>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filename</strong> &#8211; filename</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">list of <a class="reference internal" href="#pyrocko.model.Station" title="pyrocko.model.Station"><tt class="xref py py-class docutils literal"><span class="pre">Station</span></tt></a> objects</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">list of <tt class="xref py py-class docutils literal"><span class="pre">Station</span></tt> objects</td>
 </tr>
 </tbody>
 </table>
 </dd></dl>
-
-<dl class="class">
-<dt id="pyrocko.model.Channel">
-<em class="property">class </em><tt class="descname">Channel</tt><big>(</big><em>name</em>, <em>azimuth=None</em>, <em>dip=None</em>, <em>gain=1.0</em><big>)</big><a class="reference internal" href="_modules/pyrocko/model.html#Channel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.model.Channel" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="pyrocko.model.load_kps_event_list">
-<tt class="descname">load_kps_event_list</tt><big>(</big><em>filename</em><big>)</big><a class="reference internal" href="_modules/pyrocko/model.html#load_kps_event_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.model.load_kps_event_list" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="pyrocko.model.load_gfz_event_list">
-<tt class="descname">load_gfz_event_list</tt><big>(</big><em>filename</em><big>)</big><a class="reference internal" href="_modules/pyrocko/model.html#load_gfz_event_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.model.load_gfz_event_list" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="pyrocko.model.dump_kml">
-<tt class="descname">dump_kml</tt><big>(</big><em>objects</em>, <em>filename</em><big>)</big><a class="reference internal" href="_modules/pyrocko/model.html#dump_kml"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.model.dump_kml" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
 
 </div>
 

@@ -64,10 +64,10 @@
 
 <span class="n">d2r</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mf">180.</span>
 
-<div class="viewcode-block" id="ChannelsNotOrthogonal"><a class="viewcode-back" href="../../model.html#pyrocko.model.ChannelsNotOrthogonal">[docs]</a><span class="k">class</span> <span class="nc">ChannelsNotOrthogonal</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">ChannelsNotOrthogonal</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
     <span class="k">pass</span>
-</div>
-<div class="viewcode-block" id="guess_azimuth_from_name"><a class="viewcode-back" href="../../model.html#pyrocko.model.guess_azimuth_from_name">[docs]</a><span class="k">def</span> <span class="nf">guess_azimuth_from_name</span><span class="p">(</span><span class="n">channel_name</span><span class="p">):</span>
+
+<span class="k">def</span> <span class="nf">guess_azimuth_from_name</span><span class="p">(</span><span class="n">channel_name</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">channel_name</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s">&#39;N&#39;</span><span class="p">):</span>
         <span class="k">return</span> <span class="mf">0.</span>
     <span class="k">elif</span> <span class="n">channel_name</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s">&#39;E&#39;</span><span class="p">):</span>
@@ -76,8 +76,8 @@
         <span class="k">return</span> <span class="mf">0.</span>
     
     <span class="k">return</span> <span class="bp">None</span>
-</div>
-<div class="viewcode-block" id="guess_dip_from_name"><a class="viewcode-back" href="../../model.html#pyrocko.model.guess_dip_from_name">[docs]</a><span class="k">def</span> <span class="nf">guess_dip_from_name</span><span class="p">(</span><span class="n">channel_name</span><span class="p">):</span>
+
+<span class="k">def</span> <span class="nf">guess_dip_from_name</span><span class="p">(</span><span class="n">channel_name</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">channel_name</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s">&#39;N&#39;</span><span class="p">):</span>
         <span class="k">return</span> <span class="mf">0.</span>
     <span class="k">elif</span> <span class="n">channel_name</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s">&#39;E&#39;</span><span class="p">):</span>
@@ -86,22 +86,22 @@
         <span class="k">return</span> <span class="o">-</span><span class="mf">90.</span>
     
     <span class="k">return</span> <span class="bp">None</span>
-</div>
-<div class="viewcode-block" id="guess_azimuth_dip_from_name"><a class="viewcode-back" href="../../model.html#pyrocko.model.guess_azimuth_dip_from_name">[docs]</a><span class="k">def</span> <span class="nf">guess_azimuth_dip_from_name</span><span class="p">(</span><span class="n">channel_name</span><span class="p">):</span>
+
+<span class="k">def</span> <span class="nf">guess_azimuth_dip_from_name</span><span class="p">(</span><span class="n">channel_name</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">guess_azimuth_from_name</span><span class="p">(</span><span class="n">channel_name</span><span class="p">),</span> \
            <span class="n">guess_dip_from_name</span><span class="p">(</span><span class="n">channel_name</span><span class="p">)</span>
-</div>
-<div class="viewcode-block" id="mkvec"><a class="viewcode-back" href="../../model.html#pyrocko.model.mkvec">[docs]</a><span class="k">def</span> <span class="nf">mkvec</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="p">):</span>
+
+<span class="k">def</span> <span class="nf">mkvec</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">num</span><span class="o">.</span><span class="n">array</span><span class="p">(</span> <span class="p">[</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">num</span><span class="o">.</span><span class="n">float</span> <span class="p">)</span>
-</div>
-<div class="viewcode-block" id="are_orthogonal"><a class="viewcode-back" href="../../model.html#pyrocko.model.are_orthogonal">[docs]</a><span class="k">def</span> <span class="nf">are_orthogonal</span><span class="p">(</span><span class="n">enus</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="mf">0.001</span><span class="p">):</span>
+
+<span class="k">def</span> <span class="nf">are_orthogonal</span><span class="p">(</span><span class="n">enus</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="mf">0.001</span><span class="p">):</span>
 
     <span class="k">return</span> <span class="nb">all</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">eps</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">[</span>
         <span class="n">num</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">enus</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">enus</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span>
         <span class="n">num</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">enus</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">enus</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span>
         <span class="n">num</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">enus</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">enus</span><span class="p">[</span><span class="mi">0</span><span class="p">])])</span>
-</div>
-<div class="viewcode-block" id="fill_orthogonal"><a class="viewcode-back" href="../../model.html#pyrocko.model.fill_orthogonal">[docs]</a><span class="k">def</span> <span class="nf">fill_orthogonal</span><span class="p">(</span><span class="n">enus</span><span class="p">):</span>
+
+<span class="k">def</span> <span class="nf">fill_orthogonal</span><span class="p">(</span><span class="n">enus</span><span class="p">):</span>
     
     <span class="n">nmiss</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span> <span class="n">x</span> <span class="ow">is</span> <span class="bp">None</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">enus</span> <span class="p">)</span>
     
@@ -123,16 +123,16 @@
         <span class="n">enus</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">mkvec</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
         <span class="n">enus</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">mkvec</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
 
-</div>
-<div class="viewcode-block" id="FileParseError"><a class="viewcode-back" href="../../model.html#pyrocko.model.FileParseError">[docs]</a><span class="k">class</span> <span class="nc">FileParseError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+
+<span class="k">class</span> <span class="nc">FileParseError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
     <span class="k">pass</span>
-</div>
-<div class="viewcode-block" id="EOF"><a class="viewcode-back" href="../../model.html#pyrocko.model.EOF">[docs]</a><span class="k">class</span> <span class="nc">EOF</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+
+<span class="k">class</span> <span class="nc">EOF</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
     <span class="k">pass</span>
-</div>
-<div class="viewcode-block" id="EmptyEvent"><a class="viewcode-back" href="../../model.html#pyrocko.model.EmptyEvent">[docs]</a><span class="k">class</span> <span class="nc">EmptyEvent</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+
+<span class="k">class</span> <span class="nc">EmptyEvent</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
     <span class="k">pass</span>
-</div>
+
 <div class="viewcode-block" id="Event"><a class="viewcode-back" href="../../model.html#pyrocko.model.Event">[docs]</a><span class="k">class</span> <span class="nc">Event</span><span class="p">(</span><span class="n">Object</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Seismic event representation</span>
 
@@ -178,21 +178,21 @@
                         <span class="n">magnitude</span><span class="o">=</span><span class="n">magnitude</span><span class="p">,</span> <span class="n">region</span><span class="o">=</span><span class="n">region</span><span class="p">,</span> <span class="n">catalog</span><span class="o">=</span><span class="n">catalog</span><span class="p">,</span>
                         <span class="n">moment_tensor</span><span class="o">=</span><span class="n">moment_tensor</span><span class="p">,</span> <span class="n">duration</span><span class="o">=</span><span class="n">duration</span><span class="p">)</span>
             
-<div class="viewcode-block" id="Event.time_as_string"><a class="viewcode-back" href="../../model.html#pyrocko.model.Event.time_as_string">[docs]</a>    <span class="k">def</span> <span class="nf">time_as_string</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">time_as_string</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">util</span><span class="o">.</span><span class="n">time_to_str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="p">)</span>
-    </div>
-<div class="viewcode-block" id="Event.set_name"><a class="viewcode-back" href="../../model.html#pyrocko.model.Event.set_name">[docs]</a>    <span class="k">def</span> <span class="nf">set_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+    
+    <span class="k">def</span> <span class="nf">set_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
         
     <span class="c">#def __str__(self):</span>
     <span class="c">#    return &#39;%s %s %s %g %g %s %s&#39; % (self.name, util.time_to_str(self.time), self.magnitude, self.lat, self.lon, self.depth, self.region)</span>
-                </div>
-<div class="viewcode-block" id="Event.olddump"><a class="viewcode-back" href="../../model.html#pyrocko.model.Event.olddump">[docs]</a>    <span class="k">def</span> <span class="nf">olddump</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+                
+    <span class="k">def</span> <span class="nf">olddump</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
         <span class="nb">file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">olddumpf</span><span class="p">(</span><span class="nb">file</span><span class="p">)</span>
         <span class="nb">file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-        </div>
-<div class="viewcode-block" id="Event.olddumpf"><a class="viewcode-back" href="../../model.html#pyrocko.model.Event.olddumpf">[docs]</a>    <span class="k">def</span> <span class="nf">olddumpf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">file</span><span class="p">):</span>
+        
+    <span class="k">def</span> <span class="nf">olddumpf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">file</span><span class="p">):</span>
         <span class="nb">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;name = </span><span class="si">%s</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
         <span class="nb">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;time = </span><span class="si">%s</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">util</span><span class="o">.</span><span class="n">time_to_str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="p">))</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">lat</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
@@ -216,9 +216,9 @@
                                <span class="o">%</span> <span class="p">((</span><span class="n">m</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span><span class="n">m</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span><span class="n">m</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span><span class="n">m</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">],</span><span class="n">m</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span><span class="n">m</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">])</span> <span class="o">+</span> <span class="n">sdr1</span> <span class="o">+</span> <span class="n">sdr2</span><span class="p">)</span> <span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">duration</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
             <span class="nb">file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&#39;duration = </span><span class="si">%g</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">duration</span><span class="p">)</span>
-</div>
+
     <span class="nd">@staticmethod</span>
-<div class="viewcode-block" id="Event.unique"><a class="viewcode-back" href="../../model.html#pyrocko.model.Event.unique">[docs]</a>    <span class="k">def</span> <span class="nf">unique</span><span class="p">(</span><span class="n">events</span><span class="p">,</span> <span class="n">deltat</span><span class="o">=</span><span class="mf">10.</span><span class="p">,</span> <span class="n">group_cmp</span><span class="o">=</span><span class="p">(</span><span class="k">lambda</span> <span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">:</span> <span class="nb">cmp</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">catalog</span><span class="p">,</span> <span class="n">b</span><span class="o">.</span><span class="n">catalog</span><span class="p">))):</span>
+    <span class="k">def</span> <span class="nf">unique</span><span class="p">(</span><span class="n">events</span><span class="p">,</span> <span class="n">deltat</span><span class="o">=</span><span class="mf">10.</span><span class="p">,</span> <span class="n">group_cmp</span><span class="o">=</span><span class="p">(</span><span class="k">lambda</span> <span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">:</span> <span class="nb">cmp</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">catalog</span><span class="p">,</span> <span class="n">b</span><span class="o">.</span><span class="n">catalog</span><span class="p">))):</span>
         <span class="n">groups</span> <span class="o">=</span> <span class="n">Event</span><span class="o">.</span><span class="n">grouped</span><span class="p">(</span><span class="n">events</span><span class="p">,</span> <span class="n">deltat</span><span class="p">)</span>
         
         <span class="n">events</span> <span class="o">=</span> <span class="p">[]</span>
@@ -228,9 +228,9 @@
                 <span class="n">events</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">group</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> 
         
         <span class="k">return</span> <span class="n">events</span>
-</div>
+
     <span class="nd">@staticmethod</span>
-<div class="viewcode-block" id="Event.grouped"><a class="viewcode-back" href="../../model.html#pyrocko.model.Event.grouped">[docs]</a>    <span class="k">def</span> <span class="nf">grouped</span><span class="p">(</span><span class="n">events</span><span class="p">,</span> <span class="n">deltat</span><span class="o">=</span><span class="mf">10.</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">grouped</span><span class="p">(</span><span class="n">events</span><span class="p">,</span> <span class="n">deltat</span><span class="o">=</span><span class="mf">10.</span><span class="p">):</span>
         <span class="n">events</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">events</span><span class="p">)</span>
         <span class="n">groups</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">ia</span><span class="p">,</span><span class="n">a</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">events</span><span class="p">):</span>
@@ -249,9 +249,9 @@
         <span class="n">groups</span> <span class="o">=</span> <span class="p">[</span> <span class="n">g</span> <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">groups</span> <span class="k">if</span> <span class="n">g</span> <span class="p">]</span>
         <span class="n">groups</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">g</span><span class="p">:</span> <span class="nb">sum</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">time</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">g</span><span class="p">)</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">g</span><span class="p">)</span> <span class="p">)</span>
         <span class="k">return</span> <span class="n">groups</span>
-</div>
+
     <span class="nd">@staticmethod</span>
-<div class="viewcode-block" id="Event.dump_catalog"><a class="viewcode-back" href="../../model.html#pyrocko.model.Event.dump_catalog">[docs]</a>    <span class="k">def</span> <span class="nf">dump_catalog</span><span class="p">(</span><span class="n">events</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">dump_catalog</span><span class="p">(</span><span class="n">events</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
         <span class="nb">file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
@@ -264,14 +264,14 @@
 
         <span class="k">finally</span><span class="p">:</span> 
             <span class="nb">file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-    </div>
+    
     <span class="nd">@staticmethod</span>
-<div class="viewcode-block" id="Event.oldload"><a class="viewcode-back" href="../../model.html#pyrocko.model.Event.oldload">[docs]</a>    <span class="k">def</span> <span class="nf">oldload</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">oldload</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="nb">file</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">Event</span><span class="o">.</span><span class="n">oldloadf</span><span class="p">(</span><span class="nb">file</span><span class="p">)</span>
-    </div>
+    
     <span class="nd">@staticmethod</span>
-<div class="viewcode-block" id="Event.oldloadf"><a class="viewcode-back" href="../../model.html#pyrocko.model.Event.oldloadf">[docs]</a>    <span class="k">def</span> <span class="nf">oldloadf</span><span class="p">(</span><span class="nb">file</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">oldloadf</span><span class="p">(</span><span class="nb">file</span><span class="p">):</span>
         <span class="n">d</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">file</span><span class="p">:</span>
@@ -327,9 +327,9 @@
             <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;catalog&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span>
             <span class="n">mt</span><span class="p">,</span>
             <span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;duration&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">))</span>
-</div>
+
     <span class="nd">@staticmethod</span>
-<div class="viewcode-block" id="Event.load_catalog"><a class="viewcode-back" href="../../model.html#pyrocko.model.Event.load_catalog">[docs]</a>    <span class="k">def</span> <span class="nf">load_catalog</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">load_catalog</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
 
         <span class="nb">file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">)</span>
         
@@ -345,12 +345,12 @@
             <span class="k">pass</span>
         
         <span class="nb">file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-</div>
-<div class="viewcode-block" id="Event.get_hash"><a class="viewcode-back" href="../../model.html#pyrocko.model.Event.get_hash">[docs]</a>    <span class="k">def</span> <span class="nf">get_hash</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">get_hash</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">e</span> <span class="o">=</span> <span class="bp">self</span>
         <span class="k">return</span> <span class="n">util</span><span class="o">.</span><span class="n">base36encode</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="nb">hash</span><span class="p">((</span><span class="n">util</span><span class="o">.</span><span class="n">time_to_str</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">time</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">lat</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">lon</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">depth</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">magnitude</span><span class="p">),</span> <span class="n">e</span><span class="o">.</span><span class="n">catalog</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">region</span><span class="p">))))</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
 
-</div></div>
+</div>
 <div class="viewcode-block" id="load_events"><a class="viewcode-back" href="../../model.html#pyrocko.model.load_events">[docs]</a><span class="k">def</span> <span class="nf">load_events</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Read events file.</span>
 
@@ -359,10 +359,10 @@
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">Event</span><span class="o">.</span><span class="n">load_catalog</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
 </div>
-<div class="viewcode-block" id="load_one_event"><a class="viewcode-back" href="../../model.html#pyrocko.model.load_one_event">[docs]</a><span class="k">def</span> <span class="nf">load_one_event</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">load_one_event</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
     <span class="n">l</span> <span class="o">=</span> <span class="n">Event</span><span class="o">.</span><span class="n">load_catalog</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">l</span><span class="o">.</span><span class="n">next</span><span class="p">()</span>
-</div>
+
 <div class="viewcode-block" id="dump_events"><a class="viewcode-back" href="../../model.html#pyrocko.model.dump_events">[docs]</a><span class="k">def</span> <span class="nf">dump_events</span><span class="p">(</span><span class="n">events</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Write events file.</span>
 
@@ -371,7 +371,7 @@
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="n">Event</span><span class="o">.</span><span class="n">dump_catalog</span><span class="p">(</span><span class="n">events</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="Station"><a class="viewcode-back" href="../../model.html#pyrocko.model.Station">[docs]</a><span class="k">class</span> <span class="nc">Station</span><span class="p">:</span>
+<span class="k">class</span> <span class="nc">Station</span><span class="p">:</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">network</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">station</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">location</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">lat</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">lon</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">elevation</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">depth</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">channels</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">network</span> <span class="o">=</span> <span class="n">network</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">station</span> <span class="o">=</span> <span class="n">station</span>
@@ -390,38 +390,38 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">azimuth</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">backazimuth</span> <span class="o">=</span> <span class="bp">None</span>
 
-<div class="viewcode-block" id="Station.copy"><a class="viewcode-back" href="../../model.html#pyrocko.model.Station.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-</div>
-<div class="viewcode-block" id="Station.set_event_relative_data"><a class="viewcode-back" href="../../model.html#pyrocko.model.Station.set_event_relative_data">[docs]</a>    <span class="k">def</span> <span class="nf">set_event_relative_data</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">event</span> <span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">set_event_relative_data</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">event</span> <span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dist_m</span> <span class="o">=</span> <span class="n">orthodrome</span><span class="o">.</span><span class="n">distance_accurate50m</span><span class="p">(</span> <span class="n">event</span><span class="p">,</span> <span class="bp">self</span> <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dist_deg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dist_m</span> <span class="o">/</span> <span class="n">orthodrome</span><span class="o">.</span><span class="n">earthradius_equator</span> <span class="o">*</span><span class="n">orthodrome</span><span class="o">.</span><span class="n">r2d</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">azimuth</span> <span class="o">=</span> <span class="n">orthodrome</span><span class="o">.</span><span class="n">azimuth</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">backazimuth</span> <span class="o">=</span> <span class="n">orthodrome</span><span class="o">.</span><span class="n">azimuth</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">)</span>
-       </div>
-<div class="viewcode-block" id="Station.set_channels_by_name"><a class="viewcode-back" href="../../model.html#pyrocko.model.Station.set_channels_by_name">[docs]</a>    <span class="k">def</span> <span class="nf">set_channels_by_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+       
+    <span class="k">def</span> <span class="nf">set_channels_by_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_channels</span><span class="p">([])</span>
         <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">add_channel</span><span class="p">(</span><span class="n">Channel</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
-</div>
-<div class="viewcode-block" id="Station.set_channels"><a class="viewcode-back" href="../../model.html#pyrocko.model.Station.set_channels">[docs]</a>    <span class="k">def</span> <span class="nf">set_channels</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">channels</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">set_channels</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">channels</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">channels</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">ch</span> <span class="ow">in</span> <span class="n">channels</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">channels</span><span class="p">[</span><span class="n">ch</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">ch</span>
-        </div>
-<div class="viewcode-block" id="Station.get_channels"><a class="viewcode-back" href="../../model.html#pyrocko.model.Station.get_channels">[docs]</a>    <span class="k">def</span> <span class="nf">get_channels</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        
+    <span class="k">def</span> <span class="nf">get_channels</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">[</span> <span class="bp">self</span><span class="o">.</span><span class="n">channels</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">channels</span><span class="p">)</span> <span class="p">]</span>
-        </div>
-<div class="viewcode-block" id="Station.add_channel"><a class="viewcode-back" href="../../model.html#pyrocko.model.Station.add_channel">[docs]</a>    <span class="k">def</span> <span class="nf">add_channel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">channel</span><span class="p">):</span>
+        
+    <span class="k">def</span> <span class="nf">add_channel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">channel</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">channels</span><span class="p">[</span><span class="n">channel</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">channel</span>
-            </div>
-<div class="viewcode-block" id="Station.get_channel"><a class="viewcode-back" href="../../model.html#pyrocko.model.Station.get_channel">[docs]</a>    <span class="k">def</span> <span class="nf">get_channel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+            
+    <span class="k">def</span> <span class="nf">get_channel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">channels</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">channels</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
         
         <span class="k">return</span> <span class="bp">None</span>
-    </div>
-<div class="viewcode-block" id="Station.rotation_ne_to_rt"><a class="viewcode-back" href="../../model.html#pyrocko.model.Station.rotation_ne_to_rt">[docs]</a>    <span class="k">def</span> <span class="nf">rotation_ne_to_rt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">in_channel_names</span><span class="p">,</span> <span class="n">out_channel_names</span><span class="p">):</span>
+    
+    <span class="k">def</span> <span class="nf">rotation_ne_to_rt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">in_channel_names</span><span class="p">,</span> <span class="n">out_channel_names</span><span class="p">):</span>
         
         <span class="n">angle</span> <span class="o">=</span> <span class="n">wrap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">backazimuth</span> <span class="o">+</span> <span class="mf">180.</span><span class="p">,</span> <span class="o">-</span><span class="mf">180.</span><span class="p">,</span> <span class="mf">180.</span><span class="p">)</span>
         <span class="n">in_channels</span> <span class="o">=</span> <span class="p">[</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_channel</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">in_channel_names</span> <span class="p">]</span>
@@ -429,7 +429,7 @@
             <span class="n">Channel</span><span class="p">(</span><span class="n">out_channel_names</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">wrap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">backazimuth</span><span class="o">+</span><span class="mf">180.</span><span class="p">,</span> <span class="o">-</span><span class="mf">180.</span><span class="p">,</span><span class="mf">180.</span><span class="p">),</span>  <span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">),</span>
             <span class="n">Channel</span><span class="p">(</span><span class="n">out_channel_names</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">wrap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">backazimuth</span><span class="o">+</span><span class="mf">270.</span><span class="p">,</span> <span class="o">-</span><span class="mf">180.</span><span class="p">,</span><span class="mf">180.</span><span class="p">),</span>  <span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">)</span> <span class="p">]</span>
         <span class="k">return</span> <span class="n">angle</span><span class="p">,</span> <span class="n">in_channels</span><span class="p">,</span> <span class="n">out_channels</span>
-    </div>
+    
     <span class="k">def</span> <span class="nf">_projection_to</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">to</span><span class="p">,</span> <span class="n">in_channel_names</span><span class="p">,</span> <span class="n">out_channel_names</span><span class="p">,</span> <span class="n">use_gains</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
         <span class="n">in_channels</span> <span class="o">=</span> <span class="p">[</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_channel</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">in_channel_names</span> <span class="p">]</span>
         
@@ -470,7 +470,7 @@
         
         <span class="k">return</span> <span class="n">m</span><span class="p">,</span> <span class="n">in_channels</span><span class="p">,</span> <span class="n">out_channels</span>
 
-<div class="viewcode-block" id="Station.guess_channel_groups"><a class="viewcode-back" href="../../model.html#pyrocko.model.Station.guess_channel_groups">[docs]</a>    <span class="k">def</span> <span class="nf">guess_channel_groups</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">guess_channel_groups</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">cg</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">channel</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_channels</span><span class="p">():</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">channel</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span>
@@ -489,8 +489,8 @@
                     <span class="n">out_groups</span><span class="o">.</span><span class="n">append</span><span class="p">(</span> <span class="nb">tuple</span><span class="p">([</span> <span class="n">kind</span><span class="o">+</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">sys</span> <span class="p">])</span> <span class="p">)</span>
 
         <span class="k">return</span> <span class="n">out_groups</span>
-</div>
-<div class="viewcode-block" id="Station.guess_projections_to_enu"><a class="viewcode-back" href="../../model.html#pyrocko.model.Station.guess_projections_to_enu">[docs]</a>    <span class="k">def</span> <span class="nf">guess_projections_to_enu</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">out_channels</span><span class="o">=</span><span class="p">(</span><span class="s">&#39;E&#39;</span><span class="p">,</span> <span class="s">&#39;N&#39;</span><span class="p">,</span> <span class="s">&#39;U&#39;</span><span class="p">),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">guess_projections_to_enu</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">out_channels</span><span class="o">=</span><span class="p">(</span><span class="s">&#39;E&#39;</span><span class="p">,</span> <span class="s">&#39;N&#39;</span><span class="p">,</span> <span class="s">&#39;U&#39;</span><span class="p">),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">proj</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">cg</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">guess_channel_groups</span><span class="p">():</span>
             <span class="k">try</span><span class="p">:</span>
@@ -499,8 +499,8 @@
                 <span class="n">logger</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
 
         <span class="k">return</span> <span class="n">proj</span>
-</div>
-<div class="viewcode-block" id="Station.guess_projections_to_rtu"><a class="viewcode-back" href="../../model.html#pyrocko.model.Station.guess_projections_to_rtu">[docs]</a>    <span class="k">def</span> <span class="nf">guess_projections_to_rtu</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">out_channels</span><span class="o">=</span><span class="p">(</span><span class="s">&#39;R&#39;</span><span class="p">,</span> <span class="s">&#39;T&#39;</span><span class="p">,</span> <span class="s">&#39;U&#39;</span><span class="p">),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">guess_projections_to_rtu</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">out_channels</span><span class="o">=</span><span class="p">(</span><span class="s">&#39;R&#39;</span><span class="p">,</span> <span class="s">&#39;T&#39;</span><span class="p">,</span> <span class="s">&#39;U&#39;</span><span class="p">),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">out_channels_</span> <span class="o">=</span> <span class="p">[</span>
             <span class="n">Channel</span><span class="p">(</span><span class="n">out_channels</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">wrap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">backazimuth</span><span class="o">+</span><span class="mf">180.</span><span class="p">,</span> <span class="o">-</span><span class="mf">180.</span><span class="p">,</span><span class="mf">180.</span><span class="p">),</span>  <span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">),</span>
             <span class="n">Channel</span><span class="p">(</span><span class="n">out_channels</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">wrap</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">backazimuth</span><span class="o">+</span><span class="mf">270.</span><span class="p">,</span> <span class="o">-</span><span class="mf">180.</span><span class="p">,</span><span class="mf">180.</span><span class="p">),</span>  <span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">),</span>
@@ -515,27 +515,27 @@
             <span class="n">proj</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">num</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">r</span><span class="p">,</span><span class="n">m</span><span class="p">),</span> <span class="n">in_channels</span><span class="p">,</span> <span class="n">out_channels_</span><span class="p">))</span>
 
         <span class="k">return</span> <span class="n">proj</span>
-</div>
-<div class="viewcode-block" id="Station.projection_to_enu"><a class="viewcode-back" href="../../model.html#pyrocko.model.Station.projection_to_enu">[docs]</a>    <span class="k">def</span> <span class="nf">projection_to_enu</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">in_channels</span><span class="p">,</span> <span class="n">out_channels</span><span class="o">=</span><span class="p">(</span><span class="s">&#39;E&#39;</span><span class="p">,</span> <span class="s">&#39;N&#39;</span><span class="p">,</span> <span class="s">&#39;U&#39;</span><span class="p">),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">projection_to_enu</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">in_channels</span><span class="p">,</span> <span class="n">out_channels</span><span class="o">=</span><span class="p">(</span><span class="s">&#39;E&#39;</span><span class="p">,</span> <span class="s">&#39;N&#39;</span><span class="p">,</span> <span class="s">&#39;U&#39;</span><span class="p">),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_projection_to</span><span class="p">(</span><span class="s">&#39;enu&#39;</span><span class="p">,</span> <span class="n">in_channels</span><span class="p">,</span> <span class="n">out_channels</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-</div>
-<div class="viewcode-block" id="Station.projection_to_ned"><a class="viewcode-back" href="../../model.html#pyrocko.model.Station.projection_to_ned">[docs]</a>    <span class="k">def</span> <span class="nf">projection_to_ned</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">in_channels</span><span class="p">,</span> <span class="n">out_channels</span><span class="o">=</span><span class="p">(</span><span class="s">&#39;N&#39;</span><span class="p">,</span> <span class="s">&#39;E&#39;</span><span class="p">,</span> <span class="s">&#39;D&#39;</span><span class="p">),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+    <span class="k">def</span> <span class="nf">projection_to_ned</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">in_channels</span><span class="p">,</span> <span class="n">out_channels</span><span class="o">=</span><span class="p">(</span><span class="s">&#39;N&#39;</span><span class="p">,</span> <span class="s">&#39;E&#39;</span><span class="p">,</span> <span class="s">&#39;D&#39;</span><span class="p">),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_projection_to</span><span class="p">(</span><span class="s">&#39;ned&#39;</span><span class="p">,</span> <span class="n">in_channels</span><span class="p">,</span> <span class="n">out_channels</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        </div>
-<div class="viewcode-block" id="Station.projection_from_enu"><a class="viewcode-back" href="../../model.html#pyrocko.model.Station.projection_from_enu">[docs]</a>    <span class="k">def</span> <span class="nf">projection_from_enu</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">in_channels</span><span class="o">=</span><span class="p">(</span><span class="s">&#39;E&#39;</span><span class="p">,</span><span class="s">&#39;N&#39;</span><span class="p">,</span><span class="s">&#39;U&#39;</span><span class="p">),</span> <span class="n">out_channels</span><span class="o">=</span><span class="p">(</span><span class="s">&#39;X&#39;</span><span class="p">,</span><span class="s">&#39;Y&#39;</span><span class="p">,</span><span class="s">&#39;Z&#39;</span><span class="p">),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        
+    <span class="k">def</span> <span class="nf">projection_from_enu</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">in_channels</span><span class="o">=</span><span class="p">(</span><span class="s">&#39;E&#39;</span><span class="p">,</span><span class="s">&#39;N&#39;</span><span class="p">,</span><span class="s">&#39;U&#39;</span><span class="p">),</span> <span class="n">out_channels</span><span class="o">=</span><span class="p">(</span><span class="s">&#39;X&#39;</span><span class="p">,</span><span class="s">&#39;Y&#39;</span><span class="p">,</span><span class="s">&#39;Z&#39;</span><span class="p">),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">m</span><span class="p">,</span> <span class="n">out_channels</span><span class="p">,</span> <span class="n">in_channels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_projection_to</span><span class="p">(</span><span class="s">&#39;enu&#39;</span><span class="p">,</span> <span class="n">out_channels</span><span class="p">,</span><span class="n">in_channels</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">num</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">m</span><span class="p">),</span> <span class="n">in_channels</span><span class="p">,</span> <span class="n">out_channels</span>
-    </div>
-<div class="viewcode-block" id="Station.projection_from_ned"><a class="viewcode-back" href="../../model.html#pyrocko.model.Station.projection_from_ned">[docs]</a>    <span class="k">def</span> <span class="nf">projection_from_ned</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">in_channels</span><span class="o">=</span><span class="p">(</span><span class="s">&#39;N&#39;</span><span class="p">,</span><span class="s">&#39;E&#39;</span><span class="p">,</span><span class="s">&#39;D&#39;</span><span class="p">),</span> <span class="n">out_channels</span><span class="o">=</span><span class="p">(</span><span class="s">&#39;X&#39;</span><span class="p">,</span><span class="s">&#39;Y&#39;</span><span class="p">,</span><span class="s">&#39;Z&#39;</span><span class="p">),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    
+    <span class="k">def</span> <span class="nf">projection_from_ned</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">in_channels</span><span class="o">=</span><span class="p">(</span><span class="s">&#39;N&#39;</span><span class="p">,</span><span class="s">&#39;E&#39;</span><span class="p">,</span><span class="s">&#39;D&#39;</span><span class="p">),</span> <span class="n">out_channels</span><span class="o">=</span><span class="p">(</span><span class="s">&#39;X&#39;</span><span class="p">,</span><span class="s">&#39;Y&#39;</span><span class="p">,</span><span class="s">&#39;Z&#39;</span><span class="p">),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">m</span><span class="p">,</span> <span class="n">out_channels</span><span class="p">,</span> <span class="n">in_channels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_projection_to</span><span class="p">(</span><span class="s">&#39;ned&#39;</span><span class="p">,</span> <span class="n">out_channels</span><span class="p">,</span><span class="n">in_channels</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">num</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">m</span><span class="p">),</span> <span class="n">in_channels</span><span class="p">,</span> <span class="n">out_channels</span>
-        </div>
-<div class="viewcode-block" id="Station.nsl_string"><a class="viewcode-back" href="../../model.html#pyrocko.model.Station.nsl_string">[docs]</a>    <span class="k">def</span> <span class="nf">nsl_string</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        
+    <span class="k">def</span> <span class="nf">nsl_string</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">network</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">station</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">location</span><span class="p">))</span>
-    </div>
-<div class="viewcode-block" id="Station.nsl"><a class="viewcode-back" href="../../model.html#pyrocko.model.Station.nsl">[docs]</a>    <span class="k">def</span> <span class="nf">nsl</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    
+    <span class="k">def</span> <span class="nf">nsl</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">network</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">station</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">location</span>
-</div>
+
     <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">sta</span> <span class="o">=</span> <span class="bp">self</span>
         <span class="n">elevation</span> <span class="o">=</span> <span class="mf">0.0</span>
@@ -548,7 +548,7 @@
         <span class="n">nsl</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s">.</span><span class="si">%s</span><span class="s">.</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">sta</span><span class="o">.</span><span class="n">network</span><span class="p">,</span> <span class="n">sta</span><span class="o">.</span><span class="n">station</span><span class="p">,</span> <span class="n">sta</span><span class="o">.</span><span class="n">location</span><span class="p">)</span>
         <span class="n">s</span> <span class="o">=</span> <span class="s">&#39;</span><span class="si">%-15s</span><span class="s">  </span><span class="si">%14.5f</span><span class="s"> </span><span class="si">%14.5f</span><span class="s"> </span><span class="si">%14.1f</span><span class="s"> </span><span class="si">%14.1f</span><span class="s"> </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">nsl</span><span class="p">,</span> <span class="n">sta</span><span class="o">.</span><span class="n">lat</span><span class="p">,</span> <span class="n">sta</span><span class="o">.</span><span class="n">lon</span><span class="p">,</span> <span class="n">elevation</span><span class="p">,</span> <span class="n">depth</span><span class="p">,</span> <span class="n">sta</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">s</span>
-</div>
+
 <div class="viewcode-block" id="dump_stations"><a class="viewcode-back" href="../../model.html#pyrocko.model.dump_stations">[docs]</a><span class="k">def</span> <span class="nf">dump_stations</span><span class="p">(</span><span class="n">stations</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Write stations file.</span>
 
@@ -571,12 +571,12 @@
             
     <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
     </div>
-<div class="viewcode-block" id="float_or_none"><a class="viewcode-back" href="../../model.html#pyrocko.model.float_or_none">[docs]</a><span class="k">def</span> <span class="nf">float_or_none</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">float_or_none</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s">&#39;nan&#39;</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">None</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
-    </div>
+    
 <div class="viewcode-block" id="load_stations"><a class="viewcode-back" href="../../model.html#pyrocko.model.load_stations">[docs]</a><span class="k">def</span> <span class="nf">load_stations</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Read stations file.</span>
 
@@ -606,7 +606,7 @@
     <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">stations</span>
 </div>
-<div class="viewcode-block" id="Channel"><a class="viewcode-back" href="../../model.html#pyrocko.model.Channel">[docs]</a><span class="k">class</span> <span class="nc">Channel</span><span class="p">:</span>
+<span class="k">class</span> <span class="nc">Channel</span><span class="p">:</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">azimuth</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">dip</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">gain</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
         <span class="k">if</span> <span class="n">azimuth</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
@@ -629,8 +629,8 @@
         
     <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s"> </span><span class="si">%f</span><span class="s"> </span><span class="si">%f</span><span class="s"> </span><span class="si">%g</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">azimuth</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dip</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">gain</span><span class="p">)</span>
-</div>
-<div class="viewcode-block" id="load_kps_event_list"><a class="viewcode-back" href="../../model.html#pyrocko.model.load_kps_event_list">[docs]</a><span class="k">def</span> <span class="nf">load_kps_event_list</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+
+<span class="k">def</span> <span class="nf">load_kps_event_list</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
     <span class="n">elist</span> <span class="o">=</span><span class="p">[]</span>
     <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
@@ -648,8 +648,8 @@
         
     <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">elist</span>
-        </div>
-<div class="viewcode-block" id="load_gfz_event_list"><a class="viewcode-back" href="../../model.html#pyrocko.model.load_gfz_event_list">[docs]</a><span class="k">def</span> <span class="nf">load_gfz_event_list</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+        
+<span class="k">def</span> <span class="nf">load_gfz_event_list</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
     <span class="kn">from</span> <span class="nn">pyrocko</span> <span class="kn">import</span> <span class="n">catalog</span>
     <span class="n">cat</span> <span class="o">=</span> <span class="n">catalog</span><span class="o">.</span><span class="n">Geofon</span><span class="p">()</span>
     
@@ -661,8 +661,8 @@
         
     <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">elist</span>
-</div>
-<div class="viewcode-block" id="dump_kml"><a class="viewcode-back" href="../../model.html#pyrocko.model.dump_kml">[docs]</a><span class="k">def</span> <span class="nf">dump_kml</span><span class="p">(</span><span class="n">objects</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+
+<span class="k">def</span> <span class="nf">dump_kml</span><span class="p">(</span><span class="n">objects</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
     <span class="n">station_template</span> <span class="o">=</span> <span class="s">&#39;&#39;&#39;</span>
 <span class="s">  &lt;Placemark&gt;</span>
 <span class="s">    &lt;name&gt;</span><span class="si">%(network)s</span><span class="s">.</span><span class="si">%(station)s</span><span class="s">.</span><span class="si">%(location)s</span><span class="s">&lt;/name&gt;</span>
@@ -728,7 +728,7 @@
 
 
             
-</pre></div></div>
+</pre></div>
 
           </div>
       </div>
