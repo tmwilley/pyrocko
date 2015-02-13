@@ -45,8 +45,7 @@ class EnhancedSacPzResponse(Object):
 
 def make_stationxml_response(presponse, input_unit, output_unit):
     import numpy as num
-    norm_factor = float(abs(presponse.evaluate(num.array([1.0]))[0]))
-    print norm_factor
+    norm_factor = 1.0/float(abs(presponse.evaluate(num.array([1.0]))[0]))
 
     pzs = fs.PolesZeros(
         pz_transfer_function_type='LAPLACE (RADIANS/SECOND)',
@@ -62,7 +61,7 @@ def make_stationxml_response(presponse, input_unit, output_unit):
     stage = fs.ResponseStage(
         number=1,
         poles_zeros_list=[pzs],
-        stage_gain=fs.Gain(presponse.constant))
+        stage_gain=fs.Gain(presponse.constant*norm_factor))
 
     resp = fs.Response(
         instrument_sensitivity=fs.Sensitivity(
