@@ -1,11 +1,28 @@
 import unittest, os
 import numpy as num
-from pyrocko import util, evalresp, pz, trace, guts
+from pyrocko import util, evalresp, pz, trace, guts, plot
 
 import common
 
-def numeq(a,b, eps):
-    return num.all(num.abs(num.array(a) - num.array(b)) < eps)
+
+def plot_tfs(freqs, tfs):
+    colors = ['black', 'red', 'blue']
+    import pylab as lab
+    lab.gcf().add_subplot(2,1,1)
+    for itf, tf in enumerate(tfs):
+        lab.plot(freqs, num.abs(tf), color=colors[itf])
+
+    lab.xscale('log')
+    lab.yscale('log')
+
+
+    lab.gcf().add_subplot(2,1,2)
+    for itf, tf in enumerate(tfs):
+        lab.plot(freqs, num.angle(tf), color=colors[itf])
+
+    lab.xscale('log')
+    lab.show()
+
 
 class ResponseTestCase(unittest.TestCase):
     
@@ -33,14 +50,44 @@ class ResponseTestCase(unittest.TestCase):
 
         transfer2 = resp.evaluate(freqs)
 
-        if plot:
-            import pylab as lab
-            lab.plot(freqs, num.imag(transfer))
-            lab.plot(freqs, num.imag(transfer2))
-            lab.gca().loglog() 
-            lab.show()
+        plot_tfs(freqs, [transfer, transfer2])
 
         assert numeq(transfer, transfer2, 1e-4)
+
+    def test_conversions(self):
+
+        from pyrocko import model
+        from pyrocko.fdsn import station, resp, enhanced_sacpz
+
+        t = util.str_to_time('2014-01-01 00:00:00')
+        codes = 'GE', 'EIL', '', 'BHZ'
+
+        resp_fpath = common.test_data_file('test1.resp')
+        stations = [model.Station(*codes[:3], lat=29.669901, lon=34.951199, elevation=210.0, depth=0.0)]
+        sx_resp = resp.make_stationxml(stations, resp.iload_filename(resp_fpath))
+        pr_sx_resp = sx_resp.get_pyrocko_response(codes, time=t, fake_input_units='M')
+        pr_evresp = trace.Evalresp(resp_fpath, nslc_id=codes, target='dis', time=t)
+
+        sacpz_fpath = common.test_data_file('test1.sacpz')
+        sx_sacpz = enhanced_sacpz.make_stationxml(enhanced_sacpz.iload_filename(sacpz_fpath))
+        pr_sx_sacpz = sx_sacpz.get_pyrocko_response(codes, time=t, fake_input_units='M')
+        pr_sacpz = trace.PoleZeroResponse(*pz.read_sac_zpk(sacpz_fpath))
+
+        sxml_geofon_fpath = common.test_data_file('test1.stationxml')
+        sx_geofon = station.load_xml(filename=sxml_geofon_fpath)
+        pr_sx_geofon = sx_geofon.get_pyrocko_response(codes, time=t, fake_input_units='M')
+
+        sxml_iris_fpath = common.test_data_file('test2.stationxml')
+        sx_iris = station.load_xml(filename=sxml_iris_fpath)
+        pr_sx_iris = sx_iris.get_pyrocko_response(codes, time=t, fake_input_units='M')
+
+        freqs = num.logspace(num.log10(0.001), num.log10(10.), num=1000)
+        tref = pr_evresp.evaluate(freqs)
+        import pylab as lab
+        for pr in (pr_sx_resp,  pr_sacpz, pr_sx_geofon, pr_sx_iris):
+            tf = pr.evaluate(freqs)
+
+        lab.show()
 
     def test_dump_load(self):
         
