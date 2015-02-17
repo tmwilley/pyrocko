@@ -933,6 +933,9 @@
     <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">dpath</span><span class="p">)</span>
 
 
+<span class="k">class</span> <span class="nc">MakeTimingParamsFailed</span><span class="p">(</span><span class="n">StoreError</span><span class="p">):</span>
+    <span class="k">pass</span>
+
 <span class="k">class</span> <span class="nc">Store</span><span class="p">(</span><span class="n">BaseStore</span><span class="p">):</span>
 <div class="viewcode-block" id="Store"><a class="viewcode-back" href="../../../gf.html#pyrocko.gf.store.Store">[docs]</a>
     <span class="sd">&#39;&#39;&#39;</span>
@@ -1347,6 +1350,9 @@
         <span class="n">xs</span><span class="p">,</span> <span class="n">tmins</span><span class="p">,</span> <span class="n">tmaxs</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">num</span><span class="o">.</span><span class="n">float</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
 
         <span class="n">i</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">nanargmin</span><span class="p">(</span><span class="n">tmins</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">num</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">i</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">MakeTimingParamsFailed</span><span class="p">(</span><span class="s">&#39;determination of time window failed&#39;</span><span class="p">)</span>
+
         <span class="n">tminmin</span> <span class="o">=</span> <span class="n">tmins</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
         <span class="n">x_tminmin</span> <span class="o">=</span> <span class="n">xs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
         <span class="n">dx</span> <span class="o">=</span> <span class="p">(</span><span class="n">xs</span> <span class="o">-</span> <span class="n">x_tminmin</span><span class="p">)</span>

@@ -196,6 +196,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_no_viewer_pile</span> <span class="o">=</span> <span class="bp">None</span> 
         <span class="bp">self</span><span class="o">.</span><span class="n">_cli_params</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_filename</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_force_panel</span> <span class="o">=</span> <span class="bp">False</span>
 
 
 <div class="viewcode-block" id="Snuffling.setup"><a class="viewcode-back" href="../../snuffling.html#pyrocko.snuffling.Snuffling.setup">[docs]</a>    <span class="k">def</span> <span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -246,6 +247,13 @@
 
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_helpmenuitem</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_menu_parent</span><span class="o">.</span><span class="n">add_snuffling_help_menuitem</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_helpmenuitem</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Snuffling.set_force_panel"><a class="viewcode-back" href="../../snuffling.html#pyrocko.snuffling.Snuffling.set_force_panel">[docs]</a>    <span class="k">def</span> <span class="nf">set_force_panel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">bool</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Force to create a panel.</span>
+
+<span class="sd">        :param bool: if ``True`` will create a panel with Help, Clear and Run button.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_force_panel</span> <span class="o">=</span> <span class="nb">bool</span>
 </div>
     <span class="k">def</span> <span class="nf">make_cli_parser1</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="kn">import</span> <span class="nn">optparse</span>
@@ -544,12 +552,19 @@
         
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parameters</span>
    </div>
-    <span class="k">def</span> <span class="nf">get_parameter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ident</span><span class="p">):</span>
+<div class="viewcode-block" id="Snuffling.get_parameter"><a class="viewcode-back" href="../../snuffling.html#pyrocko.snuffling.Snuffling.get_parameter">[docs]</a>    <span class="k">def</span> <span class="nf">get_parameter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ident</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Get one of the snuffling&#39;s adjustable parameter definitions.</span>
+<span class="sd">        </span>
+<span class="sd">        :param ident: identifier of the parameter</span>
+
+<span class="sd">        Returns an object of type :py:class:`Param` or ``None``.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
         <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parameters</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">param</span><span class="o">.</span><span class="n">ident</span> <span class="o">==</span> <span class="n">ident</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">param</span>
         <span class="k">return</span> <span class="bp">None</span>
-
+</div>
 <div class="viewcode-block" id="Snuffling.set_parameter"><a class="viewcode-back" href="../../snuffling.html#pyrocko.snuffling.Snuffling.set_parameter">[docs]</a>    <span class="k">def</span> <span class="nf">set_parameter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ident</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;Set one of the snuffling&#39;s adjustable parameters.</span>
 <span class="sd">        </span>
@@ -859,7 +874,7 @@
     
         <span class="n">params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_parameters</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_param_controls</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">if</span> <span class="n">params</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">params</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_force_panel</span><span class="p">:</span>
             <span class="n">sarea</span> <span class="o">=</span> <span class="n">MyScrollArea</span><span class="p">(</span><span class="n">parent</span><span class="o">.</span><span class="n">get_panel_parent_widget</span><span class="p">())</span>
             <span class="n">sarea</span><span class="o">.</span><span class="n">setSizePolicy</span><span class="p">(</span><span class="n">QSizePolicy</span><span class="p">(</span><span class="n">QSizePolicy</span><span class="o">.</span><span class="n">Expanding</span><span class="p">,</span> <span class="n">QSizePolicy</span><span class="o">.</span><span class="n">Expanding</span><span class="p">))</span>
             <span class="n">frame</span> <span class="o">=</span> <span class="n">MyFrame</span><span class="p">(</span><span class="n">sarea</span><span class="p">)</span>
@@ -874,7 +889,7 @@
             <span class="n">frame</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span> <span class="n">layout</span> <span class="p">)</span>
             
             <span class="n">parlayout</span> <span class="o">=</span> <span class="n">QGridLayout</span><span class="p">()</span>
-            
+
             <span class="n">irow</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="n">ipar</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="n">have_switches</span> <span class="o">=</span> <span class="bp">False</span>

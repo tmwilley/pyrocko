@@ -177,6 +177,20 @@ has been changed.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="pyrocko.snuffling.Snuffling.set_force_panel">
+<tt class="descname">set_force_panel</tt><big>(</big><em>bool=True</em><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#Snuffling.set_force_panel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.Snuffling.set_force_panel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Force to create a panel.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>bool</strong> &#8211; if <tt class="docutils literal"><span class="pre">True</span></tt> will create a panel with Help, Clear and Run button.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="pyrocko.snuffling.Snuffling.delete_gui">
 <tt class="descname">delete_gui</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#Snuffling.delete_gui"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.Snuffling.delete_gui" title="Permalink to this definition">¶</a></dt>
 <dd><p>Remove the gui elements of the snuffling.</p>
@@ -423,6 +437,21 @@ so that the parameter can be adjusted from the gui.</p>
 <tt class="descname">get_parameters</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#Snuffling.get_parameters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.Snuffling.get_parameters" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the snuffling&#8217;s adjustable parameter definitions.</p>
 <p>Returns a list of objects of type <a class="reference internal" href="#pyrocko.snuffling.Param" title="pyrocko.snuffling.Param"><tt class="xref py py-class docutils literal"><span class="pre">Param</span></tt></a>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.snuffling.Snuffling.get_parameter">
+<tt class="descname">get_parameter</tt><big>(</big><em>ident</em><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#Snuffling.get_parameter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.Snuffling.get_parameter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get one of the snuffling&#8217;s adjustable parameter definitions.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>ident</strong> &#8211; identifier of the parameter</td>
+</tr>
+</tbody>
+</table>
+<p>Returns an object of type <a class="reference internal" href="#pyrocko.snuffling.Param" title="pyrocko.snuffling.Param"><tt class="xref py py-class docutils literal"><span class="pre">Param</span></tt></a> or <tt class="docutils literal"><span class="pre">None</span></tt>.</p>
 </dd></dl>
 
 <dl class="method">

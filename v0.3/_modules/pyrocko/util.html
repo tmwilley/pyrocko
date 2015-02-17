@@ -55,9 +55,10 @@
 
 <span class="kn">import</span> <span class="nn">time</span><span class="o">,</span> <span class="nn">logging</span><span class="o">,</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">re</span><span class="o">,</span> <span class="nn">calendar</span><span class="o">,</span> <span class="nn">math</span><span class="o">,</span> <span class="nn">fnmatch</span><span class="o">,</span> <span class="nn">errno</span><span class="o">,</span> <span class="nn">fcntl</span><span class="o">,</span> <span class="nn">shlex</span><span class="o">,</span> <span class="nn">optparse</span>
 <span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">signal</span>
-<span class="kn">from</span> <span class="nn">os.path</span> <span class="kn">import</span> <span class="n">join</span> <span class="k">as</span> <span class="n">pjoin</span>
+<span class="kn">import</span> <span class="nn">os.path</span> <span class="kn">as</span> <span class="nn">op</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">num</span>
 <span class="kn">import</span> <span class="nn">util_ext</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">Counter</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s">&#39;pyrocko.util&#39;</span><span class="p">)</span>
 
@@ -813,7 +814,7 @@
         <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
             <span class="k">for</span> <span class="p">(</span><span class="n">dirpath</span><span class="p">,</span> <span class="n">dirnames</span><span class="p">,</span> <span class="n">filenames</span><span class="p">)</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
                 <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">filenames</span><span class="p">:</span>
-                    <span class="n">addfile</span><span class="p">(</span><span class="n">pjoin</span><span class="p">(</span><span class="n">dirpath</span><span class="p">,</span><span class="n">filename</span><span class="p">))</span>
+                    <span class="n">addfile</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dirpath</span><span class="p">,</span><span class="n">filename</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">addfile</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
    
@@ -1239,9 +1240,125 @@
         <span class="k">if</span> <span class="n">ls</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">t</span> <span class="ow">and</span> <span class="n">t</span> <span class="o">&lt;</span> <span class="n">ls</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]:</span>
             <span class="k">return</span> <span class="n">ls</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">9</span>
         <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
-    
-    <span class="k">return</span> <span class="n">ls</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">9</span></div>
-</pre></div>
+
+    <span class="k">return</span> <span class="n">ls</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">9</span>
+</div>
+<div class="viewcode-block" id="make_iload_family"><a class="viewcode-back" href="../../util.html#pyrocko.util.make_iload_family">[docs]</a><span class="k">def</span> <span class="nf">make_iload_family</span><span class="p">(</span><span class="n">iload_fh</span><span class="p">,</span> <span class="n">doc_fmt</span><span class="o">=</span><span class="s">&#39;FMT&#39;</span><span class="p">,</span> <span class="n">doc_yielded_objects</span><span class="o">=</span><span class="s">&#39;FMT&#39;</span><span class="p">):</span>
+    <span class="kn">import</span> <span class="nn">itertools</span><span class="o">,</span> <span class="nn">glob</span>
+    <span class="kn">from</span> <span class="nn">io_common</span> <span class="kn">import</span> <span class="n">FileLoadError</span>
+
+    <span class="k">def</span> <span class="nf">iload_filename</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">cr</span> <span class="ow">in</span> <span class="n">iload_fh</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+                    <span class="k">yield</span> <span class="n">cr</span>
+
+        <span class="k">except</span> <span class="n">FileLoadError</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">e</span><span class="o">.</span><span class="n">set_context</span><span class="p">(</span><span class="s">&#39;filename&#39;</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+            <span class="k">raise</span>
+
+    <span class="k">def</span> <span class="nf">iload_dirname</span><span class="p">(</span><span class="n">dirname</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">dirname</span><span class="p">):</span>
+            <span class="n">fpath</span> <span class="o">=</span> <span class="n">op</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dirname</span><span class="p">,</span> <span class="n">entry</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">op</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">fpath</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">cr</span> <span class="ow">in</span> <span class="n">iload_filename</span><span class="p">(</span><span class="n">fpath</span><span class="p">):</span>
+                    <span class="k">yield</span> <span class="n">cr</span>
+
+    <span class="k">def</span> <span class="nf">iload_glob</span><span class="p">(</span><span class="n">pattern</span><span class="p">):</span>
+
+        <span class="n">fns</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">pattern</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">fn</span> <span class="ow">in</span> <span class="n">fns</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">cr</span> <span class="ow">in</span> <span class="n">iload_filename</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
+                <span class="k">yield</span> <span class="n">cr</span>
+
+    <span class="k">def</span> <span class="nf">iload</span><span class="p">(</span><span class="n">source</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="nb">basestring</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">op</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">source</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">iload_dirname</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">op</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">source</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">iload_filename</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">iload_glob</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">source</span><span class="p">,</span> <span class="s">&#39;read&#39;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">iload_fh</span><span class="p">(</span><span class="n">source</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">(</span>
+                <span class="n">iload</span><span class="p">(</span><span class="n">subsource</span><span class="p">)</span> <span class="k">for</span> <span class="n">subsource</span> <span class="ow">in</span> <span class="n">source</span><span class="p">)</span>
+
+    <span class="n">iload_filename</span><span class="o">.</span><span class="n">__doc__</span> <span class="o">=</span> <span class="s">&#39;&#39;&#39;</span>
+<span class="s">        Read </span><span class="si">%s</span><span class="s"> information from named file.</span>
+<span class="s">    &#39;&#39;&#39;</span> <span class="o">%</span> <span class="n">doc_fmt</span>
+
+    <span class="n">iload_dirname</span><span class="o">.</span><span class="n">__doc__</span> <span class="o">=</span> <span class="s">&#39;&#39;&#39;</span>
+<span class="s">        Read </span><span class="si">%s</span><span class="s"> information from directory of </span><span class="si">%s</span><span class="s"> files.</span>
+<span class="s">    &#39;&#39;&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">doc_fmt</span><span class="p">,</span> <span class="n">doc_fmt</span><span class="p">)</span>
+
+    <span class="n">iload_glob</span><span class="o">.</span><span class="n">__doc__</span> <span class="o">=</span> <span class="s">&#39;&#39;&#39;</span>
+<span class="s">        Read </span><span class="si">%s</span><span class="s"> information from files matching a glob pattern.</span>
+<span class="s">    &#39;&#39;&#39;</span> <span class="o">%</span> <span class="n">doc_fmt</span>
+
+    <span class="n">iload</span><span class="o">.</span><span class="n">__doc__</span> <span class="o">=</span>  <span class="s">&#39;&#39;&#39;</span>
+<span class="s">        Load </span><span class="si">%s</span><span class="s"> information from given source(s)</span>
+
+<span class="s">        The *source* can be specified as the name of a </span><span class="si">%s</span><span class="s"> file, the name of a</span>
+<span class="s">        directory containing </span><span class="si">%s</span><span class="s"> files, a glob pattern of </span><span class="si">%s</span><span class="s"> files, an open</span>
+<span class="s">        filehandle or an iterator yielding any of the forementioned sources.</span>
+
+<span class="s">        This function behaves as a generator yielding </span><span class="si">%s</span><span class="s"> objects.</span>
+<span class="s">    &#39;&#39;&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">doc_fmt</span><span class="p">,</span> <span class="n">doc_fmt</span><span class="p">,</span> <span class="n">doc_fmt</span><span class="p">,</span> <span class="n">doc_fmt</span><span class="p">,</span> <span class="n">doc_yielded_objects</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">iload_filename</span><span class="p">,</span> <span class="n">iload_dirname</span><span class="p">,</span> <span class="n">iload_glob</span><span class="p">,</span> <span class="n">iload</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">__module__</span> <span class="o">=</span> <span class="n">iload_fh</span><span class="o">.</span><span class="n">__module__</span>
+
+    <span class="k">return</span> <span class="n">iload_filename</span><span class="p">,</span> <span class="n">iload_dirname</span><span class="p">,</span> <span class="n">iload_glob</span><span class="p">,</span> <span class="n">iload</span>
+
+</div>
+<div class="viewcode-block" id="Inconsistency"><a class="viewcode-back" href="../../util.html#pyrocko.util.Inconsistency">[docs]</a><span class="k">class</span> <span class="nc">Inconsistency</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+</div>
+<div class="viewcode-block" id="consistency_check"><a class="viewcode-back" href="../../util.html#pyrocko.util.consistency_check">[docs]</a><span class="k">def</span> <span class="nf">consistency_check</span><span class="p">(</span><span class="n">list_of_tuples</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s">&#39;values differ:&#39;</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Check for inconsistencies.</span>
+
+<span class="sd">    Given a list of tuples, check that all tuple elements except for first one</span>
+<span class="sd">    match. E.g. [(&#39;STA.N&#39;, 55.3, 103.2), (&#39;STA.E&#39;, 55.3, 103.2)] would be</span>
+<span class="sd">    valid because the coordinates at the two channels are the same.&#39;&#39;&#39;</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">list_of_tuples</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">!=</span> <span class="n">list_of_tuples</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">:]</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">list_of_tuples</span><span class="p">[</span><span class="mi">1</span><span class="p">:]):</span>
+            <span class="k">raise</span> <span class="n">Inconsistency</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="se">\n</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">message</span> <span class="o">+</span> <span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                <span class="s">&#39;  </span><span class="si">%s</span><span class="s">: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%g</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">:]))</span>
+                <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">list_of_tuples</span><span class="p">))</span>
+
+</div>
+<div class="viewcode-block" id="mostfrequent"><a class="viewcode-back" href="../../util.html#pyrocko.util.mostfrequent">[docs]</a><span class="k">def</span> <span class="nf">mostfrequent</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">k</span><span class="p">:</span> <span class="n">c</span><span class="p">[</span><span class="n">k</span><span class="p">])[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+</div>
+<div class="viewcode-block" id="consistency_merge"><a class="viewcode-back" href="../../util.html#pyrocko.util.consistency_merge">[docs]</a><span class="k">def</span> <span class="nf">consistency_merge</span><span class="p">(</span><span class="n">list_of_tuples</span><span class="p">,</span>
+                      <span class="n">message</span><span class="o">=</span><span class="s">&#39;values differ:&#39;</span><span class="p">,</span>
+                      <span class="n">error</span><span class="o">=</span><span class="s">&#39;raise&#39;</span><span class="p">,</span>
+                      <span class="n">merge</span><span class="o">=</span><span class="n">mostfrequent</span><span class="p">):</span>
+
+    <span class="k">assert</span> <span class="n">error</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;raise&#39;</span><span class="p">,</span> <span class="s">&#39;warn&#39;</span><span class="p">,</span> <span class="s">&#39;ignore&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">list_of_tuples</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&#39;cannot merge empty sequence&#39;</span><span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">consistency_check</span><span class="p">(</span><span class="n">list_of_tuples</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">list_of_tuples</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">:]</span>
+    <span class="k">except</span> <span class="n">Inconsistencies</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">error</span> <span class="o">==</span> <span class="s">&#39;raise&#39;</span><span class="p">:</span>
+            <span class="k">raise</span>
+
+        <span class="k">elif</span> <span class="n">error</span> <span class="o">==</span> <span class="s">&#39;warn&#39;</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="p">[</span><span class="n">merge</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">list_of_tuples</span><span class="p">)[</span><span class="mi">1</span><span class="p">:]]</span>
+</pre></div></div>
 
           </div>
       </div>
