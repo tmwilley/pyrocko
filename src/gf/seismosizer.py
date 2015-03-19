@@ -107,8 +107,14 @@ def permudef(l, j=0):
         yield l
 
 
-def arr(x):
+def arr(x, n=None):
     return num.atleast_1d(num.asarray(x))
+
+
+def filled(x, n):
+    a = num.empty(n, dtype=num.float)
+    a.fill(x)
+    return a
 
 
 def discretize_rect_source(deltas, deltat, strike, dip, length, width,
@@ -1255,6 +1261,14 @@ class SFSource(Source):
         default=0.,
         help='downward component of single force [N]')
 
+    stf_type = String.T(
+        default='gauss',
+        help='type of source time function wavelet (choices: sin, gauss)')
+
+    stf_duration = Float.T(
+        default=0.,
+        help='duration of the source time function (gauss: FWHM, sin: period)')
+
     def __init__(self, **kwargs):
         Source.__init__(self, **kwargs)
 
@@ -1266,8 +1280,20 @@ class SFSource(Source):
 
     def discretize_basesource(self, store):
         forces = num.array([[self.fn, self.fe, self.fd]], dtype=num.float)
-        return meta.DiscretizedSFSource(forces=forces,
-                                        **self._dparams_base())
+        if self.stf_type == 'sin':
+            duration = self.stf_duration
+            nt = duration / (0.5*store.config.deltat)
+            stf_time = num.linspace(-duration*0.5, duration*0.5, nt)
+            stf_amplitude = -num.sin(stf_time/duration * 2 * math.pi)
+            forces = forces * stf_amplitude[:,num.newaxis]
+
+        return meta.DiscretizedSFSource(
+            forces=forces,
+            times=stf_time,
+            lat=self.lat, lon=self.lon,
+            north_shifts=filled(self.north_shift, nt),
+            east_shifts=filled(self.east_shift, nt),
+            depths=filled(self.depth, nt))
 
     def pyrocko_event(self, **kwargs):
         return Source.pyrocko_event(
