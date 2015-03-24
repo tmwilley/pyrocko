@@ -714,7 +714,7 @@ sources match or are accounted for.</p>
 <dt id="pyrocko.gf.meta.ComponentSchemes">
 <em class="property">class </em><tt class="descname">ComponentSchemes</tt><big>(</big><em>dummy</em><big>)</big> &rarr; str<a class="reference internal" href="_modules/pyrocko/gf/meta.html#ComponentSchemes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.gf.meta.ComponentSchemes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">pyrocko.guts.StringChoice</span></tt></p>
-<p>Any <tt class="docutils literal"><span class="pre">str</span></tt> out of <tt class="docutils literal"><span class="pre">('elastic10',</span> <span class="pre">'elastic8',</span> <span class="pre">'elastic2',</span> <span class="pre">'poroelastic10')</span></tt>.</p>
+<p>Any <tt class="docutils literal"><span class="pre">str</span></tt> out of <tt class="docutils literal"><span class="pre">('elastic10',</span> <span class="pre">'elastic8',</span> <span class="pre">'elastic2',</span> <span class="pre">'elastic5',</span> <span class="pre">'elastic13',</span> <span class="pre">'elastic15',</span> <span class="pre">'poroelastic10')</span></tt>.</p>
 </dd></dl>
 
 <dl class="class">
@@ -1703,6 +1703,37 @@ parameters.</p>
 <dt id="pyrocko.gf.seismosizer.RingfaultSource.discretized_source_class">
 <tt class="descname">discretized_source_class</tt><a class="headerlink" href="#pyrocko.gf.seismosizer.RingfaultSource.discretized_source_class" title="Permalink to this definition">¶</a></dt>
 <dd><p>alias of <tt class="xref py py-class docutils literal"><span class="pre">DiscretizedMTSource</span></tt></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pyrocko.gf.seismosizer.SFSource">
+<em class="property">class </em><tt class="descname">SFSource</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/pyrocko/gf/seismosizer.html#SFSource"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.gf.seismosizer.SFSource" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyrocko.gf.seismosizer.Source" title="pyrocko.gf.seismosizer.Source"><tt class="xref py py-class docutils literal"><span class="pre">pyrocko.gf.seismosizer.Source</span></tt></a></p>
+<p>A single force point source.</p>
+<dl class="attribute">
+<dt id="pyrocko.gf.seismosizer.SFSource.fn">
+<tt class="descname">fn</tt><a class="headerlink" href="#pyrocko.gf.seismosizer.SFSource.fn" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">float</span></tt>, <em>default:</em> <tt class="docutils literal"><span class="pre">0.0</span></tt>, northward component of single force [N]</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.seismosizer.SFSource.fe">
+<tt class="descname">fe</tt><a class="headerlink" href="#pyrocko.gf.seismosizer.SFSource.fe" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">float</span></tt>, <em>default:</em> <tt class="docutils literal"><span class="pre">0.0</span></tt>, eastward component of single force [N]</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.seismosizer.SFSource.fd">
+<tt class="descname">fd</tt><a class="headerlink" href="#pyrocko.gf.seismosizer.SFSource.fd" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">float</span></tt>, <em>default:</em> <tt class="docutils literal"><span class="pre">0.0</span></tt>, downward component of single force [N]</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.seismosizer.SFSource.discretized_source_class">
+<tt class="descname">discretized_source_class</tt><a class="headerlink" href="#pyrocko.gf.seismosizer.SFSource.discretized_source_class" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <tt class="xref py py-class docutils literal"><span class="pre">DiscretizedSFSource</span></tt></p>
 </dd></dl>
 
 </dd></dl>

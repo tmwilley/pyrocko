@@ -576,12 +576,15 @@
        
     <span class="k">return</span> <span class="n">time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="n">format</span><span class="p">,</span> <span class="n">time</span><span class="o">.</span><span class="n">gmtime</span><span class="p">(</span><span class="n">t</span><span class="p">))</span>
 </div>
-<div class="viewcode-block" id="FractionalSecondsMissing"><a class="viewcode-back" href="../../util.html#pyrocko.util.FractionalSecondsMissing">[docs]</a><span class="k">class</span> <span class="nc">FractionalSecondsMissing</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+<div class="viewcode-block" id="TimeStrError"><a class="viewcode-back" href="../../util.html#pyrocko.util.TimeStrError">[docs]</a><span class="k">class</span> <span class="nc">TimeStrError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="k">pass</span>
+</div>
+<div class="viewcode-block" id="FractionalSecondsMissing"><a class="viewcode-back" href="../../util.html#pyrocko.util.FractionalSecondsMissing">[docs]</a><span class="k">class</span> <span class="nc">FractionalSecondsMissing</span><span class="p">(</span><span class="n">TimeStrError</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Exception raised by :py:func:`str_to_time` when the given string lacks</span>
 <span class="sd">    fractional seconds.&#39;&#39;&#39;</span>
     <span class="k">pass</span>
 </div>
-<div class="viewcode-block" id="FractionalSecondsWrongNumberOfDigits"><a class="viewcode-back" href="../../util.html#pyrocko.util.FractionalSecondsWrongNumberOfDigits">[docs]</a><span class="k">class</span> <span class="nc">FractionalSecondsWrongNumberOfDigits</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+<div class="viewcode-block" id="FractionalSecondsWrongNumberOfDigits"><a class="viewcode-back" href="../../util.html#pyrocko.util.FractionalSecondsWrongNumberOfDigits">[docs]</a><span class="k">class</span> <span class="nc">FractionalSecondsWrongNumberOfDigits</span><span class="p">(</span><span class="n">TimeStrError</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Exception raised by :py:func:`str_to_time` when the given string has an incorrect number of digits in the fractional seconds part.&#39;&#39;&#39;</span>
     <span class="k">pass</span>
 </div>
@@ -607,9 +610,13 @@
 <span class="sd">    number of digits are present in the fractional seconds.</span>
 <span class="sd">    &#39;&#39;&#39;</span>
     <span class="k">if</span> <span class="n">util_ext</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-        <span class="n">t</span><span class="p">,</span> <span class="n">tfrac</span> <span class="o">=</span> <span class="n">util_ext</span><span class="o">.</span><span class="n">stt</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">format</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">t</span><span class="p">,</span> <span class="n">tfrac</span> <span class="o">=</span> <span class="n">util_ext</span><span class="o">.</span><span class="n">stt</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">format</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">util_ext</span><span class="o">.</span><span class="n">UtilExtError</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">TimeStrError</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">, string=</span><span class="si">%s</span><span class="s">, format=</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span> <span class="n">s</span><span class="p">,</span> <span class="n">format</span><span class="p">))</span>
+
         <span class="k">return</span> <span class="n">t</span><span class="o">+</span><span class="n">tfrac</span>
-        
+
     <span class="n">fracsec</span> <span class="o">=</span> <span class="mf">0.</span>
     <span class="n">fixed_endings</span> <span class="o">=</span> <span class="s">&#39;.FRAC&#39;</span><span class="p">,</span> <span class="s">&#39;.1FRAC&#39;</span><span class="p">,</span> <span class="s">&#39;.2FRAC&#39;</span><span class="p">,</span> <span class="s">&#39;.3FRAC&#39;</span>
     
@@ -657,7 +664,10 @@
 
     <span class="k">if</span> <span class="n">util_ext</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
         <span class="n">t0</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">util_ext</span><span class="o">.</span><span class="n">tts</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">t0</span><span class="p">),</span> <span class="n">t</span> <span class="o">-</span> <span class="n">t0</span><span class="p">,</span> <span class="n">format</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">util_ext</span><span class="o">.</span><span class="n">tts</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">t0</span><span class="p">),</span> <span class="n">t</span> <span class="o">-</span> <span class="n">t0</span><span class="p">,</span> <span class="n">format</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">util_ext</span><span class="o">.</span><span class="n">UtilExtError</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">TimeStrError</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">, timestamp=</span><span class="si">%f</span><span class="s">, format=</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span> <span class="n">t</span><span class="p">,</span> <span class="n">format</span><span class="p">))</span>
     
     <span class="k">if</span> <span class="ow">not</span> <span class="n">GlobalVars</span><span class="o">.</span><span class="n">re_frac</span><span class="p">:</span>
         <span class="n">GlobalVars</span><span class="o">.</span><span class="n">re_frac</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s">r&#39;\.[1-9]FRAC&#39;</span><span class="p">)</span>

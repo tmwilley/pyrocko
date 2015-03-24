@@ -441,7 +441,7 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">same_origin</span><span class="p">(</span><span class="n">other</span><span class="p">):</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">Location</span><span class="p">):</span>
                 <span class="k">return</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">north_shift</span> <span class="o">-</span> <span class="n">other</span><span class="o">.</span><span class="n">north_shift</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span>
-                                <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">east_shift</span> <span class="o">-</span> <span class="n">other</span><span class="o">.</span><span class="n">east_shift</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+                                 <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">east_shift</span> <span class="o">-</span> <span class="n">other</span><span class="o">.</span><span class="n">east_shift</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">return</span> <span class="mf">0.0</span>
 
@@ -845,7 +845,83 @@
                                                               <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">DiscretizedMTSource</span><span class="p">(</span><span class="n">DiscretizedSource</span><span class="p">):</span></div></div>
+<span class="k">class</span> <span class="nc">DiscretizedSFSource</span><span class="p">(</span><span class="n">DiscretizedSource</span><span class="p">):</span></div></div>
+    <span class="n">forces</span> <span class="o">=</span> <span class="n">Array</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">num</span><span class="o">.</span><span class="n">float</span><span class="p">)</span>
+
+    <span class="n">_provided_components</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s">&#39;displacement.n&#39;</span><span class="p">,</span>
+        <span class="s">&#39;displacement.e&#39;</span><span class="p">,</span>
+        <span class="s">&#39;displacement.d&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="n">_provided_schemes</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s">&#39;elastic5&#39;</span><span class="p">,</span>
+        <span class="s">&#39;elastic13&#39;</span><span class="p">,</span>
+        <span class="s">&#39;elastic15&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">make_weights</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">receiver</span><span class="p">,</span> <span class="n">scheme</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_scheme</span><span class="p">(</span><span class="n">scheme</span><span class="p">)</span>
+
+        <span class="n">azis</span><span class="p">,</span> <span class="n">bazis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">azibazis_to</span><span class="p">(</span><span class="n">receiver</span><span class="p">)</span>
+
+        <span class="n">sa</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">azis</span><span class="o">*</span><span class="n">d2r</span><span class="p">)</span>
+        <span class="n">ca</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">azis</span><span class="o">*</span><span class="n">d2r</span><span class="p">)</span>
+        <span class="n">sb</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">bazis</span><span class="o">*</span><span class="n">d2r</span><span class="o">-</span><span class="n">num</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+        <span class="n">cb</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">bazis</span><span class="o">*</span><span class="n">d2r</span><span class="o">-</span><span class="n">num</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+
+        <span class="n">forces</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">forces</span>
+        <span class="n">fn</span> <span class="o">=</span> <span class="n">forces</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="n">fe</span> <span class="o">=</span> <span class="n">forces</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="n">fd</span> <span class="o">=</span> <span class="n">forces</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span>
+
+        <span class="n">f0</span> <span class="o">=</span> <span class="n">fd</span>
+        <span class="n">f1</span> <span class="o">=</span> <span class="n">ca</span> <span class="o">*</span> <span class="n">fn</span> <span class="o">+</span> <span class="n">sa</span> <span class="o">*</span> <span class="n">fe</span>
+        <span class="n">f2</span> <span class="o">=</span> <span class="n">ca</span> <span class="o">*</span> <span class="n">fe</span> <span class="o">-</span> <span class="n">sa</span> <span class="o">*</span> <span class="n">fn</span>
+
+        <span class="n">n</span> <span class="o">=</span> <span class="n">azis</span><span class="o">.</span><span class="n">size</span>
+
+        <span class="k">if</span> <span class="n">scheme</span> <span class="o">==</span> <span class="s">&#39;elastic5&#39;</span><span class="p">:</span>
+            <span class="n">ioff</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">elif</span> <span class="n">scheme</span> <span class="o">==</span> <span class="s">&#39;elastic13&#39;</span><span class="p">:</span>
+            <span class="n">ioff</span> <span class="o">=</span> <span class="mi">8</span>
+
+        <span class="k">elif</span> <span class="n">scheme</span> <span class="o">==</span> <span class="s">&#39;elastic15&#39;</span><span class="p">:</span>
+            <span class="n">ioff</span> <span class="o">=</span> <span class="mi">10</span>
+
+        <span class="n">cat</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">concatenate</span>
+        <span class="n">rep</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">repeat</span>
+
+        <span class="n">w_n</span> <span class="o">=</span> <span class="n">cat</span><span class="p">((</span><span class="n">cb</span><span class="o">*</span><span class="n">f0</span><span class="p">,</span> <span class="n">cb</span><span class="o">*</span><span class="n">f1</span><span class="p">,</span> <span class="o">-</span><span class="n">sb</span><span class="o">*</span><span class="n">f2</span><span class="p">))</span>
+        <span class="n">g_n</span> <span class="o">=</span> <span class="n">ioff</span> <span class="o">+</span> <span class="n">rep</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">n</span><span class="p">)</span>
+        <span class="n">w_e</span> <span class="o">=</span> <span class="n">cat</span><span class="p">((</span><span class="n">sb</span><span class="o">*</span><span class="n">f0</span><span class="p">,</span> <span class="n">sb</span><span class="o">*</span><span class="n">f1</span><span class="p">,</span> <span class="n">cb</span><span class="o">*</span><span class="n">f2</span><span class="p">))</span>
+        <span class="n">g_e</span> <span class="o">=</span> <span class="n">ioff</span> <span class="o">+</span> <span class="n">rep</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">n</span><span class="p">)</span>
+        <span class="n">w_d</span> <span class="o">=</span> <span class="n">cat</span><span class="p">((</span><span class="n">f0</span><span class="p">,</span> <span class="n">f1</span><span class="p">))</span>
+        <span class="n">g_d</span> <span class="o">=</span> <span class="n">ioff</span> <span class="o">+</span> <span class="n">rep</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="n">n</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="p">(</span><span class="s">&#39;displacement.n&#39;</span><span class="p">,</span> <span class="n">w_n</span><span class="p">,</span> <span class="n">g_n</span><span class="p">),</span>
+            <span class="p">(</span><span class="s">&#39;displacement.e&#39;</span><span class="p">,</span> <span class="n">w_e</span><span class="p">,</span> <span class="n">g_e</span><span class="p">),</span>
+            <span class="p">(</span><span class="s">&#39;displacement.d&#39;</span><span class="p">,</span> <span class="n">w_d</span><span class="p">,</span> <span class="n">g_d</span><span class="p">),</span>
+        <span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">combine</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">sources</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;Combine several discretized source models.</span>
+
+<span class="sd">        Concatenenates all point sources in the given discretized ``sources``.</span>
+<span class="sd">        Care must be taken when using this function that the external amplitude</span>
+<span class="sd">        factors and reference times of the parameterized (undiscretized)</span>
+<span class="sd">        sources match or are accounted for.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="s">&#39;forces&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;forces&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">s</span><span class="o">.</span><span class="n">forces</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">sources</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">DiscretizedMTSource</span><span class="p">,</span> <span class="n">cls</span><span class="p">)</span><span class="o">.</span><span class="n">combine</span><span class="p">(</span><span class="n">sources</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">DiscretizedMTSource</span><span class="p">(</span><span class="n">DiscretizedSource</span><span class="p">):</span>
 <div class="viewcode-block" id="DiscretizedMTSource"><a class="viewcode-back" href="../../../gf.html#pyrocko.gf.meta.DiscretizedMTSource">[docs]</a>    <span class="n">m6s</span> <span class="o">=</span> <span class="n">Array</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">num</span><span class="o">.</span><span class="n">float</span><span class="p">)</span>
 
     <span class="n">_provided_components</span> <span class="o">=</span> <span class="p">(</span>
@@ -1063,7 +1139,14 @@
 
 
 <span class="k">class</span> <span class="nc">ComponentSchemes</span><span class="p">(</span><span class="n">StringChoice</span><span class="p">):</span>
-<div class="viewcode-block" id="ComponentSchemes"><a class="viewcode-back" href="../../../gf.html#pyrocko.gf.meta.ComponentSchemes">[docs]</a>    <span class="n">choices</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;elastic10&#39;</span><span class="p">,</span> <span class="s">&#39;elastic8&#39;</span><span class="p">,</span> <span class="s">&#39;elastic2&#39;</span><span class="p">,</span> <span class="s">&#39;poroelastic10&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="ComponentSchemes"><a class="viewcode-back" href="../../../gf.html#pyrocko.gf.meta.ComponentSchemes">[docs]</a>    <span class="n">choices</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="s">&#39;elastic10&#39;</span><span class="p">,</span>  <span class="c"># nf + ff</span>
+        <span class="s">&#39;elastic8&#39;</span><span class="p">,</span>   <span class="c"># ff</span>
+        <span class="s">&#39;elastic2&#39;</span><span class="p">,</span>   <span class="c"># explosions</span>
+        <span class="s">&#39;elastic5&#39;</span><span class="p">,</span>   <span class="c"># sf</span>
+        <span class="s">&#39;elastic13&#39;</span><span class="p">,</span>  <span class="c"># ff + sf</span>
+        <span class="s">&#39;elastic15&#39;</span><span class="p">,</span>  <span class="c"># nf + ff + sf</span>
+        <span class="s">&#39;poroelastic10&#39;</span><span class="p">)</span>
 
 
 <span class="k">class</span> <span class="nc">Config</span><span class="p">(</span><span class="n">Object</span><span class="p">):</span></div>
@@ -1594,7 +1677,7 @@
 <div class="viewcode-block" id="WaveformSelection"><a class="viewcode-back" href="../../../gf.html#pyrocko.gf.meta.WaveformSelection">[docs]</a>    <span class="n">channel_selection</span> <span class="o">=</span> <span class="n">ChannelSelection</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
     <span class="n">station_selection</span> <span class="o">=</span> <span class="n">StationSelection</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
     <span class="n">taper</span> <span class="o">=</span> <span class="n">Taper</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
-    <span class="c">#filter = FrequencyResponse.T()</span>
+    <span class="c"># filter = FrequencyResponse.T()</span>
     <span class="n">waveform_type</span> <span class="o">=</span> <span class="n">WaveformType</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s">&#39;dis&#39;</span><span class="p">)</span>
     <span class="n">weighting</span> <span class="o">=</span> <span class="n">Weighting</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
     <span class="n">sample_rate</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>

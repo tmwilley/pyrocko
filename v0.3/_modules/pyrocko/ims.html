@@ -63,6 +63,9 @@
     <span class="n">ValidationError</span><span class="p">)</span>
 
 
+<span class="n">km</span> <span class="o">=</span> <span class="mf">1000.</span>
+<span class="n">nm_per_s</span> <span class="o">=</span> <span class="mf">1.0e-9</span>
+
 <span class="n">g_versions</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;GSE2.0&#39;</span><span class="p">,</span> <span class="s">&#39;GSE2.1&#39;</span><span class="p">,</span> <span class="s">&#39;IMS1.0&#39;</span><span class="p">)</span>
 <span class="n">g_dialects</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;NOR_NDC&#39;</span><span class="p">,</span> <span class="s">&#39;USA_DMC&#39;</span><span class="p">)</span>
 
@@ -239,6 +242,27 @@
 
     <span class="n">func</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">expect</span><span class="p">)</span>
     <span class="n">func</span><span class="o">.</span><span class="n">help_type</span> <span class="o">=</span> <span class="s">&#39;Keyword: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">expect</span>
+    <span class="k">return</span> <span class="n">func</span>
+
+
+<span class="k">def</span> <span class="nf">x_scaled</span><span class="p">(</span><span class="n">fmt</span><span class="p">,</span> <span class="n">factor</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">func</span><span class="p">():</span>
+        <span class="n">to_string</span> <span class="o">=</span> <span class="n">float_to_string</span><span class="p">(</span><span class="n">fmt</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">float_or_none</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">None</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">x</span> <span class="o">*</span> <span class="n">factor</span>
+
+        <span class="k">def</span> <span class="nf">string</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">to_string</span><span class="p">(</span><span class="n">v</span><span class="o">/</span><span class="n">factor</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">parse</span><span class="p">,</span> <span class="n">string</span>
+
+    <span class="n">func</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">fmt</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;.&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">func</span><span class="o">.</span><span class="n">help_type</span> <span class="o">=</span> <span class="s">&#39;float&#39;</span>
     <span class="k">return</span> <span class="n">func</span>
 
 
@@ -659,7 +683,7 @@
         <span class="n">E</span><span class="p">(</span><span class="mi">45</span><span class="p">,</span> <span class="mi">47</span><span class="p">,</span> <span class="s">&#39;a3&#39;</span><span class="p">),</span>
         <span class="n">E</span><span class="p">(</span><span class="mi">49</span><span class="p">,</span> <span class="mi">56</span><span class="p">,</span> <span class="s">&#39;i8&#39;</span><span class="p">),</span>
         <span class="n">E</span><span class="p">(</span><span class="mi">58</span><span class="p">,</span> <span class="mi">68</span><span class="p">,</span> <span class="s">&#39;f11.6&#39;</span><span class="p">),</span>
-        <span class="n">E</span><span class="p">(</span><span class="mi">70</span><span class="p">,</span> <span class="mi">79</span><span class="p">,</span> <span class="s">&#39;e10.2&#39;</span><span class="p">),</span>
+        <span class="n">E</span><span class="p">(</span><span class="mi">70</span><span class="p">,</span> <span class="mi">79</span><span class="p">,</span> <span class="n">x_scaled</span><span class="p">(</span><span class="s">&#39;e10.2&#39;</span><span class="p">,</span> <span class="n">nm_per_s</span><span class="p">)),</span>
         <span class="n">E</span><span class="p">(</span><span class="mi">81</span><span class="p">,</span> <span class="mi">87</span><span class="p">,</span> <span class="s">&#39;f7.3&#39;</span><span class="p">),</span>
         <span class="n">E</span><span class="p">(</span><span class="mi">89</span><span class="p">,</span> <span class="mi">94</span><span class="p">,</span> <span class="s">&#39;a6?&#39;</span><span class="p">),</span>
         <span class="n">E</span><span class="p">(</span><span class="mi">96</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="s">&#39;f5.1&#39;</span><span class="p">),</span>
@@ -667,17 +691,29 @@
     <span class="p">]</span>
 
     <span class="n">time</span> <span class="o">=</span> <span class="n">Timestamp</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
-    <span class="n">station</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
-    <span class="n">channel</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
-    <span class="n">aux_id</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">station</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s">&#39;station code (5 characters)&#39;</span><span class="p">)</span>
+    <span class="n">channel</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s">&#39;channel code (3 characters)&#39;</span><span class="p">)</span>
+    <span class="n">location</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s">&#39;location code (aux_id, 4 characters)&#39;</span><span class="p">)</span>
     <span class="n">sub_format</span> <span class="o">=</span> <span class="n">WaveformSubformat</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s">&#39;CM6&#39;</span><span class="p">)</span>
-    <span class="n">samps</span> <span class="o">=</span> <span class="n">Int</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-    <span class="n">samprate</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
-    <span class="n">calib</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-    <span class="n">calper</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-    <span class="n">instype</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-    <span class="n">hang</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-    <span class="n">vang</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">nsamples</span> <span class="o">=</span> <span class="n">Int</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">sample_rate</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+    <span class="n">calibration_factor</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">(</span>
+        <span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s">&#39;system sensitivity (m/count) at reference period &#39;</span>
+             <span class="s">&#39;(calibration_period)&#39;</span><span class="p">)</span>
+    <span class="n">calibration_period</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">(</span>
+        <span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s">&#39;calibration reference period [s]&#39;</span><span class="p">)</span>
+    <span class="n">instrument_type</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s">&#39;instrument type (6 characters)&#39;</span><span class="p">)</span>
+    <span class="n">horizontal_angle</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">(</span>
+        <span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s">&#39;horizontal orientation of sensor, clockwise from north [deg]&#39;</span><span class="p">)</span>
+    <span class="n">vertical_angle</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">(</span>
+        <span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s">&#39;vertical orientation of sensor from vertical [deg]&#39;</span><span class="p">)</span>
 
 </div>
 <div class="viewcode-block" id="OUT2"><a class="viewcode-back" href="../../ims.html#pyrocko.ims.OUT2">[docs]</a><span class="k">class</span> <span class="nc">OUT2</span><span class="p">(</span><span class="n">Block</span><span class="p">):</span>
@@ -693,9 +729,11 @@
     <span class="p">]</span>
 
     <span class="n">time</span> <span class="o">=</span> <span class="n">Timestamp</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
-    <span class="n">station</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
-    <span class="n">channel</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
-    <span class="n">aux_id</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
+    <span class="n">station</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s">&#39;station code (5 characters)&#39;</span><span class="p">)</span>
+    <span class="n">channel</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s">&#39;channel code (3 characters)&#39;</span><span class="p">)</span>
+    <span class="n">location</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s">&#39;location code (aux_id, 4 characters)&#39;</span><span class="p">)</span>
     <span class="n">duration</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
 
 </div>
@@ -712,10 +750,12 @@
     <span class="p">]</span>
 
     <span class="n">time</span> <span class="o">=</span> <span class="n">Timestamp</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
-    <span class="n">station</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
-    <span class="n">channel</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
-    <span class="n">aux_id</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
-    <span class="n">queuetim</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
+    <span class="n">station</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s">&#39;station code (5 characters)&#39;</span><span class="p">)</span>
+    <span class="n">channel</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s">&#39;channel code (3 characters)&#39;</span><span class="p">)</span>
+    <span class="n">location</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s">&#39;location code (aux_id, 4 characters)&#39;</span><span class="p">)</span>
+    <span class="n">queue_duration</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s">&#39;duration of queue [s]&#39;</span><span class="p">)</span>
 
 </div>
 <div class="viewcode-block" id="DAT2"><a class="viewcode-back" href="../../ims.html#pyrocko.ims.DAT2">[docs]</a><span class="k">class</span> <span class="nc">DAT2</span><span class="p">(</span><span class="n">Block</span><span class="p">):</span>
@@ -752,16 +792,16 @@
         <span class="n">E</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">24</span><span class="p">,</span> <span class="s">&#39;f9.5&#39;</span><span class="p">),</span>
         <span class="n">E</span><span class="p">(</span><span class="mi">26</span><span class="p">,</span> <span class="mi">35</span><span class="p">,</span> <span class="s">&#39;f10.5&#39;</span><span class="p">),</span>
         <span class="n">E</span><span class="p">(</span><span class="mi">37</span><span class="p">,</span> <span class="mi">48</span><span class="p">,</span> <span class="s">&#39;a12&#39;</span><span class="p">),</span>
-        <span class="n">E</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">54</span><span class="p">,</span> <span class="s">&#39;f5.3&#39;</span><span class="p">),</span>
-        <span class="n">E</span><span class="p">(</span><span class="mi">56</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="s">&#39;f5.3&#39;</span><span class="p">)</span>
+        <span class="n">E</span><span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="mi">54</span><span class="p">,</span> <span class="n">x_scaled</span><span class="p">(</span><span class="s">&#39;f5.3&#39;</span><span class="p">,</span> <span class="n">km</span><span class="p">)),</span>
+        <span class="n">E</span><span class="p">(</span><span class="mi">56</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="n">x_scaled</span><span class="p">(</span><span class="s">&#39;f5.3&#39;</span><span class="p">,</span> <span class="n">km</span><span class="p">))</span>
     <span class="p">]</span>
 
-    <span class="n">network</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
+    <span class="n">network</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s">&#39;network code (9 characters)&#39;</span><span class="p">)</span>
     <span class="n">lat</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
     <span class="n">lon</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
-    <span class="n">coordsys</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s">&#39;WGS-84&#39;</span><span class="p">)</span>
-    <span class="n">elev</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
-    <span class="n">edepth</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
+    <span class="n">coordinate_system</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s">&#39;WGS-84&#39;</span><span class="p">)</span>
+    <span class="n">elevation</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s">&#39;elevation [m]&#39;</span><span class="p">)</span>
+    <span class="n">depth</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s">&#39;emplacement depth [m]&#39;</span><span class="p">)</span>
 
 </div>
 <div class="viewcode-block" id="CHK2"><a class="viewcode-back" href="../../ims.html#pyrocko.ims.CHK2">[docs]</a><span class="k">class</span> <span class="nc">CHK2</span><span class="p">(</span><span class="n">Block</span><span class="p">):</span>
@@ -784,8 +824,8 @@
         <span class="n">E</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">23</span><span class="p">,</span> <span class="s">&#39;a9&#39;</span><span class="p">),</span>
     <span class="p">]</span>
 
-    <span class="n">event_id</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
-    <span class="n">bull_type</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
+    <span class="n">event_id</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s">&#39;event ID (8 characters)&#39;</span><span class="p">)</span>
+    <span class="n">bulletin_type</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s">&#39;bulletin type (9 characters)&#39;</span><span class="p">)</span>
 
 </div>
 <div class="viewcode-block" id="BEA2"><a class="viewcode-back" href="../../ims.html#pyrocko.ims.BEA2">[docs]</a><span class="k">class</span> <span class="nc">BEA2</span><span class="p">(</span><span class="n">Block</span><span class="p">):</span>
@@ -797,7 +837,7 @@
         <span class="n">E</span><span class="p">(</span><span class="mi">19</span><span class="p">,</span> <span class="mi">23</span><span class="p">,</span> <span class="s">&#39;f5.1&#39;</span><span class="p">),</span>
         <span class="n">E</span><span class="p">(</span><span class="mi">25</span><span class="p">,</span> <span class="mi">29</span><span class="p">,</span> <span class="s">&#39;f5.1&#39;</span><span class="p">)]</span>
 
-    <span class="n">beam_id</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
+    <span class="n">beam_id</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s">&#39;beam ID (12 characters)&#39;</span><span class="p">)</span>
     <span class="n">azimuth</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
     <span class="n">slowness</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
 
@@ -809,8 +849,8 @@
         <span class="n">E</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="s">&#39;a9&#39;</span><span class="p">),</span>
         <span class="n">E</span><span class="p">(</span><span class="mi">11</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="s">&#39;a64+&#39;</span><span class="p">)]</span>
 
-    <span class="n">network</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
-    <span class="n">description</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
+    <span class="n">network</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s">&#39;network code (9 characters)&#39;</span><span class="p">)</span>
+    <span class="n">description</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s">&#39;description&#39;</span><span class="p">)</span>
 
 </div>
 <div class="viewcode-block" id="Station"><a class="viewcode-back" href="../../ims.html#pyrocko.ims.Station">[docs]</a><span class="k">class</span> <span class="nc">Station</span><span class="p">(</span><span class="n">Block</span><span class="p">):</span>
@@ -824,7 +864,7 @@
             <span class="n">E</span><span class="p">(</span><span class="mi">22</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="s">&#39;f9.5&#39;</span><span class="p">),</span>
             <span class="n">E</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="mi">41</span><span class="p">,</span> <span class="s">&#39;f10.5&#39;</span><span class="p">),</span>
             <span class="n">E</span><span class="p">(</span><span class="mi">43</span><span class="p">,</span> <span class="mi">54</span><span class="p">,</span> <span class="s">&#39;a12&#39;</span><span class="p">),</span>
-            <span class="n">E</span><span class="p">(</span><span class="mi">56</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="s">&#39;f5.3&#39;</span><span class="p">),</span>
+            <span class="n">E</span><span class="p">(</span><span class="mi">56</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="n">x_scaled</span><span class="p">(</span><span class="s">&#39;f5.3&#39;</span><span class="p">,</span> <span class="n">km</span><span class="p">)),</span>
             <span class="n">E</span><span class="p">(</span><span class="mi">62</span><span class="p">,</span> <span class="mi">71</span><span class="p">,</span> <span class="n">x_date</span><span class="p">),</span>
             <span class="n">E</span><span class="p">(</span><span class="mi">73</span><span class="p">,</span> <span class="mi">82</span><span class="p">,</span> <span class="n">optional</span><span class="p">(</span><span class="n">x_date</span><span class="p">))</span>
         <span class="p">],</span>
@@ -835,7 +875,7 @@
             <span class="n">E</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="s">&#39;f9.5&#39;</span><span class="p">),</span>
             <span class="n">E</span><span class="p">(</span><span class="mi">22</span><span class="p">,</span> <span class="mi">31</span><span class="p">,</span> <span class="s">&#39;f10.5&#39;</span><span class="p">),</span>
             <span class="n">E</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="mi">31</span><span class="p">,</span> <span class="n">x_substitute</span><span class="p">(</span><span class="s">&#39;WGS-84&#39;</span><span class="p">)),</span>
-            <span class="n">E</span><span class="p">(</span><span class="mi">33</span><span class="p">,</span> <span class="mi">39</span><span class="p">,</span> <span class="s">&#39;f7.3&#39;</span><span class="p">),</span>
+            <span class="n">E</span><span class="p">(</span><span class="mi">33</span><span class="p">,</span> <span class="mi">39</span><span class="p">,</span> <span class="n">x_scaled</span><span class="p">(</span><span class="s">&#39;f7.3&#39;</span><span class="p">,</span> <span class="n">km</span><span class="p">)),</span>
             <span class="n">E</span><span class="p">(</span><span class="mi">41</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="n">x_date</span><span class="p">),</span>
             <span class="n">E</span><span class="p">(</span><span class="mi">52</span><span class="p">,</span> <span class="mi">61</span><span class="p">,</span> <span class="n">optional</span><span class="p">(</span><span class="n">x_date</span><span class="p">))]}</span>
 
@@ -844,15 +884,18 @@
         <span class="n">E</span><span class="p">(</span><span class="mi">62</span><span class="p">,</span> <span class="mi">71</span><span class="p">,</span> <span class="n">x_date_iris</span><span class="p">),</span>
         <span class="n">E</span><span class="p">(</span><span class="mi">73</span><span class="p">,</span> <span class="mi">82</span><span class="p">,</span> <span class="n">optional</span><span class="p">(</span><span class="n">x_date_iris</span><span class="p">))]</span>
 
-    <span class="n">network</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
-    <span class="n">sta</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
-    <span class="n">statype</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
+    <span class="n">network</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s">&#39;network code (9 characters)&#39;</span><span class="p">)</span>
+    <span class="n">station</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s">&#39;station code (5 characters)&#39;</span><span class="p">)</span>
+    <span class="nb">type</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">(</span>
+        <span class="n">help</span><span class="o">=</span><span class="s">&#39;station type (4 characters) &#39;</span>
+             <span class="s">&#39;(1C: single component, 3C: three-component, &#39;</span>
+             <span class="s">&#39;hfa: high frequency array, lpa: long period array)&#39;</span><span class="p">)</span>
     <span class="n">lat</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
     <span class="n">lon</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
-    <span class="n">coordsys</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s">&#39;WGS-84&#39;</span><span class="p">)</span>
-    <span class="n">elev</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
-    <span class="n">ondate</span> <span class="o">=</span> <span class="n">Timestamp</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
-    <span class="n">offdate</span> <span class="o">=</span> <span class="n">Timestamp</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">coordinate_system</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s">&#39;WGS-84&#39;</span><span class="p">)</span>
+    <span class="n">elevation</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s">&#39;elevation [m]&#39;</span><span class="p">)</span>
+    <span class="n">tmin</span> <span class="o">=</span> <span class="n">Timestamp</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
+    <span class="n">tmax</span> <span class="o">=</span> <span class="n">Timestamp</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 
 </div>
 <div class="viewcode-block" id="Channel"><a class="viewcode-back" href="../../ims.html#pyrocko.ims.Channel">[docs]</a><span class="k">class</span> <span class="nc">Channel</span><span class="p">(</span><span class="n">Block</span><span class="p">):</span>
@@ -867,8 +910,8 @@
             <span class="n">E</span><span class="p">(</span><span class="mi">26</span><span class="p">,</span> <span class="mi">34</span><span class="p">,</span> <span class="s">&#39;f9.5&#39;</span><span class="p">),</span>
             <span class="n">E</span><span class="p">(</span><span class="mi">36</span><span class="p">,</span> <span class="mi">45</span><span class="p">,</span> <span class="s">&#39;f10.5&#39;</span><span class="p">),</span>
             <span class="n">E</span><span class="p">(</span><span class="mi">47</span><span class="p">,</span> <span class="mi">58</span><span class="p">,</span> <span class="s">&#39;a12&#39;</span><span class="p">),</span>
-            <span class="n">E</span><span class="p">(</span><span class="mi">60</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="s">&#39;f5.3&#39;</span><span class="p">),</span>
-            <span class="n">E</span><span class="p">(</span><span class="mi">66</span><span class="p">,</span> <span class="mi">70</span><span class="p">,</span> <span class="s">&#39;f5.3&#39;</span><span class="p">),</span>
+            <span class="n">E</span><span class="p">(</span><span class="mi">60</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="n">x_scaled</span><span class="p">(</span><span class="s">&#39;f5.3&#39;</span><span class="p">,</span> <span class="n">km</span><span class="p">)),</span>
+            <span class="n">E</span><span class="p">(</span><span class="mi">66</span><span class="p">,</span> <span class="mi">70</span><span class="p">,</span> <span class="n">x_scaled</span><span class="p">(</span><span class="s">&#39;f5.3&#39;</span><span class="p">,</span> <span class="n">km</span><span class="p">)),</span>
             <span class="n">E</span><span class="p">(</span><span class="mi">72</span><span class="p">,</span> <span class="mi">77</span><span class="p">,</span> <span class="s">&#39;f6.1&#39;</span><span class="p">),</span>
             <span class="n">E</span><span class="p">(</span><span class="mi">79</span><span class="p">,</span> <span class="mi">83</span><span class="p">,</span> <span class="s">&#39;f5.1&#39;</span><span class="p">),</span>
             <span class="n">E</span><span class="p">(</span><span class="mi">85</span><span class="p">,</span> <span class="mi">95</span><span class="p">,</span> <span class="s">&#39;f11.6&#39;</span><span class="p">),</span>
@@ -883,8 +926,8 @@
             <span class="n">E</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">24</span><span class="p">,</span> <span class="s">&#39;f9.5&#39;</span><span class="p">),</span>
             <span class="n">E</span><span class="p">(</span><span class="mi">26</span><span class="p">,</span> <span class="mi">35</span><span class="p">,</span> <span class="s">&#39;f10.5&#39;</span><span class="p">),</span>
             <span class="n">E</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="mi">31</span><span class="p">,</span> <span class="n">x_substitute</span><span class="p">(</span><span class="s">&#39;WGS-84&#39;</span><span class="p">)),</span>
-            <span class="n">E</span><span class="p">(</span><span class="mi">37</span><span class="p">,</span> <span class="mi">43</span><span class="p">,</span> <span class="s">&#39;f7.3&#39;</span><span class="p">),</span>
-            <span class="n">E</span><span class="p">(</span><span class="mi">45</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="s">&#39;f6.3&#39;</span><span class="p">),</span>
+            <span class="n">E</span><span class="p">(</span><span class="mi">37</span><span class="p">,</span> <span class="mi">43</span><span class="p">,</span> <span class="n">x_scaled</span><span class="p">(</span><span class="s">&#39;f7.3&#39;</span><span class="p">,</span> <span class="n">km</span><span class="p">)),</span>
+            <span class="n">E</span><span class="p">(</span><span class="mi">45</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="n">x_scaled</span><span class="p">(</span><span class="s">&#39;f6.3&#39;</span><span class="p">,</span> <span class="n">km</span><span class="p">)),</span>
             <span class="n">E</span><span class="p">(</span><span class="mi">52</span><span class="p">,</span> <span class="mi">57</span><span class="p">,</span> <span class="s">&#39;f6.1&#39;</span><span class="p">),</span>
             <span class="n">E</span><span class="p">(</span><span class="mi">59</span><span class="p">,</span> <span class="mi">63</span><span class="p">,</span> <span class="s">&#39;f5.1&#39;</span><span class="p">),</span>
             <span class="n">E</span><span class="p">(</span><span class="mi">65</span><span class="p">,</span> <span class="mi">75</span><span class="p">,</span> <span class="s">&#39;f11.6&#39;</span><span class="p">),</span>
@@ -904,21 +947,28 @@
         <span class="n">E</span><span class="p">(</span><span class="mi">105</span><span class="p">,</span> <span class="mi">114</span><span class="p">,</span> <span class="n">x_date_iris</span><span class="p">),</span>
         <span class="n">E</span><span class="p">(</span><span class="mi">116</span><span class="p">,</span> <span class="mi">125</span><span class="p">,</span> <span class="n">optional</span><span class="p">(</span><span class="n">x_date_iris</span><span class="p">))]</span>
 
-    <span class="n">network</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
-    <span class="n">sta</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
-    <span class="n">chan</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
-    <span class="n">aux_id</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
+    <span class="n">network</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s">&#39;network code (9 characters)&#39;</span><span class="p">)</span>
+    <span class="n">station</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s">&#39;station code (5 characters)&#39;</span><span class="p">)</span>
+    <span class="n">channel</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s">&#39;channel code (3 characters)&#39;</span><span class="p">)</span>
+    <span class="n">location</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s">&#39;location code (aux_id, 4 characters)&#39;</span><span class="p">)</span>
     <span class="n">lat</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
     <span class="n">lon</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-    <span class="n">coordsys</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s">&#39;WGS-84&#39;</span><span class="p">)</span>
-    <span class="n">elev</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-    <span class="n">edepth</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-    <span class="n">hang</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-    <span class="n">vang</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-    <span class="n">samprate</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
-    <span class="n">inst</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
-    <span class="n">ondate</span> <span class="o">=</span> <span class="n">Timestamp</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
-    <span class="n">offdate</span> <span class="o">=</span> <span class="n">Timestamp</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">coordinate_system</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s">&#39;WGS-84&#39;</span><span class="p">)</span>
+    <span class="n">elevation</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s">&#39;elevation [m]&#39;</span><span class="p">)</span>
+    <span class="n">depth</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s">&#39;emplacement depth [m]&#39;</span><span class="p">)</span>
+    <span class="n">horizontal_angle</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">(</span>
+        <span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s">&#39;horizontal orientation of sensor, clockwise from north [deg]&#39;</span><span class="p">)</span>
+    <span class="n">vertical_angle</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">(</span>
+        <span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s">&#39;vertical orientation of sensor from vertical [deg]&#39;</span><span class="p">)</span>
+    <span class="n">sample_rate</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
+    <span class="n">instrument_type</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s">&#39;instrument type (6 characters)&#39;</span><span class="p">)</span>
+    <span class="n">tmin</span> <span class="o">=</span> <span class="n">Timestamp</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
+    <span class="n">tmax</span> <span class="o">=</span> <span class="n">Timestamp</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 
 </div>
 <div class="viewcode-block" id="BeamGroup"><a class="viewcode-back" href="../../ims.html#pyrocko.ims.BeamGroup">[docs]</a><span class="k">class</span> <span class="nc">BeamGroup</span><span class="p">(</span><span class="n">Block</span><span class="p">):</span>
@@ -932,12 +982,19 @@
         <span class="n">E</span><span class="p">(</span><span class="mi">25</span><span class="p">,</span> <span class="mi">27</span><span class="p">,</span> <span class="s">&#39;i3&#39;</span><span class="p">),</span>
         <span class="n">E</span><span class="p">(</span><span class="mi">29</span><span class="p">,</span> <span class="mi">37</span><span class="p">,</span> <span class="s">&#39;f9.5&#39;</span><span class="p">)]</span>
 
-    <span class="n">bgroup</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
-    <span class="n">sta</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
-    <span class="n">chan</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
-    <span class="n">aux_id</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
-    <span class="n">wgt</span> <span class="o">=</span> <span class="n">Int</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-    <span class="n">delay</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">beam_group</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s">&#39;beam group (8 characters)&#39;</span><span class="p">)</span>
+    <span class="n">station</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s">&#39;station code (5 characters)&#39;</span><span class="p">)</span>
+    <span class="n">channel</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s">&#39;channel code (3 characters)&#39;</span><span class="p">)</span>
+    <span class="n">location</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s">&#39;location code (aux_id, 4 characters)&#39;</span><span class="p">)</span>
+    <span class="n">weight</span> <span class="o">=</span> <span class="n">Int</span><span class="o">.</span><span class="n">T</span><span class="p">(</span>
+        <span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s">&#39;weight used for this component when the beam was formed&#39;</span><span class="p">)</span>
+    <span class="n">delay</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">(</span>
+        <span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s">&#39;beam delay for this component [s] &#39;</span>
+             <span class="s">&#39;(used for meabs formed by non-plane waves)&#39;</span><span class="p">)</span>
 
 </div>
 <div class="viewcode-block" id="BeamType"><a class="viewcode-back" href="../../ims.html#pyrocko.ims.BeamType">[docs]</a><span class="k">class</span> <span class="nc">BeamType</span><span class="p">(</span><span class="n">StringChoice</span><span class="p">):</span>
@@ -968,19 +1025,31 @@
         <span class="n">E</span><span class="p">(</span><span class="mi">83</span><span class="p">,</span> <span class="mi">92</span><span class="p">,</span> <span class="n">optional</span><span class="p">(</span><span class="n">x_date</span><span class="p">))]</span>
 
     <span class="n">beam_id</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
-    <span class="n">bgroup</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
+    <span class="n">beam_group</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
     <span class="nb">type</span> <span class="o">=</span> <span class="n">BeamType</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
-    <span class="n">rot</span> <span class="o">=</span> <span class="n">Bool</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
-    <span class="n">azimuth</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
-    <span class="n">slowness</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
-    <span class="n">phase</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
-    <span class="n">flo</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
-    <span class="n">fhi</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
-    <span class="n">ford</span> <span class="o">=</span> <span class="n">Int</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
-    <span class="n">zero_phase</span> <span class="o">=</span> <span class="n">Bool</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
-    <span class="n">ftype</span> <span class="o">=</span> <span class="n">FilterType</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
-    <span class="n">ondate</span> <span class="o">=</span> <span class="n">Timestamp</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
-    <span class="n">offdate</span> <span class="o">=</span> <span class="n">Timestamp</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">is_rotated</span> <span class="o">=</span> <span class="n">Bool</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s">&#39;rotation flag&#39;</span><span class="p">)</span>
+    <span class="n">azimuth</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">(</span>
+        <span class="n">help</span><span class="o">=</span><span class="s">&#39;azimuth used to steer the beam [deg] (clockwise from North)&#39;</span><span class="p">)</span>
+    <span class="n">slowness</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">(</span>
+        <span class="n">help</span><span class="o">=</span><span class="s">&#39;slowness used to steer the beam [s/deg]&#39;</span><span class="p">)</span>
+    <span class="n">phase</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">(</span>
+        <span class="n">help</span><span class="o">=</span><span class="s">&#39;phase used to set the beam slowness for origin-based beams &#39;</span>
+             <span class="s">&#39;(8 characters)&#39;</span><span class="p">)</span>
+    <span class="n">filter_fmin</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">(</span>
+        <span class="n">help</span><span class="o">=</span><span class="s">&#39;low frequency cut-off for the beam filter [Hz]&#39;</span><span class="p">)</span>
+    <span class="n">filter_fmax</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">(</span>
+        <span class="n">help</span><span class="o">=</span><span class="s">&#39;high frequency cut-off for the beam filter [Hz]&#39;</span><span class="p">)</span>
+    <span class="n">filter_order</span> <span class="o">=</span> <span class="n">Int</span><span class="o">.</span><span class="n">T</span><span class="p">(</span>
+        <span class="n">help</span><span class="o">=</span><span class="s">&#39;order of the beam filter&#39;</span><span class="p">)</span>
+    <span class="n">filter_is_zero_phase</span> <span class="o">=</span> <span class="n">Bool</span><span class="o">.</span><span class="n">T</span><span class="p">(</span>
+        <span class="n">help</span><span class="o">=</span><span class="s">&#39;flag to indicate zero-phase filtering&#39;</span><span class="p">)</span>
+    <span class="n">filter_type</span> <span class="o">=</span> <span class="n">FilterType</span><span class="o">.</span><span class="n">T</span><span class="p">(</span>
+        <span class="n">help</span><span class="o">=</span><span class="s">&#39;type of filtering&#39;</span><span class="p">)</span>
+    <span class="n">tmin</span> <span class="o">=</span> <span class="n">Timestamp</span><span class="o">.</span><span class="n">T</span><span class="p">(</span>
+        <span class="n">help</span><span class="o">=</span><span class="s">&#39;start date of beam use&#39;</span><span class="p">)</span>
+    <span class="n">tmax</span> <span class="o">=</span> <span class="n">Timestamp</span><span class="o">.</span><span class="n">T</span><span class="p">(</span>
+        <span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s">&#39;end date of beam use&#39;</span><span class="p">)</span>
 
 </div>
 <div class="viewcode-block" id="OutageReportPeriod"><a class="viewcode-back" href="../../ims.html#pyrocko.ims.OutageReportPeriod">[docs]</a><span class="k">class</span> <span class="nc">OutageReportPeriod</span><span class="p">(</span><span class="n">Block</span><span class="p">):</span>
@@ -992,8 +1061,8 @@
         <span class="n">E</span><span class="p">(</span><span class="mi">44</span><span class="p">,</span> <span class="mi">45</span><span class="p">,</span> <span class="n">x_fixed</span><span class="p">(</span><span class="s">&#39;to&#39;</span><span class="p">),</span> <span class="n">dummy</span><span class="o">=</span><span class="bp">True</span><span class="p">),</span>
         <span class="n">E</span><span class="p">(</span><span class="mi">47</span><span class="p">,</span> <span class="mi">69</span><span class="p">,</span> <span class="n">x_date_time</span><span class="p">)]</span>
 
-    <span class="n">start_time</span> <span class="o">=</span> <span class="n">Timestamp</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
-    <span class="n">end_time</span> <span class="o">=</span> <span class="n">Timestamp</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
+    <span class="n">tmin</span> <span class="o">=</span> <span class="n">Timestamp</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
+    <span class="n">tmax</span> <span class="o">=</span> <span class="n">Timestamp</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
 
 </div>
 <div class="viewcode-block" id="Outage"><a class="viewcode-back" href="../../ims.html#pyrocko.ims.Outage">[docs]</a><span class="k">class</span> <span class="nc">Outage</span><span class="p">(</span><span class="n">Block</span><span class="p">):</span>
@@ -1008,12 +1077,14 @@
         <span class="n">E</span><span class="p">(</span><span class="mi">74</span><span class="p">,</span> <span class="mi">83</span><span class="p">,</span> <span class="s">&#39;f10.3&#39;</span><span class="p">),</span>
         <span class="n">E</span><span class="p">(</span><span class="mi">85</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="s">&#39;a48+&#39;</span><span class="p">)]</span>
 
-    <span class="n">network</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
-    <span class="n">sta</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
-    <span class="n">chan</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
-    <span class="n">aux_id</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
-    <span class="n">start_time</span> <span class="o">=</span> <span class="n">Timestamp</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
-    <span class="n">end_time</span> <span class="o">=</span> <span class="n">Timestamp</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
+    <span class="n">network</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s">&#39;network code (9 characters)&#39;</span><span class="p">)</span>
+    <span class="n">station</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s">&#39;station code (5 characters)&#39;</span><span class="p">)</span>
+    <span class="n">channel</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s">&#39;channel code (3 characters)&#39;</span><span class="p">)</span>
+    <span class="n">location</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s">&#39;location code (aux_id, 4 characters)&#39;</span><span class="p">)</span>
+    <span class="n">tmin</span> <span class="o">=</span> <span class="n">Timestamp</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
+    <span class="n">tmax</span> <span class="o">=</span> <span class="n">Timestamp</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
     <span class="n">duration</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
     <span class="n">comment</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
 
@@ -1028,7 +1099,7 @@
             <span class="n">E</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="s">&#39;a3&#39;</span><span class="p">),</span>
             <span class="n">E</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">19</span><span class="p">,</span> <span class="s">&#39;a4&#39;</span><span class="p">),</span>
             <span class="n">E</span><span class="p">(</span><span class="mi">21</span><span class="p">,</span> <span class="mi">26</span><span class="p">,</span> <span class="s">&#39;a6&#39;</span><span class="p">),</span>
-            <span class="n">E</span><span class="p">(</span><span class="mi">28</span><span class="p">,</span> <span class="mi">42</span><span class="p">,</span> <span class="s">&#39;e15.8&#39;</span><span class="p">),</span>  <span class="c"># standard: e15.2</span>
+            <span class="n">E</span><span class="p">(</span><span class="mi">28</span><span class="p">,</span> <span class="mi">42</span><span class="p">,</span> <span class="n">x_scaled</span><span class="p">(</span><span class="s">&#39;e15.8&#39;</span><span class="p">,</span> <span class="n">nm_per_s</span><span class="p">)),</span>  <span class="c"># standard: e15.2</span>
             <span class="n">E</span><span class="p">(</span><span class="mi">44</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="s">&#39;f7.3&#39;</span><span class="p">),</span>
             <span class="n">E</span><span class="p">(</span><span class="mi">52</span><span class="p">,</span> <span class="mi">62</span><span class="p">,</span> <span class="s">&#39;f11.5&#39;</span><span class="p">),</span>
             <span class="n">E</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">79</span><span class="p">,</span> <span class="n">x_date_time_no_seconds</span><span class="p">),</span>
@@ -1039,22 +1110,26 @@
             <span class="n">E</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="s">&#39;a3&#39;</span><span class="p">),</span>
             <span class="n">E</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">19</span><span class="p">,</span> <span class="s">&#39;a4&#39;</span><span class="p">),</span>
             <span class="n">E</span><span class="p">(</span><span class="mi">21</span><span class="p">,</span> <span class="mi">26</span><span class="p">,</span> <span class="s">&#39;a6&#39;</span><span class="p">),</span>
-            <span class="n">E</span><span class="p">(</span><span class="mi">28</span><span class="p">,</span> <span class="mi">37</span><span class="p">,</span> <span class="s">&#39;e10.4&#39;</span><span class="p">),</span>
+            <span class="n">E</span><span class="p">(</span><span class="mi">28</span><span class="p">,</span> <span class="mi">37</span><span class="p">,</span> <span class="n">x_scaled</span><span class="p">(</span><span class="s">&#39;e10.4&#39;</span><span class="p">,</span> <span class="n">nm_per_s</span><span class="p">)),</span>
             <span class="n">E</span><span class="p">(</span><span class="mi">39</span><span class="p">,</span> <span class="mi">45</span><span class="p">,</span> <span class="s">&#39;f7.3&#39;</span><span class="p">),</span>
             <span class="n">E</span><span class="p">(</span><span class="mi">47</span><span class="p">,</span> <span class="mi">56</span><span class="p">,</span> <span class="s">&#39;f10.5&#39;</span><span class="p">),</span>
             <span class="n">E</span><span class="p">(</span><span class="mi">58</span><span class="p">,</span> <span class="mi">73</span><span class="p">,</span> <span class="n">x_date_time_no_seconds</span><span class="p">),</span>
             <span class="n">E</span><span class="p">(</span><span class="mi">75</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="n">optional</span><span class="p">(</span><span class="n">x_date_time_no_seconds</span><span class="p">))]}</span>
 
-    <span class="n">sta</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s">&#39;station code&#39;</span><span class="p">)</span>
-    <span class="n">chan</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s">&#39;channel code&#39;</span><span class="p">)</span>
-    <span class="n">aux_id</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s">&#39;location code (aux. identification code)&#39;</span><span class="p">)</span>
-    <span class="n">insttype</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s">&#39;instrument type&#39;</span><span class="p">)</span>
-    <span class="n">calib</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">(</span>
-        <span class="n">help</span><span class="o">=</span><span class="s">&#39;system sensitivity (nm/count) at reference period (calper)&#39;</span><span class="p">)</span>
-    <span class="n">calper</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s">&#39;calibration reference period [s]&#39;</span><span class="p">)</span>
-    <span class="n">samprate</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s">&#39;system output sample rate [Hz]&#39;</span><span class="p">)</span>
-    <span class="n">ontime</span> <span class="o">=</span> <span class="n">Timestamp</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s">&#39;effective start date and time&#39;</span><span class="p">)</span>
-    <span class="n">offtime</span> <span class="o">=</span> <span class="n">Timestamp</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s">&#39;effective end date and time&#39;</span><span class="p">)</span>
+    <span class="n">station</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s">&#39;station code (5 characters)&#39;</span><span class="p">)</span>
+    <span class="n">channel</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s">&#39;channel code (3 characters)&#39;</span><span class="p">)</span>
+    <span class="n">location</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s">&#39;location code (aux_id, 4 characters)&#39;</span><span class="p">)</span>
+    <span class="n">instrument_type</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">(</span>
+        <span class="n">default</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s">&#39;instrument type (6 characters)&#39;</span><span class="p">)</span>
+    <span class="n">calibration_factor</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">(</span>
+        <span class="n">help</span><span class="o">=</span><span class="s">&#39;system sensitivity (m/count) at reference period &#39;</span>
+             <span class="s">&#39;(calibration_period)&#39;</span><span class="p">)</span>
+    <span class="n">calibration_period</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s">&#39;calibration reference period [s]&#39;</span><span class="p">)</span>
+    <span class="n">sample_rate</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s">&#39;system output sample rate [Hz]&#39;</span><span class="p">)</span>
+    <span class="n">tmin</span> <span class="o">=</span> <span class="n">Timestamp</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s">&#39;effective start date and time&#39;</span><span class="p">)</span>
+    <span class="n">tmax</span> <span class="o">=</span> <span class="n">Timestamp</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s">&#39;effective end date and time&#39;</span><span class="p">)</span>
     <span class="n">comments</span> <span class="o">=</span> <span class="n">List</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">))</span>
 
     <span class="nd">@classmethod</span>
@@ -1097,7 +1172,7 @@
 
 <span class="sd">    &#39;&#39;&#39;</span>
 
-    <span class="n">snum</span> <span class="o">=</span> <span class="n">Int</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s">&#39;stage sequence number&#39;</span><span class="p">)</span>
+    <span class="n">stage_number</span> <span class="o">=</span> <span class="n">Int</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s">&#39;stage sequence number&#39;</span><span class="p">)</span>
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">reader</span><span class="p">):</span>
@@ -1169,13 +1244,14 @@
             <span class="n">E</span><span class="p">(</span><span class="mi">44</span><span class="p">,</span> <span class="mi">46</span><span class="p">,</span> <span class="s">&#39;i3&#39;</span><span class="p">),</span>
             <span class="n">E</span><span class="p">(</span><span class="mi">48</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="s">&#39;a25+&#39;</span><span class="p">)]}</span>
 
-    <span class="n">ounits</span> <span class="o">=</span> <span class="n">Units</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s">&#39;output units code (V=volts, A=amps, C=counts)&#39;</span><span class="p">)</span>
-    <span class="n">sfactor</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s">&#39;scale factor&#39;</span><span class="p">)</span>
-    <span class="n">deci</span> <span class="o">=</span> <span class="n">Int</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s">&#39;decimation&#39;</span><span class="p">)</span>
-    <span class="n">corr</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s">&#39;group correction applied [s]&#39;</span><span class="p">)</span>
-    <span class="n">npole</span> <span class="o">=</span> <span class="n">Int</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s">&#39;number of poles&#39;</span><span class="p">)</span>
-    <span class="n">nzero</span> <span class="o">=</span> <span class="n">Int</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s">&#39;number of zeros&#39;</span><span class="p">)</span>
-    <span class="n">descrip</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s">&#39;description&#39;</span><span class="p">)</span>
+    <span class="n">output_units</span> <span class="o">=</span> <span class="n">Units</span><span class="o">.</span><span class="n">T</span><span class="p">(</span>
+        <span class="n">help</span><span class="o">=</span><span class="s">&#39;output units code (V=volts, A=amps, C=counts)&#39;</span><span class="p">)</span>
+    <span class="n">scale_factor</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s">&#39;scale factor [ouput units/input units]&#39;</span><span class="p">)</span>
+    <span class="n">decimation</span> <span class="o">=</span> <span class="n">Int</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s">&#39;decimation&#39;</span><span class="p">)</span>
+    <span class="n">correction</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s">&#39;group correction applied [s]&#39;</span><span class="p">)</span>
+    <span class="n">npoles</span> <span class="o">=</span> <span class="n">Int</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s">&#39;number of poles&#39;</span><span class="p">)</span>
+    <span class="n">nzeros</span> <span class="o">=</span> <span class="n">Int</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s">&#39;number of zeros&#39;</span><span class="p">)</span>
+    <span class="n">description</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s">&#39;description&#39;</span><span class="p">)</span>
 
     <span class="n">poles</span> <span class="o">=</span> <span class="n">List</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">Complex</span><span class="o">.</span><span class="n">T</span><span class="p">())</span>
     <span class="n">zeros</span> <span class="o">=</span> <span class="n">List</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">Complex</span><span class="o">.</span><span class="n">T</span><span class="p">())</span>
@@ -1187,9 +1263,9 @@
         <span class="n">v</span> <span class="o">=</span> <span class="nb">complex</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">real</span><span class="p">,</span> <span class="n">d</span><span class="o">.</span><span class="n">imag</span><span class="p">)</span>
         <span class="n">i</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">poles</span><span class="p">)</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">zeros</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">npole</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">npoles</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">poles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">npole</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">nzero</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">npoles</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">nzeros</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">zeros</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">DeserializeError</span><span class="p">(</span>
@@ -1210,8 +1286,8 @@
         <span class="n">E</span><span class="p">(</span><span class="mi">13</span><span class="p">,</span> <span class="mi">27</span><span class="p">,</span> <span class="s">&#39;e15.8&#39;</span><span class="p">),</span>
         <span class="n">E</span><span class="p">(</span><span class="mi">29</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="s">&#39;i4&#39;</span><span class="p">)]</span>
 
-    <span class="n">freq</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
-    <span class="n">amp</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
+    <span class="n">frequency</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
+    <span class="n">amplitude</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
     <span class="n">phase</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
 
 </div>
@@ -1227,27 +1303,34 @@
         <span class="n">E</span><span class="p">(</span><span class="mi">25</span><span class="p">,</span> <span class="mi">27</span><span class="p">,</span> <span class="s">&#39;i3&#39;</span><span class="p">),</span>
         <span class="n">E</span><span class="p">(</span><span class="mi">29</span><span class="p">,</span> <span class="mi">53</span><span class="p">,</span> <span class="s">&#39;a25&#39;</span><span class="p">)]</span>
 
-    <span class="n">ounits</span> <span class="o">=</span> <span class="n">Units</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s">&#39;output units code (V=volts, A=amps, C=counts)&#39;</span><span class="p">)</span>
-    <span class="n">deci</span> <span class="o">=</span> <span class="n">Int</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s">&#39;decimation&#39;</span><span class="p">)</span>
-    <span class="n">corr</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s">&#39;group correction applied [s]&#39;</span><span class="p">)</span>
+    <span class="n">output_units</span> <span class="o">=</span> <span class="n">Units</span><span class="o">.</span><span class="n">T</span><span class="p">(</span>
+        <span class="n">help</span><span class="o">=</span><span class="s">&#39;output units code (V=volts, A=amps, C=counts)&#39;</span><span class="p">)</span>
+    <span class="n">decimation</span> <span class="o">=</span> <span class="n">Int</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s">&#39;decimation&#39;</span><span class="p">)</span>
+    <span class="n">correction</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s">&#39;group correction applied [s]&#39;</span><span class="p">)</span>
     <span class="n">ntrip</span> <span class="o">=</span> <span class="n">Int</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s">&#39;number of frequency, amplitude, phase triplets&#39;</span><span class="p">)</span>
-    <span class="n">descrip</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s">&#39;description&#39;</span><span class="p">)</span>
+    <span class="n">description</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s">&#39;description&#39;</span><span class="p">)</span>
 
-    <span class="n">freqs</span> <span class="o">=</span> <span class="n">List</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">(),</span> <span class="n">help</span><span class="o">=</span><span class="s">&#39;frequency [Hz]&#39;</span><span class="p">)</span>
-    <span class="n">amps</span> <span class="o">=</span> <span class="n">List</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">(),</span> <span class="n">help</span><span class="o">=</span><span class="s">&#39;amplitude [input untits/output units]&#39;</span><span class="p">)</span>
+    <span class="n">frequencies</span> <span class="o">=</span> <span class="n">List</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">(),</span> <span class="n">help</span><span class="o">=</span><span class="s">&#39;frequency [Hz]&#39;</span><span class="p">)</span>
+    <span class="n">amplitudes</span> <span class="o">=</span> <span class="n">List</span><span class="o">.</span><span class="n">T</span><span class="p">(</span>
+        <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">(),</span> <span class="n">help</span><span class="o">=</span><span class="s">&#39;amplitude [input untits/output units]&#39;</span><span class="p">)</span>
     <span class="n">phases</span> <span class="o">=</span> <span class="n">List</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">(),</span> <span class="n">help</span><span class="o">=</span><span class="s">&#39;phase delay [degrees]&#39;</span><span class="p">)</span>
 
     <span class="n">comments</span> <span class="o">=</span> <span class="n">List</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="nf">append_dataline</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">,</span> <span class="n">version_dialect</span><span class="p">):</span>
         <span class="n">d</span> <span class="o">=</span> <span class="n">FAP2Data</span><span class="o">.</span><span class="n">deserialize</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">version_dialect</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">freqs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">freq</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">amps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">amp</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">frequencies</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">frequency</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">amplitudes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">amplitude</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">phases</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">phase</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">write_datalines</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">writer</span><span class="p">):</span>
-        <span class="k">for</span> <span class="n">freq</span><span class="p">,</span> <span class="n">amp</span><span class="p">,</span> <span class="n">phase</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">freqs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">amps</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">phases</span><span class="p">):</span>
-            <span class="n">FAP2Data</span><span class="p">(</span><span class="n">freq</span><span class="o">=</span><span class="n">freq</span><span class="p">,</span> <span class="n">amp</span><span class="o">=</span><span class="n">amp</span><span class="p">,</span> <span class="n">phase</span><span class="o">=</span><span class="n">phase</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">writer</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">frequency</span><span class="p">,</span> <span class="n">amplitude</span><span class="p">,</span> <span class="n">phase</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">frequencies</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">amplitudes</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">phases</span><span class="p">):</span>
+
+            <span class="n">FAP2Data</span><span class="p">(</span>
+                <span class="n">frequency</span><span class="o">=</span><span class="n">frequency</span><span class="p">,</span>
+                <span class="n">amplitude</span><span class="o">=</span><span class="n">amplitude</span><span class="p">,</span>
+                <span class="n">phase</span><span class="o">=</span><span class="n">phase</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">writer</span><span class="p">)</span>
 
 </div>
 <div class="viewcode-block" id="GEN2Data"><a class="viewcode-back" href="../../ims.html#pyrocko.ims.GEN2Data">[docs]</a><span class="k">class</span> <span class="nc">GEN2Data</span><span class="p">(</span><span class="n">Block</span><span class="p">):</span>
@@ -1257,8 +1340,8 @@
         <span class="n">E</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="s">&#39;f11.5&#39;</span><span class="p">),</span>
         <span class="n">E</span><span class="p">(</span><span class="mi">14</span><span class="p">,</span> <span class="mi">19</span><span class="p">,</span> <span class="s">&#39;f6.3&#39;</span><span class="p">)]</span>
 
-    <span class="n">cfreq</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
-    <span class="n">slope</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
+    <span class="n">corner</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s">&#39;corner frequency [Hz]&#39;</span><span class="p">)</span>
+    <span class="n">slope</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s">&#39;slope above corner [dB/decate]&#39;</span><span class="p">)</span>
 
 </div>
 <div class="viewcode-block" id="GEN2"><a class="viewcode-back" href="../../ims.html#pyrocko.ims.GEN2">[docs]</a><span class="k">class</span> <span class="nc">GEN2</span><span class="p">(</span><span class="n">Stage</span><span class="p">):</span>
@@ -1268,35 +1351,37 @@
         <span class="n">E</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">x_fixed</span><span class="p">(</span><span class="s">&#39;GEN2&#39;</span><span class="p">),</span> <span class="n">dummy</span><span class="o">=</span><span class="bp">True</span><span class="p">),</span>
         <span class="n">E</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="s">&#39;i2&#39;</span><span class="p">),</span>
         <span class="n">E</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="s">&#39;a1&#39;</span><span class="p">),</span>
-        <span class="n">E</span><span class="p">(</span><span class="mi">11</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="s">&#39;e15.8&#39;</span><span class="p">),</span>
+        <span class="n">E</span><span class="p">(</span><span class="mi">11</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="n">x_scaled</span><span class="p">(</span><span class="s">&#39;e15.8&#39;</span><span class="p">,</span> <span class="n">nm_per_s</span><span class="p">)),</span>
         <span class="n">E</span><span class="p">(</span><span class="mi">27</span><span class="p">,</span> <span class="mi">33</span><span class="p">,</span> <span class="s">&#39;f7.3&#39;</span><span class="p">),</span>
         <span class="n">E</span><span class="p">(</span><span class="mi">35</span><span class="p">,</span> <span class="mi">38</span><span class="p">,</span> <span class="s">&#39;i4&#39;</span><span class="p">),</span>
         <span class="n">E</span><span class="p">(</span><span class="mi">40</span><span class="p">,</span> <span class="mi">47</span><span class="p">,</span> <span class="s">&#39;f8.3&#39;</span><span class="p">),</span>
         <span class="n">E</span><span class="p">(</span><span class="mi">49</span><span class="p">,</span> <span class="mi">51</span><span class="p">,</span> <span class="s">&#39;i3&#39;</span><span class="p">),</span>
         <span class="n">E</span><span class="p">(</span><span class="mi">53</span><span class="p">,</span> <span class="mi">77</span><span class="p">,</span> <span class="s">&#39;a25&#39;</span><span class="p">)]</span>
 
-    <span class="n">ounits</span> <span class="o">=</span> <span class="n">Units</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s">&#39;output units code (V=volts, A=amps, C=counts)&#39;</span><span class="p">)</span>
-    <span class="n">calib</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">(</span>
-        <span class="n">help</span><span class="o">=</span><span class="s">&#39;system sensitivity (nm/count) at reference period (calper)&#39;</span><span class="p">)</span>
-    <span class="n">calper</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s">&#39;calibration reference period [s]&#39;</span><span class="p">)</span>
-    <span class="n">deci</span> <span class="o">=</span> <span class="n">Int</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s">&#39;decimation&#39;</span><span class="p">)</span>
-    <span class="n">corr</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s">&#39;group correction applied [s]&#39;</span><span class="p">)</span>
-    <span class="n">ncorner</span> <span class="o">=</span> <span class="n">Int</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="s">&#39;number of corners&#39;</span><span class="p">)</span>
-    <span class="n">descrip</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s">&#39;description&#39;</span><span class="p">)</span>
+    <span class="n">output_units</span> <span class="o">=</span> <span class="n">Units</span><span class="o">.</span><span class="n">T</span><span class="p">(</span>
+        <span class="n">help</span><span class="o">=</span><span class="s">&#39;output units code (V=volts, A=amps, C=counts)&#39;</span><span class="p">)</span>
+    <span class="n">calibration_factor</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">(</span>
+        <span class="n">help</span><span class="o">=</span><span class="s">&#39;system sensitivity (m/count) at reference period &#39;</span>
+             <span class="s">&#39;(calibration_period)&#39;</span><span class="p">)</span>
+    <span class="n">calibration_period</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s">&#39;calibration reference period [s]&#39;</span><span class="p">)</span>
+    <span class="n">decimation</span> <span class="o">=</span> <span class="n">Int</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s">&#39;decimation&#39;</span><span class="p">)</span>
+    <span class="n">correction</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s">&#39;group correction applied [s]&#39;</span><span class="p">)</span>
+    <span class="n">ncorners</span> <span class="o">=</span> <span class="n">Int</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s">&#39;number of corners&#39;</span><span class="p">)</span>
+    <span class="n">description</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s">&#39;description&#39;</span><span class="p">)</span>
 
-    <span class="n">cfreqs</span> <span class="o">=</span> <span class="n">List</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">(),</span> <span class="n">help</span><span class="o">=</span><span class="s">&#39;corner frequencies [Hz]&#39;</span><span class="p">)</span>
+    <span class="n">corners</span> <span class="o">=</span> <span class="n">List</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">(),</span> <span class="n">help</span><span class="o">=</span><span class="s">&#39;corner frequencies [Hz]&#39;</span><span class="p">)</span>
     <span class="n">slopes</span> <span class="o">=</span> <span class="n">List</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">(),</span> <span class="n">help</span><span class="o">=</span><span class="s">&#39;slopes above corners [dB/decade]&#39;</span><span class="p">)</span>
 
     <span class="n">comments</span> <span class="o">=</span> <span class="n">List</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="nf">append_dataline</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">,</span> <span class="n">version_dialect</span><span class="p">):</span>
         <span class="n">d</span> <span class="o">=</span> <span class="n">GEN2Data</span><span class="o">.</span><span class="n">deserialize</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">version_dialect</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">cfreqs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">cfreq</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">corners</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">corner</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">slopes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">slope</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">write_datalines</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">writer</span><span class="p">):</span>
-        <span class="k">for</span> <span class="n">cfreq</span><span class="p">,</span> <span class="n">slope</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cfreqs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">slopes</span><span class="p">):</span>
-            <span class="n">GEN2Data</span><span class="p">(</span><span class="n">cfreq</span><span class="o">=</span><span class="n">cfreq</span><span class="p">,</span> <span class="n">slope</span><span class="o">=</span><span class="n">slope</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">writer</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">corner</span><span class="p">,</span> <span class="n">slope</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">corners</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">slopes</span><span class="p">):</span>
+            <span class="n">GEN2Data</span><span class="p">(</span><span class="n">corner</span><span class="o">=</span><span class="n">corner</span><span class="p">,</span> <span class="n">slope</span><span class="o">=</span><span class="n">slope</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">writer</span><span class="p">)</span>
 
 </div>
 <div class="viewcode-block" id="DIG2"><a class="viewcode-back" href="../../ims.html#pyrocko.ims.DIG2">[docs]</a><span class="k">class</span> <span class="nc">DIG2</span><span class="p">(</span><span class="n">Stage</span><span class="p">):</span>
@@ -1309,9 +1394,9 @@
         <span class="n">E</span><span class="p">(</span><span class="mi">25</span><span class="p">,</span> <span class="mi">35</span><span class="p">,</span> <span class="s">&#39;f11.5&#39;</span><span class="p">),</span>
         <span class="n">E</span><span class="p">(</span><span class="mi">37</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="s">&#39;a25+&#39;</span><span class="p">)]</span>
 
-    <span class="n">sensitivity</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s">&#39;sensitivity [counts/input unit]&#39;</span><span class="p">)</span>
-    <span class="n">samprate</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s">&#39;digitizer sample rate [Hz]&#39;</span><span class="p">)</span>
-    <span class="n">descrip</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s">&#39;description&#39;</span><span class="p">)</span>
+    <span class="n">sensitivity</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s">&#39;sensitivity [counts/input units]&#39;</span><span class="p">)</span>
+    <span class="n">sample_rate</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s">&#39;digitizer sample rate [Hz]&#39;</span><span class="p">)</span>
+    <span class="n">description</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s">&#39;description&#39;</span><span class="p">)</span>
 
     <span class="n">comments</span> <span class="o">=</span> <span class="n">List</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">))</span>
 
@@ -1356,13 +1441,13 @@
         <span class="n">E</span><span class="p">(</span><span class="mi">41</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="s">&#39;a25+&#39;</span><span class="p">)]</span>
 
     <span class="n">gain</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s">&#39;filter gain (relative factor, not in dB)&#39;</span><span class="p">)</span>
-    <span class="n">deci</span> <span class="o">=</span> <span class="n">Int</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s">&#39;decimation&#39;</span><span class="p">)</span>
-    <span class="n">corr</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s">&#39;group correction applied [s]&#39;</span><span class="p">)</span>
-    <span class="n">symflag</span> <span class="o">=</span> <span class="n">SymmetryFlag</span><span class="o">.</span><span class="n">T</span><span class="p">(</span>
+    <span class="n">decimation</span> <span class="o">=</span> <span class="n">Int</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s">&#39;decimation&#39;</span><span class="p">)</span>
+    <span class="n">correction</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s">&#39;group correction applied [s]&#39;</span><span class="p">)</span>
+    <span class="n">symmetry</span> <span class="o">=</span> <span class="n">SymmetryFlag</span><span class="o">.</span><span class="n">T</span><span class="p">(</span>
         <span class="n">help</span><span class="o">=</span><span class="s">&#39;symmetry flag (A=asymmetric, B=symmetric (odd), &#39;</span>
              <span class="s">&#39;C=symmetric (even))&#39;</span><span class="p">)</span>
-    <span class="n">nfactor</span> <span class="o">=</span> <span class="n">Int</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s">&#39;number of factors&#39;</span><span class="p">)</span>
-    <span class="n">descrip</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="s">&#39;description&#39;</span><span class="p">)</span>
+    <span class="n">nfactors</span> <span class="o">=</span> <span class="n">Int</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s">&#39;number of factors&#39;</span><span class="p">)</span>
+    <span class="n">description</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s">&#39;description&#39;</span><span class="p">)</span>
 
     <span class="n">comments</span> <span class="o">=</span> <span class="n">List</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">))</span>
 
@@ -1569,7 +1654,7 @@
         <span class="kn">from</span> <span class="nn">pyrocko</span> <span class="kn">import</span> <span class="n">gse2_ext</span><span class="p">,</span> <span class="n">trace</span>
 
         <span class="n">raw_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dat2</span><span class="o">.</span><span class="n">raw_data</span>
-        <span class="n">nsamples</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wid2</span><span class="o">.</span><span class="n">samps</span>
+        <span class="n">nsamples</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wid2</span><span class="o">.</span><span class="n">nsamples</span>
         <span class="n">deltat</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">wid2</span><span class="o">.</span><span class="n">samprate</span>
         <span class="n">tmin</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wid2</span><span class="o">.</span><span class="n">time</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sta2</span><span class="p">:</span>
@@ -1577,7 +1662,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">net</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
         <span class="n">sta</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wid2</span><span class="o">.</span><span class="n">station</span>
-        <span class="n">loc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wid2</span><span class="o">.</span><span class="n">aux_id</span>
+        <span class="n">loc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wid2</span><span class="o">.</span><span class="n">location</span>
         <span class="n">cha</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wid2</span><span class="o">.</span><span class="n">channel</span>
 
         <span class="k">if</span> <span class="n">raw_data</span><span class="p">:</span>
@@ -1898,7 +1983,8 @@
         <span class="n">sdate</span><span class="p">,</span> <span class="n">stime</span> <span class="o">=</span> <span class="n">toks</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s">&#39;&#39;</span>
 
     <span class="n">stime</span> <span class="o">+=</span> <span class="s">&#39;00:00:00.000&#39;</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">stime</span><span class="p">):]</span>
-    <span class="n">util</span><span class="o">.</span><span class="n">str_to_time</span><span class="p">(</span><span class="n">sdate</span> <span class="o">+</span> <span class="s">&#39; &#39;</span> <span class="o">+</span> <span class="n">stime</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="s">&#39;%Y/%m/</span><span class="si">%d</span><span class="s"> %H:%M:%S.3FRAC&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">util</span><span class="o">.</span><span class="n">str_to_time</span><span class="p">(</span>
+        <span class="n">sdate</span> <span class="o">+</span> <span class="s">&#39; &#39;</span> <span class="o">+</span> <span class="n">stime</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="s">&#39;%Y/%m/</span><span class="si">%d</span><span class="s"> %H:%M:%S.3FRAC&#39;</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">string_ff_date_time</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>

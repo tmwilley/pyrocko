@@ -186,9 +186,11 @@ characters, respectively.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>format</strong> &#8211; format of the file (<tt class="docutils literal"><span class="pre">'mseed'</span></tt>, <tt class="docutils literal"><span class="pre">'sac'</span></tt>, <tt class="docutils literal"><span class="pre">'segy'</span></tt>, <tt class="docutils literal"><span class="pre">'seisan.l'</span></tt>, <tt class="docutils literal"><span class="pre">'seisan.b'</span></tt>, <tt class="docutils literal"><span class="pre">'kan'</span></tt>, <tt class="docutils literal"><span class="pre">'yaff'</span></tt>, <tt class="docutils literal"><span class="pre">'gse1'</span></tt>, <tt class="docutils literal"><span class="pre">'gcf'</span></tt>, <tt class="docutils literal"><span class="pre">`'datacube'</span></tt>, <cite>&#8216;from_extension&#8217;`</cite>)</li>
-<li><strong>getdata</strong> &#8211; if <tt class="docutils literal"><span class="pre">True</span></tt> (the default), read data, otherwise only read traces metadata</li>
-<li><strong>substitutions</strong> &#8211; dict with substitutions to be applied to the traces metadata</li>
+<li><strong>format</strong> &#8211; format of the file (<tt class="docutils literal"><span class="pre">'detect'</span></tt>, <tt class="docutils literal"><span class="pre">'from_extension'</span></tt>, <tt class="docutils literal"><span class="pre">'mseed'</span></tt>, <tt class="docutils literal"><span class="pre">'sac'</span></tt>, <tt class="docutils literal"><span class="pre">'segy'</span></tt>, <tt class="docutils literal"><span class="pre">'seisan'</span></tt>, <tt class="docutils literal"><span class="pre">'seisan.l'</span></tt>, <tt class="docutils literal"><span class="pre">'seisan.b'</span></tt>, <tt class="docutils literal"><span class="pre">'kan'</span></tt>, <tt class="docutils literal"><span class="pre">'yaff'</span></tt>, <tt class="docutils literal"><span class="pre">'gse1'</span></tt>, <tt class="docutils literal"><span class="pre">'gse2'</span></tt>, <tt class="docutils literal"><span class="pre">'gcf'</span></tt>, <tt class="docutils literal"><span class="pre">'datacube'</span></tt>)</li>
+<li><strong>getdata</strong> &#8211; if <tt class="docutils literal"><span class="pre">True</span></tt> (the default), read data, otherwise only read
+traces metadata</li>
+<li><strong>substitutions</strong> &#8211; dict with substitutions to be applied to the traces
+metadata</li>
 </ul>
 </td>
 </tr>
@@ -197,9 +199,13 @@ characters, respectively.</p>
 </tr>
 </tbody>
 </table>
-<p>When <em>format</em> is set to <tt class="docutils literal"><span class="pre">'detect'</span></tt>, the file type is guessed from the first 512 bytes of the file. Only Mini-SEED, SAC, GSE1, and YAFF format are detected.
-When <em>format</em> is set to <tt class="docutils literal"><span class="pre">'from_extension'</span></tt>, the filename extension is used to decide what format should be assumed. The filename extensions
-considered are (matching is case insensitiv): <tt class="docutils literal"><span class="pre">'.sac'</span></tt>, <tt class="docutils literal"><span class="pre">'.kan'</span></tt>, <tt class="docutils literal"><span class="pre">'.sgy'</span></tt>, <tt class="docutils literal"><span class="pre">'.segy'</span></tt>, <tt class="docutils literal"><span class="pre">'.yaff'</span></tt>, everything else is assumed to be in Mini-SEED format.</p>
+<p>When <em>format</em> is set to <tt class="docutils literal"><span class="pre">'detect'</span></tt>, the file type is guessed from the
+first 512 bytes of the file. Only Mini-SEED, SAC, GSE1, and YAFF format are
+detected. When <em>format</em> is set to <tt class="docutils literal"><span class="pre">'from_extension'</span></tt>, the filename
+extension is used to decide what format should be assumed. The filename
+extensions considered are (matching is case insensitiv): <tt class="docutils literal"><span class="pre">'.sac'</span></tt>,
+<tt class="docutils literal"><span class="pre">'.kan'</span></tt>, <tt class="docutils literal"><span class="pre">'.sgy'</span></tt>, <tt class="docutils literal"><span class="pre">'.segy'</span></tt>, <tt class="docutils literal"><span class="pre">'.yaff'</span></tt>, everything else is
+assumed to be in Mini-SEED format.</p>
 <p>This function calls <a class="reference internal" href="#pyrocko.io.iload" title="pyrocko.io.iload"><tt class="xref py py-func docutils literal"><span class="pre">iload()</span></tt></a> and aggregates the loaded traces in a list.</p>
 </dd></dl>
 
@@ -221,13 +227,14 @@ considered are (matching is case insensitiv): <tt class="docutils literal"><span
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>traces</strong> &#8211; a trace or an iterable of traces to store</li>
 <li><strong>filename_template</strong> &#8211; filename template with placeholders for trace
-metadata. Uses normal python &#8216;%(placeholder)s&#8217; string templates. The following
-placeholders are considered: <tt class="docutils literal"><span class="pre">network</span></tt>, <tt class="docutils literal"><span class="pre">station</span></tt>, <tt class="docutils literal"><span class="pre">location</span></tt>,
-<tt class="docutils literal"><span class="pre">channel</span></tt>, <tt class="docutils literal"><span class="pre">tmin</span></tt> (time of first sample), <tt class="docutils literal"><span class="pre">tmax</span></tt> (time of last
-sample), <tt class="docutils literal"><span class="pre">tmin_ms</span></tt>, <tt class="docutils literal"><span class="pre">tmax_ms</span></tt>, <tt class="docutils literal"><span class="pre">tmin_us</span></tt>, <tt class="docutils literal"><span class="pre">tmax_us</span></tt>. The
-versions with &#8216;_ms&#8217; include milliseconds, the versions with &#8216;_us&#8217;
-include microseconds.</li>
-<li><strong>format</strong> &#8211; <tt class="docutils literal"><span class="pre">mseed</span></tt>, <tt class="docutils literal"><span class="pre">sac</span></tt>, <tt class="docutils literal"><span class="pre">text</span></tt>, or <tt class="docutils literal"><span class="pre">yaff</span></tt>.</li>
+metadata. Uses normal python &#8216;%(placeholder)s&#8217; string templates.
+The following placeholders are considered: <tt class="docutils literal"><span class="pre">network</span></tt>,
+<tt class="docutils literal"><span class="pre">station</span></tt>, <tt class="docutils literal"><span class="pre">location</span></tt>, <tt class="docutils literal"><span class="pre">channel</span></tt>, <tt class="docutils literal"><span class="pre">tmin</span></tt>
+(time of first sample), <tt class="docutils literal"><span class="pre">tmax</span></tt> (time of last sample),
+<tt class="docutils literal"><span class="pre">tmin_ms</span></tt>, <tt class="docutils literal"><span class="pre">tmax_ms</span></tt>, <tt class="docutils literal"><span class="pre">tmin_us</span></tt>, <tt class="docutils literal"><span class="pre">tmax_us</span></tt>. The versions
+with &#8216;_ms&#8217; include milliseconds, the versions with &#8216;_us&#8217; include
+microseconds.</li>
+<li><strong>format</strong> &#8211; <tt class="docutils literal"><span class="pre">'mseed'</span></tt>, <tt class="docutils literal"><span class="pre">'sac'</span></tt>, <tt class="docutils literal"><span class="pre">'text'</span></tt>, <tt class="docutils literal"><span class="pre">'yaff'</span></tt></li>
 <li><strong>additional</strong> &#8211; dict with custom template placeholder fillins.</li>
 <li><strong>overwrite&#8217;</strong> &#8211; if <tt class="docutils literal"><span class="pre">False</span></tt>, raise an exception if file exists</li>
 </ul>
