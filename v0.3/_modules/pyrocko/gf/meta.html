@@ -704,7 +704,12 @@
 
     <span class="k">def</span> <span class="nf">centroid_position</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
         <span class="n">moments</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">moments</span><span class="p">()</span>
-        <span class="n">w</span> <span class="o">=</span> <span class="n">moments</span> <span class="o">/</span> <span class="n">num</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">moments</span><span class="p">)</span>
+        <span class="n">norm</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">moments</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">norm</span> <span class="o">!=</span> <span class="mf">0.0</span><span class="p">:</span>
+            <span class="n">w</span> <span class="o">=</span> <span class="n">moments</span> <span class="o">/</span> <span class="n">num</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">moments</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">w</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">moments</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">lats</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">lons</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
             <span class="n">lats</span><span class="p">,</span> <span class="n">lons</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">effective_latlons</span>
             <span class="n">rlat</span><span class="p">,</span> <span class="n">rlon</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">lats</span><span class="p">),</span> <span class="n">num</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">lons</span><span class="p">)</span>
@@ -918,7 +923,27 @@
         <span class="k">if</span> <span class="s">&#39;forces&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
             <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;forces&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">s</span><span class="o">.</span><span class="n">forces</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">sources</span><span class="p">])</span>
 
-        <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">DiscretizedMTSource</span><span class="p">,</span> <span class="n">cls</span><span class="p">)</span><span class="o">.</span><span class="n">combine</span><span class="p">(</span><span class="n">sources</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">DiscretizedSFSource</span><span class="p">,</span> <span class="n">cls</span><span class="p">)</span><span class="o">.</span><span class="n">combine</span><span class="p">(</span><span class="n">sources</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">moments</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">num</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">forces</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">centroid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">pyrocko.gf.seismosizer</span> <span class="kn">import</span> <span class="n">SFSource</span>
+        <span class="n">time</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">,</span> <span class="n">north_shift</span><span class="p">,</span> <span class="n">east_shift</span><span class="p">,</span> <span class="n">depth</span> <span class="o">=</span> \
+            <span class="bp">self</span><span class="o">.</span><span class="n">centroid_position</span><span class="p">()</span>
+
+        <span class="n">fn</span><span class="p">,</span> <span class="n">fe</span><span class="p">,</span> <span class="n">fd</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">num</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">forces</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">SFSource</span><span class="p">(</span>
+            <span class="n">time</span><span class="o">=</span><span class="n">time</span><span class="p">,</span>
+            <span class="n">lat</span><span class="o">=</span><span class="n">lat</span><span class="p">,</span>
+            <span class="n">lon</span><span class="o">=</span><span class="n">lon</span><span class="p">,</span>
+            <span class="n">north_shift</span><span class="o">=</span><span class="n">north_shift</span><span class="p">,</span>
+            <span class="n">east_shift</span><span class="o">=</span><span class="n">east_shift</span><span class="p">,</span>
+            <span class="n">depth</span><span class="o">=</span><span class="n">depth</span><span class="p">,</span>
+            <span class="n">fn</span><span class="o">=</span><span class="n">fn</span><span class="p">,</span>
+            <span class="n">fe</span><span class="o">=</span><span class="n">fe</span><span class="p">,</span>
+            <span class="n">fd</span><span class="o">=</span><span class="n">fd</span><span class="p">)</span>
 
 
 <span class="k">class</span> <span class="nc">DiscretizedMTSource</span><span class="p">(</span><span class="n">DiscretizedSource</span><span class="p">):</span>

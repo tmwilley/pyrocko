@@ -310,7 +310,49 @@
 <div class="viewcode-block" id="distance_accurate15nm"><a class="viewcode-back" href="../../orthodrome.html#pyrocko.orthodrome.distance_accurate15nm">[docs]</a><span class="k">def</span> <span class="nf">distance_accurate15nm</span><span class="p">(</span><span class="n">lat1</span><span class="p">,</span> <span class="n">lon1</span><span class="p">,</span> <span class="n">lat2</span><span class="p">,</span> <span class="n">lon2</span><span class="p">):</span>
     <span class="n">wgs84</span> <span class="o">=</span> <span class="n">get_wgs84</span><span class="p">()</span>
     <span class="k">return</span> <span class="n">wgs84</span><span class="o">.</span><span class="n">Inverse</span><span class="p">(</span><span class="n">lat1</span><span class="p">,</span> <span class="n">lon1</span><span class="p">,</span> <span class="n">lat2</span><span class="p">,</span> <span class="n">lon2</span><span class="p">)[</span><span class="s">&#39;s12&#39;</span><span class="p">]</span>
-</pre></div></div>
+
+</div>
+<div class="viewcode-block" id="positive_region"><a class="viewcode-back" href="../../orthodrome.html#pyrocko.orthodrome.positive_region">[docs]</a><span class="k">def</span> <span class="nf">positive_region</span><span class="p">(</span><span class="n">region</span><span class="p">):</span>
+    <span class="n">west</span><span class="p">,</span> <span class="n">east</span><span class="p">,</span> <span class="n">south</span><span class="p">,</span> <span class="n">north</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">region</span><span class="p">]</span>
+
+    <span class="k">assert</span> <span class="o">-</span><span class="mf">180.</span> <span class="o">-</span> <span class="mf">360.</span> <span class="o">&lt;=</span> <span class="n">west</span> <span class="o">&lt;</span> <span class="mf">180.</span>
+    <span class="k">assert</span> <span class="o">-</span><span class="mf">180.</span> <span class="o">&lt;</span> <span class="n">east</span> <span class="o">&lt;=</span> <span class="mf">180.</span> <span class="o">+</span> <span class="mf">360.</span>
+    <span class="k">assert</span> <span class="o">-</span><span class="mf">90.</span> <span class="o">&lt;=</span> <span class="n">south</span> <span class="o">&lt;</span> <span class="mf">90.</span>
+    <span class="k">assert</span> <span class="o">-</span><span class="mf">90.</span> <span class="o">&lt;</span> <span class="n">north</span> <span class="o">&lt;=</span> <span class="mf">90.</span>
+
+    <span class="k">if</span> <span class="n">east</span> <span class="o">&lt;</span> <span class="n">west</span><span class="p">:</span>
+        <span class="n">east</span> <span class="o">+=</span> <span class="mf">360.</span>
+
+    <span class="k">if</span> <span class="n">west</span> <span class="o">&lt;</span> <span class="o">-</span><span class="mf">180.</span><span class="p">:</span>
+        <span class="n">west</span> <span class="o">+=</span> <span class="mf">360.</span>
+        <span class="n">east</span> <span class="o">+=</span> <span class="mf">360.</span>
+
+    <span class="k">return</span> <span class="p">(</span><span class="n">west</span><span class="p">,</span> <span class="n">east</span><span class="p">,</span> <span class="n">south</span><span class="p">,</span> <span class="n">north</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="radius_to_region"><a class="viewcode-back" href="../../orthodrome.html#pyrocko.orthodrome.radius_to_region">[docs]</a><span class="k">def</span> <span class="nf">radius_to_region</span><span class="p">(</span><span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">,</span> <span class="n">radius</span><span class="p">):</span>
+    <span class="n">radius_deg</span> <span class="o">=</span> <span class="n">radius</span> <span class="o">*</span> <span class="n">m2d</span>
+    <span class="k">if</span> <span class="n">radius_deg</span> <span class="o">&lt;</span> <span class="mf">45.</span><span class="p">:</span>
+        <span class="n">lat_min</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="o">-</span><span class="mf">90.</span><span class="p">,</span> <span class="n">lat</span> <span class="o">-</span> <span class="n">radius_deg</span><span class="p">)</span>
+        <span class="n">lat_max</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="mf">90.</span><span class="p">,</span> <span class="n">lat</span> <span class="o">+</span> <span class="n">radius_deg</span><span class="p">)</span>
+        <span class="n">absmaxlat</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">lat_min</span><span class="p">),</span> <span class="nb">abs</span><span class="p">(</span><span class="n">lat_max</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">absmaxlat</span> <span class="o">&gt;</span> <span class="mi">89</span><span class="p">:</span>
+            <span class="n">lon_min</span> <span class="o">=</span> <span class="o">-</span><span class="mf">180.</span>
+            <span class="n">lon_max</span> <span class="o">=</span> <span class="mf">180.</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">lon_min</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span>
+                <span class="o">-</span><span class="mf">180.</span> <span class="o">-</span> <span class="mf">360.</span><span class="p">,</span>
+                <span class="n">lon</span> <span class="o">-</span> <span class="n">radius_deg</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">absmaxlat</span><span class="o">*</span><span class="n">d2r</span><span class="p">))</span>
+            <span class="n">lon_max</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span>
+                <span class="mf">180.</span> <span class="o">+</span> <span class="mf">360.</span><span class="p">,</span>
+                <span class="n">lon</span> <span class="o">+</span> <span class="n">radius_deg</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">absmaxlat</span><span class="o">*</span><span class="n">d2r</span><span class="p">))</span>
+
+        <span class="n">lon_min</span><span class="p">,</span> <span class="n">lon_max</span><span class="p">,</span> <span class="n">lat_min</span><span class="p">,</span> <span class="n">lat_max</span> <span class="o">=</span> <span class="n">positive_region</span><span class="p">(</span>
+            <span class="p">(</span><span class="n">lon_min</span><span class="p">,</span> <span class="n">lon_max</span><span class="p">,</span> <span class="n">lat_min</span><span class="p">,</span> <span class="n">lat_max</span><span class="p">))</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">None</span></div>
+</pre></div>
 
           </div>
       </div>

@@ -55,6 +55,7 @@
 
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">logging</span>
 
 <span class="kn">from</span> <span class="nn">pyrocko</span> <span class="kn">import</span> <span class="n">util</span>
 <span class="kn">from</span> <span class="nn">pyrocko.io_common</span> <span class="kn">import</span> <span class="n">FileLoadError</span><span class="p">,</span> <span class="n">FileSaveError</span>
@@ -62,6 +63,8 @@
     <span class="n">Object</span><span class="p">,</span> <span class="n">String</span><span class="p">,</span> <span class="n">StringChoice</span><span class="p">,</span> <span class="n">Timestamp</span><span class="p">,</span> <span class="n">Int</span><span class="p">,</span> <span class="n">Float</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Bool</span><span class="p">,</span> <span class="n">Complex</span><span class="p">,</span>
     <span class="n">ValidationError</span><span class="p">)</span>
 
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s">&#39;pyrocko.ims&#39;</span><span class="p">)</span>
 
 <span class="n">km</span> <span class="o">=</span> <span class="mf">1000.</span>
 <span class="n">nm_per_s</span> <span class="o">=</span> <span class="mf">1.0e-9</span>
@@ -84,6 +87,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_line</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_position</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;position&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_format</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;format&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_version_dialect</span> <span class="o">=</span> <span class="bp">None</span>
 
     <span class="k">def</span> <span class="nf">set_context</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line_number</span><span class="p">,</span> <span class="n">line</span><span class="p">,</span> <span class="n">version_dialect</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_line_number</span> <span class="o">=</span> <span class="n">line_number</span>
@@ -257,7 +261,10 @@
                 <span class="k">return</span> <span class="n">x</span> <span class="o">*</span> <span class="n">factor</span>
 
         <span class="k">def</span> <span class="nf">string</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">to_string</span><span class="p">(</span><span class="n">v</span><span class="o">/</span><span class="n">factor</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">to_string</span><span class="p">(</span><span class="bp">None</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">to_string</span><span class="p">(</span><span class="n">v</span><span class="o">/</span><span class="n">factor</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">parse</span><span class="p">,</span> <span class="n">string</span>
 
@@ -782,6 +789,11 @@
 
         <span class="k">return</span> <span class="n">dat2</span>
 
+    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">writer</span><span class="p">):</span>
+        <span class="n">Block</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">writer</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">raw_data</span><span class="p">:</span>
+            <span class="n">writer</span><span class="o">.</span><span class="n">writeline</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+
 </div>
 <div class="viewcode-block" id="STA2"><a class="viewcode-back" href="../../ims.html#pyrocko.ims.STA2">[docs]</a><span class="k">class</span> <span class="nc">STA2</span><span class="p">(</span><span class="n">Block</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Representation of a STA2 line.&#39;&#39;&#39;</span>
@@ -796,12 +808,15 @@
         <span class="n">E</span><span class="p">(</span><span class="mi">56</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="n">x_scaled</span><span class="p">(</span><span class="s">&#39;f5.3&#39;</span><span class="p">,</span> <span class="n">km</span><span class="p">))</span>
     <span class="p">]</span>
 
+    <span class="c"># the standard requires lat, lon, elevation and depth, we define them as</span>
+    <span class="c"># optional, however</span>
+
     <span class="n">network</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s">&#39;network code (9 characters)&#39;</span><span class="p">)</span>
-    <span class="n">lat</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
-    <span class="n">lon</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
+    <span class="n">lat</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">lon</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
     <span class="n">coordinate_system</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s">&#39;WGS-84&#39;</span><span class="p">)</span>
-    <span class="n">elevation</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s">&#39;elevation [m]&#39;</span><span class="p">)</span>
-    <span class="n">depth</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">help</span><span class="o">=</span><span class="s">&#39;emplacement depth [m]&#39;</span><span class="p">)</span>
+    <span class="n">elevation</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s">&#39;elevation [m]&#39;</span><span class="p">)</span>
+    <span class="n">depth</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s">&#39;emplacement depth [m]&#39;</span><span class="p">)</span>
 
 </div>
 <div class="viewcode-block" id="CHK2"><a class="viewcode-back" href="../../ims.html#pyrocko.ims.CHK2">[docs]</a><span class="k">class</span> <span class="nc">CHK2</span><span class="p">(</span><span class="n">Block</span><span class="p">):</span>
@@ -1650,12 +1665,13 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">dat2</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">writer</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">chk2</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">writer</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">pyrocko_trace</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="kn">from</span> <span class="nn">pyrocko</span> <span class="kn">import</span> <span class="n">gse2_ext</span><span class="p">,</span> <span class="n">trace</span>
+    <span class="k">def</span> <span class="nf">pyrocko_trace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">checksum_error</span><span class="o">=</span><span class="s">&#39;raise&#39;</span><span class="p">):</span>
+        <span class="kn">from</span> <span class="nn">pyrocko</span> <span class="kn">import</span> <span class="n">ims_ext</span><span class="p">,</span> <span class="n">trace</span>
+        <span class="k">assert</span> <span class="n">checksum_error</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;raise&#39;</span><span class="p">,</span> <span class="s">&#39;warn&#39;</span><span class="p">,</span> <span class="s">&#39;ignore&#39;</span><span class="p">)</span>
 
         <span class="n">raw_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dat2</span><span class="o">.</span><span class="n">raw_data</span>
         <span class="n">nsamples</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wid2</span><span class="o">.</span><span class="n">nsamples</span>
-        <span class="n">deltat</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">wid2</span><span class="o">.</span><span class="n">samprate</span>
+        <span class="n">deltat</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">wid2</span><span class="o">.</span><span class="n">sample_rate</span>
         <span class="n">tmin</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wid2</span><span class="o">.</span><span class="n">time</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">sta2</span><span class="p">:</span>
             <span class="n">net</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sta2</span><span class="o">.</span><span class="n">network</span>
@@ -1666,7 +1682,15 @@
         <span class="n">cha</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">wid2</span><span class="o">.</span><span class="n">channel</span>
 
         <span class="k">if</span> <span class="n">raw_data</span><span class="p">:</span>
-            <span class="n">ydata</span> <span class="o">=</span> <span class="n">gse2_ext</span><span class="o">.</span><span class="n">decode_m6</span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">raw_data</span><span class="p">),</span> <span class="n">nsamples</span><span class="p">)</span>
+            <span class="n">ydata</span> <span class="o">=</span> <span class="n">ims_ext</span><span class="o">.</span><span class="n">decode_cm6</span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">raw_data</span><span class="p">),</span> <span class="n">nsamples</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">checksum_error</span> <span class="o">!=</span> <span class="s">&#39;ignore&#39;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">ims_ext</span><span class="o">.</span><span class="n">checksum</span><span class="p">(</span><span class="n">ydata</span><span class="p">)</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">chk2</span><span class="o">.</span><span class="n">checksum</span><span class="p">:</span>
+                    <span class="n">mess</span> <span class="o">=</span> <span class="s">&#39;computed checksum value differs from stored value&#39;</span>
+                    <span class="k">if</span> <span class="n">checksum_error</span> <span class="o">==</span> <span class="s">&#39;raise&#39;</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="n">DeserializeError</span><span class="p">(</span><span class="n">mess</span><span class="p">)</span>
+                    <span class="k">elif</span> <span class="n">checksum_error</span> <span class="o">==</span> <span class="s">&#39;warn&#39;</span><span class="p">:</span>
+                        <span class="n">logger</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">mess</span><span class="p">)</span>
+
             <span class="n">tmax</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">tmax</span> <span class="o">=</span> <span class="n">tmin</span> <span class="o">+</span> <span class="p">(</span><span class="n">nsamples</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">deltat</span>
@@ -1676,6 +1700,33 @@
             <span class="n">net</span><span class="p">,</span> <span class="n">sta</span><span class="p">,</span> <span class="n">loc</span><span class="p">,</span> <span class="n">cha</span><span class="p">,</span> <span class="n">tmin</span><span class="o">=</span><span class="n">tmin</span><span class="p">,</span> <span class="n">tmax</span><span class="o">=</span><span class="n">tmax</span><span class="p">,</span>
             <span class="n">deltat</span><span class="o">=</span><span class="n">deltat</span><span class="p">,</span>
             <span class="n">ydata</span><span class="o">=</span><span class="n">ydata</span><span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_pyrocko_trace</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">tr</span><span class="p">,</span>
+            <span class="n">lat</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">lon</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">elevation</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">depth</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+
+        <span class="kn">from</span> <span class="nn">pyrocko</span> <span class="kn">import</span> <span class="n">ims_ext</span>
+        <span class="n">ydata</span> <span class="o">=</span> <span class="n">tr</span><span class="o">.</span><span class="n">get_ydata</span><span class="p">()</span>
+        <span class="n">raw_data</span> <span class="o">=</span> <span class="n">ims_ext</span><span class="o">.</span><span class="n">encode_cm6</span><span class="p">(</span><span class="n">ydata</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">cls</span><span class="p">(</span>
+            <span class="n">wid2</span><span class="o">=</span><span class="n">WID2</span><span class="p">(</span>
+                <span class="n">nsamples</span><span class="o">=</span><span class="n">tr</span><span class="o">.</span><span class="n">data_len</span><span class="p">(),</span>
+                <span class="n">sample_rate</span><span class="o">=</span><span class="mf">1.0</span> <span class="o">/</span> <span class="n">tr</span><span class="o">.</span><span class="n">deltat</span><span class="p">,</span>
+                <span class="n">time</span><span class="o">=</span><span class="n">tr</span><span class="o">.</span><span class="n">tmin</span><span class="p">,</span>
+                <span class="n">station</span><span class="o">=</span><span class="n">tr</span><span class="o">.</span><span class="n">station</span><span class="p">,</span>
+                <span class="n">location</span><span class="o">=</span><span class="n">tr</span><span class="o">.</span><span class="n">location</span><span class="p">,</span>
+                <span class="n">channel</span><span class="o">=</span><span class="n">tr</span><span class="o">.</span><span class="n">channel</span><span class="p">),</span>
+            <span class="n">sta2</span><span class="o">=</span><span class="n">STA2</span><span class="p">(</span>
+                <span class="n">network</span><span class="o">=</span><span class="n">tr</span><span class="o">.</span><span class="n">network</span><span class="p">,</span>
+                <span class="n">lat</span><span class="o">=</span><span class="n">lat</span><span class="p">,</span>
+                <span class="n">lon</span><span class="o">=</span><span class="n">lon</span><span class="p">,</span>
+                <span class="n">elevation</span><span class="o">=</span><span class="n">elevation</span><span class="p">,</span>
+                <span class="n">depth</span><span class="o">=</span><span class="n">depth</span><span class="p">),</span>
+            <span class="n">dat2</span><span class="o">=</span><span class="n">DAT2</span><span class="p">(</span>
+                <span class="n">raw_data</span><span class="o">=</span><span class="p">[</span><span class="n">raw_data</span><span class="p">[</span><span class="n">i</span><span class="o">*</span><span class="mi">80</span><span class="p">:(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="mi">80</span><span class="p">]</span>
+                          <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">raw_data</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mi">80</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]),</span>
+            <span class="n">chk2</span><span class="o">=</span><span class="n">CHK2</span><span class="p">(</span>
+                <span class="n">checksum</span><span class="o">=</span><span class="n">ims_ext</span><span class="o">.</span><span class="n">checksum</span><span class="p">(</span><span class="n">ydata</span><span class="p">)))</span>
 
 </div>
 <div class="viewcode-block" id="OUT2Section"><a class="viewcode-back" href="../../ims.html#pyrocko.ims.OUT2Section">[docs]</a><span class="k">class</span> <span class="nc">OUT2Section</span><span class="p">(</span><span class="n">Section</span><span class="p">):</span>
@@ -1965,14 +2016,16 @@
         <span class="k">return</span> <span class="n">MessageHeader</span><span class="p">(</span>
             <span class="nb">type</span><span class="o">=</span><span class="n">blocks</span><span class="p">[</span><span class="s">&#39;MSG_TYPE&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">type</span><span class="p">,</span>
             <span class="n">version</span><span class="o">=</span><span class="n">blocks</span><span class="p">[</span><span class="s">&#39;BEGIN&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">version</span><span class="p">,</span>
-            <span class="n">msg_id</span><span class="o">=</span><span class="n">blocks</span><span class="p">[</span><span class="s">&#39;MSG_ID&#39;</span><span class="p">],</span>
-            <span class="n">ref_id</span><span class="o">=</span><span class="n">blocks</span><span class="p">[</span><span class="s">&#39;REF_ID&#39;</span><span class="p">])</span>
+            <span class="n">msg_id</span><span class="o">=</span><span class="n">blocks</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;MSG_ID&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span>
+            <span class="n">ref_id</span><span class="o">=</span><span class="n">blocks</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;REF_ID&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">writer</span><span class="p">):</span>
         <span class="n">Begin</span><span class="p">(</span><span class="n">version</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">version</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">writer</span><span class="p">)</span>
         <span class="n">MsgType</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">)</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">writer</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">msg_id</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">writer</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ref_id</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">writer</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">msg_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">msg_id</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">writer</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ref_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ref_id</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">writer</span><span class="p">)</span>
 
 </div>
 <span class="k">def</span> <span class="nf">parse_ff_date_time</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
@@ -2191,6 +2244,8 @@
 
     <span class="n">usage</span> <span class="o">=</span> <span class="s">&#39;python -m pyrocko.ims &lt;filenames&gt;&#39;</span>
 
+    <span class="n">util</span><span class="o">.</span><span class="n">setup_logging</span><span class="p">(</span><span class="s">&#39;pyrocko.ims.__main__&#39;</span><span class="p">,</span> <span class="s">&#39;warning&#39;</span><span class="p">)</span>
+
     <span class="n">description</span> <span class="o">=</span> <span class="s">&#39;&#39;&#39;</span>
 <span class="s">    Read and print IMS/GSE2 records.</span>
 <span class="s">    &#39;&#39;&#39;</span>
@@ -2212,14 +2267,22 @@
         <span class="n">choices</span><span class="o">=</span><span class="n">g_dialects</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="s">&#39;inial guess for dialect&#39;</span><span class="p">)</span>
 
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span>
+        <span class="s">&#39;--load-data&#39;</span><span class="p">,</span>
+        <span class="n">dest</span><span class="o">=</span><span class="s">&#39;load_data&#39;</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s">&#39;store_true&#39;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s">&#39;unpack data samples&#39;</span><span class="p">)</span>
+
     <span class="p">(</span><span class="n">options</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
 
     <span class="k">for</span> <span class="n">fn</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-            <span class="n">r</span> <span class="o">=</span> <span class="n">Reader</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">load_data</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="n">Reader</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">load_data</span><span class="o">=</span><span class="n">options</span><span class="o">.</span><span class="n">load_data</span><span class="p">,</span>
                        <span class="n">version</span><span class="o">=</span><span class="n">options</span><span class="o">.</span><span class="n">version</span><span class="p">,</span> <span class="n">dialect</span><span class="o">=</span><span class="n">options</span><span class="o">.</span><span class="n">dialect</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">sec</span> <span class="ow">in</span> <span class="n">r</span><span class="p">:</span>
                 <span class="k">print</span> <span class="n">sec</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sec</span><span class="p">,</span> <span class="n">WID2Section</span><span class="p">)</span> <span class="ow">and</span> <span class="n">options</span><span class="o">.</span><span class="n">load_data</span><span class="p">:</span>
+                    <span class="n">tr</span> <span class="o">=</span> <span class="n">sec</span><span class="o">.</span><span class="n">pyrocko_trace</span><span class="p">(</span><span class="n">checksum_error</span><span class="o">=</span><span class="s">&#39;warn&#39;</span><span class="p">)</span>
 </pre></div>
 
           </div>

@@ -1928,6 +1928,13 @@
 
 </div>
 <div class="viewcode-block" id="CosTaper"><a class="viewcode-back" href="../../trace.html#pyrocko.trace.CosTaper">[docs]</a><span class="k">class</span> <span class="nc">CosTaper</span><span class="p">(</span><span class="n">Taper</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39; Cosine Taper.</span>
+
+<span class="sd">    :param a: start of fading in</span>
+<span class="sd">    :param b: end of fading in</span>
+<span class="sd">    :param c: start of fading out</span>
+<span class="sd">    :param d: end of fading out</span>
+<span class="sd">    &#39;&#39;&#39;</span>
 
     <span class="n">a</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
     <span class="n">b</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
@@ -1944,6 +1951,13 @@
         <span class="k">return</span> <span class="n">span_costaper</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">a</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">b</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">c</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">d</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">x0</span><span class="p">,</span> <span class="n">dx</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="CosFader"><a class="viewcode-back" href="../../trace.html#pyrocko.trace.CosFader">[docs]</a><span class="k">class</span> <span class="nc">CosFader</span><span class="p">(</span><span class="n">Taper</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39; Cosine Fader.</span>
+
+<span class="sd">    :param xfade: fade in and fade out time in seconds (optional)</span>
+<span class="sd">    :param xfrac: fade in and fade out as fraction between 0. and 1. (optional)</span>
+
+<span class="sd">    Only one of both arguments can be set. The other is supposed to be ``None``.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
 
     <span class="n">xfade</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
     <span class="n">xfrac</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>

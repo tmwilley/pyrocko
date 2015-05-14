@@ -60,7 +60,7 @@
     <span class="n">Unicode</span><span class="p">,</span> <span class="n">Int</span><span class="p">,</span> <span class="n">Float</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Object</span><span class="p">,</span> <span class="n">Timestamp</span><span class="p">,</span> <span class="n">ValidationError</span>
 <span class="kn">from</span> <span class="nn">pyrocko.guts</span> <span class="kn">import</span> <span class="n">load_xml</span>  <span class="c"># noqa</span>
 
-<span class="kn">from</span> <span class="nn">pyrocko</span> <span class="kn">import</span> <span class="n">trace</span>
+<span class="kn">from</span> <span class="nn">pyrocko</span> <span class="kn">import</span> <span class="n">trace</span><span class="p">,</span> <span class="n">model</span>
 
 <span class="n">guts_prefix</span> <span class="o">=</span> <span class="s">&#39;pf&#39;</span>
 
@@ -782,6 +782,46 @@
         <span class="k">return</span> <span class="bp">None</span>
 
 
+<span class="k">def</span> <span class="nf">pyrocko_station_from_channels</span><span class="p">(</span><span class="n">nsl</span><span class="p">,</span> <span class="n">channels</span><span class="p">,</span> <span class="n">inconsistencies</span><span class="o">=</span><span class="s">&#39;warn&#39;</span><span class="p">):</span>
+
+    <span class="n">pos</span> <span class="o">=</span> <span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">,</span> <span class="n">elevation</span><span class="p">,</span> <span class="n">depth</span> <span class="o">=</span> \
+        <span class="n">channels</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">position_values</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">pos</span> <span class="o">==</span> <span class="n">x</span><span class="o">.</span><span class="n">position_values</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">channels</span><span class="p">):</span>
+        <span class="n">info</span> <span class="o">=</span> <span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="s">&#39;    </span><span class="si">%s</span><span class="s">: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">code</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">position_values</span><span class="p">)</span> <span class="k">for</span>
+            <span class="n">x</span> <span class="ow">in</span> <span class="n">channels</span><span class="p">)</span>
+    
+        <span class="n">mess</span> <span class="o">=</span> <span class="s">&#39;encountered inconsistencies in channel &#39;</span> \
+               <span class="s">&#39;lat/lon/elevation/depth &#39;</span> \
+               <span class="s">&#39;for </span><span class="si">%s</span><span class="s">.</span><span class="si">%s</span><span class="s">.</span><span class="si">%s</span><span class="s">: </span><span class="se">\n</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">nsl</span> <span class="o">+</span> <span class="p">(</span><span class="n">info</span><span class="p">,))</span>
+
+        <span class="k">if</span> <span class="n">inconsistencies</span> <span class="o">==</span> <span class="s">&#39;raise&#39;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">InconsistentChannelLocations</span><span class="p">(</span><span class="n">mess</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="n">inconsistencies</span> <span class="o">==</span> <span class="s">&#39;warn&#39;</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="n">mess</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&#39; -&gt; using mean values&#39;</span><span class="p">)</span>
+
+    <span class="n">apos</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">x</span><span class="o">.</span><span class="n">position_values</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">channels</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">num</span><span class="o">.</span><span class="n">float</span><span class="p">)</span>
+    <span class="n">mlat</span><span class="p">,</span> <span class="n">mlon</span><span class="p">,</span> <span class="n">mele</span><span class="p">,</span> <span class="n">mdep</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">nansum</span><span class="p">(</span><span class="n">apos</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">/</span> <span class="n">num</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">num</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">apos</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="n">pchannels</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">channel</span> <span class="ow">in</span> <span class="n">channels</span><span class="p">:</span>
+        <span class="n">pchannels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">Channel</span><span class="p">(</span>
+            <span class="n">channel</span><span class="o">.</span><span class="n">code</span><span class="p">,</span>
+            <span class="n">azimuth</span><span class="o">=</span><span class="n">value_or_none</span><span class="p">(</span><span class="n">channel</span><span class="o">.</span><span class="n">azimuth</span><span class="p">),</span>
+            <span class="n">dip</span><span class="o">=</span><span class="n">value_or_none</span><span class="p">(</span><span class="n">channel</span><span class="o">.</span><span class="n">dip</span><span class="p">)))</span>
+
+    <span class="k">return</span> <span class="n">model</span><span class="o">.</span><span class="n">Station</span><span class="p">(</span>
+        <span class="o">*</span><span class="n">nsl</span><span class="p">,</span>
+        <span class="n">lat</span><span class="o">=</span><span class="n">mlat</span><span class="p">,</span>
+        <span class="n">lon</span><span class="o">=</span><span class="n">mlon</span><span class="p">,</span>
+        <span class="n">elevation</span><span class="o">=</span><span class="n">mele</span><span class="p">,</span>
+        <span class="n">depth</span><span class="o">=</span><span class="n">mdep</span><span class="p">,</span>
+        <span class="n">channels</span><span class="o">=</span><span class="n">pchannels</span><span class="p">)</span>
+
+
 <div class="viewcode-block" id="FDSNStationXML"><a class="viewcode-back" href="../../../fdsn.html#pyrocko.fdsn.station.FDSNStationXML">[docs]</a><span class="k">class</span> <span class="nc">FDSNStationXML</span><span class="p">(</span><span class="n">Object</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Top-level type for Station XML. Required field are Source</span>
 <span class="sd">    (network ID of the institution sending the message) and one or</span>
@@ -797,7 +837,7 @@
 
     <span class="n">xmltagname</span> <span class="o">=</span> <span class="s">&#39;FDSNStationXML&#39;</span>
 
-    <span class="k">def</span> <span class="nf">get_pyrocko_stations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">timespan</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+    <span class="k">def</span> <span class="nf">get_pyrocko_stations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nslcs</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">timespan</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                              <span class="n">inconsistencies</span><span class="o">=</span><span class="s">&#39;warn&#39;</span><span class="p">):</span>
 
         <span class="k">assert</span> <span class="n">inconsistencies</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;raise&#39;</span><span class="p">,</span> <span class="s">&#39;warn&#39;</span><span class="p">)</span>
@@ -808,7 +848,6 @@
         <span class="k">elif</span> <span class="n">timespan</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
             <span class="n">tt</span> <span class="o">=</span> <span class="n">timespan</span>
 
-        <span class="kn">from</span> <span class="nn">pyrocko</span> <span class="kn">import</span> <span class="n">model</span>
         <span class="n">pstations</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">network</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">network_list</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">network</span><span class="o">.</span><span class="n">spans</span><span class="p">(</span><span class="o">*</span><span class="n">tt</span><span class="p">):</span>
@@ -832,53 +871,27 @@
 
                     <span class="k">for</span> <span class="n">loc</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">loc_to_channels</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
                         <span class="n">channels</span> <span class="o">=</span> <span class="n">loc_to_channels</span><span class="p">[</span><span class="n">loc</span><span class="p">]</span>
+                        <span class="k">if</span> <span class="n">nslcs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                            <span class="n">channels</span> <span class="o">=</span> <span class="p">[</span><span class="n">channel</span> <span class="k">for</span> <span class="n">channel</span> <span class="ow">in</span> <span class="n">channels</span> 
+                                        <span class="k">if</span> <span class="p">(</span><span class="n">network</span><span class="o">.</span><span class="n">code</span><span class="p">,</span> <span class="n">station</span><span class="o">.</span><span class="n">code</span><span class="p">,</span> <span class="n">loc</span><span class="p">,</span> <span class="n">channel</span><span class="o">.</span><span class="n">code</span><span class="p">)</span> <span class="ow">in</span> <span class="n">nslcs</span><span class="p">]</span>
+
+                        <span class="k">if</span> <span class="ow">not</span> <span class="n">channels</span><span class="p">:</span>
+                            <span class="k">continue</span>
+
                         <span class="n">pos</span> <span class="o">=</span> <span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">,</span> <span class="n">elevation</span><span class="p">,</span> <span class="n">depth</span> <span class="o">=</span> \
                             <span class="n">channels</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">position_values</span>
 
                         <span class="n">nsl</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">code</span><span class="p">,</span> <span class="n">station</span><span class="o">.</span><span class="n">code</span><span class="p">,</span> <span class="n">loc</span>
-                        <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">pos</span> <span class="o">==</span> <span class="n">x</span><span class="o">.</span><span class="n">position_values</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">channels</span><span class="p">):</span>
-                            <span class="n">info</span> <span class="o">=</span> <span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
-                                <span class="s">&#39;    </span><span class="si">%s</span><span class="s">: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">code</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">position_values</span><span class="p">)</span> <span class="k">for</span>
-                                <span class="n">x</span> <span class="ow">in</span> <span class="n">channels</span><span class="p">)</span>
-
-                            <span class="k">if</span> <span class="n">inconsistencies</span> <span class="o">==</span> <span class="s">&#39;raise&#39;</span><span class="p">:</span>
-                                <span class="k">raise</span> <span class="n">InconsistentChannelLocations</span><span class="p">(</span>
-                                    <span class="s">&#39;encountered inconsistencies in channel &#39;</span>
-                                    <span class="s">&#39;lat/lon/elevation/depth &#39;</span>
-                                    <span class="s">&#39;for </span><span class="si">%s</span><span class="s">.</span><span class="si">%s</span><span class="s">.</span><span class="si">%s</span><span class="s">: </span><span class="se">\n</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">nsl</span> <span class="o">+</span> <span class="p">(</span><span class="n">info</span><span class="p">,)))</span>
-
-                            <span class="k">elif</span> <span class="n">inconsistencies</span> <span class="o">==</span> <span class="s">&#39;warn&#39;</span><span class="p">:</span>
-                                <span class="n">logger</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                                    <span class="s">&#39;cannot create station object for &#39;</span>
-                                    <span class="s">&#39;</span><span class="si">%s</span><span class="s">.</span><span class="si">%s</span><span class="s">.</span><span class="si">%s</span><span class="s"> due to inconsistencies in &#39;</span>
-                                    <span class="s">&#39;channel lat/lon/elevation/depth</span><span class="se">\n</span><span class="si">%s</span><span class="s">&#39;</span>
-                                    <span class="o">%</span> <span class="p">(</span><span class="n">nsl</span> <span class="o">+</span> <span class="p">(</span><span class="n">info</span><span class="p">,)))</span>
-
-                                <span class="k">continue</span>
-
-                        <span class="n">pchannels</span> <span class="o">=</span> <span class="p">[]</span>
-                        <span class="k">for</span> <span class="n">channel</span> <span class="ow">in</span> <span class="n">channels</span><span class="p">:</span>
-                            <span class="n">pchannels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">Channel</span><span class="p">(</span>
-                                <span class="n">channel</span><span class="o">.</span><span class="n">code</span><span class="p">,</span>
-                                <span class="n">azimuth</span><span class="o">=</span><span class="n">value_or_none</span><span class="p">(</span><span class="n">channel</span><span class="o">.</span><span class="n">azimuth</span><span class="p">),</span>
-                                <span class="n">dip</span><span class="o">=</span><span class="n">value_or_none</span><span class="p">(</span><span class="n">channel</span><span class="o">.</span><span class="n">dip</span><span class="p">)))</span>
-
-                        <span class="n">pstations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">Station</span><span class="p">(</span>
-                            <span class="o">*</span><span class="n">nsl</span><span class="p">,</span>
-                            <span class="n">lat</span><span class="o">=</span><span class="n">lat</span><span class="p">,</span>
-                            <span class="n">lon</span><span class="o">=</span><span class="n">lon</span><span class="p">,</span>
-                            <span class="n">elevation</span><span class="o">=</span><span class="n">value_or_none</span><span class="p">(</span><span class="n">station</span><span class="o">.</span><span class="n">elevation</span><span class="p">),</span>
-                            <span class="n">depth</span><span class="o">=</span><span class="n">depth</span><span class="p">,</span>
-                            <span class="n">name</span><span class="o">=</span><span class="n">station</span><span class="o">.</span><span class="n">description</span><span class="p">,</span>
-                            <span class="n">channels</span><span class="o">=</span><span class="n">pchannels</span><span class="p">))</span>
-
+                        
+                        <span class="n">pstations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                            <span class="n">pyrocko_station_from_channels</span><span class="p">(</span><span class="n">nsl</span><span class="p">,</span> <span class="n">channels</span><span class="p">,</span> <span class="n">inconsistencies</span><span class="o">=</span><span class="n">inconsistencies</span><span class="p">))</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">pstations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">Station</span><span class="p">(</span>
                         <span class="n">network</span><span class="o">.</span><span class="n">code</span><span class="p">,</span> <span class="n">station</span><span class="o">.</span><span class="n">code</span><span class="p">,</span> <span class="s">&#39;*&#39;</span><span class="p">,</span>
                         <span class="n">lat</span><span class="o">=</span><span class="n">station</span><span class="o">.</span><span class="n">latitude</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
                         <span class="n">lon</span><span class="o">=</span><span class="n">station</span><span class="o">.</span><span class="n">longitude</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
                         <span class="n">elevation</span><span class="o">=</span><span class="n">value_or_none</span><span class="p">(</span><span class="n">station</span><span class="o">.</span><span class="n">elevation</span><span class="p">),</span>
-                        <span class="n">name</span><span class="o">=</span><span class="n">station</span><span class="o">.</span><span class="n">description</span><span class="p">))</span>
+                        <span class="n">name</span><span class="o">=</span><span class="n">station</span><span class="o">.</span><span class="n">description</span> <span class="ow">or</span> <span class="s">&#39;&#39;</span><span class="p">))</span>
 
         <span class="k">return</span> <span class="n">pstations</span>
 
@@ -946,7 +959,7 @@
             <span class="n">net</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">code</span>
             <span class="n">sta</span> <span class="o">=</span> <span class="n">station</span><span class="o">.</span><span class="n">code</span>
             <span class="n">cha</span> <span class="o">=</span> <span class="n">channel</span><span class="o">.</span><span class="n">code</span>
-            <span class="n">loc</span> <span class="o">=</span> <span class="n">channel</span><span class="o">.</span><span class="n">location_code</span>
+            <span class="n">loc</span> <span class="o">=</span> <span class="n">channel</span><span class="o">.</span><span class="n">location_code</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">cha</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
                 <span class="n">bic</span> <span class="o">=</span> <span class="n">cha</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span>  <span class="c"># band and intrument code according to SEED</span>
             <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">cha</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
@@ -1043,11 +1056,14 @@
 
             <span class="n">useful_bics</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
 
+            
             <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">rate</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">bic</span> <span class="ow">in</span> <span class="n">useful_bics</span><span class="p">:</span>
-                <span class="k">for</span> <span class="n">channel</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">bic_to_channels</span><span class="p">[</span><span class="n">bic</span><span class="p">]):</span>
-                    <span class="n">nslcs</span><span class="p">[</span><span class="n">nsl</span> <span class="o">+</span> <span class="p">(</span><span class="n">channel</span><span class="o">.</span><span class="n">code</span><span class="p">,)]</span> <span class="o">=</span> <span class="n">channel</span>
+                <span class="n">channels</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">bic_to_channels</span><span class="p">[</span><span class="n">bic</span><span class="p">])</span>
+                <span class="k">if</span> <span class="n">channels</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">channel</span> <span class="ow">in</span> <span class="n">channels</span><span class="p">:</span>
+                        <span class="n">nslcs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nsl</span> <span class="o">+</span> <span class="p">(</span><span class="n">channel</span><span class="o">.</span><span class="n">code</span><span class="p">,))</span>
 
-                <span class="k">break</span>
+                    <span class="k">break</span>
 
         <span class="k">return</span> <span class="n">nslcs</span>
 

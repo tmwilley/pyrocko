@@ -53,12 +53,15 @@
   <h1>Source code for pyrocko.gui_util</h1><div class="highlight"><pre>
 <span class="kn">import</span> <span class="nn">math</span><span class="o">,</span> <span class="nn">calendar</span><span class="o">,</span> <span class="nn">time</span><span class="o">,</span> <span class="nn">copy</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">num</span>
+<span class="kn">import</span> <span class="nn">logging</span>
 
 <span class="kn">import</span> <span class="nn">pyrocko.util</span><span class="o">,</span> <span class="nn">pyrocko.plot</span><span class="o">,</span> <span class="nn">pyrocko.model</span><span class="o">,</span> <span class="nn">pyrocko.trace</span><span class="o">,</span> <span class="nn">pyrocko.plot</span>
 <span class="kn">from</span> <span class="nn">pyrocko.util</span> <span class="kn">import</span> <span class="n">TableWriter</span><span class="p">,</span> <span class="n">TableReader</span>
 
 <span class="kn">from</span> <span class="nn">PyQt4.QtCore</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">PyQt4.QtGui</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s">&#39;pyrocko.gui_util.py&#39;</span><span class="p">)</span>
 
 <span class="k">def</span> <span class="nf">gmtime_x</span><span class="p">(</span><span class="n">timestamp</span><span class="p">):</span>
     <span class="n">etimestamp</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">num</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">timestamp</span><span class="p">))</span>
@@ -822,7 +825,6 @@
                 <span class="n">p</span><span class="o">.</span><span class="n">setBrush</span><span class="p">(</span><span class="n">QColor</span><span class="p">(</span><span class="o">*</span><span class="n">color</span><span class="p">))</span>
                 <span class="n">drawtriangles</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tmin</span><span class="p">)</span>
 
-
     <span class="k">def</span> <span class="nf">draw_trace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">viewer</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">trace</span><span class="p">,</span> <span class="n">time_projection</span><span class="p">,</span> <span class="n">track_projection</span><span class="p">,</span> <span class="n">gain</span><span class="p">,</span> <span class="n">outline_label</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">nslc_ids</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">match_nslc</span><span class="p">(</span><span class="n">trace</span><span class="o">.</span><span class="n">nslc_id</span><span class="p">):</span> <span class="k">return</span>
         
@@ -960,10 +962,12 @@
             <span class="n">s</span> <span class="o">=</span> <span class="s">&#39;(Event)&#39;</span>
         <span class="k">return</span> <span class="n">s</span>
 
-    <span class="k">def</span> <span class="nf">draw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">time_projection</span><span class="p">,</span> <span class="n">y_projection</span><span class="p">):</span>
-      
+    <span class="k">def</span> <span class="nf">draw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">time_projection</span><span class="p">,</span> <span class="n">y_projection</span><span class="p">,</span> <span class="n">with_label</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
         <span class="n">Marker</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">time_projection</span><span class="p">,</span> <span class="n">y_projection</span><span class="p">,</span> <span class="n">draw_line</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">draw_triangle</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-        
+        <span class="k">if</span> <span class="n">with_label</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">draw_label</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">time_projection</span><span class="p">,</span> <span class="n">y_projection</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">draw_label</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">time_projection</span><span class="p">,</span> <span class="n">y_projection</span><span class="p">):</span>
         <span class="n">u</span> <span class="o">=</span> <span class="n">time_projection</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tmin</span><span class="p">)</span>
         <span class="n">v0</span><span class="p">,</span> <span class="n">v1</span> <span class="o">=</span> <span class="n">y_projection</span><span class="o">.</span><span class="n">get_out_range</span><span class="p">()</span>
         <span class="n">label_bg</span> <span class="o">=</span> <span class="n">QBrush</span><span class="p">(</span> <span class="n">QColor</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span><span class="mi">255</span><span class="p">,</span><span class="mi">255</span><span class="p">)</span> <span class="p">)</span>

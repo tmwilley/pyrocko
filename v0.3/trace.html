@@ -917,7 +917,21 @@ correlation can be viewed directly as a function of time lag.</p>
 <dl class="class">
 <dt id="pyrocko.trace.CosTaper">
 <em class="property">class </em><tt class="descname">CosTaper</tt><big>(</big><em>a</em>, <em>b</em>, <em>c</em>, <em>d</em><big>)</big><a class="reference internal" href="_modules/pyrocko/trace.html#CosTaper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.trace.CosTaper" title="Permalink to this definition">¶</a></dt>
-<dd><p>Undocumented.</p>
+<dd><p>Cosine Taper.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>a</strong> &#8211; start of fading in</li>
+<li><strong>b</strong> &#8211; end of fading in</li>
+<li><strong>c</strong> &#8211; start of fading out</li>
+<li><strong>d</strong> &#8211; end of fading out</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="attribute">
 <dt id="pyrocko.trace.CosTaper.a">
 <tt class="descname">a</tt><a class="headerlink" href="#pyrocko.trace.CosTaper.a" title="Permalink to this definition">¶</a></dt>
@@ -947,7 +961,20 @@ correlation can be viewed directly as a function of time lag.</p>
 <dl class="class">
 <dt id="pyrocko.trace.CosFader">
 <em class="property">class </em><tt class="descname">CosFader</tt><big>(</big><em>xfade=None</em>, <em>xfrac=None</em><big>)</big><a class="reference internal" href="_modules/pyrocko/trace.html#CosFader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.trace.CosFader" title="Permalink to this definition">¶</a></dt>
-<dd><p>Undocumented.</p>
+<dd><p>Cosine Fader.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>xfade</strong> &#8211; fade in and fade out time in seconds (optional)</li>
+<li><strong>xfrac</strong> &#8211; fade in and fade out as fraction between 0. and 1. (optional)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Only one of both arguments can be set. The other is supposed to be <tt class="docutils literal"><span class="pre">None</span></tt>.</p>
 <dl class="attribute">
 <dt id="pyrocko.trace.CosFader.xfade">
 <tt class="descname">xfade</tt><a class="headerlink" href="#pyrocko.trace.CosFader.xfade" title="Permalink to this definition">¶</a></dt>
