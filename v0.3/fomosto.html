@@ -120,11 +120,23 @@ option, as in <tt class="docutils literal"><span class="pre">--option=argument</
 <div class="section" id="creating-a-new-green-s-function-store">
 <h2>Creating a new Green&#8217;s function store<a class="headerlink" href="#creating-a-new-green-s-function-store" title="Permalink to this headline">¶</a></h2>
 <p>Fomosto does not do the actual computation of the Green&#8217;s functions. A separate
-Green&#8217;s function modelling code is required to do this. However, Fomosto
-provides a unified interface to configure and run these codes in order to
-make it simple to build a database of pre-calculated Green&#8217;s functions.</p>
-<p>In this example, we will use QSEIS as the modelling code. [[where to get the
-code?]]</p>
+Green&#8217;s function modelling code is required to do this.</p>
+<p>However, Fomosto provides a unified interface to configure and run these codes
+in order to make it simple to build a database of pre-calculated Green&#8217;s
+functions.</p>
+<p>Four modelling codes, including python interfaces required for fomosto are
+available at:</p>
+<blockquote>
+<div><ul class="simple">
+<li><a class="reference external" href="http://kinherd.org/fomosto-qssp-2010beta.tar.gz">http://kinherd.org/fomosto-qssp-2010beta.tar.gz</a></li>
+<li><a class="reference external" href="http://kinherd.org/fomosto-qssp-2010.tar.gz">http://kinherd.org/fomosto-qssp-2010.tar.gz</a></li>
+<li><a class="reference external" href="http://kinherd.org/fomosto-qseis-2006.tar.gz">http://kinherd.org/fomosto-qseis-2006.tar.gz</a></li>
+<li><a class="reference external" href="http://kinherd.org/fomosto-qseis-2006a.tar.gz">http://kinherd.org/fomosto-qseis-2006a.tar.gz</a></li>
+</ul>
+</div></blockquote>
+<p>For detailled information regarding each computation code refer to the
+Downloads/Software website of section 2.1 (GFZ): <a class="reference external" href="http://www.gfz-potsdam.de/en/section/physics-of-earthquakes-and-volcanoes/services/downloads-software/">http://www.gfz-potsdam.de/en/section/physics-of-earthquakes-and-volcanoes/services/downloads-software/</a>.</p>
+<p>In this example, we will use QSEIS as the modelling code.</p>
 <p>To initialize an empty Green&#8217;s function store to be built with QSEIS run:</p>
 <div class="highlight-console"><div class="highlight"><pre><span class="gp">$</span> fomosto init qseis my_first_gfs
 </pre></div>

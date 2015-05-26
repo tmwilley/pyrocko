@@ -345,7 +345,7 @@ deconvolve the transfer function from an example seismogram:</p>
 <span class="c"># However, we are going to use a butterworth low-pass filter in this example.</span>
 <span class="n">bw_filter</span> <span class="o">=</span> <span class="n">trace</span><span class="o">.</span><span class="n">ButterworthResponse</span><span class="p">(</span><span class="n">corner</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
                                       <span class="n">order</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
-                                      <span class="n">typ</span><span class="o">=</span><span class="s">&#39;low&#39;</span><span class="p">)</span>
+                                      <span class="nb">type</span><span class="o">=</span><span class="s">&#39;low&#39;</span><span class="p">)</span>
 
 <span class="c"># Combine all information in one misfit setup:</span>
 <span class="n">setup</span> <span class="o">=</span> <span class="n">trace</span><span class="o">.</span><span class="n">MisfitSetup</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s">&#39;An Example Setup&#39;</span><span class="p">,</span>

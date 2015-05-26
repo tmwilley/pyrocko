@@ -297,6 +297,13 @@ possible downsampling ratios.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="pyrocko.trace.Trace.resample">
+<tt class="descname">resample</tt><big>(</big><em>deltat</em><big>)</big><a class="reference internal" href="_modules/pyrocko/trace.html#Trace.resample"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.trace.Trace.resample" title="Permalink to this definition">¶</a></dt>
+<dd><p>Resample to given sampling rate <em>deltat</em>.</p>
+<p>Resampling is performed in the frequency domain.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="pyrocko.trace.Trace.stretch">
 <tt class="descname">stretch</tt><big>(</big><em>tmin_new</em>, <em>tmax_new</em><big>)</big><a class="reference internal" href="_modules/pyrocko/trace.html#Trace.stretch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.trace.Trace.stretch" title="Permalink to this definition">¶</a></dt>
 <dd><p>Stretch signal while preserving sample rate using sinc interpolation.</p>
@@ -393,6 +400,43 @@ that by the approximations used.</p>
 </tbody>
 </table>
 <p>Mean is removed before filtering.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.trace.Trace.envelope">
+<tt class="descname">envelope</tt><big>(</big><em>inplace=True</em><big>)</big><a class="reference internal" href="_modules/pyrocko/trace.html#Trace.envelope"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.trace.Trace.envelope" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the envelope of the trace.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>inplace</strong> &#8211; calculate envelope in place</td>
+</tr>
+</tbody>
+</table>
+<p>The calculation follows:</p>
+<div class="math">
+<p><img src="_images/math/f6721562c23752a7e4ee807ecc3921bd39bc8a34.png" alt="Ynew = sqrt(Y**2+H(Y)**2)"/></p>
+</div><p>where H is the Hilbert-Transform of the signal Y.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.trace.Trace.taper">
+<tt class="descname">taper</tt><big>(</big><em>taperer</em>, <em>inplace=True</em>, <em>chop=False</em><big>)</big><a class="reference internal" href="_modules/pyrocko/trace.html#Trace.taper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.trace.Trace.taper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply a <a class="reference internal" href="#pyrocko.trace.Taper" title="pyrocko.trace.Taper"><tt class="xref py py-class docutils literal"><span class="pre">Taper</span></tt></a> to the trace.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>taperer</strong> &#8211; instance of <a class="reference internal" href="#pyrocko.trace.Taper" title="pyrocko.trace.Taper"><tt class="xref py py-class docutils literal"><span class="pre">Taper</span></tt></a> subclass</li>
+<li><strong>inplace</strong> &#8211; apply taper inplace</li>
+<li><strong>chop</strong> &#8211; if <tt class="docutils literal"><span class="pre">True</span></tt>: exclude tapered parts from the resulting trace</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -527,7 +571,7 @@ in combination with recursive STA/LTA filters.</p>
 
 <dl class="method">
 <dt id="pyrocko.trace.Trace.extend">
-<tt class="descname">extend</tt><big>(</big><em>tmin</em>, <em>tmax</em>, <em>fillmethod='zeros'</em><big>)</big><a class="reference internal" href="_modules/pyrocko/trace.html#Trace.extend"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.trace.Trace.extend" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">extend</tt><big>(</big><em>tmin=None</em>, <em>tmax=None</em>, <em>fillmethod='zeros'</em><big>)</big><a class="reference internal" href="_modules/pyrocko/trace.html#Trace.extend"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.trace.Trace.extend" title="Permalink to this definition">¶</a></dt>
 <dd><p>Extend trace to given span.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -911,7 +955,8 @@ correlation can be viewed directly as a function of time lag.</p>
 <dl class="class">
 <dt id="pyrocko.trace.Taper">
 <em class="property">class </em><tt class="descname">Taper</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/pyrocko/trace.html#Taper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.trace.Taper" title="Permalink to this definition">¶</a></dt>
-<dd><p>Undocumented.</p>
+<dd><p>Base class for tapers.</p>
+<p>Does nothing by default.</p>
 </dd></dl>
 
 <dl class="class">
@@ -1139,7 +1184,20 @@ T(f) = constant * -------------------------------------------------------
 <dl class="class">
 <dt id="pyrocko.trace.ButterworthResponse">
 <em class="property">class </em><tt class="descname">ButterworthResponse</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/pyrocko/trace.html#ButterworthResponse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.trace.ButterworthResponse" title="Permalink to this definition">¶</a></dt>
-<dd><p>Undocumented.</p>
+<dd><p>Butterworth frequency response.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>corner</strong> &#8211; corner frequency of the response</li>
+<li><strong>order</strong> &#8211; order of the response</li>
+<li><strong>type</strong> &#8211; either <tt class="docutils literal"><span class="pre">high</span></tt> or <tt class="docutils literal"><span class="pre">low</span></tt></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="attribute">
 <dt id="pyrocko.trace.ButterworthResponse.corner">
 <tt class="descname">corner</tt><a class="headerlink" href="#pyrocko.trace.ButterworthResponse.corner" title="Permalink to this definition">¶</a></dt>
@@ -1153,8 +1211,8 @@ T(f) = constant * -------------------------------------------------------
 </dd></dl>
 
 <dl class="attribute">
-<dt id="pyrocko.trace.ButterworthResponse.typ">
-<tt class="descname">typ</tt><a class="headerlink" href="#pyrocko.trace.ButterworthResponse.typ" title="Permalink to this definition">¶</a></dt>
+<dt id="pyrocko.trace.ButterworthResponse.type">
+<tt class="descname">type</tt><a class="headerlink" href="#pyrocko.trace.ButterworthResponse.type" title="Permalink to this definition">¶</a></dt>
 <dd><p><tt class="xref py py-class docutils literal"><span class="pre">str</span></tt>, <em>default:</em> <tt class="docutils literal"><span class="pre">'low'</span></tt></p>
 </dd></dl>
 
