@@ -504,7 +504,7 @@
 </div>
 <div class="viewcode-block" id="USGS"><a class="viewcode-back" href="../../catalog.html#pyrocko.catalog.USGS">[docs]</a><span class="k">class</span> <span class="nc">USGS</span><span class="p">(</span><span class="n">EarthquakeCatalog</span><span class="p">):</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">catalog</span><span class="o">=</span><span class="s">&#39;pde&#39;</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">catalog</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
        <span class="bp">self</span><span class="o">.</span><span class="n">catalog</span> <span class="o">=</span> <span class="n">catalog</span> 
        <span class="bp">self</span><span class="o">.</span><span class="n">events</span> <span class="o">=</span> <span class="p">{}</span>
 
@@ -538,7 +538,7 @@
         <span class="k">if</span> <span class="n">magmax</span> <span class="o">!=</span> <span class="mf">10.</span><span class="p">:</span>
             <span class="n">a</span><span class="p">(</span><span class="s">&#39;maxmagnitude=</span><span class="si">%g</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">magmax</span><span class="p">)</span>
         
-        <span class="n">url</span> <span class="o">=</span> <span class="s">&#39;http://comcat.cr.usgs.gov/fdsnws/event/1/query?&#39;</span> <span class="o">+</span> <span class="s">&#39;&amp;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="s">&#39;http://earthquake.usgs.gov/fdsnws/event/1/query?&#39;</span> <span class="o">+</span> <span class="s">&#39;&amp;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
 
         <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;Opening URL: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">url</span><span class="p">)</span>
         <span class="n">page</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
@@ -571,7 +571,7 @@
 
 
             <span class="k">if</span> <span class="n">props</span><span class="p">[</span><span class="s">&#39;place&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">None</span><span class="p">:</span>
-                <span class="n">region</span> <span class="o">=</span> <span class="n">props</span><span class="p">[</span><span class="s">&#39;place&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s">&#39;ascii&#39;</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s">&#39;replace&#39;</span><span class="p">)</span>
+                <span class="n">region</span> <span class="o">=</span> <span class="n">props</span><span class="p">[</span><span class="s">&#39;place&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s">&#39;ascii&#39;</span><span class="p">,</span> <span class="s">&#39;replace&#39;</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">region</span> <span class="o">=</span> <span class="bp">None</span>
 
@@ -668,6 +668,7 @@
                 <span class="n">lon</span><span class="o">=</span><span class="n">params</span><span class="p">[</span><span class="s">&#39;longitude&#39;</span><span class="p">],</span>
                 <span class="n">depth</span><span class="o">=</span><span class="n">params</span><span class="p">[</span><span class="s">&#39;depth&#39;</span><span class="p">],</span>
                 <span class="n">magnitude</span><span class="o">=</span><span class="n">params</span><span class="p">[</span><span class="s">&#39;magnitude&#39;</span><span class="p">],</span>
+                <span class="n">duration</span><span class="o">=</span><span class="n">params</span><span class="p">[</span><span class="s">&#39;rise_time&#39;</span><span class="p">],</span>
                 <span class="n">name</span> <span class="o">=</span> <span class="n">eq</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">],</span>
                 <span class="n">catalog</span><span class="o">=</span><span class="s">&#39;KPS&#39;</span><span class="p">,</span>
                 <span class="n">moment_tensor</span> <span class="o">=</span> <span class="n">mt</span><span class="p">)</span>

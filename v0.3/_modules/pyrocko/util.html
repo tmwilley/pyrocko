@@ -58,7 +58,6 @@
 <span class="kn">import</span> <span class="nn">os.path</span> <span class="kn">as</span> <span class="nn">op</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">num</span>
 <span class="kn">import</span> <span class="nn">util_ext</span>
-<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">Counter</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s">&#39;pyrocko.util&#39;</span><span class="p">)</span>
 
@@ -1342,8 +1341,16 @@
                 <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">list_of_tuples</span><span class="p">))</span>
 
 </div>
+<div class="viewcode-block" id="defaultzerodict"><a class="viewcode-back" href="../../util.html#pyrocko.util.defaultzerodict">[docs]</a><span class="k">class</span> <span class="nc">defaultzerodict</span><span class="p">(</span><span class="nb">dict</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__missing__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
+        <span class="k">return</span> <span class="mi">0</span>
+
+</div>
 <div class="viewcode-block" id="mostfrequent"><a class="viewcode-back" href="../../util.html#pyrocko.util.mostfrequent">[docs]</a><span class="k">def</span> <span class="nf">mostfrequent</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-    <span class="n">c</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">defaultzerodict</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">x</span><span class="p">:</span>
+        <span class="n">c</span><span class="p">[</span><span class="n">e</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+
     <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">k</span><span class="p">:</span> <span class="n">c</span><span class="p">[</span><span class="n">k</span><span class="p">])[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 
 </div>
@@ -1360,14 +1367,14 @@
     <span class="k">try</span><span class="p">:</span>
         <span class="n">consistency_check</span><span class="p">(</span><span class="n">list_of_tuples</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">list_of_tuples</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">:]</span>
-    <span class="k">except</span> <span class="n">Inconsistencies</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
+    <span class="k">except</span> <span class="n">Inconsistency</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">error</span> <span class="o">==</span> <span class="s">&#39;raise&#39;</span><span class="p">:</span>
             <span class="k">raise</span>
 
         <span class="k">elif</span> <span class="n">error</span> <span class="o">==</span> <span class="s">&#39;warn&#39;</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
 
-        <span class="k">return</span> <span class="p">[</span><span class="n">merge</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">list_of_tuples</span><span class="p">)[</span><span class="mi">1</span><span class="p">:]]</span>
+        <span class="k">return</span> <span class="nb">tuple</span><span class="p">([</span><span class="n">merge</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">list_of_tuples</span><span class="p">)[</span><span class="mi">1</span><span class="p">:]])</span>
 </pre></div></div>
 
           </div>
