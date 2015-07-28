@@ -489,6 +489,9 @@ class DiscretizedSource(Object):
     north_shifts = Array.T(shape=(None,), dtype=num.float, optional=True)
     east_shifts = Array.T(shape=(None,), dtype=num.float, optional=True)
     depths = Array.T(shape=(None,), dtype=num.float)
+    dwidth = Float.T(optional=True)
+    dlength = Float.T(optional=True)
+    shearm = Float.T(optional=True)
 
     @classmethod
     def check_scheme(cls, scheme):
@@ -990,6 +993,17 @@ class DiscretizedMTSource(DiscretizedSource):
             moments[i] = m0
 
         return moments
+
+    def slips(self):
+        n = self.nelements
+        moments = self.moments()
+        dws = self.dwidth
+        dls = self.dlength
+        slips = num.zeros(n)
+        for i in range(n):
+            slips[i] = moments[i]/(dws*dls*self.shearm)
+
+        return slips
 
     def centroid(self):
         from pyrocko.gf.seismosizer import MTSource

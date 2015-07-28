@@ -20,6 +20,7 @@ from pyrocko import trace, model, parimap
 from pyrocko.gf import meta, store, ws
 from pyrocko.orthodrome import ne_to_latlon
 import pyrocko.config
+from pyrocko import cake
 
 guts_prefix = 'pf'
 
@@ -179,7 +180,7 @@ def discretize_rect_source(deltas, deltat, strike, dip, length, width,
     points2 = num.repeat(points, ntau, axis=0)
     times2 = num.repeat(times, ntau) + num.tile(xtau, n)
 
-    return points2, times2
+    return points2, times2, dw, dl
 
 
 def outline_rect_source(strike, dip, length, width):
@@ -783,7 +784,7 @@ class RectangularExplosionSource(ExplosionSource):
         else:
             nucy = None
 
-        points, times = discretize_rect_source(
+        points, times, dwidth, dlength = discretize_rect_source(
             store.config.deltas, store.config.deltat,
             self.strike, self.dip, self.length, self.width,
             self.velocity, nucleation_x=nucx, nucleation_y=nucy,
@@ -798,6 +799,8 @@ class RectangularExplosionSource(ExplosionSource):
             north_shifts=self.north_shift + points[:, 0],
             east_shifts=self.east_shift + points[:, 1],
             depths=self.depth + points[:, 2],
+            dwidth=dwidth,
+            dlength=dlength,
             m0s=num.repeat(1.0/n, n))
 
 
@@ -1033,6 +1036,32 @@ class RectangularSource(DCSource):
         help='duration of energy release of any single point in rupture area '
              '[s]')
 
+    slip = Float.T(
+        optional=True,
+        help='Slip on the rectangular source area [m]')
+
+    def __init__(self, **kwargs):
+        if 'slip' in kwargs and 'magnitude' in kwargs:
+            raise ArgumentError('either slip or magnitude as input')
+
+        Source.__init__(self, **kwargs)
+
+        if self.slip is not None:
+            self.slip_to_moment()
+
+    @property
+    def shearm(self):
+        lay = cake.load_model(
+            'default', crust2_profile=(self.lat, self.lon)).layer(z=self.depth)
+
+        return cake.Material(
+            vs=lay.v(2, z=self.depth),
+            rho=lay.material(z=self.depth).rho).shear_modulus()
+
+    def slip_to_moment(self):
+        return self.update(
+            moment=float(self.slip*self.width*self.length*self.shearm))
+
     def base_key(self):
         return DCSource.base_key(self) + (
             self.length,
@@ -1040,7 +1069,9 @@ class RectangularSource(DCSource):
             self.nucleation_x,
             self.nucleation_y,
             self.velocity,
-            self.risetime)
+            self.risetime,
+            self.shearm,
+            self.slip)
 
     def discretize_basesource(self, store):
 
@@ -1054,7 +1085,7 @@ class RectangularSource(DCSource):
         else:
             nucy = None
 
-        points, times = discretize_rect_source(
+        points, times, dwidth, dlength = discretize_rect_source(
             store.config.deltas, store.config.deltat,
             self.strike, self.dip, self.length, self.width,
             self.velocity, nucleation_x=nucx, nucleation_y=nucy,
@@ -1072,6 +1103,9 @@ class RectangularSource(DCSource):
             north_shifts=self.north_shift + points[:, 0],
             east_shifts=self.east_shift + points[:, 1],
             depths=self.depth + points[:, 2],
+            dwidth=dwidth,
+            dlength=dlength,
+            shearm=self.shearm,
             m6s=num.repeat(mot.m6()[num.newaxis, :], n, axis=0))
 
         return ds
