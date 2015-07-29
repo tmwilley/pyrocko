@@ -1453,7 +1453,8 @@
 <span class="sd">    :param fillmethod:  what to put into the gaps: &#39;interpolate&#39; or &#39;zeros&#39;.</span>
 <span class="sd">    :param deoverlap:   how to handle overlaps: &#39;use_second&#39; to use data from </span>
 <span class="sd">                        second trace (default), &#39;use_first&#39; to use data from first</span>
-<span class="sd">                        trace, &#39;crossfade_cos&#39; to crossfade with cosine taper </span>
+<span class="sd">                        trace, &#39;crossfade_cos&#39; to crossfade with cosine taper,</span>
+<span class="sd">                        &#39;add&#39; to add amplitude values.</span>
 <span class="sd">    :param maxlap:      maximum number of samples of overlap which are removed</span>
 <span class="sd">      </span>
 <span class="sd">    :returns:           list of traces</span>
@@ -1509,6 +1510,9 @@
                             <span class="k">if</span> <span class="n">deoverlap</span> <span class="o">==</span> <span class="s">&#39;use_second&#39;</span><span class="p">:</span>
                                 <span class="n">a</span><span class="o">.</span><span class="n">ydata</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">a</span><span class="o">.</span><span class="n">ydata</span><span class="p">[:</span><span class="o">-</span><span class="n">n</span><span class="p">],</span> <span class="n">b</span><span class="o">.</span><span class="n">ydata</span><span class="p">))</span>
                             <span class="k">elif</span> <span class="n">deoverlap</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;use_first&#39;</span><span class="p">,</span> <span class="s">&#39;crossfade_cos&#39;</span><span class="p">):</span>
+                                <span class="n">a</span><span class="o">.</span><span class="n">ydata</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">a</span><span class="o">.</span><span class="n">ydata</span><span class="p">,</span> <span class="n">b</span><span class="o">.</span><span class="n">ydata</span><span class="p">[</span><span class="n">n</span><span class="p">:]))</span>
+                            <span class="k">elif</span> <span class="n">deoverlap</span> <span class="o">==</span> <span class="s">&#39;add&#39;</span><span class="p">:</span>
+                                <span class="n">a</span><span class="o">.</span><span class="n">ydata</span><span class="p">[</span><span class="o">-</span><span class="n">n</span><span class="p">:]</span> <span class="o">+=</span> <span class="n">b</span><span class="o">.</span><span class="n">ydata</span><span class="p">[:</span><span class="n">n</span><span class="p">]</span>
                                 <span class="n">a</span><span class="o">.</span><span class="n">ydata</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">a</span><span class="o">.</span><span class="n">ydata</span><span class="p">,</span> <span class="n">b</span><span class="o">.</span><span class="n">ydata</span><span class="p">[</span><span class="n">n</span><span class="p">:]))</span>
                             <span class="k">else</span><span class="p">:</span>
                                 <span class="k">assert</span> <span class="bp">False</span><span class="p">,</span> <span class="s">&#39;unknown deoverlap method&#39;</span>

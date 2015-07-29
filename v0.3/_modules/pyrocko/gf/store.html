@@ -1059,8 +1059,11 @@
             <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_decimated_store_dir</span><span class="p">(</span><span class="n">decimate</span><span class="p">)):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_decimated</span><span class="p">[</span><span class="n">decimate</span><span class="p">]</span> <span class="o">=</span> <span class="bp">None</span>
 
-    <span class="k">def</span> <span class="nf">save_config</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">save_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">make_backup</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
         <span class="n">config_fn</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">store_dir</span><span class="p">,</span> <span class="s">&#39;config&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">make_backup</span><span class="p">:</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">config_fn</span><span class="p">,</span> <span class="n">config_fn</span> <span class="o">+</span> <span class="s">&#39;~&#39;</span><span class="p">)</span>
+
         <span class="n">meta</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="n">config_fn</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">get_extra</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>

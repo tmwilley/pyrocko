@@ -69,8 +69,14 @@
 <span class="kn">from</span> <span class="nn">PyQt4.QtSvg</span> <span class="kn">import</span> <span class="o">*</span>
 
 <span class="kn">import</span> <span class="nn">scipy.stats</span> <span class="kn">as</span> <span class="nn">sstats</span>
+<span class="kn">import</span> <span class="nn">platform</span> 
 
-
+<span class="k">if</span> <span class="n">platform</span><span class="o">.</span><span class="n">mac_ver</span><span class="p">()</span><span class="o">!=</span><span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s">&#39;&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">),</span> <span class="s">&#39;&#39;</span><span class="p">):</span>
+    <span class="n">qfiledialog_options</span> <span class="o">=</span> <span class="n">QFileDialog</span><span class="o">.</span><span class="n">DontUseNativeDialog</span>
+    <span class="n">macosx</span> <span class="o">=</span> <span class="bp">True</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">qfiledialog_options</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">macosx</span> <span class="o">=</span> <span class="bp">False</span>
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s">&#39;pyrocko.pile_viewer&#39;</span><span class="p">)</span>
 
 
@@ -1260,7 +1266,6 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">pile</span><span class="o">.</span><span class="n">load_files</span><span class="p">(</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">fns</span><span class="p">),</span> <span class="n">filename_attributes</span><span class="o">=</span><span class="n">regex</span><span class="p">,</span> 
                     <span class="n">cache</span><span class="o">=</span><span class="n">cache</span><span class="p">,</span> <span class="n">fileformat</span><span class="o">=</span><span class="n">format</span><span class="p">,</span> 
                     <span class="n">show_progress</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">update_progress</span><span class="o">=</span><span class="n">update_progress</span><span class="p">)</span>
-
             <span class="bp">self</span><span class="o">.</span><span class="n">automatic_updates</span> <span class="o">=</span> <span class="bp">True</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
 
@@ -1280,8 +1285,7 @@
             <span class="n">caption</span> <span class="o">=</span> <span class="s">&#39;Select one or more files to open&#39;</span>
 
             <span class="n">fns</span> <span class="o">=</span> <span class="n">QFileDialog</span><span class="o">.</span><span class="n">getOpenFileNames</span><span class="p">(</span>
-                <span class="bp">self</span><span class="p">,</span>
-                <span class="n">caption</span><span class="p">)</span>
+                <span class="bp">self</span><span class="p">,</span> <span class="n">caption</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="n">qfiledialog_options</span><span class="p">)</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span> <span class="k">for</span> <span class="n">fn</span> <span class="ow">in</span> <span class="n">fns</span><span class="p">))</span>
         
@@ -1290,8 +1294,7 @@
             <span class="n">caption</span> <span class="o">=</span> <span class="s">&#39;Select directory to scan for waveform files&#39;</span>
 
             <span class="n">fn</span> <span class="o">=</span> <span class="n">QFileDialog</span><span class="o">.</span><span class="n">getExistingDirectory</span><span class="p">(</span>
-                <span class="bp">self</span><span class="p">,</span>
-                <span class="n">caption</span><span class="p">)</span>
+                <span class="bp">self</span><span class="p">,</span> <span class="n">caption</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="n">qfiledialog_options</span><span class="p">)</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">load</span><span class="p">([</span><span class="nb">str</span><span class="p">(</span><span class="n">fn</span><span class="p">)])</span>
 
@@ -1299,8 +1302,7 @@
             <span class="n">caption</span> <span class="o">=</span> <span class="s">&#39;Select one or more files to open&#39;</span>
 
             <span class="n">fns</span> <span class="o">=</span> <span class="n">QFileDialog</span><span class="o">.</span><span class="n">getOpenFileNames</span><span class="p">(</span>
-                <span class="bp">self</span><span class="p">,</span>
-                <span class="n">caption</span><span class="p">)</span>
+                <span class="bp">self</span><span class="p">,</span> <span class="n">caption</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="n">qfiledialog_options</span><span class="p">)</span>
 
             <span class="n">stations</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">pyrocko</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">load_stations</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)),</span> <span class="n">fns</span><span class="p">)</span>           
             <span class="k">for</span> <span class="n">stat</span> <span class="ow">in</span> <span class="n">stations</span><span class="p">:</span>
@@ -1438,14 +1440,16 @@
     
         <span class="k">def</span> <span class="nf">write_markers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
             <span class="n">caption</span> <span class="o">=</span> <span class="s">&quot;Choose a file name to write markers&quot;</span>
-            <span class="n">fn</span> <span class="o">=</span> <span class="n">QFileDialog</span><span class="o">.</span><span class="n">getSaveFileName</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">caption</span><span class="p">)</span>
+            <span class="n">fn</span> <span class="o">=</span> <span class="n">QFileDialog</span><span class="o">.</span><span class="n">getSaveFileName</span><span class="p">(</span>
+                <span class="bp">self</span><span class="p">,</span> <span class="n">caption</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="n">qfiledialog_options</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">fn</span><span class="p">:</span>
                 <span class="n">Marker</span><span class="o">.</span><span class="n">save_markers</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">markers</span><span class="p">,</span> <span class="n">fn</span><span class="p">,</span>
                         <span class="n">fdigits</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">time_fractional_digits</span><span class="p">())</span>
 
         <span class="k">def</span> <span class="nf">write_selected_markers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
             <span class="n">caption</span> <span class="o">=</span> <span class="s">&quot;Choose a file name to write selected markers&quot;</span>
-            <span class="n">fn</span> <span class="o">=</span> <span class="n">QFileDialog</span><span class="o">.</span><span class="n">getSaveFileName</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">caption</span><span class="p">)</span>
+            <span class="n">fn</span> <span class="o">=</span> <span class="n">QFileDialog</span><span class="o">.</span><span class="n">getSaveFileName</span><span class="p">(</span>
+                <span class="bp">self</span><span class="p">,</span> <span class="n">caption</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="n">qfiledialog_options</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">fn</span><span class="p">:</span>
                 <span class="n">Marker</span><span class="o">.</span><span class="n">save_markers</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selected_markers</span><span class="p">(),</span> <span class="n">fn</span><span class="p">,</span>
                         <span class="n">fdigits</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">time_fractional_digits</span><span class="p">())</span>
@@ -1455,7 +1459,8 @@
 <span class="sd">            Open QFileDialog to open, read and add markers to the pile viewer.</span>
 <span class="sd">            &#39;&#39;&#39;</span>
             <span class="n">caption</span> <span class="o">=</span> <span class="s">&quot;Selet one or more files to open&quot;</span>
-            <span class="n">fn</span> <span class="o">=</span> <span class="n">QFileDialog</span><span class="o">.</span><span class="n">getOpenFileName</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">caption</span><span class="p">)</span>
+            <span class="n">fn</span> <span class="o">=</span> <span class="n">QFileDialog</span><span class="o">.</span><span class="n">getOpenFileName</span><span class="p">(</span>
+                <span class="bp">self</span><span class="p">,</span> <span class="n">caption</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="n">qfiledialog_options</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">fn</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">add_markers</span><span class="p">(</span><span class="n">Marker</span><span class="o">.</span><span class="n">load_markers</span><span class="p">(</span><span class="n">fn</span><span class="p">))</span>
 
@@ -1792,10 +1797,13 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">SIGNAL</span><span class="p">(</span><span class="s">&#39;want_input()&#39;</span><span class="p">))</span>
 
             <span class="k">elif</span> <span class="n">keytext</span> <span class="o">==</span> <span class="s">&#39;f&#39;</span><span class="p">:</span>
-                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">window</span><span class="p">()</span><span class="o">.</span><span class="n">windowState</span><span class="p">()</span> <span class="o">&amp;</span> <span class="n">Qt</span><span class="o">.</span><span class="n">WindowFullScreen</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">window</span><span class="p">()</span><span class="o">.</span><span class="n">windowState</span><span class="p">()</span> <span class="o">&amp;</span> <span class="n">Qt</span><span class="o">.</span><span class="n">WindowFullScreen</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">window</span><span class="p">()</span><span class="o">.</span><span class="n">windowState</span><span class="p">()</span> <span class="o">&amp;</span> <span class="n">Qt</span><span class="o">.</span><span class="n">WindowMaximized</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">window</span><span class="p">()</span><span class="o">.</span><span class="n">showNormal</span><span class="p">()</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">window</span><span class="p">()</span><span class="o">.</span><span class="n">showFullScreen</span><span class="p">()</span>
+                    <span class="k">if</span> <span class="n">macosx</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">window</span><span class="p">()</span><span class="o">.</span><span class="n">showMaximized</span><span class="p">()</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">window</span><span class="p">()</span><span class="o">.</span><span class="n">showFullScreen</span><span class="p">()</span>
 
             <span class="k">elif</span> <span class="n">keytext</span> <span class="o">==</span> <span class="s">&#39;g&#39;</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">go_to_selection</span><span class="p">()</span>
@@ -2091,7 +2099,8 @@
             <span class="n">fn</span> <span class="o">=</span> <span class="n">QFileDialog</span><span class="o">.</span><span class="n">getSaveFileName</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> 
                 <span class="s">&#39;Save as SVG&#39;</span><span class="p">,</span>
                 <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s">&#39;HOME&#39;</span><span class="p">],</span>  <span class="s">&#39;untitled.svg&#39;</span><span class="p">),</span>
-                <span class="s">&#39;SVG (*.svg)&#39;</span>
+                <span class="s">&#39;SVG (*.svg)&#39;</span><span class="p">,</span>
+                <span class="n">options</span><span class="o">=</span><span class="n">qfiledialog_options</span>
             <span class="p">)</span>
             
             <span class="n">generator</span> <span class="o">=</span> <span class="n">QSvgGenerator</span><span class="p">()</span>
@@ -2219,13 +2228,16 @@
             <span class="n">markers</span> <span class="o">=</span> <span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">get_tmin</span><span class="p">()</span><span class="o">&lt;</span><span class="bp">self</span><span class="o">.</span><span class="n">tmax</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">tmin</span><span class="o">&lt;</span><span class="n">x</span><span class="o">.</span><span class="n">get_tmax</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">markers</span><span class="p">)</span>
             <span class="n">markers</span> <span class="o">=</span> <span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">kind</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">visible_marker_kinds</span><span class="p">,</span> <span class="n">markers</span><span class="p">)</span>
             <span class="n">i_labels</span><span class="p">,</span> <span class="n">i_markers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tobedrawn</span><span class="p">(</span><span class="n">markers</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_projection</span><span class="o">.</span><span class="n">get_out_range</span><span class="p">())</span>
-            <span class="k">for</span> <span class="n">i_m</span> <span class="ow">in</span> <span class="n">i_markers</span><span class="p">:</span>
-                <span class="n">markers</span><span class="p">[</span><span class="n">i_m</span><span class="p">]</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_projection</span><span class="p">,</span> <span class="n">vcenter_projection</span><span class="p">)</span>
-
-            <span class="k">for</span> <span class="n">i_l</span> <span class="ow">in</span> <span class="n">i_labels</span><span class="p">:</span>
-                <span class="n">m</span> <span class="o">=</span> <span class="n">markers</span><span class="p">[</span><span class="n">i_l</span><span class="p">]</span>
-                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">EventMarker</span><span class="p">):</span>
-                    <span class="n">m</span><span class="o">.</span><span class="n">draw_label</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_projection</span><span class="p">,</span> <span class="n">vcenter_projection</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">i_markers</span><span class="p">)</span><span class="o">!=</span><span class="mi">0</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">i_m</span> <span class="ow">in</span> <span class="n">i_markers</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">i_m</span> <span class="ow">in</span> <span class="n">i_labels</span><span class="p">:</span>
+                        <span class="n">with_label</span> <span class="o">=</span> <span class="bp">True</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">with_label</span> <span class="o">=</span> <span class="bp">False</span>
+                    <span class="n">markers</span><span class="p">[</span><span class="n">i_m</span><span class="p">]</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">p</span><span class="p">,</span>
+                                      <span class="bp">self</span><span class="o">.</span><span class="n">time_projection</span><span class="p">,</span>
+                                      <span class="n">vcenter_projection</span><span class="p">,</span>
+                                      <span class="n">with_label</span><span class="o">=</span><span class="n">with_label</span><span class="p">)</span>
 
         <span class="k">def</span> <span class="nf">drawit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">printmode</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">h</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
             <span class="sd">&quot;&quot;&quot;This performs the actual drawing.&quot;&quot;&quot;</span>
