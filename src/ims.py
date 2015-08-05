@@ -247,7 +247,7 @@ def x_date_time(fmt='%Y/%m/%d %H:%M:%S.3FRAC'):
             if fmt[:2] == '%Y' and s[:4] in ('2599', '2045'):
                 return None
 
-            elif fmt[6:8] == '%Y' and s[6:10] == ('2599', '2045'):
+            elif fmt[6:8] == '%Y' and s[6:10] in ('2599', '2045'):
                 return None
 
             raise DeserializeError('expected date, value="%s"' % s)
