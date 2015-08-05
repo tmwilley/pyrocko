@@ -242,6 +242,13 @@ def x_date_time(fmt='%Y/%m/%d %H:%M:%S.3FRAC'):
             return util.str_to_time(s, format=fmt)
 
         except:
+            if fmt[:2] == '%Y' and s[:4] == '2599':  # iris sets this dummy 
+                                                     # end date
+                return None
+
+            elif fmt[6:8] == '%Y' and s[6:10] == '2599':
+                return None
+
             raise DeserializeError('expected date, value="%s"' % s)
 
     def string(s):
