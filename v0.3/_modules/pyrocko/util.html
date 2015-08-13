@@ -57,7 +57,13 @@
 <span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">signal</span>
 <span class="kn">import</span> <span class="nn">os.path</span> <span class="kn">as</span> <span class="nn">op</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">num</span>
-<span class="kn">import</span> <span class="nn">util_ext</span>
+<span class="kn">import</span> <span class="nn">platform</span>
+
+<span class="k">if</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span> <span class="o">!=</span> <span class="s">&#39;Darwin&#39;</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">util_ext</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">util_ext</span> <span class="o">=</span> <span class="bp">None</span>
+
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s">&#39;pyrocko.util&#39;</span><span class="p">)</span>
 
@@ -641,7 +647,11 @@
         <span class="k">if</span> <span class="n">dotpos</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
             <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="p">[:</span><span class="n">dotpos</span><span class="p">]</span>
       
-    <span class="k">return</span> <span class="n">calendar</span><span class="o">.</span><span class="n">timegm</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">format</span><span class="p">))</span> <span class="o">+</span> <span class="n">fracsec</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">calendar</span><span class="o">.</span><span class="n">timegm</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">format</span><span class="p">))</span> <span class="o">+</span> <span class="n">fracsec</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">TimeStrError</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">, string=</span><span class="si">%s</span><span class="s">, format=</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">),</span> <span class="n">s</span><span class="p">,</span> <span class="n">format</span><span class="p">))</span>
 
 </div>
 <span class="n">stt</span> <span class="o">=</span> <span class="n">str_to_time</span>
@@ -1252,7 +1262,11 @@
 <div class="viewcode-block" id="parse_leap_seconds_list"><a class="viewcode-back" href="../../util.html#pyrocko.util.parse_leap_seconds_list">[docs]</a><span class="k">def</span> <span class="nf">parse_leap_seconds_list</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
     <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">texpires</span> <span class="o">=</span> <span class="bp">None</span>
-    <span class="n">t0</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">str_to_time</span><span class="p">(</span><span class="s">&#39;1900-01-01 00:00:00&#39;</span><span class="p">)))</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">t0</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">str_to_time</span><span class="p">(</span><span class="s">&#39;1900-01-01 00:00:00&#39;</span><span class="p">)))</span>
+    <span class="k">except</span> <span class="n">TimeStrError</span><span class="p">:</span>
+        <span class="n">t0</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">str_to_time</span><span class="p">(</span><span class="s">&#39;1970-01-01 00:00:00&#39;</span><span class="p">)))</span> <span class="o">-</span> <span class="mi">2208988800</span>
+
     <span class="n">tnow</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()))</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">op</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>

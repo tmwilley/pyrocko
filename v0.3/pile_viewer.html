@@ -95,6 +95,12 @@
 <tt class="descname">m_float_or_none</tt><big>(</big><em>x</em><big>)</big><a class="reference internal" href="_modules/pyrocko/pile_viewer.html#m_float_or_none"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile_viewer.m_float_or_none" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+<dl class="function">
+<dt id="pyrocko.pile_viewer.make_chunks">
+<tt class="descname">make_chunks</tt><big>(</big><em>items</em><big>)</big><a class="reference internal" href="_modules/pyrocko/pile_viewer.html#make_chunks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile_viewer.make_chunks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Split a list of integers into sublists of consecutive elements.</p>
+</dd></dl>
+
 <dl class="class">
 <dt id="pyrocko.pile_viewer.deg_float">
 <em class="property">class </em><tt class="descname">deg_float</tt><a class="reference internal" href="_modules/pyrocko/pile_viewer.html#deg_float"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile_viewer.deg_float" title="Permalink to this definition">¶</a></dt>
@@ -304,6 +310,11 @@
 <dd></dd></dl>
 
 <dl class="method">
+<dt id="pyrocko.pile_viewer.PileViewerMain.add_events">
+<tt class="descname">add_events</tt><big>(</big><em>events</em><big>)</big><a class="headerlink" href="#pyrocko.pile_viewer.PileViewerMain.add_events" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
 <dt id="pyrocko.pile_viewer.PileViewerMain.add_marker">
 <tt class="descname">add_marker</tt><big>(</big><em>marker</em><big>)</big><a class="headerlink" href="#pyrocko.pile_viewer.PileViewerMain.add_marker" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -418,6 +429,11 @@
 <dl class="method">
 <dt id="pyrocko.pile_viewer.PileViewerMain.dropEvent">
 <tt class="descname">dropEvent</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#pyrocko.pile_viewer.PileViewerMain.dropEvent" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.pile_viewer.PileViewerMain.emit_selected_markers">
+<tt class="descname">emit_selected_markers</tt><big>(</big><big>)</big><a class="headerlink" href="#pyrocko.pile_viewer.PileViewerMain.emit_selected_markers" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -687,6 +703,13 @@
 <dd></dd></dl>
 
 <dl class="method">
+<dt id="pyrocko.pile_viewer.PileViewerMain.read_events">
+<tt class="descname">read_events</tt><big>(</big><big>)</big><a class="headerlink" href="#pyrocko.pile_viewer.PileViewerMain.read_events" title="Permalink to this definition">¶</a></dt>
+<dd><p>Open QFileDialog to open, read and add <a class="reference internal" href="model.html#pyrocko.model.Event" title="pyrocko.model.Event"><tt class="xref py py-class docutils literal"><span class="pre">pyrocko.model.Event</span></tt></a>
+instances and their marker representation to the pile viewer.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="pyrocko.pile_viewer.PileViewerMain.read_markers">
 <tt class="descname">read_markers</tt><big>(</big><big>)</big><a class="headerlink" href="#pyrocko.pile_viewer.PileViewerMain.read_markers" title="Permalink to this definition">¶</a></dt>
 <dd><p>Open QFileDialog to open, read and add markers to the pile viewer.</p>
@@ -705,12 +728,36 @@
 <dl class="method">
 <dt id="pyrocko.pile_viewer.PileViewerMain.remove_marker">
 <tt class="descname">remove_marker</tt><big>(</big><em>marker</em><big>)</big><a class="headerlink" href="#pyrocko.pile_viewer.PileViewerMain.remove_marker" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove a <em>marker</em> from the <a class="reference internal" href="#pyrocko.pile_viewer.PileViewer" title="pyrocko.pile_viewer.PileViewer"><tt class="xref py py-class docutils literal"><span class="pre">PileViewer</span></tt></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>marker</strong> &#8211; <tt class="xref py py-class docutils literal"><span class="pre">Marker</span></tt> (or subclass) instance</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.pile_viewer.PileViewerMain.remove_marker_from_menu">
+<tt class="descname">remove_marker_from_menu</tt><big>(</big><em>istart</em>, <em>istop</em><big>)</big><a class="headerlink" href="#pyrocko.pile_viewer.PileViewerMain.remove_marker_from_menu" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="pyrocko.pile_viewer.PileViewerMain.remove_markers">
 <tt class="descname">remove_markers</tt><big>(</big><em>markers</em><big>)</big><a class="headerlink" href="#pyrocko.pile_viewer.PileViewerMain.remove_markers" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Remove a list of <em>markers</em> from the <a class="reference internal" href="#pyrocko.pile_viewer.PileViewer" title="pyrocko.pile_viewer.PileViewer"><tt class="xref py py-class docutils literal"><span class="pre">PileViewer</span></tt></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>markers</strong> &#8211; list of <tt class="xref py py-class docutils literal"><span class="pre">Marker</span></tt> (or subclass)
+instances</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="pyrocko.pile_viewer.PileViewerMain.remove_panel_toggler">
@@ -853,6 +900,20 @@
 <dd></dd></dl>
 
 <dl class="method">
+<dt id="pyrocko.pile_viewer.PileViewerMain.set_selected_markers">
+<tt class="descname">set_selected_markers</tt><big>(</big><em>markers</em><big>)</big><a class="headerlink" href="#pyrocko.pile_viewer.PileViewerMain.set_selected_markers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set a list of markers selected</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>markers</strong> &#8211; list of markers</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="pyrocko.pile_viewer.PileViewerMain.set_sortingmode_change_delay_time">
 <tt class="descname">set_sortingmode_change_delay_time</tt><big>(</big><em>dt</em><big>)</big><a class="headerlink" href="#pyrocko.pile_viewer.PileViewerMain.set_sortingmode_change_delay_time" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -924,7 +985,7 @@
 
 <dl class="method">
 <dt id="pyrocko.pile_viewer.PileViewerMain.station_latlon">
-<tt class="descname">station_latlon</tt><big>(</big><em>tr</em>, <em>default_getter=&lt;function &lt;lambda&gt; at 0x9819c80&gt;</em><big>)</big><a class="headerlink" href="#pyrocko.pile_viewer.PileViewerMain.station_latlon" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">station_latlon</tt><big>(</big><em>tr</em>, <em>default_getter=&lt;function &lt;lambda&gt; at 0x92d81b8&gt;</em><big>)</big><a class="headerlink" href="#pyrocko.pile_viewer.PileViewerMain.station_latlon" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -944,6 +1005,16 @@
 first indicates which markers should be labeled.
 second indicates which markers should be drawn.</p>
 </dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.pile_viewer.PileViewerMain.toggle_main_controls">
+<tt class="descname">toggle_main_controls</tt><big>(</big><big>)</big><a class="headerlink" href="#pyrocko.pile_viewer.PileViewerMain.toggle_main_controls" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.pile_viewer.PileViewerMain.toggle_marker_editor">
+<tt class="descname">toggle_marker_editor</tt><big>(</big><big>)</big><a class="headerlink" href="#pyrocko.pile_viewer.PileViewerMain.toggle_marker_editor" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="method">
 <dt id="pyrocko.pile_viewer.PileViewerMain.toggletest">
@@ -1075,6 +1146,11 @@ second indicates which markers should be drawn.</p>
 <dl class="method">
 <dt id="pyrocko.pile_viewer.PileViewer.controls">
 <tt class="descname">controls</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/pile_viewer.html#PileViewer.controls"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile_viewer.PileViewer.controls" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.pile_viewer.PileViewer.marker_editor">
+<tt class="descname">marker_editor</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/pile_viewer.html#PileViewer.marker_editor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.pile_viewer.PileViewer.marker_editor" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">

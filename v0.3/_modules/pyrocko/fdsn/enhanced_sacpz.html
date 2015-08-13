@@ -130,6 +130,20 @@
     <span class="k">return</span> <span class="n">resp</span>
 
 
+<span class="n">this_year</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">gmtime</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+
+
+<span class="k">def</span> <span class="nf">dummy_aware_str_to_time</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">util</span><span class="o">.</span><span class="n">str_to_time</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="s">&#39;%Y-%m-</span><span class="si">%d</span><span class="s">T%H:%M:%S&#39;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">util</span><span class="o">.</span><span class="n">TimeStrError</span><span class="p">:</span>
+        <span class="n">year</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">s</span><span class="p">[:</span><span class="mi">4</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">year</span> <span class="o">&gt;</span> <span class="n">this_year</span> <span class="o">+</span> <span class="mi">100</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">None</span>  <span class="c"># StationXML contained a dummy end date</span>
+
+        <span class="k">raise</span>
+
+
 <span class="k">def</span> <span class="nf">iload_fh</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
     <span class="n">zeros</span><span class="p">,</span> <span class="n">poles</span><span class="p">,</span> <span class="n">constant</span><span class="p">,</span> <span class="n">comments</span> <span class="o">=</span> <span class="n">pz</span><span class="o">.</span><span class="n">read_sac_zpk</span><span class="p">(</span><span class="nb">file</span><span class="o">=</span><span class="n">f</span><span class="p">,</span>
                                                        <span class="n">get_comments</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
@@ -151,7 +165,7 @@
         <span class="k">yield</span> <span class="n">EnhancedSacPzResponse</span><span class="p">(</span>
             <span class="n">codes</span><span class="o">=</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s">&#39;network&#39;</span><span class="p">],</span> <span class="n">d</span><span class="p">[</span><span class="s">&#39;station&#39;</span><span class="p">],</span> <span class="n">d</span><span class="p">[</span><span class="s">&#39;location&#39;</span><span class="p">],</span> <span class="n">d</span><span class="p">[</span><span class="s">&#39;channel&#39;</span><span class="p">]),</span>
             <span class="n">tmin</span><span class="o">=</span><span class="n">util</span><span class="o">.</span><span class="n">str_to_time</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s">&#39;start&#39;</span><span class="p">],</span> <span class="n">format</span><span class="o">=</span><span class="s">&#39;%Y-%m-</span><span class="si">%d</span><span class="s">T%H:%M:%S&#39;</span><span class="p">),</span>
-            <span class="n">tmax</span><span class="o">=</span><span class="n">util</span><span class="o">.</span><span class="n">str_to_time</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s">&#39;end&#39;</span><span class="p">],</span> <span class="n">format</span><span class="o">=</span><span class="s">&#39;%Y-%m-</span><span class="si">%d</span><span class="s">T%H:%M:%S&#39;</span><span class="p">),</span>
+            <span class="n">tmax</span><span class="o">=</span><span class="n">dummy_aware_str_to_time</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s">&#39;end&#39;</span><span class="p">]),</span>
             <span class="n">lat</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s">&#39;latitude&#39;</span><span class="p">]),</span>
             <span class="n">lon</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s">&#39;longitude&#39;</span><span class="p">]),</span>
             <span class="n">elevation</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s">&#39;elevation&#39;</span><span class="p">]),</span>

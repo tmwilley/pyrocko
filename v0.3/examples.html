@@ -251,7 +251,7 @@ deconvolve the transfer function from an example seismogram:</p>
 <span class="c"># read poles and zeros from SAC format pole-zero file</span>
 <span class="n">zeros</span><span class="p">,</span> <span class="n">poles</span><span class="p">,</span> <span class="n">constant</span> <span class="o">=</span> <span class="n">pz</span><span class="o">.</span><span class="n">read_sac_zpk</span><span class="p">(</span><span class="s">&#39;STS2-Generic.polezero.txt&#39;</span><span class="p">)</span>
 
-<span class="n">zeros</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mf">0.0j</span><span class="p">)</span>  <span class="c"># one more for displacement</span>
+<span class="n">zeros</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mf">0.0</span><span class="n">j</span><span class="p">)</span>  <span class="c"># one more for displacement</span>
 
 <span class="c"># create pole-zero response function object for restitution, so poles and zeros</span>
 <span class="c"># from the response file are swapped here.</span>

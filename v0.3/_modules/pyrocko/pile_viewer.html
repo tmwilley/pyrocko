@@ -52,10 +52,12 @@
             
   <h1>Source code for pyrocko.pile_viewer</h1><div class="highlight"><pre>
 <span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">time</span><span class="o">,</span> <span class="nn">calendar</span><span class="o">,</span> <span class="nn">datetime</span><span class="o">,</span> <span class="nn">signal</span><span class="o">,</span> <span class="nn">re</span><span class="o">,</span> <span class="nn">math</span><span class="o">,</span> <span class="nn">logging</span><span class="o">,</span> <span class="nn">operator</span><span class="o">,</span> <span class="nn">copy</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">groupby</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">num</span> 
 <span class="kn">import</span> <span class="nn">pyrocko.model</span><span class="o">,</span> <span class="nn">pyrocko.pile</span><span class="o">,</span> <span class="nn">pyrocko.shadow_pile</span><span class="o">,</span> <span class="nn">pyrocko.trace</span>
 <span class="kn">import</span> <span class="nn">pyrocko.util</span><span class="o">,</span> <span class="nn">pyrocko.plot</span><span class="o">,</span> <span class="nn">pyrocko.snuffling</span><span class="o">,</span> <span class="nn">pyrocko.snufflings</span>
+<span class="kn">import</span> <span class="nn">pyrocko.marker_editor</span>
 
 <span class="kn">from</span> <span class="nn">pyrocko.util</span> <span class="kn">import</span> <span class="n">hpfloat</span>
 
@@ -75,7 +77,7 @@
     <span class="n">qfiledialog_options</span> <span class="o">=</span> <span class="n">QFileDialog</span><span class="o">.</span><span class="n">DontUseNativeDialog</span>
     <span class="n">macosx</span> <span class="o">=</span> <span class="bp">True</span>
 <span class="k">else</span><span class="p">:</span>
-    <span class="n">qfiledialog_options</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">qfiledialog_options</span> <span class="o">=</span> <span class="n">QFileDialog</span><span class="o">.</span><span class="n">DontUseSheet</span>
     <span class="n">macosx</span> <span class="o">=</span> <span class="bp">False</span>
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s">&#39;pyrocko.pile_viewer&#39;</span><span class="p">)</span>
 
@@ -116,6 +118,10 @@
         <span class="k">return</span> <span class="bp">None</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">m_float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="make_chunks"><a class="viewcode-back" href="../../pile_viewer.html#pyrocko.pile_viewer.make_chunks">[docs]</a><span class="k">def</span> <span class="nf">make_chunks</span><span class="p">(</span><span class="n">items</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Split a list of integers into sublists of consecutive elements.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">[</span><span class="nb">map</span><span class="p">(</span><span class="n">operator</span><span class="o">.</span><span class="n">itemgetter</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">g</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">groupby</span><span class="p">(</span><span class="nb">enumerate</span><span class="p">(</span><span class="n">items</span><span class="p">),</span> <span class="k">lambda</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="n">x</span><span class="p">):</span><span class="n">i</span><span class="o">-</span><span class="n">x</span><span class="p">)]</span>
 </div>
 <div class="viewcode-block" id="deg_float"><a class="viewcode-back" href="../../pile_viewer.html#pyrocko.pile_viewer.deg_float">[docs]</a><span class="k">class</span> <span class="nc">deg_float</span><span class="p">(</span><span class="nb">float</span><span class="p">):</span>
     
@@ -644,7 +650,6 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">highpass</span> <span class="o">=</span> <span class="bp">None</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">gain</span> <span class="o">=</span> <span class="mf">1.0</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">rotate</span> <span class="o">=</span> <span class="mf">0.0</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">markers</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">picking_down</span> <span class="o">=</span> <span class="bp">None</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">picking</span> <span class="o">=</span> <span class="bp">None</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">floating_marker</span> <span class="o">=</span> <span class="bp">None</span>
@@ -695,6 +700,10 @@
             <span class="n">mi</span> <span class="o">=</span> <span class="n">QAction</span><span class="p">(</span><span class="s">&#39;Read markers...&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">menu</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">menu</span><span class="o">.</span><span class="n">addAction</span><span class="p">(</span><span class="n">mi</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span> <span class="n">mi</span><span class="p">,</span> <span class="n">SIGNAL</span><span class="p">(</span><span class="s">&quot;triggered(bool)&quot;</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_markers</span> <span class="p">)</span>
+            
+            <span class="n">mi</span> <span class="o">=</span> <span class="n">QAction</span><span class="p">(</span><span class="s">&#39;Read events...&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">menu</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">menu</span><span class="o">.</span><span class="n">addAction</span><span class="p">(</span><span class="n">mi</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span> <span class="n">mi</span><span class="p">,</span> <span class="n">SIGNAL</span><span class="p">(</span><span class="s">&quot;triggered(bool)&quot;</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_events</span><span class="p">)</span>
             
             <span class="bp">self</span><span class="o">.</span><span class="n">menu</span><span class="o">.</span><span class="n">addSeparator</span><span class="p">()</span>
             
@@ -1079,6 +1088,10 @@
             <span class="n">marker</span> <span class="o">=</span> <span class="n">EventMarker</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">add_marker</span><span class="p">(</span> <span class="n">marker</span> <span class="p">)</span>
        
+        <span class="k">def</span> <span class="nf">add_events</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">events</span><span class="p">):</span>
+            <span class="n">markers</span> <span class="o">=</span> <span class="p">[</span><span class="n">EventMarker</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">events</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_markers</span><span class="p">(</span><span class="n">markers</span><span class="p">)</span>
+
         <span class="k">def</span> <span class="nf">set_event_marker_as_origin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ignore</span><span class="p">):</span>
             <span class="n">selected</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">selected_markers</span><span class="p">()</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">selected</span><span class="p">:</span>
@@ -1454,6 +1467,19 @@
                 <span class="n">Marker</span><span class="o">.</span><span class="n">save_markers</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selected_markers</span><span class="p">(),</span> <span class="n">fn</span><span class="p">,</span>
                         <span class="n">fdigits</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">time_fractional_digits</span><span class="p">())</span>
 
+        <span class="k">def</span> <span class="nf">read_events</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">            Open QFileDialog to open, read and add :py:class:`pyrocko.model.Event`</span>
+<span class="sd">            instances and their marker representation to the pile viewer.</span>
+<span class="sd">            &#39;&#39;&#39;</span>
+            <span class="n">caption</span> <span class="o">=</span> <span class="s">&quot;Selet one or more files to open&quot;</span>
+            <span class="n">fn</span> <span class="o">=</span> <span class="n">QFileDialog</span><span class="o">.</span><span class="n">getOpenFileName</span><span class="p">(</span>
+                <span class="bp">self</span><span class="p">,</span> <span class="n">caption</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="n">qfiledialog_options</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">fn</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">add_events</span><span class="p">(</span><span class="n">pyrocko</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">Event</span><span class="o">.</span><span class="n">load_catalog</span><span class="p">(</span><span class="n">fn</span><span class="p">))</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">associate_phases_to_events</span><span class="p">()</span>
+
         <span class="k">def</span> <span class="nf">read_markers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
             <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">            Open QFileDialog to open, read and add markers to the pile viewer.</span>
@@ -1467,7 +1493,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">associate_phases_to_events</span><span class="p">()</span>
 
         <span class="k">def</span> <span class="nf">associate_phases_to_events</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-            
+
             <span class="n">hash_to_events</span> <span class="o">=</span> <span class="p">{}</span>
             <span class="n">time_to_events</span> <span class="o">=</span> <span class="p">{}</span>
             <span class="k">for</span> <span class="n">marker</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">markers</span><span class="p">:</span>
@@ -1487,26 +1513,62 @@
                         <span class="k">elif</span> <span class="n">t</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">time_to_events</span><span class="p">:</span>
                             <span class="n">marker</span><span class="o">.</span><span class="n">set_event</span><span class="p">(</span><span class="n">time_to_events</span><span class="p">[</span><span class="n">t</span><span class="p">])</span>
                             <span class="n">marker</span><span class="o">.</span><span class="n">set_event_hash</span><span class="p">(</span><span class="bp">None</span><span class="p">)</span>
-        
+
         <span class="k">def</span> <span class="nf">add_marker</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">marker</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">markers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">marker</span><span class="p">)</span>
-        
+            <span class="bp">self</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span>
+                <span class="n">SIGNAL</span><span class="p">(</span><span class="s">&#39;markers_added(int,int)&#39;</span><span class="p">),</span>
+                <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">markers</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">markers</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
         <span class="k">def</span> <span class="nf">add_markers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">markers</span><span class="p">):</span>
+            <span class="n">len_before</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">markers</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">markers</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">markers</span><span class="p">)</span>
-        
+            <span class="bp">self</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span>
+                <span class="n">SIGNAL</span><span class="p">(</span><span class="s">&#39;markers_added(int,int)&#39;</span><span class="p">),</span> 
+                <span class="n">len_before</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">markers</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
         <span class="k">def</span> <span class="nf">remove_marker</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">marker</span><span class="p">):</span>
+            <span class="sd">&#39;&#39;&#39;Remove a *marker* from the :py:class:`PileViewer`.</span>
+
+<span class="sd">            :param marker: :py:class:`Marker` (or subclass) instance&#39;&#39;&#39;</span>
             <span class="k">try</span><span class="p">:</span>
+                <span class="n">indx</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">markers</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">marker</span><span class="p">)]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">remove_marker_from_menu</span><span class="p">(</span><span class="n">indx</span><span class="p">,</span> <span class="n">indx</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">markers</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">marker</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">marker</span> <span class="ow">is</span> <span class="bp">self</span><span class="o">.</span><span class="n">active_event_marker</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">active_event_marker</span><span class="o">.</span><span class="n">set_active</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">active_event_marker</span> <span class="o">=</span> <span class="bp">None</span>
 
-            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                 <span class="k">pass</span>
 
         <span class="k">def</span> <span class="nf">remove_markers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">markers</span><span class="p">):</span>
-            <span class="k">for</span> <span class="n">marker</span> <span class="ow">in</span> <span class="n">markers</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">remove_marker</span><span class="p">(</span><span class="n">marker</span><span class="p">)</span>
+            <span class="sd">&#39;&#39;&#39;Remove a list of *markers* from the :py:class:`PileViewer`.</span>
+
+<span class="sd">            :param markers: list of :py:class:`Marker` (or subclass)</span>
+<span class="sd">                            instances&#39;&#39;&#39;</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">indxs</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">markers</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">m</span><span class="p">)</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">markers</span><span class="p">]</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="k">return</span>
+
+            <span class="n">chunks</span> <span class="o">=</span> <span class="n">make_chunks</span><span class="p">(</span><span class="n">indxs</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="n">chunks</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">remove_marker_from_menu</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">chunk</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="n">chunk</span><span class="p">))</span>
+                    <span class="n">about_to_remove</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">markers</span><span class="p">[</span><span class="n">i_m</span><span class="p">]</span> <span class="k">for</span> <span class="n">i_m</span> <span class="ow">in</span> <span class="n">chunk</span><span class="p">]</span>
+
+                    <span class="k">for</span> <span class="n">marker</span> <span class="ow">in</span> <span class="n">about_to_remove</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">markers</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">marker</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="n">marker</span> <span class="ow">is</span> <span class="bp">self</span><span class="o">.</span><span class="n">active_event_marker</span><span class="p">:</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">active_event_marker</span><span class="o">.</span><span class="n">set_active</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">active_event_marker</span> <span class="o">=</span> <span class="bp">None</span>
+
+                <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                    <span class="k">pass</span>
+
+        <span class="k">def</span> <span class="nf">remove_marker_from_menu</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">istart</span><span class="p">,</span> <span class="n">istop</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">SIGNAL</span><span class="p">(</span><span class="s">&#39;markers_removed(int, int)&#39;</span><span class="p">),</span> <span class="n">istart</span><span class="p">,</span> <span class="n">istop</span><span class="p">)</span>
 
         <span class="k">def</span> <span class="nf">set_markers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">markers</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">markers</span> <span class="o">=</span> <span class="n">markers</span>
@@ -1531,6 +1593,7 @@
                     <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">mouse_ev</span><span class="o">.</span><span class="n">modifiers</span><span class="p">()</span> <span class="o">&amp;</span> <span class="n">Qt</span><span class="o">.</span><span class="n">ShiftModifier</span><span class="p">):</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">deselect_all</span><span class="p">()</span>
                     <span class="n">marker</span><span class="o">.</span><span class="n">set_selected</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">emit_selected_markers</span><span class="p">()</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">track_start</span> <span class="o">=</span> <span class="n">mouse_ev</span><span class="o">.</span><span class="n">x</span><span class="p">(),</span> <span class="n">mouse_ev</span><span class="o">.</span><span class="n">y</span><span class="p">()</span>
@@ -1547,6 +1610,7 @@
             
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">picking</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">stop_picking</span><span class="p">(</span><span class="n">mouse_ev</span><span class="o">.</span><span class="n">x</span><span class="p">(),</span> <span class="n">mouse_ev</span><span class="o">.</span><span class="n">y</span><span class="p">())</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">emit_selected_markers</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">track_start</span> <span class="o">=</span> <span class="bp">None</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">track_trange</span> <span class="o">=</span> <span class="bp">None</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">update_status</span><span class="p">()</span>
@@ -1807,7 +1871,13 @@
 
             <span class="k">elif</span> <span class="n">keytext</span> <span class="o">==</span> <span class="s">&#39;g&#39;</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">go_to_selection</span><span class="p">()</span>
-               
+
+            <span class="k">elif</span> <span class="n">keytext</span> <span class="o">==</span> <span class="s">&#39;m&#39;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">toggle_marker_editor</span><span class="p">()</span>
+
+            <span class="k">elif</span> <span class="n">keytext</span> <span class="o">==</span> <span class="s">&#39;c&#39;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">toggle_main_controls</span><span class="p">()</span>
+
             <span class="k">elif</span> <span class="n">key_event</span><span class="o">.</span><span class="n">key</span><span class="p">()</span> <span class="ow">in</span> <span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">Key_Left</span><span class="p">,</span> <span class="n">Qt</span><span class="o">.</span><span class="n">Key_Right</span><span class="p">):</span>
                 <span class="nb">dir</span> <span class="o">=</span> <span class="mi">1</span>
                 <span class="n">amount</span> <span class="o">=</span> <span class="mi">1</span>
@@ -1817,8 +1887,25 @@
                     <span class="n">amount</span> <span class="o">=</span> <span class="mi">10</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">nudge_selected_markers</span><span class="p">(</span><span class="nb">dir</span><span class="o">*</span><span class="n">amount</span><span class="p">)</span>
 
+            <span class="k">if</span> <span class="n">keytext</span> <span class="ow">in</span> <span class="s">&#39;degaA&#39;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">emit_selected_markers</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">update_status</span><span class="p">()</span>
+
+        <span class="k">def</span> <span class="nf">emit_selected_markers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="n">_indexes</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">selected_markers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">selected_markers</span><span class="p">()</span>
+            <span class="n">markers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_markers</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">sm</span> <span class="ow">in</span> <span class="n">selected_markers</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">sm</span> <span class="ow">in</span> <span class="n">markers</span><span class="p">:</span>
+                    <span class="n">_indexes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">markers</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">sm</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">SIGNAL</span><span class="p">(</span><span class="s">&#39;changed_marker_selection&#39;</span><span class="p">),</span> <span class="n">_indexes</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">toggle_marker_editor</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">panel_parent</span><span class="o">.</span><span class="n">toggle_marker_editor</span><span class="p">()</span>
+
+        <span class="k">def</span> <span class="nf">toggle_main_controls</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">panel_parent</span><span class="o">.</span><span class="n">toggle_main_controls</span><span class="p">()</span>
 
         <span class="k">def</span> <span class="nf">nudge_selected_markers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">npixels</span><span class="p">):</span>
             <span class="n">a</span><span class="p">,</span><span class="n">b</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_projection</span><span class="o">.</span><span class="n">ur</span>
@@ -1827,7 +1914,7 @@
                 <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">marker</span><span class="p">,</span><span class="n">EventMarker</span><span class="p">):</span>
                     <span class="n">marker</span><span class="o">.</span><span class="n">tmin</span> <span class="o">+=</span> <span class="n">npixels</span> <span class="o">*</span> <span class="p">(</span><span class="n">d</span><span class="o">-</span><span class="n">c</span><span class="p">)</span><span class="o">/</span><span class="n">b</span>
                     <span class="n">marker</span><span class="o">.</span><span class="n">tmax</span> <span class="o">+=</span> <span class="n">npixels</span> <span class="o">*</span> <span class="p">(</span><span class="n">d</span><span class="o">-</span><span class="n">c</span><span class="p">)</span><span class="o">/</span><span class="n">b</span>
-  
+
         <span class="k">def</span> <span class="nf">about</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
             <span class="n">fn</span> <span class="o">=</span> <span class="n">pyrocko</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">data_file</span><span class="p">(</span><span class="s">&#39;snuffler.png&#39;</span><span class="p">)</span>
             <span class="n">txt</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span> <span class="n">pyrocko</span><span class="o">.</span><span class="n">util</span><span class="o">.</span><span class="n">data_file</span><span class="p">(</span><span class="s">&#39;snuffler_about.html&#39;</span><span class="p">)</span> <span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
@@ -2810,7 +2897,18 @@
         <span class="k">def</span> <span class="nf">rot_change</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">ignore</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">rotate</span> <span class="o">=</span> <span class="n">value</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
-        
+
+        <span class="k">def</span> <span class="nf">set_selected_markers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">markers</span><span class="p">):</span>
+            <span class="sd">&#39;&#39;&#39;Set a list of markers selected</span>
+
+<span class="sd">            :param markers: list of markers</span>
+<span class="sd">            &#39;&#39;&#39;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">deselect_all</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">markers</span><span class="p">:</span>
+                <span class="n">m</span><span class="o">.</span><span class="n">set_selected</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+
         <span class="k">def</span> <span class="nf">deselect_all</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
             <span class="k">for</span> <span class="n">marker</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">markers</span><span class="p">:</span>
                 <span class="n">marker</span><span class="o">.</span><span class="n">set_selected</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
@@ -2837,15 +2935,15 @@
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">abort</span><span class="p">:</span>
                     <span class="n">tmi</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">floating_marker</span><span class="o">.</span><span class="n">tmin</span>
                     <span class="n">tma</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">floating_marker</span><span class="o">.</span><span class="n">tmax</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">markers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">floating_marker</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">add_marker</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">floating_marker</span><span class="p">)</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">floating_marker</span><span class="o">.</span><span class="n">set_selected</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
-                    <span class="k">print</span> <span class="bp">self</span><span class="o">.</span><span class="n">floating_marker</span>
-                
+                    <span class="bp">self</span><span class="o">.</span><span class="n">emit_selected_markers</span><span class="p">()</span>
+
                 <span class="bp">self</span><span class="o">.</span><span class="n">floating_marker</span> <span class="o">=</span> <span class="bp">None</span>
-        
-        
+
+
         <span class="k">def</span> <span class="nf">start_picking</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ignore</span><span class="p">):</span>
-            
+
             <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">picking</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">deselect_all</span><span class="p">()</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">picking</span> <span class="o">=</span> <span class="n">QRubberBand</span><span class="p">(</span><span class="n">QRubberBand</span><span class="o">.</span><span class="n">Rectangle</span><span class="p">)</span>
@@ -3151,22 +3249,22 @@
 </div></div>
 <div class="viewcode-block" id="PileViewer"><a class="viewcode-back" href="../../pile_viewer.html#pyrocko.pile_viewer.PileViewer">[docs]</a><span class="k">class</span> <span class="nc">PileViewer</span><span class="p">(</span><span class="n">QFrame</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;PileViewerMain + Controls + Inputline&#39;&#39;&#39;</span>
-    
+
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pile</span><span class="p">,</span> <span class="n">ntracks_shown_max</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">use_opengl</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">panel_parent</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
         <span class="nb">apply</span><span class="p">(</span><span class="n">QFrame</span><span class="o">.</span><span class="n">__init__</span><span class="p">,</span> <span class="p">(</span><span class="bp">self</span><span class="p">,)</span> <span class="o">+</span> <span class="n">args</span><span class="p">)</span>
-        
+
         <span class="k">if</span> <span class="n">use_opengl</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">viewer</span> <span class="o">=</span> <span class="n">GLPileViewerMain</span><span class="p">(</span><span class="n">pile</span><span class="p">,</span> <span class="n">ntracks_shown_max</span><span class="o">=</span><span class="n">ntracks_shown_max</span><span class="p">,</span> <span class="n">panel_parent</span><span class="o">=</span><span class="n">panel_parent</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">viewer</span> <span class="o">=</span> <span class="n">PileViewerMain</span><span class="p">(</span><span class="n">pile</span><span class="p">,</span> <span class="n">ntracks_shown_max</span><span class="o">=</span><span class="n">ntracks_shown_max</span><span class="p">,</span> <span class="n">panel_parent</span><span class="o">=</span><span class="n">panel_parent</span><span class="p">)</span>
-        
+
         <span class="n">layout</span> <span class="o">=</span> <span class="n">QGridLayout</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">setLayout</span><span class="p">(</span> <span class="n">layout</span> <span class="p">)</span>
         <span class="n">layout</span><span class="o">.</span><span class="n">setContentsMargins</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
         <span class="n">layout</span><span class="o">.</span><span class="n">setSpacing</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-        
-        <span class="c">#self.setFrameShape(QFrame.StyledPanel)</span>
-        <span class="c">#self.setFrameShadow(QFrame.Sunken)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">setFrameShape</span><span class="p">(</span><span class="n">QFrame</span><span class="o">.</span><span class="n">StyledPanel</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setFrameShadow</span><span class="p">(</span><span class="n">QFrame</span><span class="o">.</span><span class="n">Sunken</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">history</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;&#39;</span><span class="p">]</span>
 
@@ -3189,9 +3287,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inputline</span><span class="p">,</span> <span class="n">SIGNAL</span><span class="p">(</span><span class="s">&#39;textEdited(QString)&#39;</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputline_changed</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">inputline</span><span class="o">.</span><span class="n">setFocusPolicy</span><span class="p">(</span><span class="n">Qt</span><span class="o">.</span><span class="n">ClickFocus</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">input_area</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
-        
+
         <span class="bp">self</span><span class="o">.</span><span class="n">inputline_error_str</span> <span class="o">=</span> <span class="bp">None</span>
-        
+
         <span class="bp">self</span><span class="o">.</span><span class="n">inputline_error</span> <span class="o">=</span> <span class="n">QLabel</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">inputline_error</span><span class="o">.</span><span class="n">hide</span><span class="p">()</span>
 
@@ -3325,6 +3423,12 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">adjust_controls</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">frame</span>
+</div>
+<div class="viewcode-block" id="PileViewer.marker_editor"><a class="viewcode-back" href="../../pile_viewer.html#pyrocko.pile_viewer.PileViewer.marker_editor">[docs]</a>    <span class="k">def</span> <span class="nf">marker_editor</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">editor</span> <span class="o">=</span> <span class="n">pyrocko</span><span class="o">.</span><span class="n">marker_editor</span><span class="o">.</span><span class="n">MarkerEditor</span><span class="p">()</span>
+        <span class="n">editor</span><span class="o">.</span><span class="n">set_viewer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_view</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">editor</span><span class="o">.</span><span class="n">get_marker_model</span><span class="p">(),</span> <span class="n">SIGNAL</span><span class="p">(</span><span class="s">&#39;dataChanged()&#39;</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">update_contents</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">editor</span>
 </div>
 <div class="viewcode-block" id="PileViewer.adjust_controls"><a class="viewcode-back" href="../../pile_viewer.html#pyrocko.pile_viewer.PileViewer.adjust_controls">[docs]</a>    <span class="k">def</span> <span class="nf">adjust_controls</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">dtmin</span><span class="p">,</span> <span class="n">dtmax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">viewer</span><span class="o">.</span><span class="n">content_deltat_range</span><span class="p">()</span>

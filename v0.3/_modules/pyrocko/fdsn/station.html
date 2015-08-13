@@ -53,14 +53,17 @@
   <h1>Source code for pyrocko.fdsn.station</h1><div class="highlight"><pre>
 <span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">calendar</span>
+<span class="kn">import</span> <span class="nn">re</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">num</span>
 
 <span class="kn">from</span> <span class="nn">pyrocko.guts</span> <span class="kn">import</span> <span class="n">StringChoice</span><span class="p">,</span> <span class="n">StringPattern</span><span class="p">,</span> <span class="n">UnicodePattern</span><span class="p">,</span> <span class="n">String</span><span class="p">,</span>\
-    <span class="n">Unicode</span><span class="p">,</span> <span class="n">Int</span><span class="p">,</span> <span class="n">Float</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Object</span><span class="p">,</span> <span class="n">Timestamp</span><span class="p">,</span> <span class="n">ValidationError</span>
+    <span class="n">Unicode</span><span class="p">,</span> <span class="n">Int</span><span class="p">,</span> <span class="n">Float</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Object</span><span class="p">,</span> <span class="n">Timestamp</span><span class="p">,</span> <span class="n">ValidationError</span><span class="p">,</span> <span class="n">TBase</span>
 <span class="kn">from</span> <span class="nn">pyrocko.guts</span> <span class="kn">import</span> <span class="n">load_xml</span>  <span class="c"># noqa</span>
 
-<span class="kn">from</span> <span class="nn">pyrocko</span> <span class="kn">import</span> <span class="n">trace</span><span class="p">,</span> <span class="n">model</span>
+<span class="kn">from</span> <span class="nn">pyrocko</span> <span class="kn">import</span> <span class="n">trace</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">util</span>
 
 <span class="n">guts_prefix</span> <span class="o">=</span> <span class="s">&#39;pf&#39;</span>
 
@@ -113,7 +116,54 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="nb">all</span><span class="p">(</span><span class="n">r</span> <span class="o">==</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">x</span><span class="p">)</span>
 
+<span class="n">this_year</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">gmtime</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
 
+<div class="viewcode-block" id="DummyAwareOptionalTimestamp"><a class="viewcode-back" href="../../../fdsn.html#pyrocko.fdsn.station.DummyAwareOptionalTimestamp">[docs]</a><span class="k">class</span> <span class="nc">DummyAwareOptionalTimestamp</span><span class="p">(</span><span class="n">Object</span><span class="p">):</span>
+    <span class="n">dummy_for</span> <span class="o">=</span> <span class="nb">float</span>
+
+    <span class="k">class</span> <span class="nc">__T</span><span class="p">(</span><span class="n">TBase</span><span class="p">):</span>
+
+        <span class="k">def</span> <span class="nf">regularize_extra</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">):</span>
+                <span class="n">tt</span> <span class="o">=</span> <span class="n">val</span><span class="o">.</span><span class="n">utctimetuple</span><span class="p">()</span>
+                <span class="n">val</span> <span class="o">=</span> <span class="n">calendar</span><span class="o">.</span><span class="n">timegm</span><span class="p">(</span><span class="n">tt</span><span class="p">)</span> <span class="o">+</span> <span class="n">val</span><span class="o">.</span><span class="n">microsecond</span> <span class="o">*</span> <span class="mf">1e-6</span>
+
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">date</span><span class="p">):</span>
+                <span class="n">tt</span> <span class="o">=</span> <span class="n">val</span><span class="o">.</span><span class="n">timetuple</span><span class="p">()</span>
+                <span class="n">val</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">calendar</span><span class="o">.</span><span class="n">timegm</span><span class="p">(</span><span class="n">tt</span><span class="p">))</span>
+
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">unicode</span><span class="p">):</span>
+                <span class="n">val</span> <span class="o">=</span> <span class="n">val</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+                <span class="n">val</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s">r&#39;(Z|\+00(:?00)?)$&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">val</span><span class="p">[</span><span class="mi">10</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;T&#39;</span><span class="p">:</span>
+                    <span class="n">val</span> <span class="o">=</span> <span class="n">val</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;T&#39;</span><span class="p">,</span> <span class="s">&#39; &#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">val</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">str_to_time</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+
+                <span class="k">except</span> <span class="n">util</span><span class="o">.</span><span class="n">TimeStrError</span><span class="p">:</span>
+                    <span class="n">year</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">val</span><span class="p">[:</span><span class="mi">4</span><span class="p">])</span>
+                    <span class="k">if</span> <span class="n">year</span> <span class="o">&gt;</span> <span class="n">this_year</span> <span class="o">+</span> <span class="mi">100</span><span class="p">:</span>
+                        <span class="k">return</span> <span class="bp">None</span>  <span class="c"># StationXML contained a dummy end date</span>
+
+                    <span class="k">raise</span>
+
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+                <span class="n">val</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">: cannot convert &quot;</span><span class="si">%s</span><span class="s">&quot; to float&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xname</span><span class="p">(),</span> <span class="n">val</span><span class="p">))</span>
+
+            <span class="k">return</span> <span class="n">val</span>
+
+        <span class="k">def</span> <span class="nf">to_save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcfromtimestamp</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">to_save_xml</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcfromtimestamp</span><span class="p">(</span><span class="n">val</span><span class="p">)</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span> <span class="o">+</span> <span class="s">&#39;Z&#39;</span>
+
+</div>
 <div class="viewcode-block" id="Nominal"><a class="viewcode-back" href="../../../fdsn.html#pyrocko.fdsn.station.Nominal">[docs]</a><span class="k">class</span> <span class="nc">Nominal</span><span class="p">(</span><span class="n">StringChoice</span><span class="p">):</span>
     <span class="n">choices</span> <span class="o">=</span> <span class="p">[</span>
         <span class="s">&#39;NOMINAL&#39;</span><span class="p">,</span>
@@ -288,7 +338,8 @@
     <span class="n">serial_number</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">xmltagname</span><span class="o">=</span><span class="s">&#39;SerialNumber&#39;</span><span class="p">)</span>
     <span class="n">installation_date</span> <span class="o">=</span> <span class="n">Timestamp</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
                                     <span class="n">xmltagname</span><span class="o">=</span><span class="s">&#39;InstallationDate&#39;</span><span class="p">)</span>
-    <span class="n">removal_date</span> <span class="o">=</span> <span class="n">Timestamp</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">xmltagname</span><span class="o">=</span><span class="s">&#39;RemovalDate&#39;</span><span class="p">)</span>
+    <span class="n">removal_date</span> <span class="o">=</span> <span class="n">DummyAwareOptionalTimestamp</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+                                                 <span class="n">xmltagname</span><span class="o">=</span><span class="s">&#39;RemovalDate&#39;</span><span class="p">)</span>
     <span class="n">calibration_date_list</span> <span class="o">=</span> <span class="n">List</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">Timestamp</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">xmltagname</span><span class="o">=</span><span class="s">&#39;CalibrationDate&#39;</span><span class="p">))</span>
 
 </div>
@@ -645,7 +696,8 @@
 
     <span class="n">code</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">xmlstyle</span><span class="o">=</span><span class="s">&#39;attribute&#39;</span><span class="p">)</span>
     <span class="n">start_date</span> <span class="o">=</span> <span class="n">Timestamp</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">xmlstyle</span><span class="o">=</span><span class="s">&#39;attribute&#39;</span><span class="p">)</span>
-    <span class="n">end_date</span> <span class="o">=</span> <span class="n">Timestamp</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">xmlstyle</span><span class="o">=</span><span class="s">&#39;attribute&#39;</span><span class="p">)</span>
+    <span class="n">end_date</span> <span class="o">=</span> <span class="n">DummyAwareOptionalTimestamp</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+                                             <span class="n">xmlstyle</span><span class="o">=</span><span class="s">&#39;attribute&#39;</span><span class="p">)</span>
     <span class="n">restricted_status</span> <span class="o">=</span> <span class="n">RestrictedStatus</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">xmlstyle</span><span class="o">=</span><span class="s">&#39;attribute&#39;</span><span class="p">)</span>
     <span class="n">alternate_code</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">xmlstyle</span><span class="o">=</span><span class="s">&#39;attribute&#39;</span><span class="p">)</span>
     <span class="n">historical_code</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">xmlstyle</span><span class="o">=</span><span class="s">&#39;attribute&#39;</span><span class="p">)</span>
@@ -717,11 +769,12 @@
     <span class="n">equipment_list</span> <span class="o">=</span> <span class="n">List</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">Equipment</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">xmltagname</span><span class="o">=</span><span class="s">&#39;Equipment&#39;</span><span class="p">))</span>
     <span class="n">operator_list</span> <span class="o">=</span> <span class="n">List</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">Operator</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">xmltagname</span><span class="o">=</span><span class="s">&#39;Operator&#39;</span><span class="p">))</span>
     <span class="n">creation_date</span> <span class="o">=</span> <span class="n">Timestamp</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">xmltagname</span><span class="o">=</span><span class="s">&#39;CreationDate&#39;</span><span class="p">)</span>
-    <span class="n">termination_date</span> <span class="o">=</span> <span class="n">Timestamp</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">xmltagname</span><span class="o">=</span><span class="s">&#39;TerminationDate&#39;</span><span class="p">)</span>
-    <span class="n">total_number_channels</span> <span class="o">=</span> <span class="n">Counter</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
-                                      <span class="n">xmltagname</span><span class="o">=</span><span class="s">&#39;TotalNumberChannels&#39;</span><span class="p">)</span>
-    <span class="n">selected_number_channels</span> <span class="o">=</span> <span class="n">Counter</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
-                                         <span class="n">xmltagname</span><span class="o">=</span><span class="s">&#39;SelectedNumberChannels&#39;</span><span class="p">)</span>
+    <span class="n">termination_date</span> <span class="o">=</span> <span class="n">DummyAwareOptionalTimestamp</span><span class="o">.</span><span class="n">T</span><span class="p">(</span>
+        <span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">xmltagname</span><span class="o">=</span><span class="s">&#39;TerminationDate&#39;</span><span class="p">)</span>
+    <span class="n">total_number_channels</span> <span class="o">=</span> <span class="n">Counter</span><span class="o">.</span><span class="n">T</span><span class="p">(</span>
+        <span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">xmltagname</span><span class="o">=</span><span class="s">&#39;TotalNumberChannels&#39;</span><span class="p">)</span>
+    <span class="n">selected_number_channels</span> <span class="o">=</span> <span class="n">Counter</span><span class="o">.</span><span class="n">T</span><span class="p">(</span>
+        <span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">xmltagname</span><span class="o">=</span><span class="s">&#39;SelectedNumberChannels&#39;</span><span class="p">)</span>
     <span class="n">external_reference_list</span> <span class="o">=</span> <span class="n">List</span><span class="o">.</span><span class="n">T</span><span class="p">(</span>
         <span class="n">ExternalReference</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">xmltagname</span><span class="o">=</span><span class="s">&#39;ExternalReference&#39;</span><span class="p">))</span>
     <span class="n">channel_list</span> <span class="o">=</span> <span class="n">List</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">Channel</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">xmltagname</span><span class="o">=</span><span class="s">&#39;Channel&#39;</span><span class="p">))</span>
