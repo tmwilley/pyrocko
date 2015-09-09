@@ -31,27 +31,39 @@ tango_colors = {
 'aluminium6': ( 46,  52,  54)
 }
 
+def to01(c):
+    return tuple(x/255. for x in c)
+
 graph_colors = [ tango_colors[_x] for _x in ('scarletred2', 'skyblue3', 'chameleon3', 'orange2', 'plum2', 'chocolate2', 'butter2') ]
 
-        
+
 def color(x=None):
     if x is None:
         return tuple( [ random.randint(0,255) for _x in 'rgb' ] )
-        
+
     if isinstance(x,int):
         if 0 <= x < len(graph_colors):
             return  graph_colors[x]
         else:
             return (0,0,0)
-   
+
     elif isinstance(x,str):
         if x in tango_colors:
             return tango_colors[x]
-        
+
     elif isinstance(x, tuple):
         return x
-        
+
     assert False, "Don't know what to do with this color definition: %s" % x
+
+
+def color01(x=None):
+    t = color(x)
+    if isinstance(t, tuple):
+        return to01(t)
+
+    return t
+
 
 def nice_value(x):
     '''Round x to nice value.'''
@@ -272,3 +284,55 @@ class AutoScaler:
             else:
                 a = 'min-max'
         return a
+
+
+def plot_responses(
+        responses, labels=None, fmin=0.001, fmax=100., nf=100,
+        differentiate=0, integrate=0,
+        fig=None, axes_amp=None, axes_phase=None, show=False):
+
+    import matplotlib.pyplot as plt
+    import numpy as num
+    from pyrocko import trace
+
+    logfmin = math.log(fmin)
+    logfmax = math.log(fmax)
+    logf = num.linspace(logfmin, logfmax, nf)
+    freqs = num.exp(logf)
+
+    if axes_amp is None and axes_phase is None:
+        if fig is None:
+            fig = plt.figure()
+
+        axes_amp = fig.add_subplot(2, 1, 1)
+        axes_phase = fig.add_subplot(2, 1, 2)
+
+    for i, (response, label) in enumerate(zip(responses, labels)):
+        if differentiate != 0:
+            response = trace.MultiplyResponse(
+                [response, trace.IntegrationResponse(n=differentiate)])
+
+        if integrate != 0:
+            response = trace.MultiplyResponse(
+                [response, trace.DifferentiationResponse(n=integrate)])
+
+        coeffs = response.evaluate(freqs)
+
+        if axes_amp:
+            axes_amp.plot(freqs, num.abs(coeffs), color=color01(i), label=label)
+
+        if axes_phase:
+            axes_phase.plot(freqs, num.angle(coeffs), color=color01(i))
+
+    if axes_amp:
+        axes_amp.set_xscale('log')
+        axes_amp.set_yscale('log')
+        if labels:
+            axes_amp.legend(loc='lower right', prop=dict(size=9))
+
+    if axes_phase:
+        axes_phase.set_xscale('log')
+
+
+    if show:
+        plt.show()
