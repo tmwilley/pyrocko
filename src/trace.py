@@ -2074,14 +2074,14 @@ class PoleZeroResponse(FrequencyResponse):
 
     ::
 
-                           (j*2*pi*f - zeros[0]) * (j*2*pi*f - zeros[1]) * ... 
+                           (j*2*pi*f - zeros[0]) * (j*2*pi*f - zeros[1]) * ...
          T(f) = constant * -------------------------------------------------------
                            (j*2*pi*f - poles[0]) * (j*2*pi*f - poles[1]) * ...
-    
-   
+
+
     The poles and zeros should be given as angular frequencies, not in Hz.
     '''
-    
+
     zeros = List.T(Complex.T())
     poles = List.T(Complex.T())
     constant = Complex.T(default=1.0+0j)
@@ -2092,17 +2092,22 @@ class PoleZeroResponse(FrequencyResponse):
         if poles is None:
             poles = []
         FrequencyResponse.__init__(self, zeros=zeros, poles=poles, constant=constant)
-        
+
     def evaluate(self, freqs):
         jomeg = 1.0j* 2.*num.pi*freqs
-        
+
         a = num.ones(freqs.size, dtype=num.complex)*self.constant
         for z in self.zeros:
             a *= jomeg-z
         for p in self.poles:
             a /= jomeg-p
-        
+
         return a
+
+    def to_analog(self):
+        b, a = signal.zpk2tf(self.zeros, self.poles, self.constant)
+        return AnalogFilterResponse(b, a)
+
 
 class ButterworthResponse(FrequencyResponse):
     '''Butterworth frequency response.
@@ -2117,8 +2122,8 @@ class ButterworthResponse(FrequencyResponse):
     type = StringChoice.T(choices=['low', 'high'], default='low')
 
     def evaluate(self, freqs):
-        b, a = signal.butter(int(self.order), float(self.corner), self.type, analog=True)
-        w, h = signal.freqs(b, a, freqs)
+        b, a = signal.butter(self.order, self.corner*2.*math.pi, self.type, analog=True)
+        w, h = signal.freqs(b, a, freqs*2.*math.pi)
         return h
 
 class SampledResponse(FrequencyResponse):
@@ -2195,13 +2200,13 @@ class DifferentiationResponse(FrequencyResponse):
 
     def __init__(self, n=1, gain=1.0):
         FrequencyResponse.__init__(self, n=n, gain=gain)
-        
+
     def evaluate(self, freqs):
         return self.gain * (1.0j * 2. * num.pi * freqs)**self.n
 
 class AnalogFilterResponse(FrequencyResponse):
     '''Frequency response of an analog filter.
-    
+
     (see :py:func:`scipy.signal.freqs`).'''
 
     b = List.T(Float.T())
@@ -2209,9 +2214,15 @@ class AnalogFilterResponse(FrequencyResponse):
 
     def __init__(self, b, a):
         FrequencyResponse.__init__(self, b=b, a=a)
-    
+
     def evaluate(self, freqs):
-        return signal.freqs(self.b, self.a, freqs/(2.*num.pi))[1]
+        return signal.freqs(self.b, self.a, freqs*2.*math.pi)[1]
+
+    def to_digital(self, deltat):
+        if len(self.b) == 1 and len(self.a) == 1:
+            return self.b[0]/self.a[0], 1.0, deltat
+
+        return signal.cont2discrete((self.b, self.a), deltat)
 
 class MultiplyResponse(FrequencyResponse):
     '''Multiplication of several :py:class:`FrequencyResponse` objects.'''
@@ -2229,6 +2240,24 @@ class MultiplyResponse(FrequencyResponse):
             a *= resp.evaluate(freqs)
 
         return a
+
+    def simplify(self):
+        poles = []
+        zeros = []
+        constant = 1.0
+        responses = []
+        for resp in self.responses:
+            if isinstance(resp, PoleZeroResponse):
+                poles.extend(resp.poles)
+                zeros.extend(resp.zeros)
+                constant *= resp.constant
+            else:
+                responses.append(resp)
+
+        if poles or zeros or constant != 1.0:
+            responses[0:0] = [PoleZeroResponse(poles=poles, zeros=zeros, constant=constant)]
+
+        self.responses = responses
 
 def asarray_1d(x, dtype):
     if isinstance(x, (list, tuple)) and x and isinstance(x[0], basestring):
