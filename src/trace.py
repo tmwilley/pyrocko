@@ -2066,13 +2066,16 @@ class InverseEvalresp(FrequencyResponse):
         return 1./transfer
 
 def aslist(x):
-    if isinstance(x, list):
-        return x
+    if x is None:
+        return []
 
-    try:
-        return list(x)
-    except TypeError:
-        return [x]
+    elif isinstance(x, list):
+        return x
+    else:
+        try:
+            return list(x)
+        except TypeError:
+            return [x]
 
 class PoleZeroResponse(FrequencyResponse):
     '''Evaluates frequency response from pole-zero representation.
@@ -2096,11 +2099,7 @@ class PoleZeroResponse(FrequencyResponse):
     constant = Complex.T(default=1.0+0j)
 
     def __init__(self, zeros=None, poles=None, constant=1.0+0j):
-        if zeros is None:
-            zeros = []
-        if poles is None:
-            poles = []
-        FrequencyResponse.__init__(self, zeros=zeros, poles=poles, constant=constant)
+        FrequencyResponse.__init__(self, zeros=aslist(zeros), poles=aslist(poles), constant=constant)
 
     def evaluate(self, freqs):
         jomeg = 1.0j* 2.*num.pi*freqs
@@ -2112,6 +2111,12 @@ class PoleZeroResponse(FrequencyResponse):
             a /= jomeg-p
 
         return a
+
+    def inverse(self):
+        return PoleZeroResponse(
+            poles=self.zeros,
+            zeros=self.poles,
+            constant=1.0/self.constant)
 
     def to_analog(self):
         b, a = signal.zpk2tf(self.zeros, self.poles, self.constant)
@@ -2130,8 +2135,17 @@ class ButterworthResponse(FrequencyResponse):
     order = Int.T(default=4)
     type = StringChoice.T(choices=['low', 'high'], default='low')
 
+
+    def to_polezero(self):
+        z, p, k = signal.butter(self.order, self.corner*2.*math.pi, btype=self.type, analog=True, output='zpk')
+        return PoleZeroResponse(
+            zeros=aslist(z),
+            poles=aslist(p),
+            constant=float(k))
+        
+
     def evaluate(self, freqs):
-        b, a = signal.butter(self.order, self.corner*2.*math.pi, self.type, analog=True)
+        b, a = signal.butter(self.order, self.corner*2.*math.pi, btype=self.type, analog=True)
         w, h = signal.freqs(b, a, freqs*2.*math.pi)
         return h
 
@@ -2222,7 +2236,7 @@ class AnalogFilterResponse(FrequencyResponse):
     a = List.T(Float.T())
 
     def __init__(self, b, a):
-        FrequencyResponse.__init__(self, b=b, a=a)
+        FrequencyResponse.__init__(self, b=aslist(b), a=aslist(a))
 
     def evaluate(self, freqs):
         return signal.freqs(self.b, self.a, freqs*2.*math.pi)[1]
