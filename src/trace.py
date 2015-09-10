@@ -2065,6 +2065,15 @@ class InverseEvalresp(FrequencyResponse):
         transfer = x[0][4]
         return 1./transfer
 
+def aslist(x):
+    if isinstance(x, list):
+        return x
+
+    try:
+        return list(x)
+    except TypeError:
+        return [x]
+
 class PoleZeroResponse(FrequencyResponse):
     '''Evaluates frequency response from pole-zero representation.
 
@@ -2106,7 +2115,7 @@ class PoleZeroResponse(FrequencyResponse):
 
     def to_analog(self):
         b, a = signal.zpk2tf(self.zeros, self.poles, self.constant)
-        return AnalogFilterResponse(b, a)
+        return AnalogFilterResponse(aslist(b), aslist(a))
 
 
 class ButterworthResponse(FrequencyResponse):
@@ -2219,10 +2228,15 @@ class AnalogFilterResponse(FrequencyResponse):
         return signal.freqs(self.b, self.a, freqs*2.*math.pi)[1]
 
     def to_digital(self, deltat):
+        try:
+            from signal import cont2discrete
+        except ImportError:
+            from pyrocko.scipy_cont2discrete import cont2discrete
+        
         if len(self.b) == 1 and len(self.a) == 1:
-            return self.b[0]/self.a[0], 1.0, deltat
+            return self.b[0]/self.a[0], 1.0
 
-        return signal.cont2discrete((self.b, self.a), deltat)
+        return cont2discrete((self.b, self.a), deltat)[:2]
 
 class MultiplyResponse(FrequencyResponse):
     '''Multiplication of several :py:class:`FrequencyResponse` objects.'''
