@@ -2114,8 +2114,8 @@ class PoleZeroResponse(FrequencyResponse):
 
     def inverse(self):
         return PoleZeroResponse(
-            poles=self.zeros,
-            zeros=self.poles,
+            poles=list(self.zeros),
+            zeros=list(self.poles),
             constant=1.0/self.constant)
 
     def to_analog(self):
