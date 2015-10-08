@@ -4,21 +4,24 @@ import numpy as num
 from PyQt4.QtCore import *  # noqa
 from PyQt4.QtGui import *  # noqa
 
-from pyrocko import mopad
+from pyrocko.gui_util import make_QPolygonF, LinValControl
+from pyrocko.pile_viewer import Projection
 
-from pyrocko.pile_viewer import make_QPolygonF, LinValControl, Projection
+from pyrocko import beachball, moment_tensor as mtm
+from pyrocko import plot
 
 
 class BeachballView(QWidget):
 
     def __init__(self, *args):
         QWidget.__init__(self, *args)
-        mt = mopad.MomentTensor(M=(1,  2, 3, 4, 5, 6))
+        mt = mtm.MomentTensor(m=mtm.symmat6(1., -1., 2., 0., -2., 1.))
+        print mt
+        self._mt = mt
         self.set_moment_tensor(mt)
 
     def set_moment_tensor(self, mt):
-        self.beachball = mopad.BeachBall(MT=mt)
-        self.beachball._setup_BB()
+        self._mt = mt
         self.update()
 
     def paintEvent(self, paint_ev):
@@ -44,24 +47,43 @@ class BeachballView(QWidget):
         yproj.set_in_range(-1., 1.)
         yproj.set_out_range(h-(h-s)/2., (h-s)/2.)
 
-        pos, neg = self.beachball.get_projected_nodallines()
+        #m = mtm.symmat6(*(num.random.random(6)*2.-1.))
+        #mtm.MomentTensor(m=m)
 
-        color = (0, 0, 0)
-        pen = QPen(QColor(*color))
-        pen.setWidth(2)
-        p.setPen(pen)
+        mt = self._mt
 
-        for line in pos, neg:
-            x = xproj(num.array(line[0]))
-            y = yproj(num.array(line[1]))
+        mt_devi = mt.deviatoric()
+        eig = mt_devi.eigensystem()
 
-            points = make_QPolygonF(x, y)
-            p.drawPolyline(points)
+        group_to_color = {
+            'P': plot.graph_colors[0],
+            'T': plot.graph_colors[1]}
 
-        p.drawEllipse(
-            QRectF(
-                QPointF(xproj(-1.), yproj(-1.)),
-                QPointF(xproj(1.), yproj(1.))))
+        for (group, patches, patches_lower, patches_upper,
+                lines, lines_lower, lines_upper) in beachball.eig2gx(eig):
+
+            color = group_to_color[group]
+            brush = QBrush(QColor(*color))
+            p.setBrush(brush)
+
+            pen = QPen(QColor(*color))
+            pen.setWidth(1)
+            p.setPen(pen)
+
+            for poly in patches_lower:
+                px, py, pz = poly.T
+                points = make_QPolygonF(xproj(px), yproj(py))
+                p.drawPolygon(points)
+
+            color = (0, 0, 0)
+            pen = QPen(QColor(*color))
+            pen.setWidth(2)
+            p.setPen(pen)
+
+            for poly in lines_lower:
+                px, py, pz = poly.T
+                points = make_QPolygonF(xproj(px), yproj(py))
+                p.drawPolyline(points)
 
 
 class MomentTensorEditor(QFrame):
@@ -69,7 +91,7 @@ class MomentTensorEditor(QFrame):
     def __init__(self, *args):
         QFrame.__init__(self, *args)
 
-        self.moment_tensor = mopad.MomentTensor(M=(1, 2, 3, 4, 5, 6))
+        self._mt = mtm.MomentTensor(m=mtm.symmat6(1., -1., 2., 0., -2., 1.))
 
         setupdata = [
             (LinValControl, 'Strike 1', 0., 360., 0., 0),
@@ -82,32 +104,38 @@ class MomentTensorEditor(QFrame):
         layout = QGridLayout()
         self.setLayout(layout)
 
-        widgets = []
-        for i, (typ, name, vmin, vmax, vcur, ind) in enumerate(setupdata):
-            widget = typ()
-            widget.setup(name, vmin, vmax, vcur, ind)
-            widgets.append(widget)
-            layout.addWidget(widget, i, 0)
+        val_controls = []
+        for irow, (typ, name, vmin, vmax, vcur, ind) in enumerate(setupdata):
+            val_control = typ()
+            val_control.setup(name, vmin, vmax, vcur, ind)
+            val_controls.append(val_control)
+            for icol, widget in enumerate(val_control.widgets()):
+                layout.addWidget(widget, irow, icol)
             self.connect(
-                widget, SIGNAL('valchange(PyQt_PyObject,int)'), self.valchange)
+                val_control, SIGNAL('valchange(PyQt_PyObject,int)'),
+                self.valchange)
 
-        self.widgets = widgets
+        self.val_controls = val_controls
         self.adjust_values()
 
     def adjust_values(self):
 
         ((strike1, dip1, rake1),
-         (strike2, dip2, rake2)) = self.moment_tensor.get_fps()
+         (strike2, dip2, rake2)) = self._mt.both_strike_dip_rake()
 
-        for widget, value in zip(
-                self.widgets, [strike1, dip1, rake1, strike2, dip2, rake2]):
-            widget.set_value(value)
+        for val_control, value in zip(
+                self.val_controls, [
+                    strike1, dip1, rake1, strike2, dip2, rake2]):
+            val_control.set_value(value)
 
     def valchange(self, val, ind):
-        strike, dip, rake = [widget.get_value() for widget in self.widgets[:3]]
+        strike, dip, rake = [
+            val_control.get_value() for val_control in self.val_controls[:3]]
 
-        self.moment_tensor = mopad.MomentTensor(M=(strike, dip, rake))
+        self._mt = mtm.MomentTensor(
+            strike=strike, dip=dip, rake=rake)
+
         self.adjust_values()
 
         self.emit(
-            SIGNAL('moment_tensor_changed(PyQt_PyObject)'), self.moment_tensor)
+            SIGNAL('moment_tensor_changed(PyQt_PyObject)'), self._mt)
