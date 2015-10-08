@@ -37,11 +37,11 @@ def circulation(points, axis):
     flip = num.sum(av*bv, axis=1) < 0.0
     phi[flip] = num.sign(phi[flip])*(PI - num.abs(phi[flip]))
     if num.any(phi == PI) or num.any(phi == -PI):
-        sys.exit('ambiguous circulation!!!')
+        raise Exception('ambiguous circulation')
 
     result = num.sum(phi) / (2.0*PI)
-    if round(result*100.) not in [100, -100]:
-        sys.exit('circulation error')
+    if int(round(result*100.)) not in [100, -100]:
+        raise Exception('circulation error')
 
     return result
 
