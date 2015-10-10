@@ -1,8 +1,6 @@
 from pyrocko import moment_tensor as mtm
-from random import random, choice
 from math import pi as PI
 import numpy as num
-import sys
 
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D  # noqa
@@ -167,7 +165,7 @@ def spoly_cut(l_points, axis=0, nonsimple=True):
                 else:
                     outs_lower.append(out)
 
-    if nonsimple and (len(outs_upper) == 0 or len(outs_lower) == 0):
+    if nonsimple and len(crossings) == 0:
         # check if we are cutting between holes
         need_divider = False
         if outs_upper:
@@ -201,23 +199,6 @@ def spoly_cut(l_points, axis=0, nonsimple=True):
     return outs_lower, outs_upper
 
 
-def fuzz(mi, ma):
-
-    vals = [
-        0., 1., PI, 2.*PI, 0.5*PI/2., 0.25*PI,
-        mi+random()*(ma-mi)*1.0e-8,
-        ma-random()*(ma-mi)*1.0e-8,
-        mi+random()*(ma-mi)*1.0e-4,
-        ma-random()*(ma-mi)*1.0e-4,
-        mi, ma,
-        mi+random()*(ma-mi)]
-
-    while True:
-        v = choice(vals)
-        if mi <= v and v <= ma:
-            return v
-
-
 def numpy_rtp2xyz(rtp):
     r = rtp[:, 0]
     theta = rtp[:, 1]
@@ -241,6 +222,7 @@ def numpy_xyz2rtp(xyz):
 def eig2gx(eig):
     aphi = num.linspace(0., 2.*PI, 181)
     ep, en, et, vp, vn, vt = eig
+
     groups = []
     for (pt_name, pt_sign) in [('P', -1.), ('T', 1.)]:
         patches = []
@@ -252,7 +234,7 @@ def eig2gx(eig):
         for iperm, (va, vb, vc, ea, eb, ec) in enumerate([
                 (vp, vn, vt, ep, en, et),
                 (vt, vp, vn, et, ep, en)]):
-                #(vn, vt, vp, en, et, ep)]):
+                # (vn, vt, vp, en, et, ep)]):
 
             perm_sign = [-1.0, 1.0][iperm]
             to_e = num.vstack((vb, vc, va))
@@ -270,7 +252,7 @@ def eig2gx(eig):
                 if num.any(Y < 0.):
                     continue
 
-                print iperm, pt_name, sign
+                print pt_name, iperm, sign
 
                 xtheta = num.arctan(num.sqrt(Y))
                 rtp = num.empty(xphi.shape+(3,), dtype=num.float)
@@ -319,30 +301,47 @@ def extr(points):
     return points + pmean*0.05
 
 
+def draw_eigenvectors_mpl(eig, axes):
+    vp, vn, vt = eig[3:]
+    for lab, v in [('P', vp), ('N', vn), ('T', vt)]:
+        sign = num.sign(v[2]) + (v[2] == 0.0)
+        axes.plot(sign*v[1], sign*v[0], 'o', color='black')
+        axes.text(sign*v[1], sign*v[0], '  '+lab)
+
+
 def plot_beachball_mpl(mt, axes):
-    mt_devi = mt#.deviatoric()
+    mt_devi = mt.deviatoric()
     eig = mt_devi.eigensystem()
 
     for (group, patches, patches_lower, patches_upper,
             lines, lines_lower, lines_upper) in eig2gx(eig):
+
+        print len(patches_lower), len(patches_upper)
 
         if group == 'P':
             color = 'white'
         else:
             color = 'red'
 
+        # plot "upper" features for lower hemisphere, because coordinate system
+        # is NED
+        ii = 0
         for poly in patches_lower:
             px, py, pz = poly.T
-            axes.fill(-py, -px, lw=1, color=color, fc=color)
+            axes.fill(py+ii*0.02, px+ii*0.02, lw=1, color='black', fc=color, alpha=0.5)
+            ii += 1
 
-        for poly in lines_lower:
-            px, py, pz = poly.T
-            axes.plot(-py, -px, lw=2, color='black')
+        #for poly in lines_upper:
+        #    px, py, pz = poly.T
+        #    axes.plot(py, px, lw=2, color='black')
+
+    # draw_eigenvectors_mpl(eig, axes)
 
 
 def plot_beachball_mpl_pixmap(mt, axes):
-    mt_devi = mt#.deviatoric()
+    mt_devi = mt.deviatoric()
     ep, en, et, vp, vn, vt = mt_devi.eigensystem()
+
 
     nx = 400
     ny = 400
@@ -371,9 +370,16 @@ def plot_beachball_mpl_pixmap(mt, axes):
 
     amps = num.reshape(amps, (ny, nx))
 
+    axes.contourf(
+        y, x, amps.T,
+        levels=[-num.inf, 0., num.inf],
+        colors=['white', 'red'])
 
-    axes.contourf(y, x, amps.T, levels=[-2., 0., 2.], colors=['white', 'red'])
-    axes.contour(y, x, amps.T, levels=[0.], colors=['black'], linewidths=2)
+    axes.contour(
+        y, x, amps.T,
+        levels=[0.],
+        colors=['black'],
+        linewidths=2)
 
     phi = num.linspace(0., 2*PI, 361)
     x = num.cos(phi)
@@ -393,7 +399,6 @@ if __name__ == '__main__':
     axes3 = fig.add_subplot(1, 3, 3, aspect=1.)
 
     import mopad
-    import time
 
     for x in range(nx):
         m6 = num.random.random(6)*2.-1.
