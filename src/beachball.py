@@ -47,10 +47,16 @@ def circulation(points, axis):
 def spoly_cut(l_points, axis=0, nonsimple=True):
     dphi = 2.*PI / 360.
 
+
     # cut sub-polygons and gather crossing point information
     crossings = []
     snippets = {}
     for ipath, points in enumerate(l_points):
+        points[:, axis] = num.where(
+            num.abs(points[:, axis]) < 1.0e-5, 
+            0.0, 
+            points[:, axis])
+        
         if not num.all(points[0, :] == points[-1, :]):
             points = num.vstack((points, points[0:1, :]))
 
@@ -325,15 +331,13 @@ def plot_beachball_mpl(mt, axes):
 
         # plot "upper" features for lower hemisphere, because coordinate system
         # is NED
-        ii = 0
-        for poly in patches_lower:
+        for poly in patches_upper:
             px, py, pz = poly.T
-            axes.fill(py+ii*0.02, px+ii*0.02, lw=1, color='black', fc=color, alpha=0.5)
-            ii += 1
+            axes.fill(py, px, lw=0, fc=color)
 
-        #for poly in lines_upper:
-        #    px, py, pz = poly.T
-        #    axes.plot(py, px, lw=2, color='black')
+        for poly in lines_upper:
+            px, py, pz = poly.T
+            axes.plot(py, px, lw=2, color='black')
 
     # draw_eigenvectors_mpl(eig, axes)
 

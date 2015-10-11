@@ -34,7 +34,7 @@ class BeachballTestCase(unittest.TestCase):
         from matplotlib import pyplot as plt
         from matplotlib import image
 
-        nx = 1
+        nx = 100
 
         for x in range(nx):
             # m6 = num.random.random(6)*2.-1.
@@ -46,9 +46,9 @@ class BeachballTestCase(unittest.TestCase):
             dip = fuzz_angle(0., 90.)
             rake = fuzz_angle(-180., 180.)
 
-            strike = 270.
-            dip = 0.0
-            rake = 0.01
+            #strike = 270.
+            #dip = 0.0
+            #rake = 0.01
 
             mt = mtm.MomentTensor(
                 strike=strike,
