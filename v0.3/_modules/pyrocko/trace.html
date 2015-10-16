@@ -1869,7 +1869,7 @@
 
     <span class="k">if</span> <span class="n">normalization</span> <span class="o">==</span> <span class="s">&#39;normal&#39;</span><span class="p">:</span>
         <span class="n">normfac</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">num</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">ya</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span><span class="o">*</span><span class="n">num</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">num</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">yb</span><span class="o">**</span><span class="mi">2</span><span class="p">))</span>
-        <span class="n">yc</span> <span class="o">/=</span> <span class="n">normfac</span>
+        <span class="n">yc</span> <span class="o">=</span> <span class="n">yc</span><span class="o">/</span><span class="n">normfac</span>
 
     <span class="k">elif</span> <span class="n">normalization</span> <span class="o">==</span> <span class="s">&#39;gliding&#39;</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">mode</span> <span class="o">!=</span> <span class="s">&#39;valid&#39;</span><span class="p">:</span>

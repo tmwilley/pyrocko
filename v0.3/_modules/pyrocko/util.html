@@ -101,13 +101,21 @@
     <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">__file__</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="s">&#39;data&#39;</span><span class="p">,</span> <span class="n">fn</span><span class="p">)</span>
 
 </div>
+<div class="viewcode-block" id="DownloadError"><a class="viewcode-back" href="../../util.html#pyrocko.util.DownloadError">[docs]</a><span class="k">class</span> <span class="nc">DownloadError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+</div>
 <div class="viewcode-block" id="download_file"><a class="viewcode-back" href="../../util.html#pyrocko.util.download_file">[docs]</a><span class="k">def</span> <span class="nf">download_file</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">fpath</span><span class="p">):</span>
     <span class="kn">import</span> <span class="nn">urllib2</span>
 
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&#39;starting download of </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">url</span><span class="p">)</span>
 
     <span class="n">ensuredirs</span><span class="p">(</span><span class="n">fpath</span><span class="p">)</span>
-    <span class="n">f</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">HTTPError</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">DownloadError</span><span class="p">(</span><span class="s">&#39;cannot download file from url </span><span class="si">%s</span><span class="s">: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">e</span><span class="p">))</span>
+
     <span class="n">fpath_tmp</span> <span class="o">=</span> <span class="n">fpath</span> <span class="o">+</span> <span class="s">&#39;.</span><span class="si">%i</span><span class="s">.temp&#39;</span> <span class="o">%</span> <span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">()</span>
     <span class="n">g</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">fpath_tmp</span><span class="p">,</span> <span class="s">&#39;wb&#39;</span><span class="p">)</span>
     <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>

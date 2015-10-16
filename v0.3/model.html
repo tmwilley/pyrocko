@@ -187,6 +187,96 @@ instance (optional)</li>
 </table>
 </dd></dl>
 
+<dl class="class">
+<dt id="pyrocko.model.Channel">
+<em class="property">class </em><tt class="descname">Channel</tt><big>(</big><em>name</em>, <em>azimuth=None</em>, <em>dip=None</em>, <em>gain=1.0</em><big>)</big><a class="reference internal" href="_modules/pyrocko/model.html#Channel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.model.Channel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Undocumented.</p>
+<dl class="attribute">
+<dt id="pyrocko.model.Channel.name">
+<tt class="descname">name</tt><a class="headerlink" href="#pyrocko.model.Channel.name" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">str</span></tt></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.model.Channel.azimuth">
+<tt class="descname">azimuth</tt><a class="headerlink" href="#pyrocko.model.Channel.azimuth" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">float</span></tt>, <em>optional</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.model.Channel.dip">
+<tt class="descname">dip</tt><a class="headerlink" href="#pyrocko.model.Channel.dip" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">float</span></tt>, <em>optional</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.model.Channel.gain">
+<tt class="descname">gain</tt><a class="headerlink" href="#pyrocko.model.Channel.gain" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">float</span></tt>, <em>default:</em> <tt class="docutils literal"><span class="pre">1.0</span></tt></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pyrocko.model.Station">
+<em class="property">class </em><tt class="descname">Station</tt><big>(</big><em>network=''</em>, <em>station=''</em>, <em>location=''</em>, <em>lat=0.0</em>, <em>lon=0.0</em>, <em>elevation=0.0</em>, <em>depth=0.0</em>, <em>name=''</em>, <em>channels=None</em><big>)</big><a class="reference internal" href="_modules/pyrocko/model.html#Station"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.model.Station" title="Permalink to this definition">¶</a></dt>
+<dd><p>Undocumented.</p>
+<dl class="attribute">
+<dt id="pyrocko.model.Station.network">
+<tt class="descname">network</tt><a class="headerlink" href="#pyrocko.model.Station.network" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">str</span></tt></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.model.Station.station">
+<tt class="descname">station</tt><a class="headerlink" href="#pyrocko.model.Station.station" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">str</span></tt></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.model.Station.location">
+<tt class="descname">location</tt><a class="headerlink" href="#pyrocko.model.Station.location" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">str</span></tt></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.model.Station.lat">
+<tt class="descname">lat</tt><a class="headerlink" href="#pyrocko.model.Station.lat" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">float</span></tt>, <em>default:</em> <tt class="docutils literal"><span class="pre">0.0</span></tt></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.model.Station.lon">
+<tt class="descname">lon</tt><a class="headerlink" href="#pyrocko.model.Station.lon" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">float</span></tt>, <em>default:</em> <tt class="docutils literal"><span class="pre">0.0</span></tt></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.model.Station.elevation">
+<tt class="descname">elevation</tt><a class="headerlink" href="#pyrocko.model.Station.elevation" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">float</span></tt>, <em>default:</em> <tt class="docutils literal"><span class="pre">0.0</span></tt></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.model.Station.depth">
+<tt class="descname">depth</tt><a class="headerlink" href="#pyrocko.model.Station.depth" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">float</span></tt>, <em>default:</em> <tt class="docutils literal"><span class="pre">0.0</span></tt></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.model.Station.name">
+<tt class="descname">name</tt><a class="headerlink" href="#pyrocko.model.Station.name" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">str</span></tt>, <em>default:</em> <tt class="docutils literal"><span class="pre">''</span></tt></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.model.Station.channels">
+<tt class="descname">channels</tt><a class="headerlink" href="#pyrocko.model.Station.channels" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">list</span></tt> of <a class="reference internal" href="#pyrocko.model.Channel" title="pyrocko.model.Channel"><tt class="xref py py-class docutils literal"><span class="pre">pyrocko.model.Channel</span></tt></a> objects, <em>default:</em> <tt class="docutils literal"><span class="pre">[]</span></tt></p>
+</dd></dl>
+
+</dd></dl>
+
 <dl class="function">
 <dt id="pyrocko.model.dump_stations">
 <tt class="descname">dump_stations</tt><big>(</big><em>stations</em>, <em>filename</em><big>)</big><a class="reference internal" href="_modules/pyrocko/model.html#dump_stations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.model.dump_stations" title="Permalink to this definition">¶</a></dt>
@@ -196,7 +286,7 @@ instance (optional)</li>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>stations</strong> &#8211; list of <tt class="xref py py-class docutils literal"><span class="pre">Station</span></tt> objects</li>
+<li><strong>stations</strong> &#8211; list of <a class="reference internal" href="#pyrocko.model.Station" title="pyrocko.model.Station"><tt class="xref py py-class docutils literal"><span class="pre">Station</span></tt></a> objects</li>
 <li><strong>filename</strong> &#8211; filename as str</li>
 </ul>
 </td>
@@ -215,7 +305,7 @@ instance (optional)</li>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filename</strong> &#8211; filename</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">list of <tt class="xref py py-class docutils literal"><span class="pre">Station</span></tt> objects</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">list of <a class="reference internal" href="#pyrocko.model.Station" title="pyrocko.model.Station"><tt class="xref py py-class docutils literal"><span class="pre">Station</span></tt></a> objects</td>
 </tr>
 </tbody>
 </table>

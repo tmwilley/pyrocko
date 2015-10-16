@@ -618,24 +618,25 @@
 
     <span class="k">def</span> <span class="nf">get_pyrocko_response</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nslc</span><span class="p">):</span>
         <span class="n">responses</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">poles_zeros_list</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">pz</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">poles_zeros_list</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_pyrocko_response</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">pzs</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">poles_zeros_list</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">pzs</span><span class="o">.</span><span class="n">pz_transfer_function_type</span> <span class="o">!=</span> <span class="s">&#39;LAPLACE (RADIANS/SECOND)&#39;</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;unhandled response at stage </span><span class="si">%i</span><span class="s">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">number</span><span class="p">)</span>
+                <span class="k">continue</span>
+
+            <span class="n">pz</span> <span class="o">=</span> <span class="n">pzs</span><span class="o">.</span><span class="n">get_pyrocko_response</span><span class="p">()</span>
             <span class="n">responses</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pz</span><span class="p">)</span>
 
-        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">poles_zeros_list</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">poles_zeros_list</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
                 <span class="s">&#39;multiple poles and zeros records in single response stage &#39;</span>
                 <span class="s">&#39;(</span><span class="si">%s</span><span class="s">.</span><span class="si">%s</span><span class="s">.</span><span class="si">%s</span><span class="s">.</span><span class="si">%s</span><span class="s">)&#39;</span> <span class="o">%</span> <span class="n">nslc</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">poles_zeros</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">poles_zeros_list</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">poles_zeros</span><span class="p">)</span>
 
-        <span class="k">elif</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">coefficients_list</span> <span class="ow">or</span>
+        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">coefficients_list</span> <span class="ow">or</span>
               <span class="bp">self</span><span class="o">.</span><span class="n">response_list</span> <span class="ow">or</span>
               <span class="bp">self</span><span class="o">.</span><span class="n">fir</span> <span class="ow">or</span>
               <span class="bp">self</span><span class="o">.</span><span class="n">polynomial</span><span class="p">):</span>
 
-            <span class="k">pass</span>
-            <span class="c"># print &#39;unhandled response at stage %i&#39; % self.number</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;unhandled response at stage </span><span class="si">%i</span><span class="s">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">number</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">stage_gain</span><span class="p">:</span>
             <span class="n">responses</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
@@ -859,12 +860,21 @@
     <span class="n">apos</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">x</span><span class="o">.</span><span class="n">position_values</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">channels</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">num</span><span class="o">.</span><span class="n">float</span><span class="p">)</span>
     <span class="n">mlat</span><span class="p">,</span> <span class="n">mlon</span><span class="p">,</span> <span class="n">mele</span><span class="p">,</span> <span class="n">mdep</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">nansum</span><span class="p">(</span><span class="n">apos</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">/</span> <span class="n">num</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">num</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">apos</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 
-    <span class="n">pchannels</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">groups</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">for</span> <span class="n">channel</span> <span class="ow">in</span> <span class="n">channels</span><span class="p">:</span>
-        <span class="n">pchannels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">Channel</span><span class="p">(</span>
-            <span class="n">channel</span><span class="o">.</span><span class="n">code</span><span class="p">,</span>
-            <span class="n">azimuth</span><span class="o">=</span><span class="n">value_or_none</span><span class="p">(</span><span class="n">channel</span><span class="o">.</span><span class="n">azimuth</span><span class="p">),</span>
-            <span class="n">dip</span><span class="o">=</span><span class="n">value_or_none</span><span class="p">(</span><span class="n">channel</span><span class="o">.</span><span class="n">dip</span><span class="p">)))</span>
+        <span class="k">if</span> <span class="n">channel</span><span class="o">.</span><span class="n">code</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">groups</span><span class="p">:</span>
+            <span class="n">groups</span><span class="p">[</span><span class="n">channel</span><span class="o">.</span><span class="n">code</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="n">groups</span><span class="p">[</span><span class="n">channel</span><span class="o">.</span><span class="n">code</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">channel</span><span class="p">)</span>
+
+    <span class="n">pchannels</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">code</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">groups</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">(</span><span class="n">channel</span><span class="o">.</span><span class="n">code</span><span class="p">,</span> <span class="n">value_or_none</span><span class="p">(</span><span class="n">channel</span><span class="o">.</span><span class="n">azimuth</span><span class="p">),</span> <span class="n">value_or_none</span><span class="p">(</span><span class="n">channel</span><span class="o">.</span><span class="n">dip</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">channel</span> <span class="ow">in</span> <span class="n">groups</span><span class="p">[</span><span class="n">code</span><span class="p">]]</span>
+
+        <span class="n">azimuth</span><span class="p">,</span> <span class="n">dip</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">consistency_merge</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s">&#39;channel orientation values differ:&#39;</span><span class="p">,</span> <span class="n">error</span><span class="o">=</span><span class="n">inconsistencies</span><span class="p">)</span>
+        <span class="n">pchannels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">Channel</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="n">azimuth</span><span class="o">=</span><span class="n">azimuth</span><span class="p">,</span> <span class="n">dip</span><span class="o">=</span><span class="n">dip</span><span class="p">))</span>
 
     <span class="k">return</span> <span class="n">model</span><span class="o">.</span><span class="n">Station</span><span class="p">(</span>
         <span class="o">*</span><span class="n">nsl</span><span class="p">,</span>
@@ -1020,7 +1030,10 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">bic</span> <span class="o">=</span> <span class="n">cha</span>
 
-            <span class="k">if</span> <span class="n">channel</span><span class="o">.</span><span class="n">response</span> <span class="ow">and</span> <span class="n">channel</span><span class="o">.</span><span class="n">response</span><span class="o">.</span><span class="n">instrument_sensitivity</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">channel</span><span class="o">.</span><span class="n">response</span> <span class="ow">and</span> \
+                    <span class="n">channel</span><span class="o">.</span><span class="n">response</span><span class="o">.</span><span class="n">instrument_sensitivity</span> <span class="ow">and</span> \
+                    <span class="n">channel</span><span class="o">.</span><span class="n">response</span><span class="o">.</span><span class="n">instrument_sensitivity</span><span class="o">.</span><span class="n">input_units</span><span class="p">:</span>
+
                 <span class="n">unit</span> <span class="o">=</span> <span class="n">channel</span><span class="o">.</span><span class="n">response</span><span class="o">.</span><span class="n">instrument_sensitivity</span><span class="o">.</span><span class="n">input_units</span><span class="o">.</span><span class="n">name</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">unit</span> <span class="o">=</span> <span class="bp">None</span>
@@ -1077,6 +1090,13 @@
                 <span class="k">if</span> <span class="n">target_sample_rate</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> \
                         <span class="n">rate</span> <span class="o">&lt;</span> <span class="n">target_sample_rate</span><span class="o">*</span><span class="mf">0.99999</span><span class="p">:</span>
                     <span class="k">continue</span>
+
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">bic</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">bic</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">priority_band_code</span><span class="p">:</span>
+                        <span class="k">continue</span>
+
+                    <span class="k">if</span> <span class="n">bic</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">priority_instrument_code</span><span class="p">:</span>
+                        <span class="k">continue</span>
 
                 <span class="n">unit</span> <span class="o">=</span> <span class="n">bic</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
 

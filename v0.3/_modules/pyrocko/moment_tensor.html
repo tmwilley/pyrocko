@@ -358,6 +358,9 @@
 
     <span class="k">def</span> <span class="nf">_update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">m_evals</span><span class="p">,</span> <span class="n">m_evecs</span> <span class="o">=</span> <span class="n">eigh_check</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_m</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">num</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">det</span><span class="p">(</span><span class="n">m_evecs</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">0.</span><span class="p">:</span>
+            <span class="n">m_evecs</span> <span class="o">*=</span> <span class="o">-</span><span class="mf">1.</span>
+
         <span class="n">rotmat1</span> <span class="o">=</span> <span class="p">(</span><span class="n">m_evecs</span> <span class="o">*</span> <span class="n">MomentTensor</span><span class="o">.</span><span class="n">_u_evecs</span><span class="o">.</span><span class="n">T</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
         <span class="k">if</span> <span class="n">num</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">det</span><span class="p">(</span><span class="n">rotmat1</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">0.</span><span class="p">:</span>
             <span class="n">rotmat1</span> <span class="o">*=</span> <span class="o">-</span><span class="mf">1.</span>
@@ -476,6 +479,17 @@
     
     <span class="k">def</span> <span class="nf">eigenvals</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
 <div class="viewcode-block" id="MomentTensor.eigenvals"><a class="viewcode-back" href="../../moment_tensor.html#pyrocko.moment_tensor.MomentTensor.eigenvals">[docs]</a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_m_eigenvals</span>
+
+    <span class="k">def</span> <span class="nf">eigensystem</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
+<div class="viewcode-block" id="MomentTensor.eigensystem"><a class="viewcode-back" href="../../moment_tensor.html#pyrocko.moment_tensor.MomentTensor.eigensystem">[docs]</a>        <span class="sd">&#39;&#39;&#39;Get eigenvalues and eigenvectors of moment tensor.</span>
+
+<span class="sd">        returns ep, en, et, vp, vn, vt&#39;&#39;&#39;</span>
+
+        <span class="n">vp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">p_axis</span><span class="p">()</span><span class="o">.</span><span class="n">A</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+        <span class="n">vn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">null_axis</span><span class="p">()</span><span class="o">.</span><span class="n">A</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span> 
+        <span class="n">vt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">t_axis</span><span class="p">()</span><span class="o">.</span><span class="n">A</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+        <span class="n">ep</span><span class="p">,</span> <span class="n">en</span><span class="p">,</span> <span class="n">et</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_m_eigenvals</span>
+        <span class="k">return</span> <span class="n">ep</span><span class="p">,</span> <span class="n">en</span><span class="p">,</span> <span class="n">et</span><span class="p">,</span> <span class="n">vp</span><span class="p">,</span> <span class="n">vn</span><span class="p">,</span> <span class="n">vt</span>
     
     <span class="k">def</span> <span class="nf">both_slip_vectors</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
 <div class="viewcode-block" id="MomentTensor.both_slip_vectors"><a class="viewcode-back" href="../../moment_tensor.html#pyrocko.moment_tensor.MomentTensor.both_slip_vectors">[docs]</a>        <span class="sd">&#39;&#39;&#39;Get both possible slip directions.&#39;&#39;&#39;</span>
@@ -544,6 +558,20 @@
                  <span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">sdr</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">sdr</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">sdr</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
             
         <span class="k">return</span> <span class="n">s</span>
+
+    <span class="k">def</span> <span class="nf">deviatoric</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
+<div class="viewcode-block" id="MomentTensor.deviatoric"><a class="viewcode-back" href="../../moment_tensor.html#pyrocko.moment_tensor.MomentTensor.deviatoric">[docs]</a>        <span class="sd">&#39;&#39;&#39;Get deviatoric part of moment tensor.</span>
+<span class="sd">        </span>
+<span class="sd">        Returns a new moment tensor object with zero trace.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+
+        <span class="n">m</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">m</span><span class="p">()</span>
+
+        <span class="n">trace_m</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">trace</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+        <span class="n">m_iso</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">diag</span><span class="p">([</span><span class="n">trace_m</span> <span class="o">/</span> <span class="mf">3.</span><span class="p">,</span> <span class="n">trace_m</span> <span class="o">/</span> <span class="mf">3.</span><span class="p">,</span> <span class="n">trace_m</span> <span class="o">/</span> <span class="mf">3.</span><span class="p">])</span>
+        <span class="n">m_devi</span> <span class="o">=</span> <span class="n">m</span> <span class="o">-</span> <span class="n">m_iso</span>
+        <span class="n">mt</span> <span class="o">=</span> <span class="n">MomentTensor</span><span class="p">(</span><span class="n">m</span><span class="o">=</span><span class="n">m_devi</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">mt</span>
 
     <span class="k">def</span> <span class="nf">standard_decomposition</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
 <div class="viewcode-block" id="MomentTensor.standard_decomposition"><a class="viewcode-back" href="../../moment_tensor.html#pyrocko.moment_tensor.MomentTensor.standard_decomposition">[docs]</a>        <span class="n">epsilon</span> <span class="o">=</span> <span class="mf">1e-6</span>

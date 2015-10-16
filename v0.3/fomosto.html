@@ -560,6 +560,96 @@ such stores.</p>
 </pre></div>
 </div>
 </div>
+<div class="section" id="travel-time-only-gf-stores">
+<h3>Travel-time only GF stores<a class="headerlink" href="#travel-time-only-gf-stores" title="Permalink to this headline">¶</a></h3>
+<p>It is possible to use a GF store only for traveltime computations. Here is
+an example how to create and use such a GF store.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">os.path</span> <span class="kn">as</span> <span class="nn">op</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">num</span>
+<span class="kn">from</span> <span class="nn">pyrocko</span> <span class="kn">import</span> <span class="n">gf</span><span class="p">,</span> <span class="n">cake</span>
+
+<span class="n">km</span> <span class="o">=</span> <span class="mf">1000.</span>
+
+<span class="c"># create GF store with only traveltime tables and no waveforms</span>
+<span class="n">store_id</span> <span class="o">=</span> <span class="s">&#39;tt_test1&#39;</span>
+
+<span class="n">config</span> <span class="o">=</span> <span class="n">gf</span><span class="o">.</span><span class="n">ConfigTypeA</span><span class="p">(</span>
+    <span class="nb">id</span><span class="o">=</span><span class="n">store_id</span><span class="p">,</span>
+    <span class="n">tabulated_phases</span><span class="o">=</span><span class="p">[</span>
+        <span class="n">gf</span><span class="o">.</span><span class="n">TPDef</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s">&#39;P&#39;</span><span class="p">,</span> <span class="n">definition</span><span class="o">=</span><span class="s">&#39;!P&#39;</span><span class="p">)],</span>
+    <span class="n">earthmodel_1d</span><span class="o">=</span><span class="n">cake</span><span class="o">.</span><span class="n">load_model</span><span class="p">(</span><span class="s">&#39;prem-no-ocean.m&#39;</span><span class="p">),</span>
+    <span class="n">sample_rate</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+    <span class="n">source_depth_min</span><span class="o">=</span><span class="mf">1.</span><span class="o">*</span><span class="n">km</span><span class="p">,</span>
+    <span class="n">source_depth_max</span><span class="o">=</span><span class="mf">100.</span><span class="o">*</span><span class="n">km</span><span class="p">,</span>
+    <span class="n">source_depth_delta</span><span class="o">=</span><span class="mi">1</span><span class="o">*</span><span class="n">km</span><span class="p">,</span>
+    <span class="n">distance_min</span><span class="o">=</span><span class="mi">1</span><span class="o">*</span><span class="n">km</span><span class="p">,</span>
+    <span class="n">distance_max</span><span class="o">=</span><span class="mi">1000</span><span class="o">*</span><span class="n">km</span><span class="p">,</span>
+    <span class="n">distance_delta</span><span class="o">=</span><span class="mi">1</span><span class="o">*</span><span class="n">km</span><span class="p">,</span>
+    <span class="n">ncomponents</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="n">store_dir</span> <span class="o">=</span> <span class="n">store_id</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">op</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">store_dir</span><span class="p">):</span>
+    <span class="n">gf</span><span class="o">.</span><span class="n">Store</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">store_dir</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+    <span class="n">store</span> <span class="o">=</span> <span class="n">gf</span><span class="o">.</span><span class="n">Store</span><span class="p">(</span><span class="n">store_id</span><span class="p">)</span>
+    <span class="n">store</span><span class="o">.</span><span class="n">make_ttt</span><span class="p">()</span>
+
+<span class="n">store</span> <span class="o">=</span> <span class="n">gf</span><span class="o">.</span><span class="n">Store</span><span class="p">(</span><span class="n">store_id</span><span class="p">)</span>
+
+<span class="c"># create array with all source depths and distances</span>
+
+<span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">args</span> <span class="ow">in</span> <span class="n">store</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">iter_nodes</span><span class="p">(</span><span class="n">level</span><span class="o">=-</span><span class="mi">1</span><span class="p">):</span>
+    <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+
+<span class="n">coords</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+<span class="c"># extract arrival times of tabulated P phase for all depth-distance pairs at</span>
+<span class="c"># once. This is much faster than querying the times one by one with store.t().</span>
+
+<span class="n">spt</span> <span class="o">=</span> <span class="n">store</span><span class="o">.</span><span class="n">get_phase</span><span class="p">(</span><span class="s">&#39;P&#39;</span><span class="p">)</span>
+<span class="n">ts</span> <span class="o">=</span> <span class="n">spt</span><span class="o">.</span><span class="n">interpolate_many</span><span class="p">(</span><span class="n">coords</span><span class="p">)</span>
+<span class="k">print</span> <span class="n">ts</span>
+
+<span class="c"># compare with direct traveltime calculation with cake</span>
+
+<span class="n">phases</span> <span class="o">=</span> <span class="n">cake</span><span class="o">.</span><span class="n">PhaseDef</span><span class="o">.</span><span class="n">classic</span><span class="p">(</span><span class="s">&#39;P&#39;</span><span class="p">)</span>
+<span class="k">print</span> <span class="n">phases</span>
+
+<span class="n">tdiffs</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">mod</span> <span class="o">=</span> <span class="n">store</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">earthmodel_1d</span>
+<span class="k">for</span> <span class="n">inode</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">coords</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+    <span class="p">(</span><span class="n">source_depth</span><span class="p">,</span> <span class="n">distance</span><span class="p">)</span> <span class="o">=</span> <span class="n">coords</span><span class="p">[</span><span class="n">inode</span><span class="p">,</span> <span class="p">:]</span>
+    <span class="n">t_tabulated</span> <span class="o">=</span> <span class="n">ts</span><span class="p">[</span><span class="n">inode</span><span class="p">]</span>
+
+    <span class="n">t_cake</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">rays</span> <span class="o">=</span> <span class="n">mod</span><span class="o">.</span><span class="n">arrivals</span><span class="p">(</span>
+        <span class="n">phases</span><span class="o">=</span><span class="n">phases</span><span class="p">,</span>
+        <span class="n">distances</span><span class="o">=</span><span class="p">[</span><span class="n">distance</span><span class="o">*</span><span class="n">cake</span><span class="o">.</span><span class="n">m2d</span><span class="p">],</span>
+        <span class="n">zstart</span><span class="o">=</span><span class="n">source_depth</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">rays</span><span class="p">:</span>
+        <span class="n">t_cake</span> <span class="o">=</span> <span class="n">rays</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">t</span>
+
+    <span class="k">if</span> <span class="n">t_cake</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">num</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">t_tabulated</span><span class="p">):</span>
+        <span class="n">tdiff</span> <span class="o">=</span> <span class="n">t_cake</span> <span class="o">-</span> <span class="n">t_tabulated</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">tdiff</span> <span class="o">=</span> <span class="bp">None</span>
+
+    <span class="k">print</span> <span class="n">source_depth</span><span class="p">,</span> <span class="n">distance</span><span class="p">,</span> <span class="n">t_cake</span><span class="p">,</span> <span class="n">t_tabulated</span><span class="p">,</span> <span class="n">tdiff</span>
+
+    <span class="k">if</span> <span class="n">tdiff</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">tdiffs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tdiff</span><span class="p">)</span>
+
+<span class="c"># plot histogram with traveltime approximation errors. Errors should usually be</span>
+<span class="c"># smaller than the sampling interval defined in the GF store.</span>
+
+<span class="kn">from</span> <span class="nn">matplotlib</span> <span class="kn">import</span> <span class="n">pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span><span class="n">tdiffs</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
 </div>
 </div>
 

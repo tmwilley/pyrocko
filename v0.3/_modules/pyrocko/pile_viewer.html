@@ -607,8 +607,7 @@
     <span class="n">actions</span> <span class="o">=</span> <span class="n">menu</span><span class="o">.</span><span class="n">actions</span><span class="p">()</span>
     <span class="k">for</span> <span class="n">action</span> <span class="ow">in</span> <span class="n">actions</span><span class="p">:</span>
         <span class="n">menu</span><span class="o">.</span><span class="n">removeAction</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
-
-    <span class="n">actions</span><span class="o">.</span><span class="n">sort</span><span class="p">((</span><span class="k">lambda</span> <span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">:</span> <span class="nb">cmp</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">text</span><span class="p">(),</span> <span class="n">b</span><span class="o">.</span><span class="n">text</span><span class="p">())))</span>
+    <span class="n">actions</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">text</span><span class="p">()))</span>
 
     <span class="n">help_action</span> <span class="o">=</span> <span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">a</span> <span class="p">:</span> <span class="n">a</span><span class="o">.</span><span class="n">text</span><span class="p">()</span><span class="o">==</span><span class="s">&quot;Snuffler Controls&quot;</span><span class="p">,</span> <span class="n">actions</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">help_action</span><span class="p">:</span>
@@ -2314,17 +2313,22 @@
             <span class="sd">&quot;&quot;&quot;Draw non-overlapping *markers*.&quot;&quot;&quot;</span>
             <span class="n">markers</span> <span class="o">=</span> <span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">get_tmin</span><span class="p">()</span><span class="o">&lt;</span><span class="bp">self</span><span class="o">.</span><span class="n">tmax</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">tmin</span><span class="o">&lt;</span><span class="n">x</span><span class="o">.</span><span class="n">get_tmax</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">markers</span><span class="p">)</span>
             <span class="n">markers</span> <span class="o">=</span> <span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">kind</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">visible_marker_kinds</span><span class="p">,</span> <span class="n">markers</span><span class="p">)</span>
-            <span class="n">i_labels</span><span class="p">,</span> <span class="n">i_markers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tobedrawn</span><span class="p">(</span><span class="n">markers</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_projection</span><span class="o">.</span><span class="n">get_out_range</span><span class="p">())</span>
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">i_markers</span><span class="p">)</span><span class="o">!=</span><span class="mi">0</span><span class="p">:</span>
-                <span class="k">for</span> <span class="n">i_m</span> <span class="ow">in</span> <span class="n">i_markers</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="n">i_m</span> <span class="ow">in</span> <span class="n">i_labels</span><span class="p">:</span>
-                        <span class="n">with_label</span> <span class="o">=</span> <span class="bp">True</span>
-                    <span class="k">else</span><span class="p">:</span>
-                        <span class="n">with_label</span> <span class="o">=</span> <span class="bp">False</span>
-                    <span class="n">markers</span><span class="p">[</span><span class="n">i_m</span><span class="p">]</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">p</span><span class="p">,</span>
-                                      <span class="bp">self</span><span class="o">.</span><span class="n">time_projection</span><span class="p">,</span>
-                                      <span class="n">vcenter_projection</span><span class="p">,</span>
-                                      <span class="n">with_label</span><span class="o">=</span><span class="n">with_label</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">markers</span><span class="p">)</span><span class="o">&gt;</span><span class="mi">500</span><span class="p">:</span>
+                <span class="n">i_labels</span><span class="p">,</span> <span class="n">i_markers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tobedrawn</span><span class="p">(</span><span class="n">markers</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_projection</span><span class="o">.</span><span class="n">get_out_range</span><span class="p">())</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">i_markers</span><span class="p">)</span><span class="o">!=</span><span class="mi">0</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">i_m</span> <span class="ow">in</span> <span class="n">i_markers</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">i_m</span> <span class="ow">in</span> <span class="n">i_labels</span><span class="p">:</span>
+                            <span class="n">with_label</span> <span class="o">=</span> <span class="bp">True</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">with_label</span> <span class="o">=</span> <span class="bp">False</span>
+                        <span class="n">markers</span><span class="p">[</span><span class="n">i_m</span><span class="p">]</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">p</span><span class="p">,</span>
+                                          <span class="bp">self</span><span class="o">.</span><span class="n">time_projection</span><span class="p">,</span>
+                                          <span class="n">vcenter_projection</span><span class="p">,</span>
+                                          <span class="n">with_label</span><span class="o">=</span><span class="n">with_label</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">markers</span><span class="p">:</span>
+                    <span class="n">m</span><span class="o">.</span><span class="n">draw</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">time_projection</span><span class="p">,</span> <span class="n">vcenter_projection</span><span class="p">,</span>
+                           <span class="n">with_label</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 
         <span class="k">def</span> <span class="nf">drawit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">printmode</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">w</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">h</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
             <span class="sd">&quot;&quot;&quot;This performs the actual drawing.&quot;&quot;&quot;</span>
@@ -3055,7 +3059,7 @@
                 <span class="n">now</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
             <span class="k">return</span> <span class="n">now</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">interactive_range_change_time</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">interactive_range_change_delay_time</span>
 
-        <span class="k">def</span> <span class="nf">follow</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tlen</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">lapse</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">follow</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tlen</span><span class="p">,</span> <span class="n">interval</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">lapse</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">tmax_start</span><span class="o">=</span><span class="mf">0.0</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">show_all</span> <span class="o">=</span> <span class="bp">False</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">follow_time</span> <span class="o">=</span> <span class="n">tlen</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">follow_timer</span> <span class="o">=</span> <span class="n">QTimer</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
@@ -3064,7 +3068,15 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">follow_timer</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">follow_started</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">follow_lapse</span> <span class="o">=</span> <span class="n">lapse</span>
-            
+            <span class="bp">self</span><span class="o">.</span><span class="n">follow_tshift</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">follow_started</span> <span class="o">-</span> <span class="n">tmax_start</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">interactive_range_change_time</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+        <span class="k">def</span> <span class="nf">unfollow</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">follow_timer</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">follow_timer</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">follow_timer</span> <span class="o">=</span> <span class="bp">None</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">interactive_range_change_time</span> <span class="o">=</span> <span class="mf">0.0</span>
+
         <span class="k">def</span> <span class="nf">follow_update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
             <span class="n">rnow</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">follow_lapse</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
@@ -3074,7 +3086,7 @@
 
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">following_interrupted</span><span class="p">(</span><span class="n">rnow</span><span class="p">):</span>
                 <span class="k">return</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">set_time_range</span><span class="p">(</span><span class="n">now</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">follow_time</span><span class="p">,</span> <span class="n">now</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_time_range</span><span class="p">(</span><span class="n">now</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">follow_time</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">follow_tshift</span><span class="p">,</span> <span class="n">now</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">follow_tshift</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
      
         <span class="k">def</span> <span class="nf">myclose</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">return_tag</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">):</span>

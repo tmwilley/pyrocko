@@ -273,6 +273,19 @@
     <span class="k">return</span> <span class="n">func</span>
 
 
+<span class="k">def</span> <span class="nf">x_int_angle</span><span class="p">():</span>
+    <span class="k">def</span> <span class="nf">string</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s">&#39;   &#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s">&#39;</span><span class="si">%3i</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">v</span><span class="p">))</span> <span class="o">%</span> <span class="mi">360</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">float_or_none</span><span class="p">,</span> <span class="n">string</span>
+
+<span class="n">x_int_angle</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="n">x_int_angle</span><span class="o">.</span><span class="n">help_type</span> <span class="o">=</span> <span class="s">&#39;int [0, 360]&#39;</span>
+
+
 <span class="k">def</span> <span class="nf">x_substitute</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">func</span><span class="p">():</span>
         <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
@@ -289,9 +302,23 @@
     <span class="k">return</span> <span class="n">func</span>
 
 
+<span class="k">def</span> <span class="nf">fillup_zeros</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">fmt</span><span class="p">):</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">s</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">s</span>
+
+    <span class="k">if</span> <span class="n">fmt</span> <span class="o">==</span> <span class="s">&#39;%Y/%m/</span><span class="si">%d</span><span class="s"> %H:%M:%S.3FRAC&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">s</span> <span class="o">+</span> <span class="s">&#39;0000/01/01 00:00:00.000&#39;</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">):]</span>
+    <span class="k">elif</span> <span class="n">fmt</span> <span class="o">==</span> <span class="s">&#39;%Y/%m/</span><span class="si">%d</span><span class="s"> %H:%M:%S.2FRAC&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">s</span> <span class="o">+</span> <span class="s">&#39;0000/01/01 00:00:00.00&#39;</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">):]</span>
+
+    <span class="k">return</span> <span class="n">s</span>
+
+
 <span class="k">def</span> <span class="nf">x_date_time</span><span class="p">(</span><span class="n">fmt</span><span class="o">=</span><span class="s">&#39;%Y/%m/</span><span class="si">%d</span><span class="s"> %H:%M:%S.3FRAC&#39;</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="n">fillup_zeros</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">fmt</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">util</span><span class="o">.</span><span class="n">str_to_time</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="n">fmt</span><span class="p">)</span>
 
         <span class="k">except</span><span class="p">:</span>
@@ -333,6 +360,13 @@
 
 <span class="n">x_date_time_no_seconds</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="mi">16</span>
 <span class="n">x_date_time_no_seconds</span><span class="o">.</span><span class="n">help_type</span> <span class="o">=</span> <span class="s">&#39;YYYY/MM/DD HH:MM&#39;</span>
+
+
+<span class="k">def</span> <span class="nf">x_date_time_2frac</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">x_date_time</span><span class="p">(</span><span class="n">fmt</span><span class="o">=</span><span class="s">&#39;%Y/%m/</span><span class="si">%d</span><span class="s"> %H:%M:%S.2FRAC&#39;</span><span class="p">)</span>
+
+<span class="n">x_date_time_2frac</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="mi">22</span>
+<span class="n">x_date_time_2frac</span><span class="o">.</span><span class="n">help_type</span> <span class="o">=</span> <span class="s">&#39;YYYY/MM/DD HH:MM:SS.FF&#39;</span>
 
 
 <span class="k">def</span> <span class="nf">x_yesno</span><span class="p">():</span>
@@ -677,13 +711,14 @@
     <span class="n">_format</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;FTP_FILE&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
 
     <span class="n">net_address</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
-    <span class="n">login_mode</span> <span class="o">=</span> <span class="n">StringChoice</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">choices</span><span class="o">=</span><span class="p">(</span><span class="s">&#39;USER&#39;</span><span class="p">,</span> <span class="s">&#39;GUEST&#39;</span><span class="p">))</span>
+    <span class="n">login_mode</span> <span class="o">=</span> <span class="n">StringChoice</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">choices</span><span class="o">=</span><span class="p">(</span><span class="s">&#39;USER&#39;</span><span class="p">,</span> <span class="s">&#39;GUEST&#39;</span><span class="p">),</span> <span class="n">ignore_case</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
     <span class="n">directory</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
     <span class="nb">file</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
 
 </div>
 <div class="viewcode-block" id="WaveformSubformat"><a class="viewcode-back" href="../../ims.html#pyrocko.ims.WaveformSubformat">[docs]</a><span class="k">class</span> <span class="nc">WaveformSubformat</span><span class="p">(</span><span class="n">StringChoice</span><span class="p">):</span>
     <span class="n">choices</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;INT&#39;</span><span class="p">,</span> <span class="s">&#39;CM6&#39;</span><span class="p">,</span> <span class="s">&#39;CM8&#39;</span><span class="p">,</span> <span class="s">&#39;AU6&#39;</span><span class="p">,</span> <span class="s">&#39;AU8&#39;</span><span class="p">]</span>
+    <span class="n">ignore_case</span> <span class="o">=</span> <span class="bp">True</span>
 
 </div>
 <div class="viewcode-block" id="WID2"><a class="viewcode-back" href="../../ims.html#pyrocko.ims.WID2">[docs]</a><span class="k">class</span> <span class="nc">WID2</span><span class="p">(</span><span class="n">Block</span><span class="p">):</span>
@@ -1022,10 +1057,12 @@
 </div>
 <div class="viewcode-block" id="BeamType"><a class="viewcode-back" href="../../ims.html#pyrocko.ims.BeamType">[docs]</a><span class="k">class</span> <span class="nc">BeamType</span><span class="p">(</span><span class="n">StringChoice</span><span class="p">):</span>
     <span class="n">choices</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;inc&#39;</span><span class="p">,</span> <span class="s">&#39;coh&#39;</span><span class="p">]</span>
+    <span class="n">ignore_case</span> <span class="o">=</span> <span class="bp">True</span>
 
 </div>
 <div class="viewcode-block" id="FilterType"><a class="viewcode-back" href="../../ims.html#pyrocko.ims.FilterType">[docs]</a><span class="k">class</span> <span class="nc">FilterType</span><span class="p">(</span><span class="n">StringChoice</span><span class="p">):</span>
     <span class="n">choices</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;BP&#39;</span><span class="p">,</span> <span class="s">&#39;LP&#39;</span><span class="p">,</span> <span class="s">&#39;HP&#39;</span><span class="p">,</span> <span class="s">&#39;BR&#39;</span><span class="p">]</span>
+    <span class="n">ignore_case</span> <span class="o">=</span> <span class="bp">True</span>
 
 </div>
 <div class="viewcode-block" id="BeamParameters"><a class="viewcode-back" href="../../ims.html#pyrocko.ims.BeamParameters">[docs]</a><span class="k">class</span> <span class="nc">BeamParameters</span><span class="p">(</span><span class="n">Block</span><span class="p">):</span>
@@ -1157,23 +1194,19 @@
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">reader</span><span class="p">):</span>
+        <span class="n">lstart</span> <span class="o">=</span> <span class="n">reader</span><span class="o">.</span><span class="n">current_line_number</span><span class="p">()</span>
         <span class="n">line</span> <span class="o">=</span> <span class="n">reader</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
         <span class="n">obj</span> <span class="o">=</span> <span class="n">cls</span><span class="o">.</span><span class="n">deserialize</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">reader</span><span class="o">.</span><span class="n">version_dialect</span><span class="p">)</span>
-
         <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
             <span class="n">line</span> <span class="o">=</span> <span class="n">reader</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
-            <span class="k">if</span> <span class="n">line</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="c"># make sure all comments are read</span>
+            <span class="k">if</span> <span class="n">line</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39; &#39;</span><span class="p">):</span>
                 <span class="n">reader</span><span class="o">.</span><span class="n">pushback</span><span class="p">()</span>
                 <span class="k">break</span>
 
-            <span class="n">m</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s">r&#39; ?\((.*)\)\s*$&#39;</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">m</span><span class="p">:</span>
-                <span class="n">obj</span><span class="o">.</span><span class="n">comments</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+            <span class="n">obj</span><span class="o">.</span><span class="n">append_dataline</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">reader</span><span class="o">.</span><span class="n">version_dialect</span><span class="p">)</span>
 
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">reader</span><span class="o">.</span><span class="n">pushback</span><span class="p">()</span>
-                <span class="k">break</span>
-
+        <span class="n">obj</span><span class="o">.</span><span class="n">comments</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">reader</span><span class="o">.</span><span class="n">get_comments_after</span><span class="p">(</span><span class="n">lstart</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">obj</span>
 
     <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">writer</span><span class="p">):</span>
@@ -1185,6 +1218,7 @@
 </div>
 <div class="viewcode-block" id="Units"><a class="viewcode-back" href="../../ims.html#pyrocko.ims.Units">[docs]</a><span class="k">class</span> <span class="nc">Units</span><span class="p">(</span><span class="n">StringChoice</span><span class="p">):</span>
     <span class="n">choices</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;V&#39;</span><span class="p">,</span> <span class="s">&#39;A&#39;</span><span class="p">,</span> <span class="s">&#39;C&#39;</span><span class="p">]</span>
+    <span class="n">ignore_case</span> <span class="o">=</span> <span class="bp">True</span>
 
 </div>
 <div class="viewcode-block" id="Stage"><a class="viewcode-back" href="../../ims.html#pyrocko.ims.Stage">[docs]</a><span class="k">class</span> <span class="nc">Stage</span><span class="p">(</span><span class="n">Block</span><span class="p">):</span>
@@ -1199,24 +1233,19 @@
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">reader</span><span class="p">):</span>
+        <span class="n">lstart</span> <span class="o">=</span> <span class="n">reader</span><span class="o">.</span><span class="n">current_line_number</span><span class="p">()</span>
         <span class="n">line</span> <span class="o">=</span> <span class="n">reader</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
         <span class="n">obj</span> <span class="o">=</span> <span class="n">cls</span><span class="o">.</span><span class="n">deserialize</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">reader</span><span class="o">.</span><span class="n">version_dialect</span><span class="p">)</span>
 
         <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
             <span class="n">line</span> <span class="o">=</span> <span class="n">reader</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
-            <span class="k">if</span> <span class="n">line</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">line</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39; &#39;</span><span class="p">):</span>
                 <span class="n">reader</span><span class="o">.</span><span class="n">pushback</span><span class="p">()</span>
                 <span class="k">break</span>
 
-            <span class="n">m</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s">r&#39; ?\((.*)\)\s*$&#39;</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">m</span><span class="p">:</span>
-                <span class="n">obj</span><span class="o">.</span><span class="n">comments</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
-            <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39; &#39;</span><span class="p">):</span>
-                <span class="n">obj</span><span class="o">.</span><span class="n">append_dataline</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">reader</span><span class="o">.</span><span class="n">version_dialect</span><span class="p">)</span>
+            <span class="n">obj</span><span class="o">.</span><span class="n">append_dataline</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">reader</span><span class="o">.</span><span class="n">version_dialect</span><span class="p">)</span>
 
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">reader</span><span class="o">.</span><span class="n">pushback</span><span class="p">()</span>
-                <span class="k">break</span>
+        <span class="n">obj</span><span class="o">.</span><span class="n">comments</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">reader</span><span class="o">.</span><span class="n">get_comments_after</span><span class="p">(</span><span class="n">lstart</span><span class="p">))</span>
 
         <span class="k">return</span> <span class="n">obj</span>
 
@@ -1426,6 +1455,7 @@
 </div>
 <div class="viewcode-block" id="SymmetryFlag"><a class="viewcode-back" href="../../ims.html#pyrocko.ims.SymmetryFlag">[docs]</a><span class="k">class</span> <span class="nc">SymmetryFlag</span><span class="p">(</span><span class="n">StringChoice</span><span class="p">):</span>
     <span class="n">choices</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;A&#39;</span><span class="p">,</span> <span class="s">&#39;B&#39;</span><span class="p">,</span> <span class="s">&#39;C&#39;</span><span class="p">]</span>
+    <span class="n">ignore_case</span> <span class="o">=</span> <span class="bp">True</span>
 
 </div>
 <div class="viewcode-block" id="FIR2Data"><a class="viewcode-back" href="../../ims.html#pyrocko.ims.FIR2Data">[docs]</a><span class="k">class</span> <span class="nc">FIR2Data</span><span class="p">(</span><span class="n">Block</span><span class="p">):</span>
@@ -1491,7 +1521,7 @@
     <span class="sd">&#39;&#39;&#39;Representation of a BEGIN line.&#39;&#39;&#39;</span>
 
     <span class="n">_format</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;BEGIN&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
-    <span class="n">version</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
+    <span class="n">version</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">reader</span><span class="p">):</span>
@@ -1507,6 +1537,7 @@
 </div>
 <div class="viewcode-block" id="MessageType"><a class="viewcode-back" href="../../ims.html#pyrocko.ims.MessageType">[docs]</a><span class="k">class</span> <span class="nc">MessageType</span><span class="p">(</span><span class="n">StringChoice</span><span class="p">):</span>
     <span class="n">choices</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;REQUEST&#39;</span><span class="p">,</span> <span class="s">&#39;DATA&#39;</span><span class="p">,</span> <span class="s">&#39;SUBSCRIPTION&#39;</span><span class="p">]</span>
+    <span class="n">ignore_case</span> <span class="o">=</span> <span class="bp">True</span>
 
 </div>
 <div class="viewcode-block" id="MsgType"><a class="viewcode-back" href="../../ims.html#pyrocko.ims.MsgType">[docs]</a><span class="k">class</span> <span class="nc">MsgType</span><span class="p">(</span><span class="n">FreeFormatLine</span><span class="p">):</span>
@@ -1711,7 +1742,7 @@
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_pyrocko_trace</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">tr</span><span class="p">,</span>
-            <span class="n">lat</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">lon</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">elevation</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">depth</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+                           <span class="n">lat</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">lon</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">elevation</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">depth</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
 
         <span class="kn">from</span> <span class="nn">pyrocko</span> <span class="kn">import</span> <span class="n">ims_ext</span>
         <span class="n">ydata</span> <span class="o">=</span> <span class="n">tr</span><span class="o">.</span><span class="n">get_ydata</span><span class="p">()</span>
@@ -1803,17 +1834,24 @@
 <div class="viewcode-block" id="TableSection"><a class="viewcode-back" href="../../ims.html#pyrocko.ims.TableSection">[docs]</a><span class="k">class</span> <span class="nc">TableSection</span><span class="p">(</span><span class="n">Section</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Base class for table style sections.&#39;&#39;&#39;</span>
 
+    <span class="n">has_data_type_header</span> <span class="o">=</span> <span class="bp">True</span>
+
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">reader</span><span class="p">):</span>
-        <span class="n">DataType</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">reader</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">cls</span><span class="o">.</span><span class="n">has_data_type_header</span><span class="p">:</span>
+            <span class="n">DataType</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">reader</span><span class="p">)</span>
+
         <span class="n">ts</span> <span class="o">=</span> <span class="n">cls</span><span class="o">.</span><span class="n">table_setup</span>
 
         <span class="n">header</span> <span class="o">=</span> <span class="n">get_versioned</span><span class="p">(</span><span class="n">ts</span><span class="p">[</span><span class="s">&#39;header&#39;</span><span class="p">],</span> <span class="n">reader</span><span class="o">.</span><span class="n">version_dialect</span><span class="p">)</span>
-        <span class="n">blocks</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">cls</span><span class="o">.</span><span class="n">read_table</span><span class="p">(</span><span class="n">reader</span><span class="p">,</span> <span class="n">header</span><span class="p">,</span> <span class="n">ts</span><span class="p">[</span><span class="s">&#39;cls&#39;</span><span class="p">]))</span>
+        <span class="n">blocks</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">cls</span><span class="o">.</span><span class="n">read_table</span><span class="p">(</span>
+            <span class="n">reader</span><span class="p">,</span> <span class="n">header</span><span class="p">,</span> <span class="n">ts</span><span class="p">[</span><span class="s">&#39;cls&#39;</span><span class="p">],</span> <span class="n">end</span><span class="o">=</span><span class="n">ts</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;end&#39;</span><span class="p">,</span> <span class="n">end_section</span><span class="p">)))</span>
         <span class="k">return</span> <span class="n">cls</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="n">ts</span><span class="p">[</span><span class="s">&#39;attribute&#39;</span><span class="p">]:</span> <span class="n">blocks</span><span class="p">})</span>
 
     <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">writer</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">write_datatype</span><span class="p">(</span><span class="n">writer</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_data_type_header</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">write_datatype</span><span class="p">(</span><span class="n">writer</span><span class="p">)</span>
+
         <span class="n">ts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">table_setup</span>
         <span class="n">header</span> <span class="o">=</span> <span class="n">get_versioned</span><span class="p">(</span><span class="n">ts</span><span class="p">[</span><span class="s">&#39;header&#39;</span><span class="p">],</span> <span class="n">writer</span><span class="o">.</span><span class="n">version_dialect</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">write_table</span><span class="p">(</span><span class="n">writer</span><span class="p">,</span> <span class="n">header</span><span class="p">,</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ts</span><span class="p">[</span><span class="s">&#39;attribute&#39;</span><span class="p">]))</span>
@@ -1981,11 +2019,246 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">write_datatype</span><span class="p">(</span><span class="n">writer</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">report_period</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">writer</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">write_table</span><span class="p">(</span><span class="n">writer</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">outages_header</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">outages</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="BulletinTitle"><a class="viewcode-back" href="../../ims.html#pyrocko.ims.BulletinTitle">[docs]</a><span class="k">class</span> <span class="nc">BulletinTitle</span><span class="p">(</span><span class="n">Block</span><span class="p">):</span>
+
+    <span class="n">_format</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">E</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">136</span><span class="p">,</span> <span class="s">&#39;a136&#39;</span><span class="p">)]</span>
+
+    <span class="n">title</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
+
+</div>
+<span class="n">g_event_types</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+    <span class="n">uk</span><span class="o">=</span><span class="s">&#39;unknown&#39;</span><span class="p">,</span>
+    <span class="n">ke</span><span class="o">=</span><span class="s">&#39;known earthquake&#39;</span><span class="p">,</span>
+    <span class="n">se</span><span class="o">=</span><span class="s">&#39;suspected earthquake&#39;</span><span class="p">,</span>
+    <span class="n">kr</span><span class="o">=</span><span class="s">&#39;known rockburst&#39;</span><span class="p">,</span>
+    <span class="n">sr</span><span class="o">=</span><span class="s">&#39;suspected rockburst&#39;</span><span class="p">,</span>
+    <span class="n">ki</span><span class="o">=</span><span class="s">&#39;known induced event&#39;</span><span class="p">,</span>
+    <span class="n">si</span><span class="o">=</span><span class="s">&#39;suspected induced event&#39;</span><span class="p">,</span>
+    <span class="n">km</span><span class="o">=</span><span class="s">&#39;known mine explosion&#39;</span><span class="p">,</span>
+    <span class="n">sm</span><span class="o">=</span><span class="s">&#39;suspected mine explosion&#39;</span><span class="p">,</span>
+    <span class="n">kx</span><span class="o">=</span><span class="s">&#39;known experimental explosion&#39;</span><span class="p">,</span>
+    <span class="n">sx</span><span class="o">=</span><span class="s">&#39;suspected experimental explosion&#39;</span><span class="p">,</span>
+    <span class="n">kn</span><span class="o">=</span><span class="s">&#39;known nuclear explosion&#39;</span><span class="p">,</span>
+    <span class="n">sn</span><span class="o">=</span><span class="s">&#39;suspected nuclear explosion&#39;</span><span class="p">,</span>
+    <span class="n">ls</span><span class="o">=</span><span class="s">&#39;landslide&#39;</span><span class="p">,</span>
+    <span class="n">de</span><span class="o">=</span><span class="s">&#39;??&#39;</span><span class="p">,</span>
+    <span class="n">fe</span><span class="o">=</span><span class="s">&#39;??&#39;</span><span class="p">,)</span>
+
+
+<div class="viewcode-block" id="Origin"><a class="viewcode-back" href="../../ims.html#pyrocko.ims.Origin">[docs]</a><span class="k">class</span> <span class="nc">Origin</span><span class="p">(</span><span class="n">Block</span><span class="p">):</span>
+    <span class="n">_format</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">E</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">22</span><span class="p">,</span> <span class="n">x_date_time_2frac</span><span class="p">),</span>
+        <span class="n">E</span><span class="p">(</span><span class="mi">23</span><span class="p">,</span> <span class="mi">23</span><span class="p">,</span> <span class="s">&#39;a1?&#39;</span><span class="p">),</span>
+        <span class="n">E</span><span class="p">(</span><span class="mi">25</span><span class="p">,</span> <span class="mi">29</span><span class="p">,</span> <span class="s">&#39;f5.2&#39;</span><span class="p">),</span>
+        <span class="n">E</span><span class="p">(</span><span class="mi">31</span><span class="p">,</span> <span class="mi">35</span><span class="p">,</span> <span class="s">&#39;f5.2&#39;</span><span class="p">),</span>
+        <span class="n">E</span><span class="p">(</span><span class="mi">37</span><span class="p">,</span> <span class="mi">44</span><span class="p">,</span> <span class="s">&#39;f8.4&#39;</span><span class="p">),</span>
+        <span class="n">E</span><span class="p">(</span><span class="mi">46</span><span class="p">,</span> <span class="mi">54</span><span class="p">,</span> <span class="s">&#39;f9.4&#39;</span><span class="p">),</span>
+        <span class="n">E</span><span class="p">(</span><span class="mi">55</span><span class="p">,</span> <span class="mi">55</span><span class="p">,</span> <span class="s">&#39;a1?&#39;</span><span class="p">),</span>
+        <span class="n">E</span><span class="p">(</span><span class="mi">57</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="n">x_scaled</span><span class="p">(</span><span class="s">&#39;f4.1&#39;</span><span class="p">,</span> <span class="n">km</span><span class="p">)),</span>
+        <span class="n">E</span><span class="p">(</span><span class="mi">62</span><span class="p">,</span> <span class="mi">66</span><span class="p">,</span> <span class="n">x_scaled</span><span class="p">(</span><span class="s">&#39;f5.1&#39;</span><span class="p">,</span> <span class="n">km</span><span class="p">)),</span>
+        <span class="n">E</span><span class="p">(</span><span class="mi">68</span><span class="p">,</span> <span class="mi">70</span><span class="p">,</span> <span class="n">x_int_angle</span><span class="p">),</span>
+        <span class="n">E</span><span class="p">(</span><span class="mi">72</span><span class="p">,</span> <span class="mi">76</span><span class="p">,</span> <span class="n">x_scaled</span><span class="p">(</span><span class="s">&#39;f5.1&#39;</span><span class="p">,</span> <span class="n">km</span><span class="p">)),</span>
+        <span class="n">E</span><span class="p">(</span><span class="mi">77</span><span class="p">,</span> <span class="mi">77</span><span class="p">,</span> <span class="s">&#39;a1?&#39;</span><span class="p">),</span>
+        <span class="n">E</span><span class="p">(</span><span class="mi">79</span><span class="p">,</span> <span class="mi">82</span><span class="p">,</span> <span class="n">x_scaled</span><span class="p">(</span><span class="s">&#39;f4.1&#39;</span><span class="p">,</span> <span class="n">km</span><span class="p">)),</span>
+        <span class="n">E</span><span class="p">(</span><span class="mi">84</span><span class="p">,</span> <span class="mi">87</span><span class="p">,</span> <span class="s">&#39;i4&#39;</span><span class="p">),</span>
+        <span class="n">E</span><span class="p">(</span><span class="mi">89</span><span class="p">,</span> <span class="mi">92</span><span class="p">,</span> <span class="s">&#39;i4&#39;</span><span class="p">),</span>
+        <span class="n">E</span><span class="p">(</span><span class="mi">94</span><span class="p">,</span> <span class="mi">96</span><span class="p">,</span> <span class="n">x_int_angle</span><span class="p">),</span>
+        <span class="n">E</span><span class="p">(</span><span class="mi">98</span><span class="p">,</span> <span class="mi">103</span><span class="p">,</span> <span class="s">&#39;f6.2&#39;</span><span class="p">),</span>
+        <span class="n">E</span><span class="p">(</span><span class="mi">105</span><span class="p">,</span> <span class="mi">110</span><span class="p">,</span> <span class="s">&#39;f6.2&#39;</span><span class="p">),</span>
+        <span class="n">E</span><span class="p">(</span><span class="mi">112</span><span class="p">,</span> <span class="mi">112</span><span class="p">,</span> <span class="s">&#39;a1?&#39;</span><span class="p">),</span>
+        <span class="n">E</span><span class="p">(</span><span class="mi">114</span><span class="p">,</span> <span class="mi">114</span><span class="p">,</span> <span class="s">&#39;a1?&#39;</span><span class="p">),</span>
+        <span class="n">E</span><span class="p">(</span><span class="mi">116</span><span class="p">,</span> <span class="mi">117</span><span class="p">,</span> <span class="s">&#39;a2?&#39;</span><span class="p">),</span>
+        <span class="n">E</span><span class="p">(</span><span class="mi">119</span><span class="p">,</span> <span class="mi">127</span><span class="p">,</span> <span class="s">&#39;a9&#39;</span><span class="p">),</span>
+        <span class="n">E</span><span class="p">(</span><span class="mi">129</span><span class="p">,</span> <span class="mi">136</span><span class="p">,</span> <span class="s">&#39;a8&#39;</span><span class="p">)]</span>
+
+    <span class="n">time</span> <span class="o">=</span> <span class="n">Timestamp</span><span class="o">.</span><span class="n">T</span><span class="p">(</span>
+        <span class="n">help</span><span class="o">=</span><span class="s">&#39;epicenter date and time&#39;</span><span class="p">)</span>
+
+    <span class="n">time_fixed</span> <span class="o">=</span> <span class="n">StringChoice</span><span class="o">.</span><span class="n">T</span><span class="p">(</span>
+        <span class="n">choices</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;f&#39;</span><span class="p">],</span>
+        <span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s">&#39;fixed flag, ``&quot;f&quot;`` if fixed origin time solution, &#39;</span>
+             <span class="s">&#39;``None`` if not&#39;</span><span class="p">)</span>
+
+    <span class="n">time_error</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">(</span>
+        <span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s">&#39;origin time error [seconds], ``None`` if fixed origin time&#39;</span><span class="p">)</span>
+
+    <span class="n">residual</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">(</span>
+        <span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s">&#39;root mean square of time residuals [seconds]&#39;</span><span class="p">)</span>
+
+    <span class="n">lat</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">(</span>
+        <span class="n">help</span><span class="o">=</span><span class="s">&#39;latitude&#39;</span><span class="p">)</span>
+
+    <span class="n">lon</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">(</span>
+        <span class="n">help</span><span class="o">=</span><span class="s">&#39;longitude&#39;</span><span class="p">)</span>
+
+    <span class="n">lat_lon_fixed</span> <span class="o">=</span> <span class="n">StringChoice</span><span class="o">.</span><span class="n">T</span><span class="p">(</span>
+        <span class="n">choices</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;f&#39;</span><span class="p">],</span> <span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s">&#39;fixed flag, ``&quot;f&quot;`` if fixed epicenter solution, &#39;</span>
+             <span class="s">&#39;``None`` if not&#39;</span><span class="p">)</span>
+
+    <span class="n">ellipse_semi_major_axis</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">(</span>
+        <span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s">&#39;semi-major axis of 90</span><span class="si">% c</span><span class="s">. i. ellipse or its estimate [m], &#39;</span>
+             <span class="s">&#39;``None`` if fixed&#39;</span><span class="p">)</span>
+
+    <span class="n">ellipse_semi_minor_axis</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">(</span>
+        <span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s">&#39;semi-minor axis of 90</span><span class="si">% c</span><span class="s">. i. ellipse or its estimate [m], &#39;</span>
+             <span class="s">&#39;``None`` if fixed&#39;</span><span class="p">)</span>
+
+    <span class="n">ellipse_strike</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">(</span>
+        <span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s">&#39;strike of 90</span><span class="si">% c</span><span class="s">. i. ellipse [0-360], ``None`` if fixed&#39;</span><span class="p">)</span>
+
+    <span class="n">depth</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">(</span>
+        <span class="n">help</span><span class="o">=</span><span class="s">&#39;depth [m]&#39;</span><span class="p">)</span>
+
+    <span class="n">depth_fixed</span> <span class="o">=</span> <span class="n">StringChoice</span><span class="o">.</span><span class="n">T</span><span class="p">(</span>
+        <span class="n">choices</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;f&#39;</span><span class="p">,</span> <span class="s">&#39;d&#39;</span><span class="p">],</span> <span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s">&#39;fixed flag, ``&quot;f&quot;`` fixed depth station, &quot;d&quot; depth phases, &#39;</span>
+             <span class="s">&#39;``None`` if not fixed depth&#39;</span><span class="p">)</span>
+
+    <span class="n">depth_error</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">(</span>
+        <span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s">&#39;depth error [m], 90</span><span class="si">% c</span><span class="s">. i., ``None`` if fixed depth&#39;</span><span class="p">)</span>
+
+    <span class="n">nphases</span> <span class="o">=</span> <span class="n">Int</span><span class="o">.</span><span class="n">T</span><span class="p">(</span>
+        <span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s">&#39;number of defining phases&#39;</span><span class="p">)</span>
+
+    <span class="n">nstations</span> <span class="o">=</span> <span class="n">Int</span><span class="o">.</span><span class="n">T</span><span class="p">(</span>
+        <span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s">&#39;number of defining stations&#39;</span><span class="p">)</span>
+
+    <span class="n">azimuthal_gap</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">(</span>
+        <span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s">&#39;gap in azimuth coverage [deg]&#39;</span><span class="p">)</span>
+
+    <span class="n">distance_min</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">(</span>
+        <span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s">&#39;distance to closest station [deg]&#39;</span><span class="p">)</span>
+
+    <span class="n">distance_max</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">(</span>
+        <span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s">&#39;distance to furthest station [deg]&#39;</span><span class="p">)</span>
+
+    <span class="n">analysis_type</span> <span class="o">=</span> <span class="n">StringChoice</span><span class="o">.</span><span class="n">T</span><span class="p">(</span>
+        <span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+        <span class="n">choices</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;a&#39;</span><span class="p">,</span> <span class="s">&#39;m&#39;</span><span class="p">,</span> <span class="s">&#39;g&#39;</span><span class="p">],</span>
+        <span class="n">help</span><span class="o">=</span><span class="s">&#39;analysis type, ``&quot;a&quot;`` automatic, ``&quot;m&quot;`` manual, ``&quot;g&quot;`` guess&#39;</span><span class="p">)</span>
+
+    <span class="n">location_method</span> <span class="o">=</span> <span class="n">StringChoice</span><span class="o">.</span><span class="n">T</span><span class="p">(</span>
+        <span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+        <span class="n">choices</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;i&#39;</span><span class="p">,</span> <span class="s">&#39;p&#39;</span><span class="p">,</span> <span class="s">&#39;g&#39;</span><span class="p">,</span> <span class="s">&#39;o&#39;</span><span class="p">],</span>
+        <span class="n">help</span><span class="o">=</span><span class="s">&#39;location method, ``&quot;i&quot;`` inversion, ``&quot;p&quot;`` pattern, &#39;</span>
+             <span class="s">&#39;``&quot;g&quot;`` ground truth, ``&quot;o&quot;`` other&#39;</span><span class="p">)</span>
+
+    <span class="n">event_type</span> <span class="o">=</span> <span class="n">StringChoice</span><span class="o">.</span><span class="n">T</span><span class="p">(</span>
+        <span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+        <span class="n">choices</span><span class="o">=</span><span class="nb">sorted</span><span class="p">(</span><span class="n">g_event_types</span><span class="o">.</span><span class="n">keys</span><span class="p">()),</span>
+        <span class="n">help</span><span class="o">=</span><span class="s">&#39;event type, &#39;</span> <span class="o">+</span> <span class="s">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+            <span class="s">&#39;``&quot;</span><span class="si">%s</span><span class="s">&quot;`` </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">g_event_types</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
+            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">g_event_types</span><span class="o">.</span><span class="n">keys</span><span class="p">())))</span>
+
+    <span class="n">author</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="s">&#39;author of the origin&#39;</span><span class="p">)</span>
+    <span class="n">origin_id</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="s">&#39;origin identification&#39;</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="OriginSection"><a class="viewcode-back" href="../../ims.html#pyrocko.ims.OriginSection">[docs]</a><span class="k">class</span> <span class="nc">OriginSection</span><span class="p">(</span><span class="n">TableSection</span><span class="p">):</span>
+    <span class="n">has_data_type_header</span> <span class="o">=</span> <span class="bp">False</span>
+
+    <span class="n">table_setup</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="n">header</span><span class="o">=</span><span class="p">{</span>
+            <span class="bp">None</span><span class="p">:</span> <span class="p">(</span>
+                <span class="s">&#39;   Date       Time        Err   RMS Latitude Longitude  &#39;</span>
+                <span class="s">&#39;Smaj  Smin  Az Depth   Err Ndef Nsta Gap  mdist  Mdist &#39;</span>
+                <span class="s">&#39;Qual   Author      OrigID&#39;</span><span class="p">)},</span>
+        <span class="n">attribute</span><span class="o">=</span><span class="s">&#39;origins&#39;</span><span class="p">,</span>
+        <span class="n">end</span><span class="o">=</span><span class="k">lambda</span> <span class="n">line</span><span class="p">:</span> <span class="n">end_section</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="s">&#39;EVENT&#39;</span><span class="p">),</span>
+        <span class="n">cls</span><span class="o">=</span><span class="n">Origin</span><span class="p">)</span>
+
+    <span class="n">origins</span> <span class="o">=</span> <span class="n">List</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">Origin</span><span class="o">.</span><span class="n">T</span><span class="p">())</span>
+
+</div>
+<div class="viewcode-block" id="EventTitle"><a class="viewcode-back" href="../../ims.html#pyrocko.ims.EventTitle">[docs]</a><span class="k">class</span> <span class="nc">EventTitle</span><span class="p">(</span><span class="n">Block</span><span class="p">):</span>
+    <span class="n">_format</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">E</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">x_fixed</span><span class="p">(</span><span class="s">&#39;Event&#39;</span><span class="p">),</span> <span class="n">dummy</span><span class="o">=</span><span class="bp">True</span><span class="p">),</span>
+        <span class="n">E</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="s">&#39;a8&#39;</span><span class="p">),</span>
+        <span class="n">E</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">80</span><span class="p">,</span> <span class="s">&#39;a65&#39;</span><span class="p">)]</span>
+
+    <span class="n">event_id</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
+    <span class="n">region</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
+
+</div>
+<div class="viewcode-block" id="EventSection"><a class="viewcode-back" href="../../ims.html#pyrocko.ims.EventSection">[docs]</a><span class="k">class</span> <span class="nc">EventSection</span><span class="p">(</span><span class="n">Section</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Groups Event, Arrival, ...&#39;&#39;&#39;</span>
+
+    <span class="n">event_title</span> <span class="o">=</span> <span class="n">EventTitle</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
+    <span class="n">origin_section</span> <span class="o">=</span> <span class="n">OriginSection</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">reader</span><span class="p">):</span>
+        <span class="n">event_title</span> <span class="o">=</span> <span class="n">EventTitle</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">reader</span><span class="p">)</span>
+        <span class="n">origin_section</span> <span class="o">=</span> <span class="n">OriginSection</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">reader</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">cls</span><span class="p">(</span>
+            <span class="n">event_title</span><span class="o">=</span><span class="n">event_title</span><span class="p">,</span>
+            <span class="n">origin_section</span><span class="o">=</span><span class="n">origin_section</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">writer</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">event_title</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">writer</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">origin_section</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">writer</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="EventsSection"><a class="viewcode-back" href="../../ims.html#pyrocko.ims.EventsSection">[docs]</a><span class="k">class</span> <span class="nc">EventsSection</span><span class="p">(</span><span class="n">Section</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Representation of a DATA_TYPE EVENT section.&#39;&#39;&#39;</span>
+
+    <span class="n">keyword</span> <span class="o">=</span> <span class="s">&#39;EVENT&#39;</span>
+
+    <span class="n">bulletin_title</span> <span class="o">=</span> <span class="n">BulletinTitle</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
+    <span class="n">event_sections</span> <span class="o">=</span> <span class="n">List</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">EventSection</span><span class="o">.</span><span class="n">T</span><span class="p">())</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">reader</span><span class="p">):</span>
+        <span class="n">DataType</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">reader</span><span class="p">)</span>
+        <span class="n">bulletin_title</span> <span class="o">=</span> <span class="n">BulletinTitle</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">reader</span><span class="p">)</span>
+        <span class="n">event_sections</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">reader</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+            <span class="n">reader</span><span class="o">.</span><span class="n">pushback</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">end_section</span><span class="p">(</span><span class="n">line</span><span class="p">):</span>
+                <span class="k">break</span>
+
+            <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;EVENT&#39;</span><span class="p">):</span>
+                <span class="n">event_sections</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">EventSection</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">reader</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">cls</span><span class="p">(</span>
+            <span class="n">bulletin_title</span><span class="o">=</span><span class="n">bulletin_title</span><span class="p">,</span>
+            <span class="n">event_sections</span><span class="o">=</span><span class="n">event_sections</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">writer</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">write_datatype</span><span class="p">(</span><span class="n">writer</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bulletin_title</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">writer</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">event_section</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">event_sections</span><span class="p">:</span>
+            <span class="n">event_section</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">writer</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="BulletinSection"><a class="viewcode-back" href="../../ims.html#pyrocko.ims.BulletinSection">[docs]</a><span class="k">class</span> <span class="nc">BulletinSection</span><span class="p">(</span><span class="n">EventsSection</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Representation of a DATA_TYPE BULLETIN section.&#39;&#39;&#39;</span>
+
+    <span class="n">keyword</span> <span class="o">=</span> <span class="s">&#39;BULLETIN&#39;</span>
+
 </div>
 <span class="k">for</span> <span class="n">sec</span> <span class="ow">in</span> <span class="p">(</span>
         <span class="n">LogSection</span><span class="p">,</span> <span class="n">ErrorLogSection</span><span class="p">,</span> <span class="n">FTPLogSection</span><span class="p">,</span> <span class="n">WaveformSection</span><span class="p">,</span>
         <span class="n">NetworkSection</span><span class="p">,</span> <span class="n">StationSection</span><span class="p">,</span> <span class="n">ChannelSection</span><span class="p">,</span> <span class="n">BeamSection</span><span class="p">,</span>
-        <span class="n">ResponseSection</span><span class="p">,</span> <span class="n">OutageSection</span><span class="p">):</span>
+        <span class="n">ResponseSection</span><span class="p">,</span> <span class="n">OutageSection</span><span class="p">,</span> <span class="n">EventsSection</span><span class="p">,</span> <span class="n">BulletinSection</span><span class="p">):</span>
 
     <span class="n">Section</span><span class="o">.</span><span class="n">handlers</span><span class="p">[</span><span class="n">sec</span><span class="o">.</span><span class="n">keyword</span><span class="p">]</span> <span class="o">=</span> <span class="n">sec</span>
 
@@ -2077,13 +2350,16 @@
 
 </div>
 <div class="viewcode-block" id="XW01"><a class="viewcode-back" href="../../ims.html#pyrocko.ims.XW01">[docs]</a><span class="k">class</span> <span class="nc">XW01</span><span class="p">(</span><span class="n">FreeFormatLine</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;Representation of a XW01 line (which is not a relict from GSE1).&#39;&#39;&#39;</span>
+    <span class="sd">&#39;&#39;&#39;Representation of a XW01 line (which is a relict from GSE1).&#39;&#39;&#39;</span>
 
     <span class="n">_format</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;XW01&#39;</span><span class="p">]</span>
 
     <span class="n">dummy</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 
 </div>
+<span class="n">re_comment</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s">r&#39;^(%(.+)\s*| \((#?)(.+)\)\s*)$&#39;</span><span class="p">)</span>
+<span class="n">re_comment_usa_dmc</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s">r&#39;^(%(.+)\s*| ?\((#?)(.+)\)\s*)$&#39;</span><span class="p">)</span>
+
 <span class="k">class</span> <span class="nc">Reader</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">load_data</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">dialect</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_f</span> <span class="o">=</span> <span class="n">f</span>
@@ -2101,7 +2377,9 @@
             <span class="s">&#39;CAL2 &#39;</span><span class="p">:</span> <span class="n">CAL2Section</span><span class="p">,</span>
             <span class="s">&#39;BEGIN&#39;</span><span class="p">:</span> <span class="n">MessageHeader</span><span class="p">,</span>
             <span class="s">&#39;STOP&#39;</span><span class="p">:</span> <span class="n">Stop</span><span class="p">,</span>
-            <span class="s">&#39;XW01&#39;</span><span class="p">:</span> <span class="n">XW01</span><span class="p">,</span>  <span class="c"># for compatibility with BGR dialect</span>
+            <span class="s">&#39;XW01&#39;</span><span class="p">:</span> <span class="n">XW01</span><span class="p">,</span>   <span class="c"># for compatibility with BGR dialect</span>
+            <span class="s">&#39;HANG:&#39;</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span>  <span class="c"># for compatibility with CNDC</span>
+            <span class="s">&#39;VANG:&#39;</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span>
         <span class="p">}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_comment_lines</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_time_stamps</span> <span class="o">=</span> <span class="p">[]</span>
@@ -2110,6 +2388,9 @@
 
     <span class="k">def</span> <span class="nf">tell</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_current_fpos</span>
+
+    <span class="k">def</span> <span class="nf">current_line_number</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_current_lpos</span> <span class="o">-</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pushed_back</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">readline</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pushed_back</span><span class="p">:</span>
@@ -2133,17 +2414,47 @@
                 <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">l</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\n\r</span><span class="s">&#39;</span><span class="p">))</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">_current_line</span> <span class="o">=</span> <span class="s">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">version_dialect</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;USA_DMC&#39;</span><span class="p">:</span>
+                <span class="n">m_comment</span> <span class="o">=</span> <span class="n">re_comment_usa_dmc</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_current_line</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">m_comment</span> <span class="o">=</span> <span class="n">re_comment</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_current_line</span><span class="p">)</span>
+
             <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_current_line</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
                 <span class="k">pass</span>
-            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_current_line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;%&#39;</span><span class="p">):</span>
+
+            <span class="k">elif</span> <span class="n">m_comment</span><span class="p">:</span>
+                <span class="n">comment_type</span> <span class="o">=</span> <span class="bp">None</span>
+                <span class="k">if</span> <span class="n">m_comment</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">==</span> <span class="s">&#39;#&#39;</span><span class="p">:</span>
+                    <span class="n">comment_type</span> <span class="o">=</span> <span class="s">&#39;ISF&#39;</span>
+                <span class="k">elif</span> <span class="n">m_comment</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                    <span class="n">comment_type</span> <span class="o">=</span> <span class="s">&#39;IMS&#39;</span>
+
+                <span class="n">comment</span> <span class="o">=</span> <span class="n">m_comment</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="ow">or</span> <span class="n">m_comment</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+
                 <span class="bp">self</span><span class="o">.</span><span class="n">_comment_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-                    <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_current_lpos</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_current_line</span><span class="p">))</span>
+                    <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_current_lpos</span><span class="p">,</span> <span class="n">comment_type</span><span class="p">,</span> <span class="n">comment</span><span class="p">))</span>
+
+
             <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_current_line</span><span class="p">[:</span><span class="mi">10</span><span class="p">]</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">==</span> <span class="s">&#39;TIME_STAMP&#39;</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_time_stamps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
                     <span class="n">TimeStamp</span><span class="o">.</span><span class="n">deserialize</span><span class="p">(</span>
                         <span class="bp">self</span><span class="o">.</span><span class="n">_current_line</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">version_dialect</span><span class="p">))</span>
+
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_current_line</span>
+
+    <span class="k">def</span> <span class="nf">get_comments_after</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lpos</span><span class="p">):</span>
+        <span class="n">comments</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_comment_lines</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="k">while</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_comment_lines</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">lpos</span><span class="p">:</span>
+                <span class="k">break</span>
+
+            <span class="n">comments</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_comment_lines</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">i</span> <span class="o">-=</span> <span class="mi">1</span>
+
+        <span class="k">return</span> <span class="n">comments</span>
 
     <span class="k">def</span> <span class="nf">pushback</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">assert</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pushed_back</span>
@@ -2159,8 +2470,13 @@
                 <span class="k">if</span> <span class="n">line</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">StopIteration</span><span class="p">()</span>
 
+                <span class="n">ignore</span> <span class="o">=</span> <span class="bp">False</span>
                 <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_handlers</span><span class="p">:</span>
                     <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">k</span><span class="p">):</span>
+                        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_handlers</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                            <span class="n">ignore</span> <span class="o">=</span> <span class="bp">True</span>
+                            <span class="k">break</span>
+
                         <span class="bp">self</span><span class="o">.</span><span class="n">pushback</span><span class="p">()</span>
                         <span class="n">sec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_handlers</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
                         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sec</span><span class="p">,</span> <span class="n">Stop</span><span class="p">):</span>
@@ -2169,7 +2485,7 @@
                             <span class="bp">self</span><span class="o">.</span><span class="n">_in_garbage</span> <span class="o">=</span> <span class="bp">False</span>
                         <span class="k">return</span> <span class="n">sec</span>
 
-                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_in_garbage</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_in_garbage</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">ignore</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="n">DeserializeError</span><span class="p">(</span><span class="s">&#39;unexpected line&#39;</span><span class="p">)</span>
 
         <span class="k">except</span> <span class="n">DeserializeError</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
@@ -2182,9 +2498,9 @@
 
 <span class="k">class</span> <span class="nc">Writer</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="s">&#39;GSE2.1&#39;</span><span class="p">,</span> <span class="n">dialect</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_f</span> <span class="o">=</span> <span class="n">f</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">version_dialect</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;GSE2.1&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">version_dialect</span> <span class="o">=</span> <span class="p">[</span><span class="n">version</span><span class="p">,</span> <span class="n">dialect</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">section</span><span class="p">):</span>
         <span class="n">section</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
@@ -2281,14 +2597,39 @@
         <span class="n">action</span><span class="o">=</span><span class="s">&#39;store_true&#39;</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="s">&#39;unpack data samples&#39;</span><span class="p">)</span>
 
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span>
+        <span class="s">&#39;--out-version&#39;</span><span class="p">,</span>
+        <span class="n">dest</span><span class="o">=</span><span class="s">&#39;out_version&#39;</span><span class="p">,</span>
+        <span class="n">choices</span><span class="o">=</span><span class="n">g_versions</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s">&#39;output format version&#39;</span><span class="p">)</span>
+
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_option</span><span class="p">(</span>
+        <span class="s">&#39;--out-dialect&#39;</span><span class="p">,</span>
+        <span class="n">dest</span><span class="o">=</span><span class="s">&#39;out_dialect&#39;</span><span class="p">,</span>
+        <span class="n">choices</span><span class="o">=</span><span class="n">g_dialects</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s">&#39;output format dialect&#39;</span><span class="p">)</span>
+
     <span class="p">(</span><span class="n">options</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
 
     <span class="k">for</span> <span class="n">fn</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="s">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+
             <span class="n">r</span> <span class="o">=</span> <span class="n">Reader</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">load_data</span><span class="o">=</span><span class="n">options</span><span class="o">.</span><span class="n">load_data</span><span class="p">,</span>
                        <span class="n">version</span><span class="o">=</span><span class="n">options</span><span class="o">.</span><span class="n">version</span><span class="p">,</span> <span class="n">dialect</span><span class="o">=</span><span class="n">options</span><span class="o">.</span><span class="n">dialect</span><span class="p">)</span>
+
+            <span class="n">w</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">out_version</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">w</span> <span class="o">=</span> <span class="n">Writer</span><span class="p">(</span>
+                    <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="n">options</span><span class="o">.</span><span class="n">out_version</span><span class="p">,</span>
+                    <span class="n">dialect</span><span class="o">=</span><span class="n">options</span><span class="o">.</span><span class="n">out_dialect</span><span class="p">)</span>
+
             <span class="k">for</span> <span class="n">sec</span> <span class="ow">in</span> <span class="n">r</span><span class="p">:</span>
-                <span class="k">print</span> <span class="n">sec</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">w</span><span class="p">:</span>
+                    <span class="k">print</span> <span class="n">sec</span>
+
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">w</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">sec</span><span class="p">)</span>
+
                 <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sec</span><span class="p">,</span> <span class="n">WID2Section</span><span class="p">)</span> <span class="ow">and</span> <span class="n">options</span><span class="o">.</span><span class="n">load_data</span><span class="p">:</span>
                     <span class="n">tr</span> <span class="o">=</span> <span class="n">sec</span><span class="o">.</span><span class="n">pyrocko_trace</span><span class="p">(</span><span class="n">checksum_error</span><span class="o">=</span><span class="s">&#39;warn&#39;</span><span class="p">)</span>
 </pre></div>

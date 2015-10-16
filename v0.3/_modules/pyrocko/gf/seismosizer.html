@@ -55,6 +55,7 @@
 <span class="kn">import</span> <span class="nn">math</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">logging</span>
 <span class="n">pjoin</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">num</span>
@@ -74,6 +75,8 @@
 
 <span class="n">d2r</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mf">180.</span>
 
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s">&#39;pyrocko.gf.seismosizer&#39;</span><span class="p">)</span>
+
 
 <span class="k">class</span> <span class="nc">BadRequest</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
     <span class="k">pass</span>
@@ -84,6 +87,10 @@
 
 
 <span class="k">class</span> <span class="nc">NoDefaultStoreSet</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+
+<span class="k">class</span> <span class="nc">ConversionError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
     <span class="k">pass</span>
 
 
@@ -447,6 +454,11 @@
             <span class="k">raise</span> <span class="n">InvalidGridDef</span><span class="p">(</span>
                 <span class="s">&#39;cannot use relative range specification in this context&#39;</span><span class="p">)</span>
 
+        <span class="n">vals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">make_relative</span><span class="p">(</span><span class="n">vals</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">vals</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">make_relative</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">base</span><span class="p">,</span> <span class="n">vals</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">relative</span> <span class="o">==</span> <span class="s">&#39;add&#39;</span><span class="p">:</span>
             <span class="n">vals</span> <span class="o">+=</span> <span class="n">base</span>
 
@@ -628,6 +640,11 @@
 
     <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_pyrocko_event</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">ev</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">ev</span><span class="o">.</span><span class="n">depth</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ConversionError</span><span class="p">(</span>
+                <span class="s">&#39;cannot convert event object to source object: &#39;</span>
+                <span class="s">&#39;no depth information available&#39;</span><span class="p">)</span>
+
         <span class="n">d</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
             <span class="n">name</span><span class="o">=</span><span class="n">ev</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
             <span class="n">time</span><span class="o">=</span><span class="n">ev</span><span class="o">.</span><span class="n">time</span><span class="p">,</span>
@@ -1887,6 +1904,10 @@
 
     <span class="k">def</span> <span class="nf">iter_store_dirs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">store_superdirs</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">d</span><span class="p">):</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&#39;store_superdir not available: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">d</span><span class="p">)</span>
+                <span class="k">continue</span>
+
             <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">d</span><span class="p">):</span>
                 <span class="n">store_dir</span> <span class="o">=</span> <span class="n">pjoin</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">entry</span><span class="p">)</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_looks_like_store_dir</span><span class="p">(</span><span class="n">store_dir</span><span class="p">):</span>

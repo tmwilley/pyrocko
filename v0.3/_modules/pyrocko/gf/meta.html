@@ -56,7 +56,8 @@
 <span class="kn">import</span> <span class="nn">fnmatch</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">num</span>
 <span class="kn">from</span> <span class="nn">pyrocko.guts</span> <span class="kn">import</span> <span class="n">Object</span><span class="p">,</span> <span class="n">SObject</span><span class="p">,</span> <span class="n">String</span><span class="p">,</span> <span class="n">StringChoice</span><span class="p">,</span> \
-    <span class="n">StringPattern</span><span class="p">,</span> <span class="n">Unicode</span><span class="p">,</span> <span class="n">Float</span><span class="p">,</span> <span class="n">Bool</span><span class="p">,</span> <span class="n">Int</span><span class="p">,</span> <span class="n">TBase</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">ValidationError</span>
+    <span class="n">StringPattern</span><span class="p">,</span> <span class="n">Unicode</span><span class="p">,</span> <span class="n">Float</span><span class="p">,</span> <span class="n">Bool</span><span class="p">,</span> <span class="n">Int</span><span class="p">,</span> <span class="n">TBase</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">ValidationError</span><span class="p">,</span> \
+    <span class="n">Timestamp</span>
 <span class="kn">from</span> <span class="nn">pyrocko.guts</span> <span class="kn">import</span> <span class="n">dump</span><span class="p">,</span> <span class="n">load</span>  <span class="c"># noqa</span>
 
 <span class="kn">from</span> <span class="nn">pyrocko.guts_array</span> <span class="kn">import</span> <span class="n">literal</span><span class="p">,</span> <span class="n">Array</span>
@@ -1174,6 +1175,23 @@
         <span class="s">&#39;poroelastic10&#39;</span><span class="p">)</span>
 
 
+<span class="k">class</span> <span class="nc">Region</span><span class="p">(</span><span class="n">Object</span><span class="p">):</span></div>
+<div class="viewcode-block" id="Region"><a class="viewcode-back" href="../../../gf.html#pyrocko.gf.meta.Region">[docs]</a>    <span class="n">name</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">RectangularRegion</span><span class="p">(</span><span class="n">Region</span><span class="p">):</span></div>
+<div class="viewcode-block" id="RectangularRegion"><a class="viewcode-back" href="../../../gf.html#pyrocko.gf.meta.RectangularRegion">[docs]</a>    <span class="n">lat_min</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
+    <span class="n">lat_max</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
+    <span class="n">lon_min</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
+    <span class="n">lon_max</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
+
+
+<span class="k">class</span> <span class="nc">CircularRegion</span><span class="p">(</span><span class="n">Region</span><span class="p">):</span></div>
+<div class="viewcode-block" id="CircularRegion"><a class="viewcode-back" href="../../../gf.html#pyrocko.gf.meta.CircularRegion">[docs]</a>    <span class="n">lat</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
+    <span class="n">lon</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
+    <span class="n">radius</span> <span class="o">=</span> <span class="n">Float</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
+
+
 <span class="k">class</span> <span class="nc">Config</span><span class="p">(</span><span class="n">Object</span><span class="p">):</span></div>
 <div class="viewcode-block" id="Config"><a class="viewcode-back" href="../../../gf.html#pyrocko.gf.meta.Config">[docs]</a>    <span class="sd">&#39;&#39;&#39;Greens function store meta information.&#39;&#39;&#39;</span>
 
@@ -1184,6 +1202,8 @@
     <span class="n">modelling_code_id</span> <span class="o">=</span> <span class="n">StringID</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
     <span class="n">author</span> <span class="o">=</span> <span class="n">Unicode</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
     <span class="n">author_email</span> <span class="o">=</span> <span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">created_time</span> <span class="o">=</span> <span class="n">Timestamp</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">regions</span> <span class="o">=</span> <span class="n">List</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">Region</span><span class="o">.</span><span class="n">T</span><span class="p">())</span>
     <span class="n">scope_type</span> <span class="o">=</span> <span class="n">ScopeType</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
     <span class="n">waveform_type</span> <span class="o">=</span> <span class="n">WaveformType</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
     <span class="n">nearfield_terms</span> <span class="o">=</span> <span class="n">NearfieldTermsType</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
@@ -1832,6 +1852,9 @@
 <span class="s">WaveformType</span>
 <span class="s">NearfieldTermsType</span>
 <span class="s">Reference</span>
+<span class="s">Region</span>
+<span class="s">CircularRegion</span>
+<span class="s">RectangularRegion</span>
 <span class="s">PhaseSelect</span>
 <span class="s">InvalidTimingSpecification</span>
 <span class="s">Timing</span>
