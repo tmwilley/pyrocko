@@ -8,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Installation &mdash; Pyrocko v0.3 Manual</title>
+    <title>Installation on Fedora systems &mdash; Pyrocko v0.3 Manual</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -29,8 +29,9 @@
           title="Search within Pyrocko v0.3 Manual"
           href="_static/opensearch.xml"/>
     <link rel="top" title="Pyrocko v0.3 Manual" href="index.html" />
-    <link rel="next" title="Quick system specific installation instructions" href="install_quick.html" />
-    <link rel="prev" title="Pyrocko Manual" href="index.html" /> 
+    <link rel="up" title="Quick system specific installation instructions" href="install_quick.html" />
+    <link rel="next" title="Installation on OpenSuse systems" href="install_suse.html" />
+    <link rel="prev" title="Installation on Debian based systems (Debian, Ubuntu, Mint)" href="install_deb.html" /> 
   </head>
   <body>
     <div class="related">
@@ -43,12 +44,14 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="install_quick.html" title="Quick system specific installation instructions"
+          <a href="install_suse.html" title="Installation on OpenSuse systems"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="index.html" title="Pyrocko Manual"
+          <a href="install_deb.html" title="Installation on Debian based systems (Debian, Ubuntu, Mint)"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">Pyrocko v0.3 Manual</a> &raquo;</li> 
+        <li><a href="index.html">Pyrocko v0.3 Manual</a> &raquo;</li>
+          <li><a href="install.html" >Installation</a> &raquo;</li>
+          <li><a href="install_quick.html" accesskey="U">Quick system specific installation instructions</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -56,28 +59,20 @@
       <div class="documentwrapper">
           <div class="body">
             
-  <div class="section" id="installation">
-<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
-<p>Pyrocko can be installed on every operating system where its prerequisites are
-available. This document describes how to install Pyrocko on Unix-like
-operating systems, like Linux and MacOSX.</p>
-<div class="toctree-wrapper compound">
+  <div class="section" id="installation-on-fedora-systems">
+<h1>Installation on Fedora systems<a class="headerlink" href="#installation-on-fedora-systems" title="Permalink to this headline">¶</a></h1>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="install_quick.html">Quick system specific installation instructions</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="install_deb.html">Debian based systems (Debian, Ubuntu, Mint)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="install_fedora.html">Fedora</a></li>
-<li class="toctree-l2"><a class="reference internal" href="install_suse.html">OpenSuse</a></li>
-<li class="toctree-l2"><a class="reference internal" href="install_mac.html">Mac OS X</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="install_details.html">Detailed installation instructions</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="install_details.html#prerequisites">Prerequisites</a></li>
-<li class="toctree-l2"><a class="reference internal" href="install_details.html#download-and-install-pyrocko">Download and install Pyrocko</a></li>
-<li class="toctree-l2"><a class="reference internal" href="install_details.html#updating">Updating</a></li>
-</ul>
-</li>
-</ul>
+<li><p class="first"><strong>Fedora</strong> (20):</p>
+<div class="highlight-python"><pre>sudo yum install make git python python-yaml python-matplotlib numpy scipy PyQt4
+sudo easy_install progressbar
+sudo easy_install pyavl
+cd ~/src/   # or wherever you keep your source packages
+git clone git://github.com/emolch/pyrocko.git pyrocko
+cd pyrocko
+sudo python setup.py install</pre>
 </div>
+</li>
+</ul>
 </div>
 
 
@@ -95,12 +90,14 @@ operating systems, like Linux and MacOSX.</p>
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="install_quick.html" title="Quick system specific installation instructions"
+          <a href="install_suse.html" title="Installation on OpenSuse systems"
              >next</a> |</li>
         <li class="right" >
-          <a href="index.html" title="Pyrocko Manual"
+          <a href="install_deb.html" title="Installation on Debian based systems (Debian, Ubuntu, Mint)"
              >previous</a> |</li>
-        <li><a href="index.html">Pyrocko v0.3 Manual</a> &raquo;</li> 
+        <li><a href="index.html">Pyrocko v0.3 Manual</a> &raquo;</li>
+          <li><a href="install.html" >Installation</a> &raquo;</li>
+          <li><a href="install_quick.html" >Quick system specific installation instructions</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

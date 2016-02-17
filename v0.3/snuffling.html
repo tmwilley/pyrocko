@@ -611,8 +611,25 @@ information: <tt class="docutils literal"><span class="pre">'warn'</span></tt>, 
 </dd></dl>
 
 <dl class="method">
+<dt id="pyrocko.snuffling.Snuffling.get_viewer_trace_selector">
+<tt class="descname">get_viewer_trace_selector</tt><big>(</big><em>mode='inview'</em><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#Snuffling.get_viewer_trace_selector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.Snuffling.get_viewer_trace_selector" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get currently active trace selector from viewer.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>mode</strong> &#8211; set to <tt class="docutils literal"><span class="pre">'inview'</span></tt> (default) to only include selections 
+currently shown in the viewer, <tt class="docutils literal"><span class="pre">'visible'</span> <span class="pre">to</span> <span class="pre">include</span> <span class="pre">all</span>
+<span class="pre">traces</span> <span class="pre">not</span> <span class="pre">currenly</span> <span class="pre">hidden</span> <span class="pre">by</span> <span class="pre">hide</span> <span class="pre">or</span> <span class="pre">quick-select</span> <span class="pre">commands,</span> <span class="pre">or</span>
+<span class="pre">``'all'</span></tt> to disable any restrictions.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="pyrocko.snuffling.Snuffling.chopper_selected_traces">
-<tt class="descname">chopper_selected_traces</tt><big>(</big><em>fallback=False</em>, <em>marker_selector=None</em>, <em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#Snuffling.chopper_selected_traces"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.Snuffling.chopper_selected_traces" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">chopper_selected_traces</tt><big>(</big><em>fallback=False</em>, <em>marker_selector=None</em>, <em>mode='inview'</em>, <em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#Snuffling.chopper_selected_traces"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.Snuffling.chopper_selected_traces" title="Permalink to this definition">¶</a></dt>
 <dd><p>Iterate over selected traces.</p>
 <p>Shortcut to get all trace data contained in the selected markers in the
 running snuffler. For each selected marker,
@@ -625,9 +642,15 @@ marker. Additional arguments to the chopper are handed over from
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>fallback</strong> &#8211; if <tt class="docutils literal"><span class="pre">True</span></tt>, if no selection has been marked, use the content
-currently visible in the viewer.</li>
+<li><strong>fallback</strong> &#8211; if <tt class="docutils literal"><span class="pre">True</span></tt>, if no selection has been marked, use the
+content currently visible in the viewer.</li>
 <li><strong>marker_selector</strong> &#8211; if not <tt class="docutils literal"><span class="pre">None</span></tt> a callback to filter markers.</li>
+<li><strong>mode</strong> &#8211; set to <tt class="docutils literal"><span class="pre">'inview'</span></tt> (default) to only include selections
+currently shown in the viewer (excluding traces accessible
+through vertical scrolling), <tt class="docutils literal"><span class="pre">'visible'</span></tt> to include all
+traces not currenly hidden by hide or quick-select commands
+(including traces accessible through vertical scrolling), or
+<tt class="docutils literal"><span class="pre">'all'</span></tt> to disable any restrictions.</li>
 </ul>
 </td>
 </tr>

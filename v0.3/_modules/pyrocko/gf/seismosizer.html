@@ -454,7 +454,7 @@
             <span class="k">raise</span> <span class="n">InvalidGridDef</span><span class="p">(</span>
                 <span class="s">&#39;cannot use relative range specification in this context&#39;</span><span class="p">)</span>
 
-        <span class="n">vals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">make_relative</span><span class="p">(</span><span class="n">vals</span><span class="p">)</span>
+        <span class="n">vals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">make_relative</span><span class="p">(</span><span class="n">base</span><span class="p">,</span> <span class="n">vals</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">vals</span><span class="p">)</span>
 
