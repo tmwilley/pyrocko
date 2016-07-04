@@ -30,7 +30,7 @@
           href="_static/opensearch.xml"/>
     <link rel="top" title="Pyrocko v0.3 Manual" href="index.html" />
     <link rel="up" title="Library Reference" href="reference.html" />
-    <link rel="next" title="The evalresp Module" href="evalresp.html" />
+    <link rel="next" title="The beachball Module" href="beachball.html" />
     <link rel="prev" title="The cake Module" href="cake.html" /> 
   </head>
   <body>
@@ -44,7 +44,7 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="evalresp.html" title="The evalresp Module"
+          <a href="beachball.html" title="The beachball Module"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="cake.html" title="The cake Module"
@@ -61,36 +61,6 @@
   <div class="section" id="module-pyrocko.moment_tensor">
 <span id="the-moment-tensor-module"></span><h1>The <tt class="xref py py-mod docutils literal"><span class="pre">moment_tensor</span></tt> Module<a class="headerlink" href="#module-pyrocko.moment_tensor" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
-<dt id="pyrocko.moment_tensor.rotation_from_axis_and_angle">
-<tt class="descname">rotation_from_axis_and_angle</tt><big>(</big><em>angle</em>, <em>axis</em><big>)</big><a class="reference internal" href="_modules/pyrocko/moment_tensor.html#rotation_from_axis_and_angle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.moment_tensor.rotation_from_axis_and_angle" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="pyrocko.moment_tensor.random_rotation">
-<tt class="descname">random_rotation</tt><big>(</big><em>x=None</em><big>)</big><a class="reference internal" href="_modules/pyrocko/moment_tensor.html#random_rotation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.moment_tensor.random_rotation" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="pyrocko.moment_tensor.rand">
-<tt class="descname">rand</tt><big>(</big><em>mi</em>, <em>ma</em><big>)</big><a class="reference internal" href="_modules/pyrocko/moment_tensor.html#rand"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.moment_tensor.rand" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="pyrocko.moment_tensor.randdip">
-<tt class="descname">randdip</tt><big>(</big><em>mi</em>, <em>ma</em><big>)</big><a class="reference internal" href="_modules/pyrocko/moment_tensor.html#randdip"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.moment_tensor.randdip" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="pyrocko.moment_tensor.random_strike_dip_rake">
-<tt class="descname">random_strike_dip_rake</tt><big>(</big><em>strikemin=0.0</em>, <em>strikemax=360.0</em>, <em>dipmin=0.0</em>, <em>dipmax=90.0</em>, <em>rakemin=-180.0</em>, <em>rakemax=180.0</em><big>)</big><a class="reference internal" href="_modules/pyrocko/moment_tensor.html#random_strike_dip_rake"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.moment_tensor.random_strike_dip_rake" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="pyrocko.moment_tensor.to6">
-<tt class="descname">to6</tt><big>(</big><em>m</em><big>)</big><a class="reference internal" href="_modules/pyrocko/moment_tensor.html#to6"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.moment_tensor.to6" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
 <dt id="pyrocko.moment_tensor.symmat6">
 <tt class="descname">symmat6</tt><big>(</big><em>*vals</em><big>)</big><a class="reference internal" href="_modules/pyrocko/moment_tensor.html#symmat6"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.moment_tensor.symmat6" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create symmetric 3x3 matrix from its 6 non-redundant values.</p>
@@ -98,14 +68,21 @@
 </dd></dl>
 
 <dl class="function">
-<dt id="pyrocko.moment_tensor.moment_to_magnitude">
-<tt class="descname">moment_to_magnitude</tt><big>(</big><em>moment</em><big>)</big><a class="reference internal" href="_modules/pyrocko/moment_tensor.html#moment_to_magnitude"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.moment_tensor.moment_to_magnitude" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="pyrocko.moment_tensor.magnitude_to_moment">
-<tt class="descname">magnitude_to_moment</tt><big>(</big><em>magnitude</em><big>)</big><a class="reference internal" href="_modules/pyrocko/moment_tensor.html#magnitude_to_moment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.moment_tensor.magnitude_to_moment" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dt id="pyrocko.moment_tensor.values_to_matrix">
+<tt class="descname">values_to_matrix</tt><big>(</big><em>values</em><big>)</big><a class="reference internal" href="_modules/pyrocko/moment_tensor.html#values_to_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.moment_tensor.values_to_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert anything to moment tensor represented as a NumPy matrix.</p>
+<p>Transforms <a class="reference internal" href="#pyrocko.moment_tensor.MomentTensor" title="pyrocko.moment_tensor.MomentTensor"><tt class="xref py py-class docutils literal"><span class="pre">MomentTensor</span></tt></a> objects, tuples, lists and NumPy arrays
+with 3x3 or 3, 4, 6, or 7 elements into NumPy 3x3 matrix objects.</p>
+<p>The following parameter sequences and objects are supported:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">[</span><span class="n">strike</span><span class="p">,</span> <span class="n">dip</span><span class="p">,</span> <span class="n">rake</span><span class="p">]</span>
+<span class="p">[</span><span class="n">strike</span><span class="p">,</span> <span class="n">dip</span><span class="p">,</span> <span class="n">rake</span><span class="p">,</span> <span class="n">magnitude</span><span class="p">]</span>
+<span class="p">[</span><span class="n">mnn</span><span class="p">,</span> <span class="n">mee</span><span class="p">,</span> <span class="n">mdd</span><span class="p">,</span> <span class="n">mne</span><span class="p">,</span> <span class="n">mnd</span><span class="p">,</span> <span class="n">med</span><span class="p">]</span>
+<span class="p">[</span><span class="n">mnn</span><span class="p">,</span> <span class="n">mee</span><span class="p">,</span> <span class="n">mdd</span><span class="p">,</span> <span class="n">mne</span><span class="p">,</span> <span class="n">mnd</span><span class="p">,</span> <span class="n">med</span><span class="p">,</span> <span class="n">magnitude</span><span class="p">]</span>
+<span class="p">[[</span><span class="n">mnn</span><span class="p">,</span> <span class="n">mne</span><span class="p">,</span> <span class="n">mnd</span><span class="p">],</span> <span class="p">[</span><span class="n">mne</span><span class="p">,</span> <span class="n">mee</span><span class="p">,</span> <span class="n">med</span><span class="p">],</span> <span class="p">[</span><span class="n">mnd</span><span class="p">,</span> <span class="n">med</span><span class="p">,</span> <span class="n">mdd</span><span class="p">]]</span>
+<span class="n">MomentTensor_object</span>
+</pre></div>
+</div>
+</dd></dl>
 
 <dl class="function">
 <dt id="pyrocko.moment_tensor.euler_to_matrix">
@@ -155,30 +132,24 @@ zero, to prevent that additional ambiguity.</p>
 <p>If alpha is near to pi/2, beta is put into the range [0,pi).</p>
 </dd></dl>
 
-<dl class="function">
-<dt id="pyrocko.moment_tensor.cvec">
-<tt class="descname">cvec</tt><big>(</big><em>x</em>, <em>y</em>, <em>z</em><big>)</big><a class="reference internal" href="_modules/pyrocko/moment_tensor.html#cvec"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.moment_tensor.cvec" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="pyrocko.moment_tensor.rvec">
-<tt class="descname">rvec</tt><big>(</big><em>x</em>, <em>y</em>, <em>z</em><big>)</big><a class="reference internal" href="_modules/pyrocko/moment_tensor.html#rvec"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.moment_tensor.rvec" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="pyrocko.moment_tensor.eigh_check">
-<tt class="descname">eigh_check</tt><big>(</big><em>a</em><big>)</big><a class="reference internal" href="_modules/pyrocko/moment_tensor.html#eigh_check"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.moment_tensor.eigh_check" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="pyrocko.moment_tensor.sm">
-<tt class="descname">sm</tt><big>(</big><em>m</em><big>)</big><a class="reference internal" href="_modules/pyrocko/moment_tensor.html#sm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.moment_tensor.sm" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
 <dl class="class">
 <dt id="pyrocko.moment_tensor.MomentTensor">
 <em class="property">class </em><tt class="descname">MomentTensor</tt><big>(</big><em>m=None</em>, <em>m_up_south_east=None</em>, <em>strike=0.0</em>, <em>dip=0.0</em>, <em>rake=0.0</em>, <em>scalar_moment=1.0</em>, <em>mnn=None</em>, <em>mee=None</em>, <em>mdd=None</em>, <em>mne=None</em>, <em>mnd=None</em>, <em>med=None</em>, <em>strike1=None</em>, <em>dip1=None</em>, <em>rake1=None</em>, <em>strike2=None</em>, <em>dip2=None</em>, <em>rake2=None</em>, <em>magnitude=None</em>, <em>moment=None</em><big>)</big><a class="reference internal" href="_modules/pyrocko/moment_tensor.html#MomentTensor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.moment_tensor.MomentTensor" title="Permalink to this definition">¶</a></dt>
-<dd><p>Undocumented.</p>
+<dd><p>Moment tensor object</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>m</strong> &#8211; NumPy matrix in north-east-down convention</li>
+<li><strong>m_up_south_east</strong> &#8211; NumPy matrix in up-south-east convention</li>
+<li><strong>dip, rake</strong> (<em>strike,</em>) &#8211; fault plane angles in [degrees]</li>
+<li><strong>scalar_moment</strong> &#8211; scalar moment in [Nm]</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="attribute">
 <dt id="pyrocko.moment_tensor.MomentTensor.mnn">
 <tt class="descname">mnn</tt><a class="reference internal" href="_modules/pyrocko/moment_tensor.html#MomentTensor.mnn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.moment_tensor.MomentTensor.mnn" title="Permalink to this definition">¶</a></dt>
@@ -263,140 +234,39 @@ zero, to prevent that additional ambiguity.</p>
 <dd><p><tt class="docutils literal"><span class="pre">float</span></tt>, <em>optional</em></p>
 </dd></dl>
 
-<dl class="attribute">
-<dt>
-<tt class="descname">MomentTensor.mnn__ -&gt; &lt;pyrocko.guts.__T object at 0x522b4d0&gt;</tt></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt>
-<tt class="descname">MomentTensor.mee__ -&gt; &lt;pyrocko.guts.__T object at 0x522b550&gt;</tt></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt>
-<tt class="descname">MomentTensor.mdd__ -&gt; &lt;pyrocko.guts.__T object at 0x522b590&gt;</tt></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt>
-<tt class="descname">MomentTensor.mne__ -&gt; &lt;pyrocko.guts.__T object at 0x522b5d0&gt;</tt></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt>
-<tt class="descname">MomentTensor.mnd__ -&gt; &lt;pyrocko.guts.__T object at 0x522b610&gt;</tt></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt>
-<tt class="descname">MomentTensor.med__ -&gt; &lt;pyrocko.guts.__T object at 0x522b650&gt;</tt></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt>
-<tt class="descname">MomentTensor.strike1__ -&gt; &lt;pyrocko.guts.__T object at 0x522b690&gt;</tt></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt>
-<tt class="descname">MomentTensor.dip1__ -&gt; &lt;pyrocko.guts.__T object at 0x522b6d0&gt;</tt></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt>
-<tt class="descname">MomentTensor.rake1__ -&gt; &lt;pyrocko.guts.__T object at 0x522b710&gt;</tt></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt>
-<tt class="descname">MomentTensor.strike2__ -&gt; &lt;pyrocko.guts.__T object at 0x522b750&gt;</tt></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt>
-<tt class="descname">MomentTensor.dip2__ -&gt; &lt;pyrocko.guts.__T object at 0x522b790&gt;</tt></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt>
-<tt class="descname">MomentTensor.rake2__ -&gt; &lt;pyrocko.guts.__T object at 0x522b7d0&gt;</tt></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt>
-<tt class="descname">MomentTensor.moment__ -&gt; &lt;pyrocko.guts.__T object at 0x522b810&gt;</tt></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt>
-<tt class="descname">MomentTensor.magnitude__ -&gt; &lt;pyrocko.guts.__T object at 0x522b850&gt;</tt></dt>
-<dd></dd></dl>
-
 <dl class="classmethod">
 <dt id="pyrocko.moment_tensor.MomentTensor.random_dc">
 <em class="property">classmethod </em><tt class="descname">random_dc</tt><big>(</big><em>x=None</em>, <em>scalar_moment=1.0</em>, <em>magnitude=None</em><big>)</big><a class="reference internal" href="_modules/pyrocko/moment_tensor.html#MomentTensor.random_dc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.moment_tensor.MomentTensor.random_dc" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Create random oriented double-couple moment tensor</p>
+<p>The rotations used are uniformly distributed in the space of rotations.</p>
+</dd></dl>
 
-<dl class="attribute">
-<dt>
-<tt class="descname">mnn</tt><a class="reference internal" href="_modules/pyrocko/moment_tensor.html#MomentTensor.mnn"><span class="viewcode-link">[source]</span></a></dt>
-<dd></dd></dl>
+<dl class="classmethod">
+<dt id="pyrocko.moment_tensor.MomentTensor.random_mt">
+<em class="property">classmethod </em><tt class="descname">random_mt</tt><big>(</big><em>x=None</em>, <em>scalar_moment=1.0</em>, <em>magnitude=None</em><big>)</big><a class="reference internal" href="_modules/pyrocko/moment_tensor.html#MomentTensor.random_mt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.moment_tensor.MomentTensor.random_mt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create random moment tensor</p>
+<p>Moment tensors produced by this function appear uniformly distributed
+when shown in a Hudson&#8217;s diagram. The rotations used are unifomly
+distributed in the space of rotations.</p>
+</dd></dl>
 
-<dl class="attribute">
-<dt>
-<tt class="descname">mee</tt><a class="reference internal" href="_modules/pyrocko/moment_tensor.html#MomentTensor.mee"><span class="viewcode-link">[source]</span></a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt>
-<tt class="descname">mdd</tt><a class="reference internal" href="_modules/pyrocko/moment_tensor.html#MomentTensor.mdd"><span class="viewcode-link">[source]</span></a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt>
-<tt class="descname">mne</tt><a class="reference internal" href="_modules/pyrocko/moment_tensor.html#MomentTensor.mne"><span class="viewcode-link">[source]</span></a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt>
-<tt class="descname">mnd</tt><a class="reference internal" href="_modules/pyrocko/moment_tensor.html#MomentTensor.mnd"><span class="viewcode-link">[source]</span></a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt>
-<tt class="descname">med</tt><a class="reference internal" href="_modules/pyrocko/moment_tensor.html#MomentTensor.med"><span class="viewcode-link">[source]</span></a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt>
-<tt class="descname">strike1</tt><a class="reference internal" href="_modules/pyrocko/moment_tensor.html#MomentTensor.strike1"><span class="viewcode-link">[source]</span></a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt>
-<tt class="descname">dip1</tt><a class="reference internal" href="_modules/pyrocko/moment_tensor.html#MomentTensor.dip1"><span class="viewcode-link">[source]</span></a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt>
-<tt class="descname">rake1</tt><a class="reference internal" href="_modules/pyrocko/moment_tensor.html#MomentTensor.rake1"><span class="viewcode-link">[source]</span></a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt>
-<tt class="descname">strike2</tt><a class="reference internal" href="_modules/pyrocko/moment_tensor.html#MomentTensor.strike2"><span class="viewcode-link">[source]</span></a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt>
-<tt class="descname">dip2</tt><a class="reference internal" href="_modules/pyrocko/moment_tensor.html#MomentTensor.dip2"><span class="viewcode-link">[source]</span></a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt>
-<tt class="descname">rake2</tt><a class="reference internal" href="_modules/pyrocko/moment_tensor.html#MomentTensor.rake2"><span class="viewcode-link">[source]</span></a></dt>
-<dd></dd></dl>
+<dl class="classmethod">
+<dt id="pyrocko.moment_tensor.MomentTensor.from_values">
+<em class="property">classmethod </em><tt class="descname">from_values</tt><big>(</big><em>values</em><big>)</big><a class="reference internal" href="_modules/pyrocko/moment_tensor.html#MomentTensor.from_values"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.moment_tensor.MomentTensor.from_values" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alternative constructor for moment tensor objects</p>
+<p>This constructor takes a <a class="reference internal" href="#pyrocko.moment_tensor.MomentTensor" title="pyrocko.moment_tensor.MomentTensor"><tt class="xref py py-class docutils literal"><span class="pre">MomentTensor</span></tt></a> object, a tuple, list
+or NumPy array with 3x3 or 3, 4, 6, or 7 elements to build a Moment
+tensor object.</p>
+<p>The <em>values</em> argument is interpreted depending on shape as follows:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">[</span><span class="n">strike</span><span class="p">,</span> <span class="n">dip</span><span class="p">,</span> <span class="n">rake</span><span class="p">]</span>
+<span class="p">[</span><span class="n">strike</span><span class="p">,</span> <span class="n">dip</span><span class="p">,</span> <span class="n">rake</span><span class="p">,</span> <span class="n">magnitude</span><span class="p">]</span>
+<span class="p">[</span><span class="n">mnn</span><span class="p">,</span> <span class="n">mee</span><span class="p">,</span> <span class="n">mdd</span><span class="p">,</span> <span class="n">mne</span><span class="p">,</span> <span class="n">mnd</span><span class="p">,</span> <span class="n">med</span><span class="p">]</span>
+<span class="p">[</span><span class="n">mnn</span><span class="p">,</span> <span class="n">mee</span><span class="p">,</span> <span class="n">mdd</span><span class="p">,</span> <span class="n">mne</span><span class="p">,</span> <span class="n">mnd</span><span class="p">,</span> <span class="n">med</span><span class="p">,</span> <span class="n">magnitude</span><span class="p">]</span>
+<span class="p">[[</span><span class="n">mnn</span><span class="p">,</span> <span class="n">mne</span><span class="p">,</span> <span class="n">mnd</span><span class="p">],</span> <span class="p">[</span><span class="n">mne</span><span class="p">,</span> <span class="n">mee</span><span class="p">,</span> <span class="n">med</span><span class="p">],</span> <span class="p">[</span><span class="n">mnd</span><span class="p">,</span> <span class="n">med</span><span class="p">,</span> <span class="n">mdd</span><span class="p">]]</span>
+<span class="n">MomentTensor_object</span>
+</pre></div>
+</div>
+</dd></dl>
 
 <dl class="method">
 <dt id="pyrocko.moment_tensor.MomentTensor.both_strike_dip_rake">
@@ -419,18 +289,35 @@ zero, to prevent that additional ambiguity.</p>
 <dl class="method">
 <dt id="pyrocko.moment_tensor.MomentTensor.null_axis">
 <tt class="descname">null_axis</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/moment_tensor.html#MomentTensor.null_axis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.moment_tensor.MomentTensor.null_axis" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Get diretion of the null axis.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="pyrocko.moment_tensor.MomentTensor.eigenvals">
 <tt class="descname">eigenvals</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/moment_tensor.html#MomentTensor.eigenvals"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.moment_tensor.MomentTensor.eigenvals" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Get the eigenvalues of the moment tensor in accending order.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><tt class="docutils literal"><span class="pre">(ep,</span> <span class="pre">en,</span> <span class="pre">et)</span></tt></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="pyrocko.moment_tensor.MomentTensor.eigensystem">
 <tt class="descname">eigensystem</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/moment_tensor.html#MomentTensor.eigensystem"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.moment_tensor.MomentTensor.eigensystem" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get eigenvalues and eigenvectors of moment tensor.</p>
-<p>returns ep, en, et, vp, vn, vt</p>
+<dd><p>Get the eigenvalues and eigenvectors of the moment tensor.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><tt class="docutils literal"><span class="pre">(ep,</span> <span class="pre">en,</span> <span class="pre">et,</span> <span class="pre">vp,</span> <span class="pre">vn,</span> <span class="pre">vt)</span></tt></td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -448,136 +335,84 @@ zero, to prevent that additional ambiguity.</p>
 <dl class="method">
 <dt id="pyrocko.moment_tensor.MomentTensor.m6">
 <tt class="descname">m6</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/moment_tensor.html#MomentTensor.m6"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.moment_tensor.MomentTensor.m6" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Get the moment tensor as a six-element array.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><tt class="docutils literal"><span class="pre">(mnn,</span> <span class="pre">mee,</span> <span class="pre">mdd,</span> <span class="pre">mne,</span> <span class="pre">mnd,</span> <span class="pre">med)</span></tt></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="pyrocko.moment_tensor.MomentTensor.m_up_south_east">
 <tt class="descname">m_up_south_east</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/moment_tensor.html#MomentTensor.m_up_south_east"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.moment_tensor.MomentTensor.m_up_south_east" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="class">
-<dt id="pyrocko.moment_tensor.MomentTensor.T">
-<em class="property">class </em><tt class="descname">T</tt><big>(</big><em>default=None</em>, <em>optional=False</em>, <em>xmlstyle='element'</em>, <em>xmltagname=None</em>, <em>help=None</em>, <em>position=None</em><big>)</big><a class="headerlink" href="#pyrocko.moment_tensor.MomentTensor.T" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="attribute">
-<dt id="pyrocko.moment_tensor.MomentTensor.T.classname">
-<tt class="descname">classname</tt><em class="property"> = 'MomentTensor'</em><a class="headerlink" href="#pyrocko.moment_tensor.MomentTensor.T.classname" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="pyrocko.moment_tensor.MomentTensor.T.cls">
-<tt class="descname">cls</tt><a class="headerlink" href="#pyrocko.moment_tensor.MomentTensor.T.cls" title="Permalink to this definition">¶</a></dt>
-<dd><p>alias of <a class="reference internal" href="#pyrocko.moment_tensor.MomentTensor" title="pyrocko.moment_tensor.MomentTensor"><tt class="xref py py-class docutils literal"><span class="pre">MomentTensor</span></tt></a></p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="pyrocko.moment_tensor.MomentTensor.T.content_property">
-<tt class="descname">content_property</tt><em class="property"> = None</em><a class="headerlink" href="#pyrocko.moment_tensor.MomentTensor.T.content_property" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="pyrocko.moment_tensor.MomentTensor.T.dummy_cls">
-<tt class="descname">dummy_cls</tt><a class="headerlink" href="#pyrocko.moment_tensor.MomentTensor.T.dummy_cls" title="Permalink to this definition">¶</a></dt>
-<dd><p>alias of <a class="reference internal" href="#pyrocko.moment_tensor.MomentTensor" title="pyrocko.moment_tensor.MomentTensor"><tt class="xref py py-class docutils literal"><span class="pre">MomentTensor</span></tt></a></p>
-</dd></dl>
-
-<dl class="attribute">
-<dt>
-<tt class="descname">MomentTensor.T.instance -&gt; &lt;pyrocko.guts.T object at 0x522b910&gt;</tt></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="pyrocko.moment_tensor.MomentTensor.T.properties">
-<tt class="descname">properties</tt><em class="property"> = [&lt;pyrocko.guts.__T object at 0x522b4d0&gt;, &lt;pyrocko.guts.__T object at 0x522b550&gt;, &lt;pyrocko.guts.__T object at 0x522b590&gt;, &lt;pyrocko.guts.__T object at 0x522b5d0&gt;, &lt;pyrocko.guts.__T object at 0x522b610&gt;, &lt;pyrocko.guts.__T object at 0x522b650&gt;, &lt;pyrocko.guts.__T object at 0x522b690&gt;, &lt;pyrocko.guts.__T object at 0x522b6d0&gt;, &lt;pyrocko.guts.__T object at 0x522b710&gt;, &lt;pyrocko.guts.__T object at 0x522b750&gt;, &lt;pyrocko.guts.__T object at 0x522b790&gt;, &lt;pyrocko.guts.__T object at 0x522b7d0&gt;, &lt;pyrocko.guts.__T object at 0x522b810&gt;, &lt;pyrocko.guts.__T object at 0x522b850&gt;]</em><a class="headerlink" href="#pyrocko.moment_tensor.MomentTensor.T.properties" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="pyrocko.moment_tensor.MomentTensor.T.propnames">
-<tt class="descname">propnames</tt><em class="property"> = ['mnn', 'mee', 'mdd', 'mne', 'mnd', 'med', 'strike1', 'dip1', 'rake1', 'strike2', 'dip2', 'rake2', 'moment', 'magnitude']</em><a class="headerlink" href="#pyrocko.moment_tensor.MomentTensor.T.propnames" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="pyrocko.moment_tensor.MomentTensor.T.tagname">
-<tt class="descname">tagname</tt><em class="property"> = 'pf.MomentTensor'</em><a class="headerlink" href="#pyrocko.moment_tensor.MomentTensor.T.tagname" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="pyrocko.moment_tensor.MomentTensor.T.xmltagname">
-<tt class="descname">xmltagname</tt><em class="property"> = 'MomentTensor'</em><a class="headerlink" href="#pyrocko.moment_tensor.MomentTensor.T.xmltagname" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="pyrocko.moment_tensor.MomentTensor.T.xmltagname_to_class">
-<tt class="descname">xmltagname_to_class</tt><em class="property"> = {'mee': &lt;type 'float'&gt;, 'med': &lt;type 'float'&gt;, 'dip1': &lt;type 'float'&gt;, 'dip2': &lt;type 'float'&gt;, 'strike1': &lt;type 'float'&gt;, 'mdd': &lt;type 'float'&gt;, 'strike2': &lt;type 'float'&gt;, 'moment': &lt;type 'float'&gt;, 'magnitude': &lt;type 'float'&gt;, 'mnn': &lt;type 'float'&gt;, 'rake1': &lt;type 'float'&gt;, 'rake2': &lt;type 'float'&gt;, 'mnd': &lt;type 'float'&gt;, 'mne': &lt;type 'float'&gt;}</em><a class="headerlink" href="#pyrocko.moment_tensor.MomentTensor.T.xmltagname_to_class" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="pyrocko.moment_tensor.MomentTensor.T.xmltagname_to_name">
-<tt class="descname">xmltagname_to_name</tt><em class="property"> = {'mee': 'mee', 'med': 'med', 'dip1': 'dip1', 'dip2': 'dip2', 'strike1': 'strike1', 'mdd': 'mdd', 'strike2': 'strike2', 'moment': 'moment', 'magnitude': 'magnitude', 'mnn': 'mnn', 'rake1': 'rake1', 'rake2': 'rake2', 'mnd': 'mnd', 'mne': 'mne'}</em><a class="headerlink" href="#pyrocko.moment_tensor.MomentTensor.T.xmltagname_to_name" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="pyrocko.moment_tensor.MomentTensor.T.xmltagname_to_name_multivalued">
-<tt class="descname">xmltagname_to_name_multivalued</tt><em class="property"> = {}</em><a class="headerlink" href="#pyrocko.moment_tensor.MomentTensor.T.xmltagname_to_name_multivalued" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
+<dd><p>Get moment tensor in up-south-east convention as 3x3 matrix.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyrocko.moment_tensor.MomentTensor.m6_up_south_east">
-<tt class="descclassname">MomentTensor.</tt><tt class="descname">m6_up_south_east</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/moment_tensor.html#MomentTensor.m6_up_south_east"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.moment_tensor.MomentTensor.m6_up_south_east" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<tt class="descname">m6_up_south_east</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/moment_tensor.html#MomentTensor.m6_up_south_east"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.moment_tensor.MomentTensor.m6_up_south_east" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get moment tensor in up-south-east convention as a six-element array.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><tt class="docutils literal"><span class="pre">(muu,</span> <span class="pre">mss,</span> <span class="pre">mee,</span> <span class="pre">mus,</span> <span class="pre">mue,</span> <span class="pre">mse)</span></tt></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="pyrocko.moment_tensor.MomentTensor.m_plain_double_couple">
-<tt class="descclassname">MomentTensor.</tt><tt class="descname">m_plain_double_couple</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/moment_tensor.html#MomentTensor.m_plain_double_couple"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.moment_tensor.MomentTensor.m_plain_double_couple" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">m_plain_double_couple</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/moment_tensor.html#MomentTensor.m_plain_double_couple"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.moment_tensor.MomentTensor.m_plain_double_couple" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get plain double couple with same scalar moment as moment tensor.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyrocko.moment_tensor.MomentTensor.moment_magnitude">
-<tt class="descclassname">MomentTensor.</tt><tt class="descname">moment_magnitude</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/moment_tensor.html#MomentTensor.moment_magnitude"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.moment_tensor.MomentTensor.moment_magnitude" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">moment_magnitude</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/moment_tensor.html#MomentTensor.moment_magnitude"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.moment_tensor.MomentTensor.moment_magnitude" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get moment magnitude of moment tensor.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyrocko.moment_tensor.MomentTensor.scalar_moment">
-<tt class="descclassname">MomentTensor.</tt><tt class="descname">scalar_moment</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/moment_tensor.html#MomentTensor.scalar_moment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.moment_tensor.MomentTensor.scalar_moment" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the scalar moment of the moment tensor.</p>
+<tt class="descname">scalar_moment</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/moment_tensor.html#MomentTensor.scalar_moment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.moment_tensor.MomentTensor.scalar_moment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the scalar moment of the moment tensor (Frobenius norm based)</p>
+<p>The scalar moment is calculated based on the Euclidean (Frobenius) norm
+(Silver and Jordan, 1982). The scalar moment returned by this function
+differs from the standard decomposition based definition of the scalar
+moment for non-double-couple moment tensors.</p>
 </dd></dl>
-
-<dl class="attribute">
-<dt>
-<tt class="descclassname">MomentTensor.</tt><tt class="descname">moment</tt><a class="reference internal" href="_modules/pyrocko/moment_tensor.html#MomentTensor.moment"><span class="viewcode-link">[source]</span></a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt>
-<tt class="descclassname">MomentTensor.</tt><tt class="descname">magnitude</tt><a class="reference internal" href="_modules/pyrocko/moment_tensor.html#MomentTensor.magnitude"><span class="viewcode-link">[source]</span></a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pyrocko.moment_tensor.MomentTensor.str_fault_planes">
-<tt class="descclassname">MomentTensor.</tt><tt class="descname">str_fault_planes</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/moment_tensor.html#MomentTensor.str_fault_planes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.moment_tensor.MomentTensor.str_fault_planes" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
 
 <dl class="method">
 <dt id="pyrocko.moment_tensor.MomentTensor.deviatoric">
-<tt class="descclassname">MomentTensor.</tt><tt class="descname">deviatoric</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/moment_tensor.html#MomentTensor.deviatoric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.moment_tensor.MomentTensor.deviatoric" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">deviatoric</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/moment_tensor.html#MomentTensor.deviatoric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.moment_tensor.MomentTensor.deviatoric" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get deviatoric part of moment tensor.</p>
 <p>Returns a new moment tensor object with zero trace.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyrocko.moment_tensor.MomentTensor.standard_decomposition">
-<tt class="descclassname">MomentTensor.</tt><tt class="descname">standard_decomposition</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/moment_tensor.html#MomentTensor.standard_decomposition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.moment_tensor.MomentTensor.standard_decomposition" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
+<tt class="descname">standard_decomposition</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/moment_tensor.html#MomentTensor.standard_decomposition"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.moment_tensor.MomentTensor.standard_decomposition" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decompose moment tensor into isotropic, DC and CLVD components.</p>
+<p>Standard decomposition according to e.g. Jost and Herrmann 1989 is
+returned as:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">[</span>
+    <span class="p">(</span><span class="n">moment_iso</span><span class="p">,</span> <span class="n">ratio_iso</span><span class="p">,</span> <span class="n">m_iso</span><span class="p">),</span>
+    <span class="p">(</span><span class="n">moment_dc</span><span class="p">,</span> <span class="n">ratio_dc</span><span class="p">,</span> <span class="n">m_dc</span><span class="p">),</span>
+    <span class="p">(</span><span class="n">moment_clvd</span><span class="p">,</span> <span class="n">ratio_clvd</span><span class="p">,</span> <span class="n">m_clvd</span><span class="p">),</span>
+    <span class="p">(</span><span class="n">moment_devi</span><span class="p">,</span> <span class="n">ratio_devi</span><span class="p">,</span> <span class="n">m_devi</span><span class="p">),</span>
+    <span class="p">(</span><span class="n">moment</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span>
+<span class="p">]</span>
+</pre></div>
+</div>
 </dd></dl>
 
-<dl class="function">
-<dt id="pyrocko.moment_tensor.other_plane">
-<tt class="descname">other_plane</tt><big>(</big><em>strike</em>, <em>dip</em>, <em>rake</em><big>)</big><a class="reference internal" href="_modules/pyrocko/moment_tensor.html#other_plane"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.moment_tensor.other_plane" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+</dd></dl>
 
 </div>
 
@@ -596,7 +431,7 @@ zero, to prevent that additional ambiguity.</p>
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="evalresp.html" title="The evalresp Module"
+          <a href="beachball.html" title="The beachball Module"
              >next</a> |</li>
         <li class="right" >
           <a href="cake.html" title="The cake Module"

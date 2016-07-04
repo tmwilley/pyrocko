@@ -672,6 +672,11 @@
         <span class="k">for</span> <span class="n">stage</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">stage_list</span><span class="p">:</span>
             <span class="n">responses</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">stage</span><span class="o">.</span><span class="n">get_pyrocko_response</span><span class="p">(</span><span class="n">nslc</span><span class="p">))</span>
 
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">stage_list</span><span class="p">:</span>
+            <span class="n">responses</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">trace</span><span class="o">.</span><span class="n">PoleZeroResponse</span><span class="p">(</span>
+                    <span class="n">constant</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">instrument_sensitivity</span><span class="o">.</span><span class="n">value</span><span class="p">))</span>
+
         <span class="k">if</span> <span class="n">fake_input_units</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">instrument_sensitivity</span><span class="o">.</span><span class="n">input_units</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="n">NoResponseInformation</span><span class="p">(</span><span class="s">&#39;no input units given&#39;</span><span class="p">)</span>
@@ -690,6 +695,41 @@
 
         <span class="k">return</span> <span class="n">trace</span><span class="o">.</span><span class="n">MultiplyResponse</span><span class="p">(</span><span class="n">responses</span><span class="p">)</span>
 
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_pyrocko_pz_response</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">presponse</span><span class="p">,</span> <span class="n">input_unit</span><span class="p">,</span> <span class="n">output_unit</span><span class="p">,</span> 
+                                 <span class="n">normalization_frequency</span><span class="o">=</span><span class="mf">1.0</span><span class="p">):</span>
+
+        <span class="n">norm_factor</span> <span class="o">=</span> <span class="mf">1.0</span><span class="o">/</span><span class="nb">float</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span>
+            <span class="n">presponse</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">num</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">normalization_frequency</span><span class="p">]))[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="o">/</span><span class="n">presponse</span><span class="o">.</span><span class="n">constant</span><span class="p">))</span>
+
+        <span class="n">pzs</span> <span class="o">=</span> <span class="n">PolesZeros</span><span class="p">(</span>
+            <span class="n">pz_transfer_function_type</span><span class="o">=</span><span class="s">&#39;LAPLACE (RADIANS/SECOND)&#39;</span><span class="p">,</span>
+            <span class="n">normalization_factor</span><span class="o">=</span><span class="n">norm_factor</span><span class="p">,</span>
+            <span class="n">normalization_frequency</span><span class="o">=</span><span class="n">Frequency</span><span class="p">(</span><span class="n">normalization_frequency</span><span class="p">),</span>
+            <span class="n">zero_list</span><span class="o">=</span><span class="p">[</span><span class="n">PoleZero</span><span class="p">(</span><span class="n">real</span><span class="o">=</span><span class="n">FloatNoUnit</span><span class="p">(</span><span class="n">z</span><span class="o">.</span><span class="n">real</span><span class="p">),</span>
+                                   <span class="n">imaginary</span><span class="o">=</span><span class="n">FloatNoUnit</span><span class="p">(</span><span class="n">z</span><span class="o">.</span><span class="n">imag</span><span class="p">))</span>
+                       <span class="k">for</span> <span class="n">z</span> <span class="ow">in</span> <span class="n">presponse</span><span class="o">.</span><span class="n">zeros</span><span class="p">],</span>
+            <span class="n">pole_list</span><span class="o">=</span><span class="p">[</span><span class="n">PoleZero</span><span class="p">(</span><span class="n">real</span><span class="o">=</span><span class="n">FloatNoUnit</span><span class="p">(</span><span class="n">z</span><span class="o">.</span><span class="n">real</span><span class="p">),</span>
+                                   <span class="n">imaginary</span><span class="o">=</span><span class="n">FloatNoUnit</span><span class="p">(</span><span class="n">z</span><span class="o">.</span><span class="n">imag</span><span class="p">))</span>
+                       <span class="k">for</span> <span class="n">z</span> <span class="ow">in</span> <span class="n">presponse</span><span class="o">.</span><span class="n">poles</span><span class="p">])</span>
+
+        <span class="n">pzs</span><span class="o">.</span><span class="n">validate</span><span class="p">()</span>
+
+        <span class="n">stage</span> <span class="o">=</span> <span class="n">ResponseStage</span><span class="p">(</span>
+            <span class="n">number</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">poles_zeros_list</span><span class="o">=</span><span class="p">[</span><span class="n">pzs</span><span class="p">],</span>
+            <span class="n">stage_gain</span><span class="o">=</span><span class="n">Gain</span><span class="p">(</span><span class="n">presponse</span><span class="o">.</span><span class="n">constant</span><span class="o">/</span><span class="n">norm_factor</span><span class="p">))</span>
+
+        <span class="n">resp</span> <span class="o">=</span> <span class="n">Response</span><span class="p">(</span>
+            <span class="n">instrument_sensitivity</span><span class="o">=</span><span class="n">Sensitivity</span><span class="p">(</span>
+                <span class="n">value</span><span class="o">=</span><span class="n">stage</span><span class="o">.</span><span class="n">stage_gain</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+                <span class="n">input_units</span><span class="o">=</span><span class="n">Units</span><span class="p">(</span><span class="n">input_unit</span><span class="p">),</span>
+                <span class="n">output_units</span><span class="o">=</span><span class="n">Units</span><span class="p">(</span><span class="n">output_unit</span><span class="p">)),</span>
+
+            <span class="n">stage_list</span><span class="o">=</span><span class="p">[</span><span class="n">stage</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">resp</span>
 </div>
 <div class="viewcode-block" id="BaseNode"><a class="viewcode-back" href="../../../fdsn.html#pyrocko.fdsn.station.BaseNode">[docs]</a><span class="k">class</span> <span class="nc">BaseNode</span><span class="p">(</span><span class="n">Object</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;A base node type for derivation from: Network, Station and</span>

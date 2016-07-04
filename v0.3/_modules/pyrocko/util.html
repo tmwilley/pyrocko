@@ -338,6 +338,27 @@
 
     <span class="k">return</span> <span class="n">xnodes</span><span class="p">,</span> <span class="n">ynodes</span><span class="p">,</span> <span class="n">rms_error</span>
 </div>
+<div class="viewcode-block" id="plf_integrate_piecewise"><a class="viewcode-back" href="../../util.html#pyrocko.util.plf_integrate_piecewise">[docs]</a><span class="k">def</span> <span class="nf">plf_integrate_piecewise</span><span class="p">(</span><span class="n">x_edges</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Calculate definite integral of piece-wise linear function on intervals.</span>
+
+<span class="sd">    Use trapezoidal rule to calculate definite integral of a piece-wise</span>
+<span class="sd">    linear function for a series of consecutive intervals. `x_edges` and `x`</span>
+<span class="sd">    must be sorted.</span>
+
+<span class="sd">    :param x_edges: array with edges of the intervals</span>
+<span class="sd">    :param x, y: arrays with coordinates of piece-wise linear function&#39;s</span>
+<span class="sd">                 control points</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="n">x_all</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">x</span><span class="p">,</span> <span class="n">x_edges</span><span class="p">))</span>
+    <span class="n">ii</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">x_all</span><span class="p">)</span>
+    <span class="n">y_edges</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">interp</span><span class="p">(</span><span class="n">x_edges</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+    <span class="n">y_all</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">y</span><span class="p">,</span> <span class="n">y_edges</span><span class="p">))</span>
+    <span class="n">xs</span> <span class="o">=</span> <span class="n">x_all</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span>
+    <span class="n">ys</span> <span class="o">=</span> <span class="n">y_all</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span>
+    <span class="n">y_all</span><span class="p">[</span><span class="n">ii</span><span class="p">[</span><span class="mi">1</span><span class="p">:]]</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">cumsum</span><span class="p">((</span><span class="n">xs</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">-</span> <span class="n">xs</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">*</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">ys</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">+</span> <span class="n">ys</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
+    <span class="k">return</span> <span class="n">num</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">y_all</span><span class="p">[</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">y_edges</span><span class="p">):])</span>
+</div>
 <div class="viewcode-block" id="GlobalVars"><a class="viewcode-back" href="../../util.html#pyrocko.util.GlobalVars">[docs]</a><span class="k">class</span> <span class="nc">GlobalVars</span><span class="p">:</span>
     <span class="n">reuse_store</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
     <span class="n">decitab_nmax</span> <span class="o">=</span> <span class="mi">0</span>
@@ -454,6 +475,14 @@
 <div class="viewcode-block" id="zfmt"><a class="viewcode-back" href="../../util.html#pyrocko.util.zfmt">[docs]</a><span class="k">def</span> <span class="nf">zfmt</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
     <span class="k">return</span> <span class="s">&#39;</span><span class="si">%%</span><span class="s">0</span><span class="si">%i</span><span class="s">i&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span> <span class="p">))</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
     </div>
+<div class="viewcode-block" id="julian_day_of_year"><a class="viewcode-back" href="../../util.html#pyrocko.util.julian_day_of_year">[docs]</a><span class="k">def</span> <span class="nf">julian_day_of_year</span><span class="p">(</span><span class="n">timestamp</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Get the day number after the 1st of January of year in *timestamp*.</span>
+
+<span class="sd">    :returns: day number as int</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="k">return</span> <span class="n">time</span><span class="o">.</span><span class="n">gmtime</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">timestamp</span><span class="p">))</span><span class="o">.</span><span class="n">tm_yday</span>
+</div>
 <div class="viewcode-block" id="day_start"><a class="viewcode-back" href="../../util.html#pyrocko.util.day_start">[docs]</a><span class="k">def</span> <span class="nf">day_start</span><span class="p">(</span><span class="n">timestamp</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Get beginning of day for any point in time.</span>
 <span class="sd">    </span>

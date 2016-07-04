@@ -526,7 +526,13 @@ the <a class="reference internal" href="#pyrocko.gf.meta.Location.effective_latl
 <dl class="method">
 <dt id="pyrocko.gf.meta.Location.distance_to">
 <tt class="descname">distance_to</tt><big>(</big><em>other</em><big>)</big><a class="reference internal" href="_modules/pyrocko/gf/meta.html#Location.distance_to"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.gf.meta.Location.distance_to" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute distance [m] to other location object.</p>
+<dd><p>Compute surface distance [m] to other location object.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.gf.meta.Location.distance_3d_to">
+<tt class="descname">distance_3d_to</tt><big>(</big><em>other</em><big>)</big><a class="reference internal" href="_modules/pyrocko/gf/meta.html#Location.distance_3d_to"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.gf.meta.Location.distance_3d_to" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute 3D distance [m] to other location object.</p>
 </dd></dl>
 
 <dl class="method">
@@ -542,6 +548,12 @@ the <a class="reference internal" href="#pyrocko.gf.meta.Location.effective_latl
 <em class="property">class </em><tt class="descname">Receiver</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/pyrocko/gf/meta.html#Receiver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.gf.meta.Receiver" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#pyrocko.gf.meta.Location" title="pyrocko.gf.meta.Location"><tt class="xref py py-class docutils literal"><span class="pre">pyrocko.gf.meta.Location</span></tt></a></p>
 <p>Undocumented.</p>
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.Receiver.codes">
+<tt class="descname">codes</tt><a class="headerlink" href="#pyrocko.gf.meta.Receiver.codes" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">tuple</span></tt> of 3 <tt class="docutils literal"><span class="pre">str</span></tt> objects, <em>optional</em>, network, station, and location codes</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="class">
@@ -714,7 +726,7 @@ sources match or are accounted for.</p>
 <dt id="pyrocko.gf.meta.ComponentSchemes">
 <em class="property">class </em><tt class="descname">ComponentSchemes</tt><big>(</big><em>dummy</em><big>)</big> &rarr; str<a class="reference internal" href="_modules/pyrocko/gf/meta.html#ComponentSchemes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.gf.meta.ComponentSchemes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">pyrocko.guts.StringChoice</span></tt></p>
-<p>Any <tt class="docutils literal"><span class="pre">str</span></tt> out of <tt class="docutils literal"><span class="pre">('elastic10',</span> <span class="pre">'elastic8',</span> <span class="pre">'elastic2',</span> <span class="pre">'elastic5',</span> <span class="pre">'elastic13',</span> <span class="pre">'elastic15',</span> <span class="pre">'poroelastic10')</span></tt>.</p>
+<p>Any <tt class="docutils literal"><span class="pre">str</span></tt> out of <tt class="docutils literal"><span class="pre">('elastic10',</span> <span class="pre">'elastic8',</span> <span class="pre">'elastic2',</span> <span class="pre">'elastic5',</span> <span class="pre">'elastic13',</span> <span class="pre">'elastic15',</span> <span class="pre">'elastic18',</span> <span class="pre">'poroelastic10')</span></tt>.</p>
 </dd></dl>
 
 <dl class="class">
@@ -1060,6 +1072,87 @@ sources match or are accounted for.</p>
 </dd></dl>
 
 <dl class="class">
+<dt id="pyrocko.gf.meta.ConfigTypeC">
+<em class="property">class </em><tt class="descname">ConfigTypeC</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/pyrocko/gf/meta.html#ConfigTypeC"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.gf.meta.ConfigTypeC" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyrocko.gf.meta.Config" title="pyrocko.gf.meta.Config"><tt class="xref py py-class docutils literal"><span class="pre">pyrocko.gf.meta.Config</span></tt></a></p>
+<p>Cartesian 3D source volume, fixed receiver positions</p>
+<dl class="docutils">
+<dt>Index variables are (</dt>
+<dd>ireceiver,
+source_depth,
+source_east_shift,
+source_north_shift,
+component).</dd>
+</dl>
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.ConfigTypeC.receivers">
+<tt class="descname">receivers</tt><a class="headerlink" href="#pyrocko.gf.meta.ConfigTypeC.receivers" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">list</span></tt> of <a class="reference internal" href="#pyrocko.gf.meta.Receiver" title="pyrocko.gf.meta.Receiver"><tt class="xref py py-class docutils literal"><span class="pre">pyrocko.gf.meta.Receiver</span></tt></a> objects, <em>default:</em> <tt class="docutils literal"><span class="pre">[]</span></tt></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.ConfigTypeC.source_origin">
+<tt class="descname">source_origin</tt><a class="headerlink" href="#pyrocko.gf.meta.ConfigTypeC.source_origin" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#pyrocko.gf.meta.Location" title="pyrocko.gf.meta.Location"><tt class="xref py py-class docutils literal"><span class="pre">pyrocko.gf.meta.Location</span></tt></a></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.ConfigTypeC.source_depth_min">
+<tt class="descname">source_depth_min</tt><a class="headerlink" href="#pyrocko.gf.meta.ConfigTypeC.source_depth_min" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">float</span></tt></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.ConfigTypeC.source_depth_max">
+<tt class="descname">source_depth_max</tt><a class="headerlink" href="#pyrocko.gf.meta.ConfigTypeC.source_depth_max" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">float</span></tt></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.ConfigTypeC.source_depth_delta">
+<tt class="descname">source_depth_delta</tt><a class="headerlink" href="#pyrocko.gf.meta.ConfigTypeC.source_depth_delta" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">float</span></tt></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.ConfigTypeC.source_east_shift_min">
+<tt class="descname">source_east_shift_min</tt><a class="headerlink" href="#pyrocko.gf.meta.ConfigTypeC.source_east_shift_min" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">float</span></tt></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.ConfigTypeC.source_east_shift_max">
+<tt class="descname">source_east_shift_max</tt><a class="headerlink" href="#pyrocko.gf.meta.ConfigTypeC.source_east_shift_max" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">float</span></tt></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.ConfigTypeC.source_east_shift_delta">
+<tt class="descname">source_east_shift_delta</tt><a class="headerlink" href="#pyrocko.gf.meta.ConfigTypeC.source_east_shift_delta" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">float</span></tt></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.ConfigTypeC.source_north_shift_min">
+<tt class="descname">source_north_shift_min</tt><a class="headerlink" href="#pyrocko.gf.meta.ConfigTypeC.source_north_shift_min" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">float</span></tt></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.ConfigTypeC.source_north_shift_max">
+<tt class="descname">source_north_shift_max</tt><a class="headerlink" href="#pyrocko.gf.meta.ConfigTypeC.source_north_shift_max" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">float</span></tt></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.ConfigTypeC.source_north_shift_delta">
+<tt class="descname">source_north_shift_delta</tt><a class="headerlink" href="#pyrocko.gf.meta.ConfigTypeC.source_north_shift_delta" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">float</span></tt></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
 <dt id="pyrocko.gf.meta.Weighting">
 <em class="property">class </em><tt class="descname">Weighting</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/pyrocko/gf/meta.html#Weighting"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.gf.meta.Weighting" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">pyrocko.guts.Object</span></tt></p>
@@ -1255,10 +1348,17 @@ sources match or are accounted for.</p>
 </dd></dl>
 
 <dl class="class">
-<dt id="pyrocko.gf.seismosizer.Taper">
-<em class="property">class </em><tt class="descname">Taper</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/pyrocko/gf/seismosizer.html#Taper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.gf.seismosizer.Taper" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">pyrocko.guts.Object</span></tt></p>
-<p>Undocumented.</p>
+<dt id="pyrocko.gf.seismosizer.InterpolationMethod">
+<em class="property">class </em><tt class="descname">InterpolationMethod</tt><big>(</big><em>dummy</em><big>)</big> &rarr; str<a class="reference internal" href="_modules/pyrocko/gf/seismosizer.html#InterpolationMethod"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.gf.seismosizer.InterpolationMethod" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">pyrocko.guts.StringChoice</span></tt></p>
+<p>Any <tt class="docutils literal"><span class="pre">str</span></tt> out of <tt class="docutils literal"><span class="pre">['nearest_neighbor',</span> <span class="pre">'multilinear']</span></tt>.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="pyrocko.gf.seismosizer.OptimizationMethod">
+<em class="property">class </em><tt class="descname">OptimizationMethod</tt><big>(</big><em>dummy</em><big>)</big> &rarr; str<a class="reference internal" href="_modules/pyrocko/gf/seismosizer.html#OptimizationMethod"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.gf.seismosizer.OptimizationMethod" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">pyrocko.guts.StringChoice</span></tt></p>
+<p>Any <tt class="docutils literal"><span class="pre">str</span></tt> out of <tt class="docutils literal"><span class="pre">['enable',</span> <span class="pre">'disable']</span></tt>.</p>
 </dd></dl>
 
 <dl class="class">
@@ -1337,9 +1437,110 @@ allowed for readability but can also be omitted.</p>
 </dd></dl>
 
 <dl class="class">
+<dt id="pyrocko.gf.seismosizer.SeismosizerTrace">
+<em class="property">class </em><tt class="descname">SeismosizerTrace</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/pyrocko/gf/seismosizer.html#SeismosizerTrace"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.gf.seismosizer.SeismosizerTrace" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">pyrocko.guts.Object</span></tt></p>
+<p>Undocumented.</p>
+<dl class="attribute">
+<dt id="pyrocko.gf.seismosizer.SeismosizerTrace.codes">
+<tt class="descname">codes</tt><a class="headerlink" href="#pyrocko.gf.seismosizer.SeismosizerTrace.codes" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">tuple</span></tt> of 4 <tt class="docutils literal"><span class="pre">str</span></tt> objects, <em>default:</em> <tt class="docutils literal"><span class="pre">('',</span> <span class="pre">'STA',</span> <span class="pre">'',</span> <span class="pre">'Z')</span></tt>, network, station, location and channel codes</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.seismosizer.SeismosizerTrace.data">
+<tt class="descname">data</tt><a class="headerlink" href="#pyrocko.gf.seismosizer.SeismosizerTrace.data" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt>, numpy array with data samples</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.seismosizer.SeismosizerTrace.deltat">
+<tt class="descname">deltat</tt><a class="headerlink" href="#pyrocko.gf.seismosizer.SeismosizerTrace.deltat" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">float</span></tt>, <em>default:</em> <tt class="docutils literal"><span class="pre">1.0</span></tt>, sampling interval [s]</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.seismosizer.SeismosizerTrace.tmin">
+<tt class="descname">tmin</tt><a class="headerlink" href="#pyrocko.gf.seismosizer.SeismosizerTrace.tmin" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="xref py py-class docutils literal"><span class="pre">float</span></tt>, <em>default:</em> <tt class="docutils literal"><span class="pre">0.0</span></tt>, time of first sample as a system timestamp [s]</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pyrocko.gf.seismosizer.STF">
+<em class="property">class </em><tt class="descname">STF</tt><big>(</big><em>effective_duration=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/pyrocko/gf/seismosizer.html#STF"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.gf.seismosizer.STF" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">pyrocko.guts.Object</span></tt>, <tt class="xref py py-class docutils literal"><span class="pre">pyrocko.gf.seismosizer.Cloneable</span></tt></p>
+<p>Base class for source time functions.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="pyrocko.gf.seismosizer.BoxcarSTF">
+<em class="property">class </em><tt class="descname">BoxcarSTF</tt><big>(</big><em>effective_duration=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/pyrocko/gf/seismosizer.html#BoxcarSTF"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.gf.seismosizer.BoxcarSTF" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyrocko.gf.seismosizer.STF" title="pyrocko.gf.seismosizer.STF"><tt class="xref py py-class docutils literal"><span class="pre">pyrocko.gf.seismosizer.STF</span></tt></a></p>
+<p>Boxcar type source time function.</p>
+<dl class="attribute">
+<dt id="pyrocko.gf.seismosizer.BoxcarSTF.duration">
+<tt class="descname">duration</tt><a class="headerlink" href="#pyrocko.gf.seismosizer.BoxcarSTF.duration" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">float</span></tt>, <em>default:</em> <tt class="docutils literal"><span class="pre">0.0</span></tt>, duration of the boxcar</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.seismosizer.BoxcarSTF.anchor">
+<tt class="descname">anchor</tt><a class="headerlink" href="#pyrocko.gf.seismosizer.BoxcarSTF.anchor" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">float</span></tt>, <em>default:</em> <tt class="docutils literal"><span class="pre">0.0</span></tt>, anchor point (-1.0: left, 0.0: center, +1.0: right)</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pyrocko.gf.seismosizer.TriangularSTF">
+<em class="property">class </em><tt class="descname">TriangularSTF</tt><big>(</big><em>effective_duration=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/pyrocko/gf/seismosizer.html#TriangularSTF"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.gf.seismosizer.TriangularSTF" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyrocko.gf.seismosizer.STF" title="pyrocko.gf.seismosizer.STF"><tt class="xref py py-class docutils literal"><span class="pre">pyrocko.gf.seismosizer.STF</span></tt></a></p>
+<p>Triangular type source time function.</p>
+<dl class="attribute">
+<dt id="pyrocko.gf.seismosizer.TriangularSTF.duration">
+<tt class="descname">duration</tt><a class="headerlink" href="#pyrocko.gf.seismosizer.TriangularSTF.duration" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">float</span></tt>, <em>default:</em> <tt class="docutils literal"><span class="pre">0.0</span></tt>, baseline of the triangle</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.seismosizer.TriangularSTF.peak_ratio">
+<tt class="descname">peak_ratio</tt><a class="headerlink" href="#pyrocko.gf.seismosizer.TriangularSTF.peak_ratio" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">float</span></tt>, <em>default:</em> <tt class="docutils literal"><span class="pre">0.5</span></tt>, fraction of time compared to duration, when the maximum amplitude is reached</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.seismosizer.TriangularSTF.anchor">
+<tt class="descname">anchor</tt><a class="headerlink" href="#pyrocko.gf.seismosizer.TriangularSTF.anchor" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">float</span></tt>, <em>default:</em> <tt class="docutils literal"><span class="pre">0.0</span></tt>, anchor point (-1.0: left, 0.0: centroid, +1.0: right)</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pyrocko.gf.seismosizer.HalfSinusoidSTF">
+<em class="property">class </em><tt class="descname">HalfSinusoidSTF</tt><big>(</big><em>effective_duration=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/pyrocko/gf/seismosizer.html#HalfSinusoidSTF"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.gf.seismosizer.HalfSinusoidSTF" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#pyrocko.gf.seismosizer.STF" title="pyrocko.gf.seismosizer.STF"><tt class="xref py py-class docutils literal"><span class="pre">pyrocko.gf.seismosizer.STF</span></tt></a></p>
+<p>Half sinusoid type source time function.</p>
+<dl class="attribute">
+<dt id="pyrocko.gf.seismosizer.HalfSinusoidSTF.duration">
+<tt class="descname">duration</tt><a class="headerlink" href="#pyrocko.gf.seismosizer.HalfSinusoidSTF.duration" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">float</span></tt>, <em>default:</em> <tt class="docutils literal"><span class="pre">0.0</span></tt>, duration of the half-sinusoid (baseline)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.seismosizer.HalfSinusoidSTF.anchor">
+<tt class="descname">anchor</tt><a class="headerlink" href="#pyrocko.gf.seismosizer.HalfSinusoidSTF.anchor" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">float</span></tt>, <em>default:</em> <tt class="docutils literal"><span class="pre">0.0</span></tt>, anchor point (-1.0: left, 0.0: center, +1.0: right)</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
 <dt id="pyrocko.gf.seismosizer.Source">
 <em class="property">class </em><tt class="descname">Source</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/pyrocko/gf/seismosizer.html#Source"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.gf.seismosizer.Source" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#pyrocko.gf.meta.Location" title="pyrocko.gf.meta.Location"><tt class="xref py py-class docutils literal"><span class="pre">pyrocko.gf.meta.Location</span></tt></a></p>
+<dd><p>Bases: <a class="reference internal" href="#pyrocko.gf.meta.Location" title="pyrocko.gf.meta.Location"><tt class="xref py py-class docutils literal"><span class="pre">pyrocko.gf.meta.Location</span></tt></a>, <tt class="xref py py-class docutils literal"><span class="pre">pyrocko.gf.seismosizer.Cloneable</span></tt></p>
 <p>Base class for all source models</p>
 <dl class="attribute">
 <dt id="pyrocko.gf.seismosizer.Source.name">
@@ -1350,30 +1551,19 @@ allowed for readability but can also be omitted.</p>
 <dl class="attribute">
 <dt id="pyrocko.gf.seismosizer.Source.time">
 <tt class="descname">time</tt><a class="headerlink" href="#pyrocko.gf.seismosizer.Source.time" title="Permalink to this definition">¶</a></dt>
-<dd><p><tt class="xref py py-class docutils literal"><span class="pre">float</span></tt>, <em>default:</em> <tt class="docutils literal"><span class="pre">0.0</span></tt></p>
+<dd><p><tt class="xref py py-class docutils literal"><span class="pre">float</span></tt>, <em>default:</em> <tt class="docutils literal"><span class="pre">0.0</span></tt>, source origin time</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pyrocko.gf.seismosizer.Source.stf">
 <tt class="descname">stf</tt><a class="headerlink" href="#pyrocko.gf.seismosizer.Source.stf" title="Permalink to this definition">¶</a></dt>
-<dd><p><a class="reference internal" href="#pyrocko.gf.seismosizer.Filter" title="pyrocko.gf.seismosizer.Filter"><tt class="xref py py-class docutils literal"><span class="pre">pyrocko.gf.seismosizer.Filter</span></tt></a>, <em>optional</em>, source time function as spectral response</p>
+<dd><p><a class="reference internal" href="#pyrocko.gf.seismosizer.STF" title="pyrocko.gf.seismosizer.STF"><tt class="xref py py-class docutils literal"><span class="pre">pyrocko.gf.seismosizer.STF</span></tt></a>, <em>optional</em>, source time function</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="pyrocko.gf.seismosizer.Source.clone">
-<tt class="descname">clone</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/pyrocko/gf/seismosizer.html#Source.clone"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.gf.seismosizer.Source.clone" title="Permalink to this definition">¶</a></dt>
-<dd><p>Make a copy of the source model.</p>
-<p>A new object of the same source model class is created
-and initialized with the parameters of the source model 
-on which this method is called on. If <cite>kwargs</cite> are given,
-these are used to override any of the initialization
-parameters.</p>
-</dd></dl>
-
-<dl class="classmethod">
-<dt id="pyrocko.gf.seismosizer.Source.keys">
-<em class="property">classmethod </em><tt class="descname">keys</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/gf/seismosizer.html#Source.keys"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.gf.seismosizer.Source.keys" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get list of the source model&#8217;s parameter names.</p>
+<dl class="attribute">
+<dt id="pyrocko.gf.seismosizer.Source.stf_mode">
+<tt class="descname">stf_mode</tt><a class="headerlink" href="#pyrocko.gf.seismosizer.Source.stf_mode" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="xref py py-class docutils literal"><span class="pre">str</span></tt>, <em>default:</em> <tt class="docutils literal"><span class="pre">'post'</span></tt>, whether to apply source time function in pre or post-processing</p>
 </dd></dl>
 
 <dl class="method">
@@ -1415,6 +1605,68 @@ parameters.</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">base</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">R</span><span class="p">(</span><span class="s">&#39;</span>
 </pre></div>
 </div>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.gf.seismosizer.Source.base_key">
+<tt class="descname">base_key</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/gf/seismosizer.html#Source.base_key"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.gf.seismosizer.Source.base_key" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get key to decide about source discretization / GF stack sharing.</p>
+<p>When two source models differ only in amplitude and origin time, the
+discretization and the GF stacking can be done only once for a unit
+amplitude and a zero origin time and the amplitude and origin times of
+the seismograms can be applied during post-processing of the synthetic
+seismogram.</p>
+<p>For any derived parameterized source model, this method is called to
+decide if discretization and stacking of the source should be shared.
+When two source models return an equal vector of values discretization
+is shared.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.gf.seismosizer.Source.get_timeshift">
+<tt class="descname">get_timeshift</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/gf/seismosizer.html#Source.get_timeshift"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.gf.seismosizer.Source.get_timeshift" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the timeshift to be applied during post-processing.</p>
+<p>When discretizing the base seismogram, the source time this is usually
+done for a source origin time of zero. Different source origin times
+can be efficiently handled in post-processing of the synthetic
+seismogram (so GF stacking only has to be done once for source models
+differing only in origin time).</p>
+<p>This method should return the time shift to apply in the
+post-processing (usually the origin time).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.gf.seismosizer.Source.get_factor">
+<tt class="descname">get_factor</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/gf/seismosizer.html#Source.get_factor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.gf.seismosizer.Source.get_factor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the scaling factor to be applied during post-processing.</p>
+<p>Discretization of the base seismogram is usually done for a unit
+amplitude, because a common factor can be efficiently multiplied to
+final seismograms. This eliminates to do repeat the stacking when
+creating seismograms for a series of source models only differing in
+amplitude.</p>
+<p>This method should return the scaling factor to apply in the
+post-processing (often this is simply the scalar moment of the source).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.gf.seismosizer.Source.effective_stf_pre">
+<tt class="descname">effective_stf_pre</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/gf/seismosizer.html#Source.effective_stf_pre"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.gf.seismosizer.Source.effective_stf_pre" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the STF applied before stacking of the Green&#8217;s functions.</p>
+<p>This STF is used during discretization of the parameterized source
+models, i.e. to produce a temporal distribution of point sources.</p>
+<p>Handling of the STF before stacking of the GFs is less efficient but
+allows to use different source time functions for different parts of
+the source.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.gf.seismosizer.Source.effective_stf_post">
+<tt class="descname">effective_stf_post</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/gf/seismosizer.html#Source.effective_stf_post"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.gf.seismosizer.Source.effective_stf_post" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the STF applied after stacking of the Green&#8217;s fuctions.</p>
+<p>This STF is used in the post-processing of the synthetic seismograms
+(Not implemented yet).</p>
+<p>Handling of the STF after stacking of the GFs is usually more efficient
+but is only possible when a common STF is used for all subsources.</p>
 </dd></dl>
 
 </dd></dl>
@@ -1490,12 +1742,6 @@ parameters.</p>
 <dt id="pyrocko.gf.seismosizer.RectangularExplosionSource.velocity">
 <tt class="descname">velocity</tt><a class="headerlink" href="#pyrocko.gf.seismosizer.RectangularExplosionSource.velocity" title="Permalink to this definition">¶</a></dt>
 <dd><p><tt class="docutils literal"><span class="pre">float</span></tt>, <em>default:</em> <tt class="docutils literal"><span class="pre">3500.0</span></tt>, speed of explosion front [m/s]</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="pyrocko.gf.seismosizer.RectangularExplosionSource.risetime">
-<tt class="descname">risetime</tt><a class="headerlink" href="#pyrocko.gf.seismosizer.RectangularExplosionSource.risetime" title="Permalink to this definition">¶</a></dt>
-<dd><p><tt class="docutils literal"><span class="pre">float</span></tt>, <em>default:</em> <tt class="docutils literal"><span class="pre">0.0</span></tt>, duration of energy release of any single point in source area [s]</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -1653,12 +1899,6 @@ parameters.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="pyrocko.gf.seismosizer.RectangularSource.risetime">
-<tt class="descname">risetime</tt><a class="headerlink" href="#pyrocko.gf.seismosizer.RectangularSource.risetime" title="Permalink to this definition">¶</a></dt>
-<dd><p><tt class="docutils literal"><span class="pre">float</span></tt>, <em>default:</em> <tt class="docutils literal"><span class="pre">0.0</span></tt>, duration of energy release of any single point in rupture area [s]</p>
-</dd></dl>
-
-<dl class="attribute">
 <dt id="pyrocko.gf.seismosizer.RectangularSource.discretized_source_class">
 <tt class="descname">discretized_source_class</tt><a class="headerlink" href="#pyrocko.gf.seismosizer.RectangularSource.discretized_source_class" title="Permalink to this definition">¶</a></dt>
 <dd><p>alias of <tt class="xref py py-class docutils literal"><span class="pre">DiscretizedMTSource</span></tt></p>
@@ -1735,6 +1975,18 @@ parameters.</p>
 <dt id="pyrocko.gf.seismosizer.DoubleDCSource.mix">
 <tt class="descname">mix</tt><a class="headerlink" href="#pyrocko.gf.seismosizer.DoubleDCSource.mix" title="Permalink to this definition">¶</a></dt>
 <dd><p><tt class="docutils literal"><span class="pre">float</span></tt>, <em>default:</em> <tt class="docutils literal"><span class="pre">0.5</span></tt>, how to distribute the moment to the two doublecouples mix=0 -&gt; m1=1 and m2=0; mix=1 -&gt; m1=0, m2=1</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.seismosizer.DoubleDCSource.stf1">
+<tt class="descname">stf1</tt><a class="headerlink" href="#pyrocko.gf.seismosizer.DoubleDCSource.stf1" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#pyrocko.gf.seismosizer.STF" title="pyrocko.gf.seismosizer.STF"><tt class="xref py py-class docutils literal"><span class="pre">pyrocko.gf.seismosizer.STF</span></tt></a>, <em>optional</em>, Source time function of subsource 1 (if given, overrides STF from attribute <cite>stf</cite>)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.seismosizer.DoubleDCSource.stf2">
+<tt class="descname">stf2</tt><a class="headerlink" href="#pyrocko.gf.seismosizer.DoubleDCSource.stf2" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#pyrocko.gf.seismosizer.STF" title="pyrocko.gf.seismosizer.STF"><tt class="xref py py-class docutils literal"><span class="pre">pyrocko.gf.seismosizer.STF</span></tt></a>, <em>optional</em>, Source time function of subsource 2 (if given, overrides STF from attribute <cite>stf</cite>)</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -1950,30 +2202,24 @@ brought into a small source volume.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="pyrocko.gf.seismosizer.Target.pre_taper">
-<tt class="descname">pre_taper</tt><a class="headerlink" href="#pyrocko.gf.seismosizer.Target.pre_taper" title="Permalink to this definition">¶</a></dt>
-<dd><p><a class="reference internal" href="#pyrocko.gf.seismosizer.Taper" title="pyrocko.gf.seismosizer.Taper"><tt class="xref py py-class docutils literal"><span class="pre">pyrocko.gf.seismosizer.Taper</span></tt></a>, <em>optional</em>, time domain taper applied to the trace before filtering.</p>
-</dd></dl>
-
-<dl class="attribute">
 <dt id="pyrocko.gf.seismosizer.Target.filter">
 <tt class="descname">filter</tt><a class="headerlink" href="#pyrocko.gf.seismosizer.Target.filter" title="Permalink to this definition">¶</a></dt>
 <dd><p><a class="reference internal" href="#pyrocko.gf.seismosizer.Filter" title="pyrocko.gf.seismosizer.Filter"><tt class="xref py py-class docutils literal"><span class="pre">pyrocko.gf.seismosizer.Filter</span></tt></a>, <em>optional</em>, frequency response filter.</p>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="pyrocko.gf.seismosizer.Target.post_taper">
-<tt class="descname">post_taper</tt><a class="headerlink" href="#pyrocko.gf.seismosizer.Target.post_taper" title="Permalink to this definition">¶</a></dt>
-<dd><p><a class="reference internal" href="#pyrocko.gf.seismosizer.Taper" title="pyrocko.gf.seismosizer.Taper"><tt class="xref py py-class docutils literal"><span class="pre">pyrocko.gf.seismosizer.Taper</span></tt></a>, <em>optional</em>, time domain taper applied to the trace after filtering.</p>
-</dd></dl>
-
 </dd></dl>
 
 <dl class="class">
-<dt id="pyrocko.gf.seismosizer.Reduction">
-<em class="property">class </em><tt class="descname">Reduction</tt><big>(</big><em>dummy</em><big>)</big> &rarr; str<a class="reference internal" href="_modules/pyrocko/gf/seismosizer.html#Reduction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.gf.seismosizer.Reduction" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">pyrocko.guts.StringChoice</span></tt></p>
-<p>Any <tt class="docutils literal"><span class="pre">str</span></tt> out of <tt class="docutils literal"><span class="pre">['sum',</span> <span class="pre">'minimum',</span> <span class="pre">'maximum',</span> <span class="pre">'mean',</span> <span class="pre">'variance']</span></tt>.</p>
+<dt id="pyrocko.gf.seismosizer.Result">
+<em class="property">class </em><tt class="descname">Result</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/pyrocko/gf/seismosizer.html#Result"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.gf.seismosizer.Result" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">pyrocko.guts.Object</span></tt></p>
+<p>Undocumented.</p>
+<dl class="attribute">
+<dt id="pyrocko.gf.seismosizer.Result.trace">
+<tt class="descname">trace</tt><a class="headerlink" href="#pyrocko.gf.seismosizer.Result.trace" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#pyrocko.gf.seismosizer.SeismosizerTrace" title="pyrocko.gf.seismosizer.SeismosizerTrace"><tt class="xref py py-class docutils literal"><span class="pre">pyrocko.gf.seismosizer.SeismosizerTrace</span></tt></a>, <em>optional</em></p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="class">
@@ -1983,7 +2229,6 @@ brought into a small source volume.</p>
 <p>Synthetic seismogram computation request.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">Request</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 <span class="n">Request</span><span class="p">(</span><span class="n">sources</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="n">Request</span><span class="p">(</span><span class="n">sources</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">reductions</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </pre></div>
 </div>
 <dl class="attribute">
@@ -1998,41 +2243,77 @@ brought into a small source volume.</p>
 <dd><p><tt class="docutils literal"><span class="pre">list</span></tt> of <a class="reference internal" href="#pyrocko.gf.seismosizer.Target" title="pyrocko.gf.seismosizer.Target"><tt class="xref py py-class docutils literal"><span class="pre">pyrocko.gf.seismosizer.Target</span></tt></a> objects, <em>default:</em> <tt class="docutils literal"><span class="pre">[]</span></tt>, list of targets for which to produce synthetics.</p>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="pyrocko.gf.seismosizer.Request.reductions">
-<tt class="descname">reductions</tt><a class="headerlink" href="#pyrocko.gf.seismosizer.Request.reductions" title="Permalink to this definition">¶</a></dt>
-<dd><p><tt class="docutils literal"><span class="pre">list</span></tt> of <tt class="xref py py-class docutils literal"><span class="pre">str</span></tt> objects, <em>default:</em> <tt class="docutils literal"><span class="pre">[]</span></tt>, list of reductions to be applied target-wise to the synthetics</p>
-</dd></dl>
-
 </dd></dl>
 
 <dl class="class">
-<dt id="pyrocko.gf.seismosizer.SeismosizerTrace">
-<em class="property">class </em><tt class="descname">SeismosizerTrace</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/pyrocko/gf/seismosizer.html#SeismosizerTrace"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.gf.seismosizer.SeismosizerTrace" title="Permalink to this definition">¶</a></dt>
+<dt id="pyrocko.gf.seismosizer.ProcessingStats">
+<em class="property">class </em><tt class="descname">ProcessingStats</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/pyrocko/gf/seismosizer.html#ProcessingStats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.gf.seismosizer.ProcessingStats" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">pyrocko.guts.Object</span></tt></p>
 <p>Undocumented.</p>
 <dl class="attribute">
-<dt id="pyrocko.gf.seismosizer.SeismosizerTrace.codes">
-<tt class="descname">codes</tt><a class="headerlink" href="#pyrocko.gf.seismosizer.SeismosizerTrace.codes" title="Permalink to this definition">¶</a></dt>
-<dd><p><tt class="docutils literal"><span class="pre">tuple</span></tt> of 4 <tt class="docutils literal"><span class="pre">str</span></tt> objects, <em>default:</em> <tt class="docutils literal"><span class="pre">('',</span> <span class="pre">'STA',</span> <span class="pre">'',</span> <span class="pre">'Z')</span></tt>, network, station, location and channel codes</p>
+<dt id="pyrocko.gf.seismosizer.ProcessingStats.t_perc_get_store_and_receiver">
+<tt class="descname">t_perc_get_store_and_receiver</tt><a class="headerlink" href="#pyrocko.gf.seismosizer.ProcessingStats.t_perc_get_store_and_receiver" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">float</span></tt></p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="pyrocko.gf.seismosizer.SeismosizerTrace.data">
-<tt class="descname">data</tt><a class="headerlink" href="#pyrocko.gf.seismosizer.SeismosizerTrace.data" title="Permalink to this definition">¶</a></dt>
-<dd><p><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt>, numpy array with data samples</p>
+<dt id="pyrocko.gf.seismosizer.ProcessingStats.t_perc_discretize_source">
+<tt class="descname">t_perc_discretize_source</tt><a class="headerlink" href="#pyrocko.gf.seismosizer.ProcessingStats.t_perc_discretize_source" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">float</span></tt></p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="pyrocko.gf.seismosizer.SeismosizerTrace.deltat">
-<tt class="descname">deltat</tt><a class="headerlink" href="#pyrocko.gf.seismosizer.SeismosizerTrace.deltat" title="Permalink to this definition">¶</a></dt>
-<dd><p><tt class="docutils literal"><span class="pre">float</span></tt>, <em>default:</em> <tt class="docutils literal"><span class="pre">1.0</span></tt>, sampling interval [s]</p>
+<dt id="pyrocko.gf.seismosizer.ProcessingStats.t_perc_make_base_seismogram">
+<tt class="descname">t_perc_make_base_seismogram</tt><a class="headerlink" href="#pyrocko.gf.seismosizer.ProcessingStats.t_perc_make_base_seismogram" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">float</span></tt></p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="pyrocko.gf.seismosizer.SeismosizerTrace.tmin">
-<tt class="descname">tmin</tt><a class="headerlink" href="#pyrocko.gf.seismosizer.SeismosizerTrace.tmin" title="Permalink to this definition">¶</a></dt>
-<dd><p><tt class="xref py py-class docutils literal"><span class="pre">float</span></tt>, <em>default:</em> <tt class="docutils literal"><span class="pre">0.0</span></tt>, time of first sample as a system timestamp [s]</p>
+<dt id="pyrocko.gf.seismosizer.ProcessingStats.t_perc_make_same_span">
+<tt class="descname">t_perc_make_same_span</tt><a class="headerlink" href="#pyrocko.gf.seismosizer.ProcessingStats.t_perc_make_same_span" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">float</span></tt></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.seismosizer.ProcessingStats.t_perc_post_process">
+<tt class="descname">t_perc_post_process</tt><a class="headerlink" href="#pyrocko.gf.seismosizer.ProcessingStats.t_perc_post_process" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">float</span></tt></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.seismosizer.ProcessingStats.t_wallclock">
+<tt class="descname">t_wallclock</tt><a class="headerlink" href="#pyrocko.gf.seismosizer.ProcessingStats.t_wallclock" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">float</span></tt></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.seismosizer.ProcessingStats.t_cpu">
+<tt class="descname">t_cpu</tt><a class="headerlink" href="#pyrocko.gf.seismosizer.ProcessingStats.t_cpu" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">float</span></tt></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.seismosizer.ProcessingStats.n_read_blocks">
+<tt class="descname">n_read_blocks</tt><a class="headerlink" href="#pyrocko.gf.seismosizer.ProcessingStats.n_read_blocks" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">int</span></tt></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.seismosizer.ProcessingStats.n_results">
+<tt class="descname">n_results</tt><a class="headerlink" href="#pyrocko.gf.seismosizer.ProcessingStats.n_results" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">int</span></tt></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.seismosizer.ProcessingStats.n_subrequests">
+<tt class="descname">n_subrequests</tt><a class="headerlink" href="#pyrocko.gf.seismosizer.ProcessingStats.n_subrequests" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">int</span></tt></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.seismosizer.ProcessingStats.n_stores">
+<tt class="descname">n_stores</tt><a class="headerlink" href="#pyrocko.gf.seismosizer.ProcessingStats.n_stores" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">int</span></tt></p>
 </dd></dl>
 
 </dd></dl>
@@ -2049,9 +2330,15 @@ brought into a small source volume.</p>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="pyrocko.gf.seismosizer.Response.traces_list">
-<tt class="descname">traces_list</tt><a class="headerlink" href="#pyrocko.gf.seismosizer.Response.traces_list" title="Permalink to this definition">¶</a></dt>
-<dd><p><tt class="docutils literal"><span class="pre">list</span></tt> of <tt class="docutils literal"><span class="pre">list</span></tt> of <a class="reference internal" href="#pyrocko.gf.seismosizer.SeismosizerTrace" title="pyrocko.gf.seismosizer.SeismosizerTrace"><tt class="xref py py-class docutils literal"><span class="pre">pyrocko.gf.seismosizer.SeismosizerTrace</span></tt></a> objects objects, <em>default:</em> <tt class="docutils literal"><span class="pre">[]</span></tt></p>
+<dt id="pyrocko.gf.seismosizer.Response.results_list">
+<tt class="descname">results_list</tt><a class="headerlink" href="#pyrocko.gf.seismosizer.Response.results_list" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">list</span></tt> of <tt class="docutils literal"><span class="pre">list</span></tt> of <a class="reference internal" href="#pyrocko.gf.seismosizer.Result" title="pyrocko.gf.seismosizer.Result"><tt class="xref py py-class docutils literal"><span class="pre">pyrocko.gf.seismosizer.Result</span></tt></a> objects objects, <em>default:</em> <tt class="docutils literal"><span class="pre">[]</span></tt></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.seismosizer.Response.stats">
+<tt class="descname">stats</tt><a class="headerlink" href="#pyrocko.gf.seismosizer.Response.stats" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="#pyrocko.gf.seismosizer.ProcessingStats" title="pyrocko.gf.seismosizer.ProcessingStats"><tt class="xref py py-class docutils literal"><span class="pre">pyrocko.gf.seismosizer.ProcessingStats</span></tt></a></p>
 </dd></dl>
 
 <dl class="method">
@@ -2062,15 +2349,15 @@ brought into a small source volume.</p>
 
 <dl class="method">
 <dt id="pyrocko.gf.seismosizer.Response.iter_results">
-<tt class="descname">iter_results</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/gf/seismosizer.html#Response.iter_results"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.gf.seismosizer.Response.iter_results" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">iter_results</tt><big>(</big><em>get='pyrocko_traces'</em><big>)</big><a class="reference internal" href="_modules/pyrocko/gf/seismosizer.html#Response.iter_results"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.gf.seismosizer.Response.iter_results" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generator function to iterate over results of request.</p>
-<p>Yields associated <a class="reference internal" href="#pyrocko.gf.seismosizer.Source" title="pyrocko.gf.seismosizer.Source"><tt class="xref py py-class docutils literal"><span class="pre">Source</span></tt></a>, <a class="reference internal" href="#pyrocko.gf.seismosizer.Target" title="pyrocko.gf.seismosizer.Target"><tt class="xref py py-class docutils literal"><span class="pre">Target</span></tt></a>, 
+<p>Yields associated <a class="reference internal" href="#pyrocko.gf.seismosizer.Source" title="pyrocko.gf.seismosizer.Source"><tt class="xref py py-class docutils literal"><span class="pre">Source</span></tt></a>, <a class="reference internal" href="#pyrocko.gf.seismosizer.Target" title="pyrocko.gf.seismosizer.Target"><tt class="xref py py-class docutils literal"><span class="pre">Target</span></tt></a>,
 <tt class="xref py py-class docutils literal"><span class="pre">trace.Trace</span></tt> instances in each iteration.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pyrocko.gf.seismosizer.Response.snuffle">
-<tt class="descname">snuffle</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/pyrocko/gf/seismosizer.html#Response.snuffle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.gf.seismosizer.Response.snuffle" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">snuffle</tt><big>(</big><em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/pyrocko/gf/seismosizer.html#Response.snuffle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.gf.seismosizer.Response.snuffle" title="Permalink to this definition">¶</a></dt>
 <dd><p>Open <em>snuffler</em> with requested traces.</p>
 </dd></dl>
 
@@ -2155,7 +2442,7 @@ GF_STORE_SUPERDIRS AND GF_STORE_DIRS</li>
 </table>
 <p>If no <em>store_id</em> is provided the store
 associated with the <em>default_store_id</em> is returned.
-Raises :py:exec`NoDefaultStoreSet` if <em>default_store_id</em> is undefined.</p>
+Raises <tt class="xref py py-exc docutils literal"><span class="pre">NoDefaultStoreSet</span></tt> if <em>default_store_id</em> is undefined.</p>
 </dd></dl>
 
 <dl class="method">
@@ -2165,7 +2452,6 @@ Raises :py:exec`NoDefaultStoreSet` if <em>default_store_id</em> is undefined.</p
 <div class="highlight-python"><div class="highlight"><pre><span class="n">process</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 <span class="n">process</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 <span class="n">process</span><span class="p">(</span><span class="n">sources</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-<span class="n">process</span><span class="p">(</span><span class="n">sources</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">reductions</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>The request can be given a a <a class="reference internal" href="#pyrocko.gf.seismosizer.Request" title="pyrocko.gf.seismosizer.Request"><tt class="xref py py-class docutils literal"><span class="pre">Request</span></tt></a> object, or such an

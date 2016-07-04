@@ -195,6 +195,28 @@ consistent logging format. This is simply a shortcut to a call to
 </table>
 </dd></dl>
 
+<dl class="function">
+<dt id="pyrocko.util.plf_integrate_piecewise">
+<tt class="descname">plf_integrate_piecewise</tt><big>(</big><em>x_edges</em>, <em>x</em>, <em>y</em><big>)</big><a class="reference internal" href="_modules/pyrocko/util.html#plf_integrate_piecewise"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.util.plf_integrate_piecewise" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate definite integral of piece-wise linear function on intervals.</p>
+<p>Use trapezoidal rule to calculate definite integral of a piece-wise
+linear function for a series of consecutive intervals. <cite>x_edges</cite> and <cite>x</cite>
+must be sorted.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>x_edges</strong> &#8211; array with edges of the intervals</li>
+<li><strong>y</strong> (<em>x,</em>) &#8211; arrays with coordinates of piece-wise linear function&#8217;s
+control points</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <dl class="class">
 <dt id="pyrocko.util.GlobalVars">
 <em class="property">class </em><tt class="descname">GlobalVars</tt><a class="reference internal" href="_modules/pyrocko/util.html#GlobalVars"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.util.GlobalVars" title="Permalink to this definition">¶</a></dt>
@@ -294,6 +316,20 @@ for factors up to <cite>nmax</cite>.</p>
 <dt id="pyrocko.util.zfmt">
 <tt class="descname">zfmt</tt><big>(</big><em>n</em><big>)</big><a class="reference internal" href="_modules/pyrocko/util.html#zfmt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.util.zfmt" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="function">
+<dt id="pyrocko.util.julian_day_of_year">
+<tt class="descname">julian_day_of_year</tt><big>(</big><em>timestamp</em><big>)</big><a class="reference internal" href="_modules/pyrocko/util.html#julian_day_of_year"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.util.julian_day_of_year" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the day number after the 1st of January of year in <em>timestamp</em>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">day number as int</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="function">
 <dt id="pyrocko.util.day_start">
@@ -1019,7 +1055,7 @@ valid because the coordinates at the two channels are the same.</p>
 
 <dl class="function">
 <dt id="pyrocko.util.consistency_merge">
-<tt class="descname">consistency_merge</tt><big>(</big><em>list_of_tuples</em>, <em>message='values differ:'</em>, <em>error='raise'</em>, <em>merge=&lt;function mostfrequent at 0x3583e60&gt;</em><big>)</big><a class="reference internal" href="_modules/pyrocko/util.html#consistency_merge"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.util.consistency_merge" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">consistency_merge</tt><big>(</big><em>list_of_tuples</em>, <em>message='values differ:'</em>, <em>error='raise'</em>, <em>merge=&lt;function mostfrequent at 0x2b067d0&gt;</em><big>)</big><a class="reference internal" href="_modules/pyrocko/util.html#consistency_merge"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.util.consistency_merge" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </div>

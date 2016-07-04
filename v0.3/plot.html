@@ -1,0 +1,162 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>The plot Module &mdash; Pyrocko v0.3 Manual</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="search" type="application/opensearchdescription+xml"
+          title="Search within Pyrocko v0.3 Manual"
+          href="_static/opensearch.xml"/>
+    <link rel="top" title="Pyrocko v0.3 Manual" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="index.html">Pyrocko v0.3 Manual</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+          <div class="body">
+            
+  <div class="section" id="module-pyrocko.plot">
+<span id="the-plot-module"></span><h1>The <tt class="xref py py-mod docutils literal"><span class="pre">plot</span></tt> Module<a class="headerlink" href="#module-pyrocko.plot" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="pyrocko.plot.nice_value">
+<tt class="descname">nice_value</tt><big>(</big><em>x</em><big>)</big><a class="reference internal" href="_modules/pyrocko/plot.html#nice_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.plot.nice_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Round x to nice value.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="pyrocko.plot.AutoScaler">
+<em class="property">class </em><tt class="descname">AutoScaler</tt><big>(</big><em>approx_ticks=7.0</em>, <em>mode='auto'</em>, <em>exp=None</em>, <em>snap=False</em>, <em>inc=None</em>, <em>space=0.0</em>, <em>exp_factor=3</em>, <em>no_exp_interval=(-3</em>, <em>5)</em><big>)</big><a class="reference internal" href="_modules/pyrocko/plot.html#AutoScaler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.plot.AutoScaler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tunable 1D autoscaling based on data range.</p>
+<p>Instances of this class may be used to determine nice minima, maxima and
+increments for ax annotations, as well as suitable common exponents for
+notation.</p>
+<p>The autoscaling process is guided by the following public attributes
+(default values are given in parantheses):</p>
+<blockquote>
+<div><p>approx_ticks (7.0):</p>
+<blockquote>
+<div>Approximate number of increment steps (tickmarks) to generate.</div></blockquote>
+<p>mode (&#8216;auto&#8217;):</p>
+<blockquote>
+<div><p>Mode of operation: one of &#8216;auto&#8217;, &#8216;min-max&#8217;, &#8216;0-max&#8217;, &#8216;min-0&#8217;,
+&#8216;symmetric&#8217; or &#8216;off&#8217;.</p>
+<blockquote>
+<div><p>&#8216;auto&#8217;:      Look at data range and choose one of the choices below.
+&#8216;min-max&#8217;:   Output range is selected to include data range.
+&#8216;0-max&#8217;:     Output range shall start at zero and end at data max.
+&#8216;min-0&#8217;:     Output range shall start at data min and end at zero. 
+&#8216;symmetric&#8217;: Output range shall by symmetric by zero.
+&#8216;off&#8217;:       Similar to &#8216;min-max&#8217;, but snap and space are disabled,</p>
+<blockquote>
+<div>such that the output range always exactly matches the 
+data range.</div></blockquote>
+</div></blockquote>
+</div></blockquote>
+<p>exp (None):</p>
+<blockquote>
+<div>If defined, override automatically determined exponent for notation by
+the given value.</div></blockquote>
+<p>snap (False):</p>
+<blockquote>
+<div>If set to True, snap output range to multiples of increment. This
+parameter has no effect, if mode is set to &#8216;off&#8217;.</div></blockquote>
+<p>inc (None):</p>
+<blockquote>
+<div>If defined, override automatically determined tick increment by the
+given value.</div></blockquote>
+<p>space (0.0):</p>
+<blockquote>
+<div>Add some padding to the range. The value given, is the fraction by which
+the output range is increased on each side. If mode is &#8216;0-max&#8217; or &#8216;min-0&#8217;,
+the end at zero is kept fixed at zero. This parameter has no effect if 
+mode is set to &#8216;off&#8217;.</div></blockquote>
+<p>exp_factor (3):</p>
+<blockquote>
+<div>Exponent of notation is chosen to be a multiple of this value.</div></blockquote>
+<p>no_exp_interval ((-3,5)):</p>
+<blockquote>
+<div>Range of exponent, for which no exponential notation is allowed.</div></blockquote>
+</div></blockquote>
+<dl class="method">
+<dt id="pyrocko.plot.AutoScaler.make_scale">
+<tt class="descname">make_scale</tt><big>(</big><em>data_range</em>, <em>override_mode=None</em><big>)</big><a class="reference internal" href="_modules/pyrocko/plot.html#AutoScaler.make_scale"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.plot.AutoScaler.make_scale" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get nice minimum, maximum and increment for given data range.</p>
+<p>Returns (minimum,maximum,increment) or (maximum,minimum,-increment),
+depending on whether data_range is (data_min, data_max) or (data_max,
+data_min). If override_mode is defined, the mode attribute is
+temporarily overridden by the given value.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.plot.AutoScaler.make_exp">
+<tt class="descname">make_exp</tt><big>(</big><em>x</em><big>)</big><a class="reference internal" href="_modules/pyrocko/plot.html#AutoScaler.make_exp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.plot.AutoScaler.make_exp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get nice exponent for notation of x.</p>
+<p>For ax annotations, give tick increment as x.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.plot.AutoScaler.guess_autoscale_mode">
+<tt class="descname">guess_autoscale_mode</tt><big>(</big><em>data_min</em>, <em>data_max</em><big>)</big><a class="reference internal" href="_modules/pyrocko/plot.html#AutoScaler.guess_autoscale_mode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.plot.AutoScaler.guess_autoscale_mode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Guess mode of operation, based on data range.</p>
+<p>Used to map &#8216;auto&#8217; mode to &#8216;0-max&#8217;, &#8216;min-0&#8217;, &#8216;min-max&#8217; or &#8216;symmetric&#8217;.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="index.html">Pyrocko v0.3 Manual</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      &copy; Copyright 2012, Sebastian Heimann. <img src="http://kinherd.org/pyrocko.png" width="5" height="5">
+    </div>
+  </body>
+</html>

@@ -1036,6 +1036,18 @@ correlation can be viewed directly as a function of time lag.</p>
 </dd></dl>
 
 <dl class="class">
+<dt id="pyrocko.trace.MultiplyTaper">
+<em class="property">class </em><tt class="descname">MultiplyTaper</tt><big>(</big><em>tapers=None</em><big>)</big><a class="reference internal" href="_modules/pyrocko/trace.html#MultiplyTaper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.trace.MultiplyTaper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Multiplication of several tapers.</p>
+<dl class="attribute">
+<dt id="pyrocko.trace.MultiplyTaper.tapers">
+<tt class="descname">tapers</tt><a class="headerlink" href="#pyrocko.trace.MultiplyTaper.tapers" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">list</span></tt> of <a class="reference internal" href="#pyrocko.trace.Taper" title="pyrocko.trace.Taper"><tt class="xref py py-class docutils literal"><span class="pre">pyrocko.trace.Taper</span></tt></a> objects, <em>default:</em> <tt class="docutils literal"><span class="pre">[]</span></tt></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
 <dt id="pyrocko.trace.GaussTaper">
 <em class="property">class </em><tt class="descname">GaussTaper</tt><big>(</big><em>alpha</em><big>)</big><a class="reference internal" href="_modules/pyrocko/trace.html#GaussTaper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.trace.GaussTaper" title="Permalink to this definition">¶</a></dt>
 <dd><p>Frequency domain Gaussian filter.</p>
@@ -1496,7 +1508,7 @@ sampling interval of the downsampled trace (based on system time).</p>
 <dl class="class">
 <dt id="pyrocko.trace.DomainChoice">
 <em class="property">class </em><tt class="descname">DomainChoice</tt><big>(</big><em>dummy</em><big>)</big> &rarr; str<a class="reference internal" href="_modules/pyrocko/trace.html#DomainChoice"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.trace.DomainChoice" title="Permalink to this definition">¶</a></dt>
-<dd><p>Any <tt class="docutils literal"><span class="pre">str</span></tt> out of <tt class="docutils literal"><span class="pre">['time_domain',</span> <span class="pre">'frequency_domain',</span> <span class="pre">'envelope',</span> <span class="pre">'absolute']</span></tt>.</p>
+<dd><p>Any <tt class="docutils literal"><span class="pre">str</span></tt> out of <tt class="docutils literal"><span class="pre">['time_domain',</span> <span class="pre">'frequency_domain',</span> <span class="pre">'envelope',</span> <span class="pre">'absolute',</span> <span class="pre">'cc_max_norm']</span></tt>.</p>
 </dd></dl>
 
 <dl class="class">
@@ -1512,7 +1524,7 @@ sampling interval of the downsampled trace (based on system time).</p>
 <li><strong>norm</strong> &#8211; L-norm classifier</li>
 <li><strong>taper</strong> &#8211; Object of <a class="reference internal" href="#pyrocko.trace.Taper" title="pyrocko.trace.Taper"><tt class="xref py py-class docutils literal"><span class="pre">Taper</span></tt></a></li>
 <li><strong>filter</strong> &#8211; Object of <a class="reference internal" href="#pyrocko.trace.FrequencyResponse" title="pyrocko.trace.FrequencyResponse"><tt class="xref py py-class docutils literal"><span class="pre">FrequencyResponse</span></tt></a></li>
-<li><strong>domain</strong> &#8211; [&#8216;time_domain&#8217;, &#8216;frequency_domain&#8217;, &#8216;envelope&#8217;, &#8216;absolute&#8217;]</li>
+<li><strong>domain</strong> &#8211; [&#8216;time_domain&#8217;, &#8216;frequency_domain&#8217;, &#8216;envelope&#8217;, &#8216;absolute&#8217;, &#8216;cc_max_norm&#8217;]</li>
 </ul>
 </td>
 </tr>
