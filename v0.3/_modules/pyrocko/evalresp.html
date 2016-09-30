@@ -1,14 +1,13 @@
 
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>pyrocko.evalresp &mdash; Pyrocko v0.3 Manual</title>
+    <title>pyrocko.evalresp &#8212; Pyrocko v0.3 Manual</title>
     
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -31,8 +30,8 @@
     <link rel="top" title="Pyrocko v0.3 Manual" href="../../index.html" />
     <link rel="up" title="Module code" href="../index.html" /> 
   </head>
-  <body>
-    <div class="related">
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -41,51 +40,52 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">Pyrocko v0.3 Manual</a> &raquo;</li>
-          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../../index.html">Pyrocko v0.3 Manual</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
 
     <div class="document">
       <div class="documentwrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <h1>Source code for pyrocko.evalresp</h1><div class="highlight"><pre>
-<span class="kn">import</span> <span class="nn">time</span>
+<span></span><span class="kn">import</span> <span class="nn">time</span>
+
 
 <div class="viewcode-block" id="evalresp"><a class="viewcode-back" href="../../evalresp.html#pyrocko.evalresp.evalresp">[docs]</a><span class="k">def</span> <span class="nf">evalresp</span><span class="p">(</span>
-        <span class="n">sta_list</span> <span class="o">=</span> <span class="s">&#39;*&#39;</span><span class="p">,</span>
-        <span class="n">cha_list</span> <span class="o">=</span> <span class="s">&#39;*&#39;</span><span class="p">,</span>
-        <span class="n">net_code</span> <span class="o">=</span> <span class="s">&#39;*&#39;</span><span class="p">,</span>
-        <span class="n">locid</span>    <span class="o">=</span> <span class="s">&#39;*&#39;</span><span class="p">,</span>
-        <span class="n">instant</span>  <span class="o">=</span> <span class="bp">None</span><span class="p">,</span>
-        <span class="n">units</span>    <span class="o">=</span> <span class="s">&#39;VEL&#39;</span><span class="p">,</span>         <span class="c"># VEL, DIS, ACC, DEF</span>
-        <span class="nb">file</span>     <span class="o">=</span> <span class="s">&#39;&#39;</span><span class="p">,</span>
-        <span class="n">freqs</span>    <span class="o">=</span> <span class="bp">None</span><span class="p">,</span>
-        <span class="n">rtype</span>    <span class="o">=</span> <span class="s">&#39;AP&#39;</span><span class="p">,</span>          <span class="c"># CS, AP</span>
-        <span class="n">verbose</span>  <span class="o">=</span> <span class="s">&#39;&#39;</span><span class="p">,</span>
-        <span class="n">start_stage</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
-        <span class="n">stop_stage</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-        <span class="n">stdio_flag</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-        <span class="n">listinterp_out_flag</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-        <span class="n">listinterp_in_flag</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-        <span class="n">listinterp_tension</span> <span class="o">=</span> <span class="mf">1000.0</span><span class="p">):</span>
-  
-    <span class="kn">from</span> <span class="nn">pyrocko</span> <span class="kn">import</span> <span class="n">evalresp_ext</span> <span class="k">as</span> <span class="n">ext</span>
-    <span class="n">datime</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s">&#39;%Y,%j,%H:%M:%S&#39;</span><span class="p">,</span> <span class="n">time</span><span class="o">.</span><span class="n">gmtime</span><span class="p">(</span><span class="n">instant</span><span class="p">))</span>
-    
+        <span class="n">sta_list</span><span class="o">=</span><span class="s1">&#39;*&#39;</span><span class="p">,</span>
+        <span class="n">cha_list</span><span class="o">=</span><span class="s1">&#39;*&#39;</span><span class="p">,</span>
+        <span class="n">net_code</span><span class="o">=</span><span class="s1">&#39;*&#39;</span><span class="p">,</span>
+        <span class="n">locid</span><span class="o">=</span><span class="s1">&#39;*&#39;</span><span class="p">,</span>
+        <span class="n">instant</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">units</span><span class="o">=</span><span class="s1">&#39;VEL&#39;</span><span class="p">,</span>         <span class="c1"># VEL, DIS, ACC, DEF</span>
+        <span class="n">file</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">freqs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">rtype</span><span class="o">=</span><span class="s1">&#39;AP&#39;</span><span class="p">,</span>          <span class="c1"># CS, AP</span>
+        <span class="n">verbose</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+        <span class="n">start_stage</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">stop_stage</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">stdio_flag</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">listinterp_out_flag</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">listinterp_in_flag</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">listinterp_tension</span><span class="o">=</span><span class="mf">1000.0</span><span class="p">):</span>
+
+    <span class="kn">from</span> <span class="nn">pyrocko</span> <span class="k">import</span> <span class="n">evalresp_ext</span> <span class="k">as</span> <span class="n">ext</span>
+    <span class="n">datime</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y,%j,%H:%M:%S&#39;</span><span class="p">,</span> <span class="n">time</span><span class="o">.</span><span class="n">gmtime</span><span class="p">(</span><span class="n">instant</span><span class="p">))</span>
+
     <span class="k">return</span> <span class="n">ext</span><span class="o">.</span><span class="n">evalresp</span><span class="p">(</span><span class="n">sta_list</span><span class="p">,</span> <span class="n">cha_list</span><span class="p">,</span> <span class="n">net_code</span><span class="p">,</span> <span class="n">locid</span><span class="p">,</span> <span class="n">datime</span><span class="p">,</span>
-                        <span class="n">units</span><span class="p">,</span> <span class="nb">file</span><span class="p">,</span> <span class="n">freqs</span><span class="p">,</span> <span class="n">rtype</span><span class="p">,</span> <span class="n">verbose</span><span class="p">,</span>
+                        <span class="n">units</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">freqs</span><span class="p">,</span> <span class="n">rtype</span><span class="p">,</span> <span class="n">verbose</span><span class="p">,</span>
                         <span class="n">start_stage</span><span class="p">,</span> <span class="n">stop_stage</span><span class="p">,</span> <span class="n">stdio_flag</span><span class="p">,</span>
                         <span class="n">listinterp_out_flag</span><span class="p">,</span> <span class="n">listinterp_in_flag</span><span class="p">,</span>
-                        <span class="n">listinterp_tension</span><span class="p">)</span>
-</pre></div></div>
+                        <span class="n">listinterp_tension</span><span class="p">)</span></div>
+</pre></div>
 
           </div>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -94,12 +94,12 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">Pyrocko v0.3 Manual</a> &raquo;</li>
-          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../../index.html">Pyrocko v0.3 Manual</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer">
-      &copy; Copyright 2012, Sebastian Heimann. <img src="http://kinherd.org/pyrocko.png" width="5" height="5">
+      &copy; Copyright 2016, The Pyrocko Developers. <img src="http://kinherd.org/pyrocko.png" width="5" height="5">
     </div>
   </body>
 </html>
