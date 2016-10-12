@@ -6,7 +6,8 @@ import numpy as num
 
 from pyrocko.moment_tensor import \
     magnitude_to_moment, moment_to_magnitude, MomentTensor, r2d, symmat6, \
-    dynecm
+    dynecm, kagan_angle, rotation_from_angle_and_axis, random_axis, \
+    euler_to_matrix
 
 from pyrocko import util, guts
 
@@ -111,6 +112,26 @@ class MomentTensorTestCase(unittest.TestCase):
         m1.magnitude = want_mag
         mom = magnitude_to_moment(want_mag)
         assert(m1.moment == mom)
+
+    def testKagan(self):
+        eps = 0.01
+        for _ in xrange(100):
+            mt1 = MomentTensor.random_mt(magnitude=-1.0)
+            assert 0.0 == kagan_angle(mt1, mt1)
+
+            mt1 = MomentTensor.random_dc(magnitude=-1.0)
+            assert 0.0 == kagan_angle(mt1, mt1)
+
+            angle = 2.0
+
+            rot = rotation_from_angle_and_axis(angle, random_axis())
+
+            mrot = rot.T * mt1.m() * rot
+            mt2 = MomentTensor(m=mrot)
+            angle2 = kagan_angle(mt1, mt2)
+            print angle, angle2
+
+            assert abs(angle - angle2) < eps
 
 
 if __name__ == "__main__":
