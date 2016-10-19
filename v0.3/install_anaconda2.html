@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Installation &mdash; Pyrocko v0.3 Manual</title>
+    <title>Installation under Anaconda2 &mdash; Pyrocko v0.3 Manual</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -28,8 +28,9 @@
           title="Search within Pyrocko v0.3 Manual"
           href="_static/opensearch.xml"/>
     <link rel="top" title="Pyrocko v0.3 Manual" href="index.html" />
-    <link rel="next" title="Quick system specific installation instructions" href="install_quick.html" />
-    <link rel="prev" title="Pyrocko Manual" href="index.html" /> 
+    <link rel="up" title="Quick system specific installation instructions" href="install_quick.html" />
+    <link rel="next" title="Detailed installation instructions" href="install_details.html" />
+    <link rel="prev" title="Installation on Mac OS X systems" href="install_mac.html" /> 
   </head>
   <body>
     <div class="related">
@@ -42,12 +43,14 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="install_quick.html" title="Quick system specific installation instructions"
+          <a href="install_details.html" title="Detailed installation instructions"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="index.html" title="Pyrocko Manual"
+          <a href="install_mac.html" title="Installation on Mac OS X systems"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">Pyrocko v0.3 Manual</a> &raquo;</li> 
+        <li><a href="index.html">Pyrocko v0.3 Manual</a> &raquo;</li>
+          <li><a href="install.html" >Installation</a> &raquo;</li>
+          <li><a href="install_quick.html" accesskey="U">Quick system specific installation instructions</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -55,29 +58,26 @@
       <div class="documentwrapper">
           <div class="body">
             
-  <div class="section" id="installation">
-<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
-<p>Pyrocko can be installed on every operating system where its prerequisites are
-available. This document describes how to install Pyrocko on Unix-like
-operating systems, like Linux and MacOSX.</p>
-<div class="toctree-wrapper compound">
+  <div class="section" id="installation-under-anaconda2">
+<h1>Installation under Anaconda2<a class="headerlink" href="#installation-under-anaconda2" title="Permalink to this headline">¶</a></h1>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="install_quick.html">Quick system specific installation instructions</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="install_deb.html">Debian based systems (Debian, Ubuntu, Mint)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="install_fedora.html">Fedora</a></li>
-<li class="toctree-l2"><a class="reference internal" href="install_suse.html">OpenSuse</a></li>
-<li class="toctree-l2"><a class="reference internal" href="install_mac.html">Mac OS X</a></li>
-<li class="toctree-l2"><a class="reference internal" href="install_anaconda2.html">Anaconda2</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="install_details.html">Detailed installation instructions</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="install_details.html#prerequisites">Prerequisites</a></li>
-<li class="toctree-l2"><a class="reference internal" href="install_details.html#download-and-install-pyrocko">Download and install Pyrocko</a></li>
-<li class="toctree-l2"><a class="reference internal" href="install_details.html#updating">Updating</a></li>
-</ul>
-</li>
-</ul>
+<li><p class="first"><strong>Anaconda2</strong> (4.2.0):</p>
+<div class="highlight-python"><div class="highlight"><pre>conda install pyqt=4    # downgrades some packages
+easy_install pyavl
+pip install progressbar
+cd `conda info --root`
+mkdir src
+cd src
+git clone https://github.com/pyrocko/pyrocko.git pyrocko
+cd pyrocko
+python setup.py install
+</pre></div>
 </div>
+</li>
+</ul>
+<p>For instructions on how to install Pyrocko on other systems or if the
+installation with the above procedure fails, see <a class="reference internal" href="install_quick.html"><em>Quick system specific installation instructions</em></a> or
+<a class="reference internal" href="install_details.html"><em>Detailed installation instructions</em></a>.</p>
 </div>
 
 
@@ -95,12 +95,14 @@ operating systems, like Linux and MacOSX.</p>
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="install_quick.html" title="Quick system specific installation instructions"
+          <a href="install_details.html" title="Detailed installation instructions"
              >next</a> |</li>
         <li class="right" >
-          <a href="index.html" title="Pyrocko Manual"
+          <a href="install_mac.html" title="Installation on Mac OS X systems"
              >previous</a> |</li>
-        <li><a href="index.html">Pyrocko v0.3 Manual</a> &raquo;</li> 
+        <li><a href="index.html">Pyrocko v0.3 Manual</a> &raquo;</li>
+          <li><a href="install.html" >Installation</a> &raquo;</li>
+          <li><a href="install_quick.html" >Quick system specific installation instructions</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
