@@ -6,15 +6,18 @@ matrix:
           sudo: required
           python: 2.6
           cache: pip
+          env: TEST_SUITE=linux_py26
         - os: linux
           sudo: required
           python: 2.7
           cache: pip
           virtualenv:
               system_site_packages: true
+          env: TEST_SUITE=linux_py27
         - os: osx
           osx_image: xcode7.3
           language: generic
+          env: TEST_SUITE=osx
 
 addons:
     apt:
@@ -33,14 +36,14 @@ before_install:
     - cd fomosto-qseis-2006a; ./configure; make; export PATH=$PATH:`pwd`/src; cd ..
 
 before_script:
-    - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then flake8 src/ apps/ test/ ; fi
+    - if [[ "$TRAVIS_OS_NAME" == "linux" ]] && [[ "$TEST_SUITE" != "linux_py26" ]]; then flake8 src/ apps/ test/ ; fi
 
 install:
     - sudo python setup.py install
 
 script:
-    - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then python test/test_all.py ; fi
-    - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then coverage run --source=pyrocko test/test_all.py ; fi
+    - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then python test/test_all.py $TEST_SUITE ; fi
+    - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then coverage run --source=pyrocko test/test_all.py $TEST_SUITE ; fi
 
 after_success:
     - coveralls
