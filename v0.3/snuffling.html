@@ -374,12 +374,37 @@ within snuffler.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Param:</th><td class="field-body">url: url to open</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Param:</th><td class="field-body">name: labels the tab</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>url</strong> &#8211; url to open</li>
+<li><strong>name</strong> &#8211; labels the tab</li>
+</ul>
+</td>
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyrocko.snuffling.Snuffling.vtk_frame">
+<tt class="descname">vtk_frame</tt><big>(</big><em>name=None</em>, <em>actors=None</em><big>)</big><a class="reference internal" href="_modules/pyrocko/snuffling.html#Snuffling.vtk_frame"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.snuffling.Snuffling.vtk_frame" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a <tt class="xref py py-class docutils literal"><span class="pre">pyrocko.gui_util.VTKFrame</span></tt> to render interactive 3D
+graphics.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>actors</strong> &#8211; list of VTKActors</li>
+<li><strong>name</strong> &#8211; labels the tab</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Initialize the interactive rendering by calling the frames&#8217;
+:py:meth`initialize` method after having added all actors to the frames
+renderer.</p>
+<p>Requires installation of vtk including python wrapper.</p>
 </dd></dl>
 
 <dl class="method">

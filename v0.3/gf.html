@@ -572,10 +572,12 @@ operations. They can hold an absolute time or an offset to a named phase
 arrival or group of such arrivals.</p>
 <p>Timings can be instantiated from a simple string defintion i.e. with
 <tt class="docutils literal"><span class="pre">Timing(str)</span></tt> where <tt class="docutils literal"><span class="pre">str</span></tt> is something like
-<tt class="docutils literal"><span class="pre">'SELECT{PHASE_DEFS}[+-]OFFSET'</span></tt> where <tt class="docutils literal"><span class="pre">'SELECT'</span></tt> is <tt class="docutils literal"><span class="pre">'first'</span></tt>,
+<tt class="docutils literal"><span class="pre">'SELECT{PHASE_DEFS}[+-]OFFSET[S]'</span></tt> where <tt class="docutils literal"><span class="pre">'SELECT'</span></tt> is <tt class="docutils literal"><span class="pre">'first'</span></tt>,
 <tt class="docutils literal"><span class="pre">'last'</span></tt> or empty, <tt class="docutils literal"><span class="pre">'PHASE_DEFS'</span></tt> is a <tt class="docutils literal"><span class="pre">'|'</span></tt>-separated list of phase
-definitions, and <tt class="docutils literal"><span class="pre">'OFFSET'</span></tt> is the time offset in seconds. Phase
-definitions can be specified in either of the following ways:</p>
+definitions, and <tt class="docutils literal"><span class="pre">'OFFSET'</span></tt> is the time offset in seconds. If the an
+<tt class="docutils literal"><span class="pre">'S'</span></tt> is appended to <tt class="docutils literal"><span class="pre">'OFFSET'</span></tt>, it is interpreted as a surface
+slowness in [s/km].</p>
+<p>Phase definitions can be specified in either of the following ways:</p>
 <ul class="simple">
 <li><tt class="docutils literal"><span class="pre">'stored:PHASE_ID'</span></tt> - retrieves value from stored travel time table</li>
 <li><tt class="docutils literal"><span class="pre">'cake:CAKE_PHASE_DEF'</span></tt> - evaluates first arrival of phase with cake
@@ -607,6 +609,12 @@ arrivals A, B, and C</li>
 <dt id="pyrocko.gf.meta.Timing.offset">
 <tt class="descname">offset</tt><a class="headerlink" href="#pyrocko.gf.meta.Timing.offset" title="Permalink to this definition">¶</a></dt>
 <dd><p><tt class="docutils literal"><span class="pre">float</span></tt>, <em>default:</em> <tt class="docutils literal"><span class="pre">0.0</span></tt></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyrocko.gf.meta.Timing.offset_is_slowness">
+<tt class="descname">offset_is_slowness</tt><a class="headerlink" href="#pyrocko.gf.meta.Timing.offset_is_slowness" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">bool</span></tt>, <em>default:</em> <tt class="docutils literal"><span class="pre">False</span></tt></p>
 </dd></dl>
 
 <dl class="attribute">

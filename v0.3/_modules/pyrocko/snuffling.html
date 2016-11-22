@@ -69,7 +69,8 @@
 <span class="kn">from</span> <span class="nn">pyrocko</span> <span class="kn">import</span> <span class="n">pile</span><span class="p">,</span> <span class="n">config</span>
 
 <span class="kn">from</span> <span class="nn">pyrocko.gui_util</span> <span class="kn">import</span> <span class="n">ValControl</span><span class="p">,</span> <span class="n">LinValControl</span><span class="p">,</span> <span class="n">FigureFrame</span><span class="p">,</span> \
-    <span class="n">WebKitFrame</span><span class="p">,</span> <span class="n">Marker</span><span class="p">,</span> <span class="n">EventMarker</span><span class="p">,</span> <span class="n">PhaseMarker</span><span class="p">,</span> <span class="n">load_markers</span><span class="p">,</span> <span class="n">save_markers</span>
+    <span class="n">WebKitFrame</span><span class="p">,</span> <span class="n">VTKFrame</span><span class="p">,</span> <span class="n">Marker</span><span class="p">,</span> <span class="n">EventMarker</span><span class="p">,</span> <span class="n">PhaseMarker</span><span class="p">,</span> <span class="n">load_markers</span><span class="p">,</span> \
+    <span class="n">save_markers</span>
 
 
 <span class="n">Marker</span><span class="p">,</span> <span class="n">load_markers</span><span class="p">,</span> <span class="n">save_markers</span>  <span class="c"># noqa</span>
@@ -551,8 +552,8 @@
 <span class="sd">        Creates a :py:class:`WebKitFrame` which can be used as a browser</span>
 <span class="sd">        within snuffler.</span>
 
-<span class="sd">        :param: url: url to open</span>
-<span class="sd">        :param: name: labels the tab</span>
+<span class="sd">        :param url: url to open</span>
+<span class="sd">        :param name: labels the tab</span>
 <span class="sd">        &#39;&#39;&#39;</span>
 
         <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
@@ -560,6 +561,32 @@
             <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;Web browser </span><span class="si">%i</span><span class="s"> (</span><span class="si">%s</span><span class="s">)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_iplot</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_name</span><span class="p">())</span>
 
         <span class="n">f</span> <span class="o">=</span> <span class="n">WebKitFrame</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_panel_parent</span><span class="o">.</span><span class="n">add_tab</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">f</span>
+</div>
+<div class="viewcode-block" id="Snuffling.vtk_frame"><a class="viewcode-back" href="../../snuffling.html#pyrocko.snuffling.Snuffling.vtk_frame">[docs]</a>    <span class="k">def</span> <span class="nf">vtk_frame</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">actors</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Create a :py:class:`pyrocko.gui_util.VTKFrame` to render interactive 3D</span>
+<span class="sd">        graphics.</span>
+
+<span class="sd">        :param actors: list of VTKActors</span>
+<span class="sd">        :param name: labels the tab</span>
+
+<span class="sd">        Initialize the interactive rendering by calling the frames&#39;</span>
+<span class="sd">        :py:meth`initialize` method after having added all actors to the frames</span>
+<span class="sd">        renderer.</span>
+
+<span class="sd">        Requires installation of vtk including python wrapper.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_iplot</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;VTK </span><span class="si">%i</span><span class="s"> (</span><span class="si">%s</span><span class="s">)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_iplot</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_name</span><span class="p">())</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">f</span> <span class="o">=</span> <span class="n">VTKFrame</span><span class="p">(</span><span class="n">actors</span><span class="o">=</span><span class="n">actors</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fail</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">_panel_parent</span><span class="o">.</span><span class="n">add_tab</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">f</span>
 </div>
@@ -1675,9 +1702,16 @@
 
     <span class="k">def</span> <span class="nf">load_if_needed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="o">+</span><span class="s">&#39;.py&#39;</span><span class="p">)</span>
-        <span class="n">mtime</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">stat</span><span class="p">(</span><span class="n">filename</span><span class="p">)[</span><span class="mi">8</span><span class="p">]</span>
-        <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span><span class="p">]</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">mtime</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">stat</span><span class="p">(</span><span class="n">filename</span><span class="p">)[</span><span class="mi">8</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">errno</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="n">BrokenSnufflingModule</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_module</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span><span class="p">]</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;Loading snuffling module </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">filename</span><span class="p">)</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">:</span>
@@ -1694,12 +1728,17 @@
                 <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">_str_traceback</span><span class="p">())</span>
                 <span class="k">raise</span> <span class="n">BrokenSnufflingModule</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
 
+            <span class="k">finally</span><span class="p">:</span>
+                <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mtime</span> <span class="o">!=</span> <span class="n">mtime</span><span class="p">:</span>
             <span class="n">logger</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&#39;Reloading snuffling module </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">filename</span><span class="p">)</span>
             <span class="n">settings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">remove_snufflings</span><span class="p">()</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span><span class="p">]</span>
             <span class="k">try</span><span class="p">:</span>
 
                 <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_module</span>
+
                 <span class="nb">reload</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_module</span><span class="p">)</span>
                 <span class="k">del</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">]</span>
 
@@ -1715,8 +1754,10 @@
                 <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">_str_traceback</span><span class="p">())</span>
                 <span class="k">raise</span> <span class="n">BrokenSnufflingModule</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
 
+            <span class="k">finally</span><span class="p">:</span>
+                <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">_mtime</span> <span class="o">=</span> <span class="n">mtime</span>
-        <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="k">def</span> <span class="nf">add_snuffling</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">snuffling</span><span class="p">,</span> <span class="n">reloaded</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
         <span class="n">snuffling</span><span class="o">.</span><span class="n">_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_path</span>

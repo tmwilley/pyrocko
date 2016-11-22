@@ -182,6 +182,27 @@ from the carthesian origin.</p>
 <tt class="descname">radius_to_region</tt><big>(</big><em>lat</em>, <em>lon</em>, <em>radius</em><big>)</big><a class="reference internal" href="_modules/pyrocko/orthodrome.html#radius_to_region"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.orthodrome.radius_to_region" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+<dl class="function">
+<dt id="pyrocko.orthodrome.geographic_midpoint">
+<tt class="descname">geographic_midpoint</tt><big>(</big><em>lats</em>, <em>lons</em>, <em>weights=None</em><big>)</big><a class="reference internal" href="_modules/pyrocko/orthodrome.html#geographic_midpoint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pyrocko.orthodrome.geographic_midpoint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate geographic midpoints by finding the center of gravity.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>lats</strong> &#8211; array of latitudes</li>
+<li><strong>lons</strong> &#8211; array of longitudes</li>
+<li><strong>weights</strong> &#8211; array weighting factors (optinal)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>This method suffers from instabilities if points are centered around the
+poles.</p>
+</dd></dl>
+
 </div>
 
 

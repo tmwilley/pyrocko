@@ -394,7 +394,35 @@
         <span class="k">return</span> <span class="n">lon_min</span><span class="p">,</span> <span class="n">lon_max</span><span class="p">,</span> <span class="n">lat_min</span><span class="p">,</span> <span class="n">lat_max</span>
 
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">None</span></div>
+        <span class="k">return</span> <span class="bp">None</span>
+
+</div>
+<div class="viewcode-block" id="geographic_midpoint"><a class="viewcode-back" href="../../orthodrome.html#pyrocko.orthodrome.geographic_midpoint">[docs]</a><span class="k">def</span> <span class="nf">geographic_midpoint</span><span class="p">(</span><span class="n">lats</span><span class="p">,</span> <span class="n">lons</span><span class="p">,</span> <span class="n">weights</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;Calculate geographic midpoints by finding the center of gravity.</span>
+
+<span class="sd">    :param lats: array of latitudes</span>
+<span class="sd">    :param lons: array of longitudes</span>
+<span class="sd">    :param weights: array weighting factors (optinal)</span>
+
+<span class="sd">    This method suffers from instabilities if points are centered around the</span>
+<span class="sd">    poles.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">weights</span><span class="p">:</span>
+        <span class="n">weights</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">lats</span><span class="p">))</span>
+
+    <span class="n">total_weigth</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span>
+    <span class="n">weights</span> <span class="o">/=</span> <span class="n">total_weigth</span>
+    <span class="n">lats</span> <span class="o">*=</span> <span class="n">d2r</span>
+    <span class="n">lons</span> <span class="o">*=</span> <span class="n">d2r</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">num</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">lats</span><span class="p">)</span> <span class="o">*</span> <span class="n">num</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">lons</span><span class="p">)</span> <span class="o">*</span> <span class="n">weights</span><span class="p">)</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">num</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">lats</span><span class="p">)</span> <span class="o">*</span> <span class="n">num</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">lons</span><span class="p">)</span> <span class="o">*</span> <span class="n">weights</span><span class="p">)</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">num</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">lats</span><span class="p">)</span> <span class="o">*</span> <span class="n">weights</span><span class="p">)</span>
+
+    <span class="n">lon</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+    <span class="n">hyp</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">y</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">lat</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">hyp</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">lat</span><span class="o">/</span><span class="n">d2r</span><span class="p">,</span> <span class="n">lon</span><span class="o">/</span><span class="n">d2r</span></div>
 </pre></div>
 
           </div>

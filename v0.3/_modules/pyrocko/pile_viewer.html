@@ -2133,8 +2133,9 @@
                     <span class="n">amount</span> <span class="o">=</span> <span class="mi">10</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">nudge_selected_markers</span><span class="p">(</span><span class="nb">dir</span><span class="o">*</span><span class="n">amount</span><span class="p">)</span>
 
-            <span class="k">if</span> <span class="n">keytext</span> <span class="ow">in</span> <span class="s">&#39;degaApPnN&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">keytext</span> <span class="o">!=</span> <span class="s">&#39;&#39;</span> <span class="ow">and</span> <span class="n">keytext</span> <span class="ow">in</span> <span class="s">&#39;degaApPnN&#39;</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">emit_selected_markers</span><span class="p">()</span>
+
             <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">update_status</span><span class="p">()</span>
 
@@ -2150,6 +2151,9 @@
             <span class="k">for</span> <span class="n">sm</span> <span class="ow">in</span> <span class="n">selected_markers</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">sm</span> <span class="ow">in</span> <span class="n">markers</span><span class="p">:</span>
                     <span class="n">_indexes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">markers</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">sm</span><span class="p">))</span>
+
+            <span class="n">_indexes</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+            <span class="n">_indexes</span> <span class="o">=</span> <span class="n">make_chunks</span><span class="p">(</span><span class="n">_indexes</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">qc</span><span class="o">.</span><span class="n">SIGNAL</span><span class="p">(</span><span class="s">&#39;changed_marker_selection&#39;</span><span class="p">),</span> <span class="n">_indexes</span><span class="p">)</span>
 
         <span class="k">def</span> <span class="nf">toggle_marker_editor</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>

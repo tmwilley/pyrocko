@@ -55,6 +55,7 @@
 <span class="kn">import</span> <span class="nn">datetime</span>
 <span class="kn">import</span> <span class="nn">calendar</span>
 <span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">math</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">num</span>
 
@@ -510,15 +511,25 @@
     <span class="n">pole_list</span> <span class="o">=</span> <span class="n">List</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">PoleZero</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">xmltagname</span><span class="o">=</span><span class="s">&#39;Pole&#39;</span><span class="p">))</span>
 
     <span class="k">def</span> <span class="nf">get_pyrocko_response</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pz_transfer_function_type</span> <span class="o">!=</span> <span class="s">&#39;LAPLACE (RADIANS/SECOND)&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pz_transfer_function_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span>
+                <span class="s">&#39;LAPLACE (RADIANS/SECOND)&#39;</span><span class="p">,</span>
+                <span class="s">&#39;LAPLACE (HERTZ)&#39;</span><span class="p">):</span>
+
             <span class="k">raise</span> <span class="n">NoResponseInformation</span><span class="p">(</span>
                 <span class="s">&#39;cannot convert PoleZero response of type </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">pz_transfer_function_type</span><span class="p">)</span>
 
+        <span class="n">factor</span> <span class="o">=</span> <span class="mf">1.0</span>
+        <span class="n">cfactor</span> <span class="o">=</span> <span class="mf">1.0</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pz_transfer_function_type</span> <span class="o">==</span> <span class="s">&#39;LAPLACE (HERTZ)&#39;</span><span class="p">:</span>
+            <span class="n">factor</span> <span class="o">=</span> <span class="mf">2.</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span>
+            <span class="n">cfactor</span> <span class="o">=</span> <span class="p">(</span><span class="mf">2.</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span><span class="o">**</span><span class="p">(</span>
+                <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pole_list</span><span class="p">)</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">zero_list</span><span class="p">))</span>
+
         <span class="n">resp</span> <span class="o">=</span> <span class="n">trace</span><span class="o">.</span><span class="n">PoleZeroResponse</span><span class="p">(</span>
-            <span class="n">constant</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">normalization_factor</span><span class="p">,</span>
-            <span class="n">zeros</span><span class="o">=</span><span class="p">[</span><span class="n">z</span><span class="o">.</span><span class="n">value</span><span class="p">()</span> <span class="k">for</span> <span class="n">z</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">zero_list</span><span class="p">],</span>
-            <span class="n">poles</span><span class="o">=</span><span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">value</span><span class="p">()</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">pole_list</span><span class="p">])</span>
+            <span class="n">constant</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">normalization_factor</span><span class="o">*</span><span class="n">cfactor</span><span class="p">,</span>
+            <span class="n">zeros</span><span class="o">=</span><span class="p">[</span><span class="n">z</span><span class="o">.</span><span class="n">value</span><span class="p">()</span><span class="o">*</span><span class="n">factor</span> <span class="k">for</span> <span class="n">z</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">zero_list</span><span class="p">],</span>
+            <span class="n">poles</span><span class="o">=</span><span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">value</span><span class="p">()</span><span class="o">*</span><span class="n">factor</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">pole_list</span><span class="p">])</span>
 
         <span class="n">computed_normalization_factor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">normalization_factor</span> <span class="o">/</span> <span class="nb">abs</span><span class="p">(</span>
             <span class="n">resp</span><span class="o">.</span><span class="n">evaluate</span><span class="p">(</span><span class="n">num</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">normalization_frequency</span><span class="o">.</span><span class="n">value</span><span class="p">]))[</span><span class="mi">0</span><span class="p">])</span>
@@ -622,10 +633,6 @@
     <span class="k">def</span> <span class="nf">get_pyrocko_response</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nslc</span><span class="p">):</span>
         <span class="n">responses</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">pzs</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">poles_zeros_list</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">pzs</span><span class="o">.</span><span class="n">pz_transfer_function_type</span> <span class="o">!=</span> <span class="s">&#39;LAPLACE (RADIANS/SECOND)&#39;</span><span class="p">:</span>
-                <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&#39;unhandled response at stage </span><span class="si">%i</span><span class="s">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">number</span><span class="p">)</span>
-                <span class="k">continue</span>
-
             <span class="n">pz</span> <span class="o">=</span> <span class="n">pzs</span><span class="o">.</span><span class="n">get_pyrocko_response</span><span class="p">()</span>
             <span class="n">responses</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">pz</span><span class="p">)</span>
 
@@ -953,10 +960,17 @@
 
     <span class="n">xmltagname</span> <span class="o">=</span> <span class="s">&#39;FDSNStationXML&#39;</span>
 
-    <span class="k">def</span> <span class="nf">get_pyrocko_stations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nslcs</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">timespan</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+    <span class="k">def</span> <span class="nf">get_pyrocko_stations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nslcs</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">nsls</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                             <span class="n">time</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">timespan</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                              <span class="n">inconsistencies</span><span class="o">=</span><span class="s">&#39;warn&#39;</span><span class="p">):</span>
 
         <span class="k">assert</span> <span class="n">inconsistencies</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;raise&#39;</span><span class="p">,</span> <span class="s">&#39;warn&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">nslcs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">nslcs</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">nslcs</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">nsls</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">nsls</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">nsls</span><span class="p">)</span>
 
         <span class="n">tt</span> <span class="o">=</span> <span class="p">()</span>
         <span class="k">if</span> <span class="n">time</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
@@ -996,6 +1010,8 @@
                             <span class="k">continue</span>
 
                         <span class="n">nsl</span> <span class="o">=</span> <span class="n">network</span><span class="o">.</span><span class="n">code</span><span class="p">,</span> <span class="n">station</span><span class="o">.</span><span class="n">code</span><span class="p">,</span> <span class="n">loc</span>
+                        <span class="k">if</span> <span class="n">nsls</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">nsl</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">nsls</span><span class="p">:</span>
+                            <span class="k">continue</span>
 
                         <span class="n">pstations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
                             <span class="n">pyrocko_station_from_channels</span><span class="p">(</span>
