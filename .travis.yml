@@ -3,7 +3,6 @@ language: python
 matrix:
     include:
         - os: linux
-          sudo: required
           python: 2.6
           cache: pip
           env: TEST_SUITE=linux_py26
@@ -30,6 +29,7 @@ before_install:
     - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew unlink libyaml; fi
     - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install gcc libyaml; fi
     - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then pip install matplotlib; fi
+    - if [[ "$TRAVIS_PYTHON_VERSION" == "2.6" ]]; then pip install python2.6-dev, python2.6-scipy, gfortran, libatlas-dev, libopenblas-dev, python2.6-matplotlib, python2.6-yaml, python2.6-tk, libyaml-dev; fi
     - pip install progressbar setuptools flake8 pyyaml coveralls
     - easy_install pyavl
     - curl -s http://kinherd.org/fomosto-qseis-2006a.tar.gz | tar zvx
@@ -37,10 +37,11 @@ before_install:
 
 before_script:
     - export PYTHONPATH=$PYTHONPATH:$(pwd)
-    - if [[ "$TRAVIS_OS_NAME" == "linux" ]] && [[ "$TEST_SUITE" != "linux_py26" ]]; then flake8 src/ apps/ test/ ; fi
+    - if [[ "$TEST_SUITE" != "linux_py27" ]]; then flake8 src/ apps/ test/ ; fi
 
 install:
-    - sudo python setup.py install
+    - if [[ "$TRAVIS_PYTHON_VERSION" == "2.6" ]]; then python setup.py install;
+      else sudo python setup.py install; fi
 
 script:
     - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then python test/test_all.py ; fi
