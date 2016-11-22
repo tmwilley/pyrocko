@@ -4,6 +4,12 @@ matrix:
     include:
         - os: linux
           sudo: required
+          python: 2.6
+          cache: pip
+          virtualenv:
+              system_site_packages: true
+        - os: linux
+          sudo: required
           python: 2.7
           cache: pip
           virtualenv:
