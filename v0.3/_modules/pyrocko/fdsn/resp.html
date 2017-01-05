@@ -1,15 +1,13 @@
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>pyrocko.fdsn.resp &mdash; Pyrocko v0.3 Manual</title>
+    <title>pyrocko.fdsn.resp &#8212; Pyrocko v0.3 Manual</title>
     
-    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pydoctheme.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
@@ -18,44 +16,50 @@
         VERSION:     '0.3',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../../_static/sidebar.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within Pyrocko v0.3 Manual"
           href="../../../_static/opensearch.xml"/>
-    <link rel="top" title="Pyrocko v0.3 Manual" href="../../../index.html" />
-    <link rel="up" title="Module code" href="../../index.html" /> 
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <link rel="shortcut icon" type="image/png" href="../../../_static/favicon.png" />
+    <meta name="viewport" content="width=device-width,initial-scale=0.8">
+    
+    
+    
+
   </head>
-  <body>
+  <body role="document">
     <div class="related">
       <h3>Navigation</h3>
       <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="../../../genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
-          <a href="../../../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li><a href="../../../index.html">Pyrocko v0.3 Manual</a> &raquo;</li>
-          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+        <li class="responsive-menu"><a href="#sidebar-anchor" title="Navigation">&#9776;</a></li>
+        <li><a href="../../../index.html">Pyrocko v0.3 Manual</a> &#187;</li>
+          <li><a href="../../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
-    </div>  
+    </div>
+    
+  
 
     <div class="document">
       <div class="documentwrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <h1>Source code for pyrocko.fdsn.resp</h1><div class="highlight"><pre>
 <span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 
-<span class="kn">from</span> <span class="nn">pyrocko</span> <span class="kn">import</span> <span class="n">util</span><span class="p">,</span> <span class="n">guts</span><span class="p">,</span> <span class="n">io_common</span>
-<span class="kn">from</span> <span class="nn">pyrocko.fdsn</span> <span class="kn">import</span> <span class="n">station</span> <span class="k">as</span> <span class="n">fs</span>
+<span class="kn">from</span> <span class="nn">pyrocko</span> <span class="k">import</span> <span class="n">util</span><span class="p">,</span> <span class="n">guts</span><span class="p">,</span> <span class="n">io_common</span>
+<span class="kn">from</span> <span class="nn">pyrocko.fdsn</span> <span class="k">import</span> <span class="n">station</span> <span class="k">as</span> <span class="n">fs</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s">&#39;pyrocko.fdsn.resp&#39;</span><span class="p">)</span>
 
@@ -70,20 +74,20 @@
         <span class="n">number</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
         <span class="n">real</span><span class="o">=</span><span class="n">fs</span><span class="o">.</span><span class="n">FloatNoUnit</span><span class="p">(</span>
             <span class="n">value</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span>
-            <span class="n">plus_error</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span> <span class="ow">or</span> <span class="bp">None</span><span class="p">,</span>
-            <span class="n">minus_error</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span> <span class="ow">or</span> <span class="bp">None</span><span class="p">),</span>
+            <span class="n">plus_error</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span> <span class="ow">or</span> <span class="k">None</span><span class="p">,</span>
+            <span class="n">minus_error</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span> <span class="ow">or</span> <span class="k">None</span><span class="p">),</span>
         <span class="n">imaginary</span><span class="o">=</span><span class="n">fs</span><span class="o">.</span><span class="n">FloatNoUnit</span><span class="p">(</span>
             <span class="n">value</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span>
-            <span class="n">plus_error</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span> <span class="ow">or</span> <span class="bp">None</span><span class="p">,</span>
-            <span class="n">minus_error</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span> <span class="ow">or</span> <span class="bp">None</span><span class="p">))</span>
+            <span class="n">plus_error</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span> <span class="ow">or</span> <span class="k">None</span><span class="p">,</span>
+            <span class="n">minus_error</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span> <span class="ow">or</span> <span class="k">None</span><span class="p">))</span>
 
 
 <span class="k">def</span> <span class="nf">pcfu</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
     <span class="n">v</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
     <span class="k">return</span> <span class="n">fs</span><span class="o">.</span><span class="n">FloatWithUnit</span><span class="p">(</span>
         <span class="n">value</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]),</span>
-        <span class="n">plus_error</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="ow">or</span> <span class="bp">None</span><span class="p">,</span>
-        <span class="n">minus_error</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="ow">or</span> <span class="bp">None</span><span class="p">)</span>
+        <span class="n">plus_error</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="ow">or</span> <span class="k">None</span><span class="p">,</span>
+        <span class="n">minus_error</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="ow">or</span> <span class="k">None</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">pnc</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
@@ -126,7 +130,7 @@
 
 <span class="k">def</span> <span class="nf">pblock_060</span><span class="p">(</span><span class="n">content</span><span class="p">):</span>
     <span class="n">stage_number</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">get1</span><span class="p">(</span><span class="n">content</span><span class="p">,</span> <span class="s">&#39;04&#39;</span><span class="p">))</span>
-    <span class="k">return</span> <span class="n">stage_number</span><span class="p">,</span> <span class="bp">None</span>
+    <span class="k">return</span> <span class="n">stage_number</span><span class="p">,</span> <span class="k">None</span>
 
 
 <span class="k">def</span> <span class="nf">pblock_053</span><span class="p">(</span><span class="n">content</span><span class="p">):</span>
@@ -251,7 +255,7 @@
     <span class="n">stage_number</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">get1</span><span class="p">(</span><span class="n">content</span><span class="p">,</span> <span class="s">&#39;03&#39;</span><span class="p">))</span>
 
     <span class="n">fir</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">FIR</span><span class="p">(</span>
-        <span class="n">name</span><span class="o">=</span><span class="n">get1</span><span class="p">(</span><span class="n">content</span><span class="p">,</span> <span class="s">&#39;04&#39;</span><span class="p">,</span> <span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">),</span>
+        <span class="n">name</span><span class="o">=</span><span class="n">get1</span><span class="p">(</span><span class="n">content</span><span class="p">,</span> <span class="s">&#39;04&#39;</span><span class="p">,</span> <span class="n">optional</span><span class="o">=</span><span class="k">True</span><span class="p">),</span>
         <span class="n">input_units</span><span class="o">=</span><span class="n">fs</span><span class="o">.</span><span class="n">Units</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">punit</span><span class="p">(</span><span class="n">get1</span><span class="p">(</span><span class="n">content</span><span class="p">,</span> <span class="s">&#39;06&#39;</span><span class="p">))),</span>
         <span class="n">output_units</span><span class="o">=</span><span class="n">fs</span><span class="o">.</span><span class="n">Units</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">punit</span><span class="p">(</span><span class="n">get1</span><span class="p">(</span><span class="n">content</span><span class="p">,</span> <span class="s">&#39;07&#39;</span><span class="p">))),</span>
         <span class="n">symmetry</span><span class="o">=</span><span class="n">psymmetry</span><span class="p">(</span><span class="n">get1</span><span class="p">(</span><span class="n">content</span><span class="p">,</span> <span class="s">&#39;05&#39;</span><span class="p">)),</span>
@@ -264,7 +268,7 @@
     <span class="n">stage_number</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
 
     <span class="n">fir</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">FIR</span><span class="p">(</span>
-        <span class="n">name</span><span class="o">=</span><span class="n">get1</span><span class="p">(</span><span class="n">content</span><span class="p">,</span> <span class="s">&#39;04&#39;</span><span class="p">,</span> <span class="n">optional</span><span class="o">=</span><span class="bp">True</span><span class="p">),</span>
+        <span class="n">name</span><span class="o">=</span><span class="n">get1</span><span class="p">(</span><span class="n">content</span><span class="p">,</span> <span class="s">&#39;04&#39;</span><span class="p">,</span> <span class="n">optional</span><span class="o">=</span><span class="k">True</span><span class="p">),</span>
         <span class="n">input_units</span><span class="o">=</span><span class="n">fs</span><span class="o">.</span><span class="n">Units</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">punit</span><span class="p">(</span><span class="n">get1</span><span class="p">(</span><span class="n">content</span><span class="p">,</span> <span class="s">&#39;06&#39;</span><span class="p">))),</span>
         <span class="n">output_units</span><span class="o">=</span><span class="n">fs</span><span class="o">.</span><span class="n">Units</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">punit</span><span class="p">(</span><span class="n">get1</span><span class="p">(</span><span class="n">content</span><span class="p">,</span> <span class="s">&#39;07&#39;</span><span class="p">))),</span>
         <span class="n">symmetry</span><span class="o">=</span><span class="n">psymmetry</span><span class="p">(</span><span class="n">get1</span><span class="p">(</span><span class="n">content</span><span class="p">,</span> <span class="s">&#39;05&#39;</span><span class="p">)),</span>
@@ -345,11 +349,11 @@
 
 
 <span class="k">def</span> <span class="nf">parse2</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
-    <span class="n">current_b</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">current_b</span> <span class="o">=</span> <span class="k">None</span>
     <span class="n">content</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">block</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">parse1</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">current_b</span> <span class="o">!=</span> <span class="n">block</span> <span class="ow">or</span> <span class="n">field</span> <span class="o">==</span> <span class="s">&#39;03&#39;</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">current_b</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">current_b</span> <span class="ow">is</span> <span class="ow">not</span> <span class="k">None</span><span class="p">:</span>
                 <span class="k">yield</span> <span class="n">current_b</span><span class="p">,</span> <span class="n">content</span>
 
             <span class="n">current_b</span> <span class="o">=</span> <span class="n">block</span>
@@ -357,16 +361,16 @@
 
         <span class="n">content</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">field</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span>
 
-    <span class="k">if</span> <span class="n">current_b</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">current_b</span> <span class="ow">is</span> <span class="ow">not</span> <span class="k">None</span><span class="p">:</span>
         <span class="k">yield</span> <span class="n">current_b</span><span class="p">,</span> <span class="n">content</span>
 
 
 <span class="k">def</span> <span class="nf">parse3</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
-    <span class="n">state</span> <span class="o">=</span> <span class="p">[</span><span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="p">[]]</span>
+    <span class="n">state</span> <span class="o">=</span> <span class="p">[</span><span class="k">None</span><span class="p">,</span> <span class="k">None</span><span class="p">,</span> <span class="p">[]]</span>
     <span class="k">for</span> <span class="n">block</span><span class="p">,</span> <span class="n">content</span> <span class="ow">in</span> <span class="n">parse2</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">block</span> <span class="o">==</span> <span class="s">&#39;050&#39;</span> <span class="ow">and</span> <span class="n">state</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">and</span> <span class="n">state</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
             <span class="k">yield</span> <span class="n">state</span>
-            <span class="n">state</span> <span class="o">=</span> <span class="p">[</span><span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="p">[]]</span>
+            <span class="n">state</span> <span class="o">=</span> <span class="p">[</span><span class="k">None</span><span class="p">,</span> <span class="k">None</span><span class="p">,</span> <span class="p">[]]</span>
 
         <span class="k">if</span> <span class="n">block</span> <span class="o">==</span> <span class="s">&#39;050&#39;</span><span class="p">:</span>
             <span class="n">state</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">content</span>
@@ -379,17 +383,17 @@
         <span class="k">yield</span> <span class="n">state</span>
 
 
-<span class="k">def</span> <span class="nf">get1</span><span class="p">(</span><span class="n">content</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">optional</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">get1</span><span class="p">(</span><span class="n">content</span><span class="p">,</span> <span class="n">field</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="k">None</span><span class="p">,</span> <span class="n">optional</span><span class="o">=</span><span class="k">False</span><span class="p">):</span>
     <span class="k">for</span> <span class="n">field_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">content</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">field_</span> <span class="o">==</span> <span class="n">field</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">value</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">optional</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">None</span>
-        <span class="k">elif</span> <span class="n">default</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="k">None</span>
+        <span class="k">elif</span> <span class="n">default</span> <span class="ow">is</span> <span class="ow">not</span> <span class="k">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">default</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">RespError</span><span class="p">(</span><span class="s">&#39;key not found: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">field</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">RespError</span><span class="p">(</span><span class="s">&#39;key not found: %s&#39;</span> <span class="o">%</span> <span class="n">field</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">getn</span><span class="p">(</span><span class="n">content</span><span class="p">,</span> <span class="n">field</span><span class="p">):</span>
@@ -405,15 +409,15 @@
         <span class="n">s</span> <span class="o">+=</span> <span class="s">&#39;0000,001,00:00:00&#39;</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">):]</span>
 
     <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;2599&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">s</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;2999&#39;</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">None</span>
+        <span class="k">return</span> <span class="k">None</span>
     <span class="k">elif</span> <span class="n">s</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;no&#39;</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">None</span>
+        <span class="k">return</span> <span class="k">None</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">t</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;,&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;000&#39;</span><span class="p">:</span>
             <span class="n">s</span> <span class="o">=</span> <span class="s">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s">&#39;001&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">t</span><span class="p">[</span><span class="mi">2</span><span class="p">:])</span>
 
-        <span class="k">return</span> <span class="n">util</span><span class="o">.</span><span class="n">str_to_time</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">format</span><span class="o">=</span><span class="s">&#39;%Y,%j,%H:%M:%S.OPTFRAC&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">util</span><span class="o">.</span><span class="n">str_to_time</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s">&#39;%Y,%j,%H:%M:%S.OPTFRAC&#39;</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">ploc</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
@@ -430,7 +434,7 @@
 <span class="k">def</span> <span class="nf">gett1o</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
     <span class="n">l</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">l</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">t</span><span class="p">)]</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">None</span>
+        <span class="k">return</span> <span class="k">None</span>
     <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">l</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
@@ -447,16 +451,16 @@
         <span class="k">raise</span> <span class="n">RespError</span><span class="p">(</span><span class="s">&#39;duplicate entry&#39;</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="ChannelResponse"><a class="viewcode-back" href="../../../fdsn.html#pyrocko.fdsn.resp.ChannelResponse">[docs]</a><span class="k">class</span> <span class="nc">ChannelResponse</span><span class="p">(</span><span class="n">guts</span><span class="o">.</span><span class="n">Object</span><span class="p">):</span>
+<div class="viewcode-block" id="ChannelResponse"><a class="viewcode-back" href="../../../reference_fdsn.html#pyrocko.fdsn.resp.ChannelResponse">[docs]</a><span class="k">class</span> <span class="nc">ChannelResponse</span><span class="p">(</span><span class="n">guts</span><span class="o">.</span><span class="n">Object</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Response information + channel codes and time span.&#39;&#39;&#39;</span>
 
     <span class="n">codes</span> <span class="o">=</span> <span class="n">guts</span><span class="o">.</span><span class="n">Tuple</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">guts</span><span class="o">.</span><span class="n">String</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">))</span>
     <span class="n">start_date</span> <span class="o">=</span> <span class="n">guts</span><span class="o">.</span><span class="n">Timestamp</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
     <span class="n">end_date</span> <span class="o">=</span> <span class="n">guts</span><span class="o">.</span><span class="n">Timestamp</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
-    <span class="n">response</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">Response</span><span class="o">.</span><span class="n">T</span><span class="p">()</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">fs</span><span class="o">.</span><span class="n">Response</span><span class="o">.</span><span class="n">T</span><span class="p">()</span></div>
 
-</div>
-<div class="viewcode-block" id="iload_fh"><a class="viewcode-back" href="../../../fdsn.html#pyrocko.fdsn.resp.iload_fh">[docs]</a><span class="k">def</span> <span class="nf">iload_fh</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+
+<div class="viewcode-block" id="iload_fh"><a class="viewcode-back" href="../../../reference_fdsn.html#pyrocko.fdsn.resp.iload_fh">[docs]</a><span class="k">def</span> <span class="nf">iload_fh</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Read RESP information from open file handle.&#39;&#39;&#39;</span>
 
     <span class="k">for</span> <span class="n">sc</span><span class="p">,</span> <span class="n">cc</span><span class="p">,</span> <span class="n">rcs</span> <span class="ow">in</span> <span class="n">parse3</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
@@ -470,20 +474,20 @@
             <span class="n">tmin</span> <span class="o">=</span> <span class="n">pdate</span><span class="p">(</span><span class="n">get1</span><span class="p">(</span><span class="n">cc</span><span class="p">,</span> <span class="s">&#39;22&#39;</span><span class="p">))</span>
             <span class="n">tmax</span> <span class="o">=</span> <span class="n">pdate</span><span class="p">(</span><span class="n">get1</span><span class="p">(</span><span class="n">cc</span><span class="p">,</span> <span class="s">&#39;23&#39;</span><span class="p">))</span>
         <span class="k">except</span> <span class="n">util</span><span class="o">.</span><span class="n">TimeStrError</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">RespError</span><span class="p">(</span><span class="s">&#39;invalid date in RESP information. (</span><span class="si">%s</span><span class="s">)&#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="n">RespError</span><span class="p">(</span><span class="s">&#39;invalid date in RESP information. (%s)&#39;</span> <span class="o">%</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
 
         <span class="n">stage_elements</span> <span class="o">=</span> <span class="p">{}</span>
 
         <span class="n">istage</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
         <span class="k">for</span> <span class="n">block</span><span class="p">,</span> <span class="n">content</span> <span class="ow">in</span> <span class="n">rcs</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">block</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">bdefs</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="n">RespError</span><span class="p">(</span><span class="s">&#39;unknown block type found: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">block</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="n">RespError</span><span class="p">(</span><span class="s">&#39;unknown block type found: %s&#39;</span> <span class="o">%</span> <span class="n">block</span><span class="p">)</span>
 
             <span class="n">istage_temp</span><span class="p">,</span> <span class="n">x</span> <span class="o">=</span> <span class="n">bdefs</span><span class="p">[</span><span class="n">block</span><span class="p">][</span><span class="s">&#39;parse&#39;</span><span class="p">](</span><span class="n">content</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">istage_temp</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
                 <span class="n">istage</span> <span class="o">=</span> <span class="n">istage_temp</span>
 
-            <span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="k">None</span><span class="p">:</span>
                 <span class="k">continue</span>
 
             <span class="n">x</span><span class="o">.</span><span class="n">validate</span><span class="p">()</span>
@@ -494,7 +498,7 @@
 
         <span class="n">istages</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">stage_elements</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
         <span class="n">stages</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="n">totalgain</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="n">totalgain</span> <span class="o">=</span> <span class="k">None</span>
         <span class="k">for</span> <span class="n">istage</span> <span class="ow">in</span> <span class="n">istages</span><span class="p">:</span>
             <span class="n">elements</span> <span class="o">=</span> <span class="n">stage_elements</span><span class="p">[</span><span class="n">istage</span><span class="p">]</span>
             <span class="k">if</span> <span class="n">istage</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
@@ -526,14 +530,14 @@
                 <span class="n">response</span><span class="o">=</span><span class="n">resp</span><span class="p">)</span>
 
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">RespError</span><span class="p">(</span><span class="s">&#39;incomplete response information&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">RespError</span><span class="p">(</span><span class="s">&#39;incomplete response information&#39;</span><span class="p">)</span></div>
 
-</div>
+
 <span class="n">iload_filename</span><span class="p">,</span> <span class="n">iload_dirname</span><span class="p">,</span> <span class="n">iload_glob</span><span class="p">,</span> <span class="n">iload</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">make_iload_family</span><span class="p">(</span>
     <span class="n">iload_fh</span><span class="p">,</span> <span class="s">&#39;RESP&#39;</span><span class="p">,</span> <span class="s">&#39;:py:class:`ChannelResponse`&#39;</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="make_stationxml"><a class="viewcode-back" href="../../../fdsn.html#pyrocko.fdsn.resp.make_stationxml">[docs]</a><span class="k">def</span> <span class="nf">make_stationxml</span><span class="p">(</span><span class="n">pyrocko_stations</span><span class="p">,</span> <span class="n">channel_responses</span><span class="p">):</span>
+<div class="viewcode-block" id="make_stationxml"><a class="viewcode-back" href="../../../reference_fdsn.html#pyrocko.fdsn.resp.make_stationxml">[docs]</a><span class="k">def</span> <span class="nf">make_stationxml</span><span class="p">(</span><span class="n">pyrocko_stations</span><span class="p">,</span> <span class="n">channel_responses</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Create stationxml from pyrocko station list and RESP information.</span>
 
 <span class="sd">    :param pyrocko_stations: list of :py:class:`pyrocko.model.Station` objects</span>
@@ -579,7 +583,7 @@
 
             <span class="n">stations</span><span class="p">[</span><span class="n">net</span><span class="p">,</span> <span class="n">sta</span><span class="p">]</span><span class="o">.</span><span class="n">channel_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">channel</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&#39;no station information for </span><span class="si">%s</span><span class="s">.</span><span class="si">%s</span><span class="s">.</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s">&#39;no station information for %s.%s.%s&#39;</span> <span class="o">%</span>
                         <span class="p">(</span><span class="n">net</span><span class="p">,</span> <span class="n">sta</span><span class="p">,</span> <span class="n">loc</span><span class="p">))</span>
 
     <span class="k">for</span> <span class="n">station</span> <span class="ow">in</span> <span class="n">stations</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
@@ -588,12 +592,12 @@
     <span class="k">return</span> <span class="n">fs</span><span class="o">.</span><span class="n">FDSNStationXML</span><span class="p">(</span>
         <span class="n">source</span><span class="o">=</span><span class="s">&#39;Converted from Pyrocko stations file and RESP information&#39;</span><span class="p">,</span>
         <span class="n">created</span><span class="o">=</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">(),</span>
-        <span class="n">network_list</span><span class="o">=</span><span class="p">[</span><span class="n">networks</span><span class="p">[</span><span class="n">net_</span><span class="p">]</span> <span class="k">for</span> <span class="n">net_</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">networks</span><span class="o">.</span><span class="n">keys</span><span class="p">())])</span>
+        <span class="n">network_list</span><span class="o">=</span><span class="p">[</span><span class="n">networks</span><span class="p">[</span><span class="n">net_</span><span class="p">]</span> <span class="k">for</span> <span class="n">net_</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">networks</span><span class="o">.</span><span class="n">keys</span><span class="p">())])</span></div>
 
-</div>
+
 <span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
     <span class="kn">import</span> <span class="nn">sys</span>
-    <span class="kn">from</span> <span class="nn">pyrocko</span> <span class="kn">import</span> <span class="n">model</span>
+    <span class="kn">from</span> <span class="nn">pyrocko</span> <span class="k">import</span> <span class="n">model</span>
 
     <span class="n">util</span><span class="o">.</span><span class="n">setup_logging</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
 
@@ -604,7 +608,7 @@
 
     <span class="n">sxml</span> <span class="o">=</span> <span class="n">make_stationxml</span><span class="p">(</span><span class="n">stations</span><span class="p">,</span> <span class="n">iload</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">2</span><span class="p">:]))</span>
 
-    <span class="k">print</span> <span class="n">sxml</span><span class="o">.</span><span class="n">dump_xml</span><span class="p">()</span>
+    <span class="nb">print</span> <span class="n">sxml</span><span class="o">.</span><span class="n">dump_xml</span><span class="p">()</span>
 </pre></div>
 
           </div>
@@ -612,20 +616,20 @@
       <div class="clearer"></div>
     </div>
     <div class="related">
+    &nbsp;
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
           <a href="../../../genindex.html" title="General Index"
-             >index</a></li>
+             accesskey="I">index</a></li>
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">Pyrocko v0.3 Manual</a> &raquo;</li>
-          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
-    <div class="footer">
-      &copy; Copyright 2016, The Pyrocko Developers. <img src="http://kinherd.org/pyrocko.png" width="5" height="5">
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, The Pyrocko Developers.
     </div>
   </body>
 </html>

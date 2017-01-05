@@ -1,15 +1,13 @@
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Pyrocko Manual &mdash; Pyrocko v0.3 Manual</title>
+    <title>Pyrocko Manual &#8212; Pyrocko v0.3 Manual</title>
     
-    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pydoctheme.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
@@ -18,145 +16,82 @@
         VERSION:     '0.3',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/sidebar.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within Pyrocko v0.3 Manual"
           href="_static/opensearch.xml"/>
-    <link rel="top" title="Pyrocko v0.3 Manual" href="#" />
-    <link rel="next" title="Installation" href="install.html" /> 
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Overview" href="overview.html" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <link rel="shortcut icon" type="image/png" href="_static/favicon.png" />
+    <meta name="viewport" content="width=device-width,initial-scale=0.8">
+    
+    
+    
+
   </head>
-  <body>
+  <body role="document">
     <div class="related">
       <h3>Navigation</h3>
       <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
-          <a href="py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="install.html" title="Installation"
-             accesskey="N">next</a> |</li>
-        <li><a href="#">Pyrocko v0.3 Manual</a> &raquo;</li> 
+        <li class="responsive-menu"><a href="#sidebar-anchor" title="Navigation">&#9776;</a></li>
+        <li><a href="#">Pyrocko v0.3 Manual</a> &#187;</li> 
       </ul>
-    </div>  
+    </div>
+    
+  
 
     <div class="document">
       <div class="documentwrapper">
-          <div class="body">
+          <div class="body" role="main">
             
-  <img alt="_images/snuffler.png" class="align-left" src="_images/snuffler.png" />
+  <img alt="_images/pyrocko_shadow.png" class="align-left" src="_images/pyrocko_shadow.png" />
 <div class="section" id="pyrocko-manual">
 <h1>Pyrocko Manual<a class="headerlink" href="#pyrocko-manual" title="Permalink to this headline">¶</a></h1>
-<p>Pyrocko is a seismology toolbox and library, written in the Python programming
-language. Snuffler is a seismogram browser built on top of Pyrocko.</p>
-<p>If you need help with Pyrocko or Snuffler don&#8217;t hesitate to contact the
-<a class="reference external" href="https://lists.zmaw.de/mailman/listinfo/snuffler">Snuffler mailing list</a>.  To
-download the software or if you wish to contribute, please use the <a class="reference external" href="http://github.com/pyrocko/pyrocko">Pyrocko
-project page on GitHub</a>.</p>
+<p>Pyrocko is open source toolbox and library for seismology.</p>
+<div style="clear:both"></div><div class="section" id="features">
+<h2>Features<a class="headerlink" href="#features" title="Permalink to this headline">¶</a></h2>
+<div class="keywords">
+ <span>seismogram browser and picker</span>
+ <span>waveform archive management</span>
+ <span>waveform processing</span>
+ <span>Green's function calculation and management</span>
+ <span>seismic ray theory</span>
+ <span>synthetic seismograms</span>
+ <span>online catalog access</span>
+ <span>FDSN web service access</span>
+ <span>beachball plotting</span>
+ <span>online topo data access</span>
+ <span>enhanced GMT mapping</span>
+ <span>geodesic functions</span>
+</div></div>
 <div class="section" id="contents">
 <h2>Contents<a class="headerlink" href="#contents" title="Permalink to this headline">¶</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="install_quick.html">Quick system specific installation instructions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="install_details.html">Detailed installation instructions</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="snuffler.html">Snuffler</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="snuffler.html#invocation">Invocation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="snuffler.html#options">Options</a></li>
-<li class="toctree-l2"><a class="reference internal" href="snuffler.html#keystrokes">Keystrokes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="snuffler.html#mouse">Mouse</a></li>
-<li class="toctree-l2"><a class="reference internal" href="snuffler.html#commands">Commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="apps.html">Contained applications</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="apps_snuffler.html">Snuffler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="apps_cake.html">Cake</a></li>
+<li class="toctree-l2"><a class="reference internal" href="apps_fomosto.html">Fomosto</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="snuffler_tutorial.html">Snuffler Tutorial</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="snuffler_tutorial.html#first-steps">First steps</a></li>
-<li class="toctree-l2"><a class="reference internal" href="snuffler_tutorial.html#big-datasets">Big datasets</a></li>
-<li class="toctree-l2"><a class="reference internal" href="snuffler_tutorial.html#scaling">Scaling</a></li>
-<li class="toctree-l2"><a class="reference internal" href="snuffler_tutorial.html#events-and-station-coordinates">Events and station coordinates</a></li>
-<li class="toctree-l2"><a class="reference internal" href="snuffler_tutorial.html#markers">Markers</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="snuffling_howto.html">Writing a Snuffling</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="snuffling_howto.html#an-example-snuffling-to-show-earthquake-catalog-information-within-snuffler">An example snuffling to show earthquake catalog information within Snuffler</a></li>
-<li class="toctree-l2"><a class="reference internal" href="snuffling_howto.html#more-examples">More examples</a></li>
-<li class="toctree-l2"><a class="reference internal" href="snuffling_howto.html#how-to-add-simple-markers-to-the-viewer">How to add simple markers to the viewer</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="cake_doc.html">Cake</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="cake_doc.html#invocation">Invocation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cake_doc.html#command-line-examples">Command Line Examples</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cake_doc.html#python-script-examples">Python Script Examples</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="fomosto.html">Fomosto Tutorial</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="fomosto.html#introduction">Introduction</a></li>
-<li class="toctree-l2"><a class="reference internal" href="fomosto.html#invocation-and-online-help">Invocation and online help</a></li>
-<li class="toctree-l2"><a class="reference internal" href="fomosto.html#creating-a-new-green-s-function-store">Creating a new Green&#8217;s function store</a></li>
-<li class="toctree-l2"><a class="reference internal" href="fomosto.html#configuration">Configuration</a></li>
-<li class="toctree-l2"><a class="reference internal" href="fomosto.html#considerations-for-real-world-applications">Considerations for real-world applications</a></li>
-<li class="toctree-l2"><a class="reference internal" href="fomosto.html#diagnostics">Diagnostics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="fomosto.html#creating-decimated-variants-of-a-green-s-function-store">Creating decimated variants of a Green&#8217;s function store</a></li>
-<li class="toctree-l2"><a class="reference internal" href="fomosto.html#how-to-combine-or-split-green-s-function-stores">How to combine or split Green&#8217;s function stores</a></li>
-<li class="toctree-l2"><a class="reference internal" href="fomosto.html#python-script-examples">Python Script Examples</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="examples.html">Programming Examples</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="examples.html#load-filter-save">Load, filter, save</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.html#quickly-look-at-a-trace">Quickly look at a trace</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.html#create-a-trace-object-from-scratch">Create a trace object from scratch</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.html#extracting-part-of-a-trace">Extracting part of a trace</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.html#reorganizing-a-dataset-into-hour-files">Reorganizing a dataset into hour-files</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.html#downsampling-a-whole-dataset">Downsampling a whole dataset</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.html#convert-sac-to-miniseed">Convert SAC to MiniSEED</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.html#convert-miniseed-to-ascii">Convert MiniSEED to ASCII</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.html#restitute-traces-to-displacement-using-poles-and-zeros">Restitute traces to displacement using poles and zeros</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.html#distance-between-two-points">Distance between two points</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.html#convert-a-dataset-from-mini-seed-to-sac-format">Convert a dataset from Mini-SEED to SAC format</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.html#misfit-of-one-trace-against-two-other-traces">Misfit of one trace against two other traces</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples.html#travel-time-table-interpolation">Travel time table interpolation</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="reference.html">Library Reference</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="trace.html">The <tt class="docutils literal"><span class="pre">trace</span></tt> Module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="io.html">The <tt class="docutils literal"><span class="pre">io</span></tt> Module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pile.html">The <tt class="docutils literal"><span class="pre">pile</span></tt> Module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="util.html">The <tt class="docutils literal"><span class="pre">util</span></tt> Module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="model.html">The <tt class="docutils literal"><span class="pre">model</span></tt> Module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="hamster_pile.html">The <tt class="docutils literal"><span class="pre">hamster_pile</span></tt> Module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="crust2x2.html">The <tt class="docutils literal"><span class="pre">crust2x2</span></tt> Module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cake.html">The <tt class="docutils literal"><span class="pre">cake</span></tt> Module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="moment_tensor.html">The <tt class="docutils literal"><span class="pre">moment_tensor</span></tt> Module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="beachball.html">The <tt class="docutils literal"><span class="pre">beachball</span></tt> Module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="evalresp.html">The <tt class="docutils literal"><span class="pre">evalresp</span></tt> Module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pz.html">The <tt class="docutils literal"><span class="pre">pz</span></tt> Module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="orthodrome.html">The <tt class="docutils literal"><span class="pre">orthodrome</span></tt> Module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="catalog.html">The <tt class="docutils literal"><span class="pre">catalog</span></tt> Module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="rdseed.html">The <tt class="docutils literal"><span class="pre">rdseed</span></tt> Module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="snuffling.html">The <tt class="docutils literal"><span class="pre">snuffling</span></tt> Module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pile_viewer.html">The <tt class="docutils literal"><span class="pre">pile_viewer</span></tt> Module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gui_util.html">The <tt class="docutils literal"><span class="pre">gui_util</span></tt> Module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="slink.html">The <tt class="docutils literal"><span class="pre">slink</span></tt> Module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gf.html">The <tt class="docutils literal"><span class="pre">pyrocko.gf</span></tt> Subpackage</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gf.html#module-pyrocko.gf.store">The <tt class="docutils literal"><span class="pre">pyrocko.gf.store</span></tt> Module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gf.html#module-pyrocko.gf.meta">The <tt class="docutils literal"><span class="pre">pyrocko.gf.meta</span></tt> Module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gf.html#module-pyrocko.gf.builder">The <tt class="docutils literal"><span class="pre">pyrocko.gf.builder</span></tt> Module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gf.html#module-pyrocko.gf.seismosizer">The <tt class="docutils literal"><span class="pre">pyrocko.gf.seismosizer</span></tt> Module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="fdsn.html">The <tt class="docutils literal"><span class="pre">pyrocko.fdsn</span></tt> Subpackage</a></li>
-<li class="toctree-l2"><a class="reference internal" href="fdsn.html#module-pyrocko.fdsn.station">The <tt class="docutils literal"><span class="pre">pyrocko.fdsn.station</span></tt> Module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="fdsn.html#module-pyrocko.fdsn.resp">The <tt class="docutils literal"><span class="pre">pyrocko.fdsn.resp</span></tt> Module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="fdsn.html#module-pyrocko.fdsn.enhanced_sacpz">The <tt class="docutils literal"><span class="pre">pyrocko.fdsn.enhanced_sacpz</span></tt> Module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="fdsn.html#module-pyrocko.fdsn.ws">The <tt class="docutils literal"><span class="pre">pyrocko.fdsn.ws</span></tt> Module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ims.html">The <tt class="docutils literal"><span class="pre">ims</span></tt> Module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="plot.html">The <tt class="docutils literal"><span class="pre">plot</span></tt> Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="library.html">Library</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="examples.html">Programming Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference.html">Library Reference</a></li>
 </ul>
 </li>
 </ul>
@@ -165,9 +100,9 @@ project page on GitHub</a>.</p>
 <div class="section" id="indices-and-tables">
 <h2>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li><a class="reference internal" href="genindex.html"><em>Index</em></a></li>
-<li><a class="reference internal" href="py-modindex.html"><em>Module Index</em></a></li>
-<li><a class="reference internal" href="search.html"><em>Search Page</em></a></li>
+<li><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></li>
+<li><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></li>
+<li><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></li>
 </ul>
 </div>
 </div>
@@ -178,22 +113,23 @@ project page on GitHub</a>.</p>
       <div class="clearer"></div>
     </div>
     <div class="related">
+    &nbsp;
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="General Index"
-             >index</a></li>
+             accesskey="I">index</a></li>
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="install.html" title="Installation"
-             >next</a> |</li>
-        <li><a href="#">Pyrocko v0.3 Manual</a> &raquo;</li> 
+          <a href="overview.html" title="Overview"
+             accesskey="N">next</a> |</li>
       </ul>
     </div>
-    <div class="footer">
-      &copy; Copyright 2016, The Pyrocko Developers. <img src="http://kinherd.org/pyrocko.png" width="5" height="5">
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, The Pyrocko Developers.
     </div>
   </body>
 </html>

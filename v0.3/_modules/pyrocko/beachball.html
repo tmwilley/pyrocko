@@ -1,15 +1,13 @@
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>pyrocko.beachball &mdash; Pyrocko v0.3 Manual</title>
+    <title>pyrocko.beachball &#8212; Pyrocko v0.3 Manual</title>
     
-    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pydoctheme.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
@@ -18,45 +16,51 @@
         VERSION:     '0.3',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/sidebar.js"></script>
     <link rel="search" type="application/opensearchdescription+xml"
           title="Search within Pyrocko v0.3 Manual"
           href="../../_static/opensearch.xml"/>
-    <link rel="top" title="Pyrocko v0.3 Manual" href="../../index.html" />
-    <link rel="up" title="Module code" href="../index.html" /> 
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <link rel="shortcut icon" type="image/png" href="../../_static/favicon.png" />
+    <meta name="viewport" content="width=device-width,initial-scale=0.8">
+    
+    
+    
+
   </head>
-  <body>
+  <body role="document">
     <div class="related">
       <h3>Navigation</h3>
       <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="../../genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
-          <a href="../../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li><a href="../../index.html">Pyrocko v0.3 Manual</a> &raquo;</li>
-          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+        <li class="responsive-menu"><a href="#sidebar-anchor" title="Navigation">&#9776;</a></li>
+        <li><a href="../../index.html">Pyrocko v0.3 Manual</a> &#187;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
-    </div>  
+    </div>
+    
+  
 
     <div class="document">
       <div class="documentwrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <h1>Source code for pyrocko.beachball</h1><div class="highlight"><pre>
-<span class="kn">from</span> <span class="nn">pyrocko</span> <span class="kn">import</span> <span class="n">moment_tensor</span> <span class="k">as</span> <span class="n">mtm</span>
-<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">pi</span> <span class="k">as</span> <span class="n">PI</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">num</span>
+<span class="kn">from</span> <span class="nn">pyrocko</span> <span class="k">import</span> <span class="n">moment_tensor</span> <span class="k">as</span> <span class="n">mtm</span>
+<span class="kn">from</span> <span class="nn">math</span> <span class="k">import</span> <span class="n">pi</span> <span class="k">as</span> <span class="n">PI</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">num</span>
 
-<span class="kn">from</span> <span class="nn">matplotlib.collections</span> <span class="kn">import</span> <span class="n">PathCollection</span>
-<span class="kn">from</span> <span class="nn">matplotlib.path</span> <span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">from</span> <span class="nn">matplotlib.transforms</span> <span class="kn">import</span> <span class="n">Transform</span>
+<span class="kn">from</span> <span class="nn">matplotlib.collections</span> <span class="k">import</span> <span class="n">PathCollection</span>
+<span class="kn">from</span> <span class="nn">matplotlib.path</span> <span class="k">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">matplotlib.transforms</span> <span class="k">import</span> <span class="n">Transform</span>
 
 <span class="n">NA</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">newaxis</span>
 
@@ -69,7 +73,7 @@
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trans</span><span class="p">,</span> <span class="n">dpi_scale_trans</span><span class="p">,</span> <span class="n">fixed_point</span><span class="p">):</span>
         <span class="n">Transform</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">input_dims</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_dims</span> <span class="o">=</span> <span class="mi">2</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">has_inverse</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">has_inverse</span> <span class="o">=</span> <span class="k">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">trans</span> <span class="o">=</span> <span class="n">trans</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">dpi_scale_trans</span> <span class="o">=</span> <span class="n">dpi_scale_trans</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fixed_point</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">fixed_point</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">num</span><span class="o">.</span><span class="n">float</span><span class="p">)</span>
@@ -88,36 +92,32 @@
         <span class="n">points</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">points</span><span class="p">,</span> <span class="n">points</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]))</span>
 
     <span class="n">dupl</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span>
-        <span class="p">(</span><span class="n">num</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">points</span><span class="p">[</span><span class="mi">1</span><span class="p">:,</span> <span class="p">:]</span> <span class="o">==</span> <span class="n">points</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="p">[</span><span class="bp">False</span><span class="p">]))</span>
+        <span class="p">(</span><span class="n">num</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">points</span><span class="p">[</span><span class="mi">1</span><span class="p">:,</span> <span class="p">:]</span> <span class="o">==</span> <span class="n">points</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="p">[</span><span class="k">False</span><span class="p">]))</span>
     <span class="n">points</span> <span class="o">=</span> <span class="n">points</span><span class="p">[</span><span class="n">num</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">dupl</span><span class="p">)]</span>
     <span class="k">return</span> <span class="n">points</span>
 
 
+<span class="k">def</span> <span class="nf">close_poly</span><span class="p">(</span><span class="n">points</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">num</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">points</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:]</span> <span class="o">==</span> <span class="n">points</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]):</span>
+        <span class="n">points</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">points</span><span class="p">,</span> <span class="n">points</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]))</span>
+
+    <span class="k">return</span> <span class="n">points</span>
+
+
 <span class="k">def</span> <span class="nf">circulation</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
-    <span class="n">points2</span> <span class="o">=</span> <span class="n">points</span><span class="p">[:,</span> <span class="p">((</span><span class="n">axis</span><span class="o">+</span><span class="mi">2</span><span class="p">)</span> <span class="o">%</span> <span class="mi">3</span><span class="p">,</span> <span class="p">(</span><span class="n">axis</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="mi">3</span><span class="p">)]</span>
-    <span class="n">phi1</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">points2</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">points2</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">])</span>
-    <span class="n">points2</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">+=</span> <span class="n">num</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">phi1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="nb">abs</span><span class="p">(</span><span class="n">points</span><span class="p">[:,</span> <span class="n">axis</span><span class="p">]))</span>
-    <span class="n">points2</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="n">num</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">phi1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mf">1.0</span><span class="o">-</span><span class="nb">abs</span><span class="p">(</span><span class="n">points</span><span class="p">[:,</span> <span class="n">axis</span><span class="p">]))</span>
-    <span class="n">points2</span> <span class="o">=</span> <span class="n">clean_poly</span><span class="p">(</span><span class="n">points2</span><span class="p">)</span>
-    <span class="n">vecs</span> <span class="o">=</span> <span class="n">points2</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">-</span> <span class="n">points2</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-    <span class="n">vecs</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">vecs</span><span class="p">,</span> <span class="n">vecs</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]))</span>
-    <span class="n">av</span> <span class="o">=</span> <span class="n">vecs</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]</span>
-    <span class="n">bv</span> <span class="o">=</span> <span class="n">vecs</span><span class="p">[</span><span class="mi">1</span><span class="p">:,</span> <span class="p">:]</span>
-    <span class="n">zs</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">av</span><span class="p">,</span> <span class="n">bv</span><span class="p">)</span>
-    <span class="n">phi</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">arcsin</span><span class="p">(</span><span class="n">zs</span> <span class="o">/</span> <span class="p">(</span><span class="n">vnorm</span><span class="p">(</span><span class="n">av</span><span class="p">)</span> <span class="o">*</span> <span class="n">vnorm</span><span class="p">(</span><span class="n">bv</span><span class="p">)))</span>
-    <span class="n">flip</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">av</span><span class="o">*</span><span class="n">bv</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">0.0</span>
-    <span class="n">phi</span><span class="p">[</span><span class="n">flip</span><span class="p">]</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">phi</span><span class="p">[</span><span class="n">flip</span><span class="p">])</span><span class="o">*</span><span class="p">(</span><span class="n">PI</span> <span class="o">-</span> <span class="n">num</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">phi</span><span class="p">[</span><span class="n">flip</span><span class="p">]))</span>
-    <span class="k">if</span> <span class="n">num</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">phi</span> <span class="o">==</span> <span class="n">PI</span><span class="p">)</span> <span class="ow">or</span> <span class="n">num</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">phi</span> <span class="o">==</span> <span class="o">-</span><span class="n">PI</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="n">BeachballError</span><span class="p">(</span><span class="s">&#39;ambiguous circulation&#39;</span><span class="p">)</span>
+    <span class="n">points2</span> <span class="o">=</span> <span class="n">points</span><span class="p">[:,</span> <span class="p">((</span><span class="n">axis</span><span class="o">+</span><span class="mi">2</span><span class="p">)</span> <span class="o">%</span> <span class="mi">3</span><span class="p">,</span> <span class="p">(</span><span class="n">axis</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="mi">3</span><span class="p">)]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="n">points2</span> <span class="o">*=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">num</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">+</span> <span class="n">num</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">points</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]))[:,</span> <span class="n">num</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span>
 
-    <span class="n">result</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">phi</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mf">2.0</span><span class="o">*</span><span class="n">PI</span><span class="p">)</span>
-    <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">result</span><span class="o">*</span><span class="mf">100.</span><span class="p">))</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">100</span><span class="p">,</span> <span class="o">-</span><span class="mi">100</span><span class="p">]:</span>
-        <span class="k">raise</span> <span class="n">BeachballError</span><span class="p">(</span><span class="s">&#39;circulation error&#39;</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="o">-</span><span class="n">num</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span>
+        <span class="p">(</span><span class="n">points2</span><span class="p">[</span><span class="mi">1</span><span class="p">:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">points2</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span> <span class="o">*</span>
+        <span class="p">(</span><span class="n">points2</span><span class="p">[</span><span class="mi">1</span><span class="p">:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">points2</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]))</span>
 
+    <span class="n">result</span> <span class="o">-=</span> <span class="p">(</span><span class="n">points2</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">points2</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span> \
+        <span class="o">*</span> <span class="p">(</span><span class="n">points2</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">points2</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
     <span class="k">return</span> <span class="n">result</span>
 
 
-<span class="k">def</span> <span class="nf">spoly_cut</span><span class="p">(</span><span class="n">l_points</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">nonsimple</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">spoly_cut</span><span class="p">(</span><span class="n">l_points</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">nonsimple</span><span class="o">=</span><span class="k">True</span><span class="p">):</span>
     <span class="n">dphi</span> <span class="o">=</span> <span class="mf">2.</span><span class="o">*</span><span class="n">PI</span> <span class="o">/</span> <span class="mf">360.</span>
 
     <span class="c"># cut sub-polygons and gather crossing point information</span>
@@ -135,7 +135,7 @@
                                                       <span class="n">points</span><span class="p">[</span><span class="n">iup</span><span class="p">,</span> <span class="p">:])</span>
         <span class="n">phiup</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">pup</span><span class="p">[:,</span> <span class="p">(</span><span class="n">axis</span><span class="o">+</span><span class="mi">2</span><span class="p">)</span> <span class="o">%</span> <span class="mi">3</span><span class="p">],</span> <span class="n">pup</span><span class="p">[:,</span> <span class="p">(</span><span class="n">axis</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="mi">3</span><span class="p">])</span>
 
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">iup</span><span class="p">)):</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">iup</span><span class="p">)):</span>
             <span class="n">crossings</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">phiup</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">ipath</span><span class="p">,</span> <span class="n">iup</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="mi">1</span><span class="p">,</span> <span class="n">pup</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
 
         <span class="c"># get downward crossing points</span>
@@ -147,13 +147,13 @@
             <span class="n">points</span><span class="p">[</span><span class="n">idown</span><span class="p">,</span> <span class="p">:]</span> <span class="o">-</span> <span class="n">points</span><span class="p">[</span><span class="n">idown</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="p">:])</span>
         <span class="n">phidown</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">arctan2</span><span class="p">(</span><span class="n">pdown</span><span class="p">[:,</span> <span class="p">(</span><span class="n">axis</span><span class="o">+</span><span class="mi">2</span><span class="p">)</span> <span class="o">%</span> <span class="mi">3</span><span class="p">],</span> <span class="n">pdown</span><span class="p">[:,</span> <span class="p">(</span><span class="n">axis</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="mi">3</span><span class="p">])</span>
 
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">idown</span><span class="o">.</span><span class="n">size</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="n">idown</span><span class="o">.</span><span class="n">size</span><span class="p">):</span>
             <span class="n">crossings</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
                 <span class="p">(</span><span class="n">phidown</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">ipath</span><span class="p">,</span> <span class="n">idown</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">pdown</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
 
         <span class="n">icuts</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">num</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">iup</span><span class="p">,</span> <span class="n">idown</span><span class="p">)))</span>
 
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">icuts</span><span class="o">.</span><span class="n">size</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="n">icuts</span><span class="o">.</span><span class="n">size</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
             <span class="n">snippets</span><span class="p">[</span><span class="n">ipath</span><span class="p">,</span> <span class="n">icuts</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(</span>
                 <span class="n">ipath</span><span class="p">,</span> <span class="n">icuts</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">],</span> <span class="n">points</span><span class="p">[</span><span class="n">icuts</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">:</span><span class="n">icuts</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">])</span>
 
@@ -171,7 +171,7 @@
     <span class="c"># assemble new sub-polygons</span>
     <span class="n">current</span> <span class="o">=</span> <span class="n">snippets</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">snippets</span><span class="o">.</span><span class="n">keys</span><span class="p">()[</span><span class="mi">0</span><span class="p">])</span>
     <span class="n">outs</span> <span class="o">=</span> <span class="p">[[]]</span>
-    <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+    <span class="k">while</span> <span class="k">True</span><span class="p">:</span>
         <span class="n">outs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">current</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">c1</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">crossings</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">c1</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="n">current</span><span class="p">[:</span><span class="mi">2</span><span class="p">]:</span>
@@ -184,7 +184,7 @@
             <span class="n">outs</span><span class="o">.</span><span class="n">append</span><span class="p">([])</span>
             <span class="k">continue</span>
 
-        <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+        <span class="k">while</span> <span class="k">True</span><span class="p">:</span>
             <span class="n">i</span> <span class="o">=</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="n">direction</span><span class="p">)</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">crossings</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">crossings</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="n">direction</span> <span class="ow">and</span> <span class="n">direction</span> <span class="ow">in</span> <span class="n">crossings</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
                 <span class="k">break</span>
@@ -244,20 +244,20 @@
             <span class="nb">len</span><span class="p">(</span><span class="n">outs_lower</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
 
         <span class="c"># check if we are cutting between holes</span>
-        <span class="n">need_divider</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="n">need_divider</span> <span class="o">=</span> <span class="k">False</span>
         <span class="k">if</span> <span class="n">outs_upper</span><span class="p">:</span>
             <span class="n">candis</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span>
                 <span class="n">outs_upper</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">out</span><span class="p">:</span> <span class="n">num</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">out</span><span class="p">[:,</span> <span class="n">axis</span><span class="p">]))</span>
 
             <span class="k">if</span> <span class="n">circulation</span><span class="p">(</span><span class="n">candis</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">axis</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">:</span>
-                <span class="n">need_divider</span> <span class="o">=</span> <span class="bp">True</span>
+                <span class="n">need_divider</span> <span class="o">=</span> <span class="k">True</span>
 
         <span class="k">if</span> <span class="n">outs_lower</span><span class="p">:</span>
             <span class="n">candis</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span>
                 <span class="n">outs_lower</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">out</span><span class="p">:</span> <span class="n">num</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">out</span><span class="p">[:,</span> <span class="n">axis</span><span class="p">]))</span>
 
             <span class="k">if</span> <span class="n">circulation</span><span class="p">(</span><span class="n">candis</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">axis</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">0.0</span><span class="p">:</span>
-                <span class="n">need_divider</span> <span class="o">=</span> <span class="bp">True</span>
+                <span class="n">need_divider</span> <span class="o">=</span> <span class="k">True</span>
 
         <span class="k">if</span> <span class="n">need_divider</span><span class="p">:</span>
             <span class="n">phi1</span> <span class="o">=</span> <span class="mf">0.</span>
@@ -369,7 +369,7 @@
                                 <span class="n">poly</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">from_e</span><span class="p">,</span> <span class="n">poly_e</span><span class="o">.</span><span class="n">T</span><span class="p">)</span><span class="o">.</span><span class="n">T</span>
                                 <span class="n">poly</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">-=</span> <span class="mf">0.001</span>
                                 <span class="n">polys_lower</span><span class="p">,</span> <span class="n">polys_upper</span> <span class="o">=</span> <span class="n">spoly_cut</span><span class="p">(</span>
-                                    <span class="p">[</span><span class="n">poly</span><span class="p">],</span> <span class="mi">2</span><span class="p">,</span> <span class="n">nonsimple</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+                                    <span class="p">[</span><span class="n">poly</span><span class="p">],</span> <span class="mi">2</span><span class="p">,</span> <span class="n">nonsimple</span><span class="o">=</span><span class="k">False</span><span class="p">)</span>
 
                                 <span class="n">patches</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">poly</span><span class="p">)</span>
                                 <span class="n">patches_lower</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">polys_lower</span><span class="p">)</span>
@@ -410,12 +410,12 @@
     <span class="k">elif</span> <span class="n">projection</span> <span class="o">==</span> <span class="s">&#39;stereographic&#39;</span><span class="p">:</span>
         <span class="n">factor</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="mf">1.0</span> <span class="o">+</span> <span class="n">points</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">])</span>
     <span class="k">elif</span> <span class="n">projection</span> <span class="o">==</span> <span class="s">&#39;orthographic&#39;</span><span class="p">:</span>
-        <span class="n">factor</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="n">factor</span> <span class="o">=</span> <span class="k">None</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">BeachballError</span><span class="p">(</span>
-            <span class="s">&#39;invalid argument for projection: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">projection</span><span class="p">)</span>
+            <span class="s">&#39;invalid argument for projection: %s&#39;</span> <span class="o">%</span> <span class="n">projection</span><span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">factor</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">factor</span> <span class="ow">is</span> <span class="ow">not</span> <span class="k">None</span><span class="p">:</span>
         <span class="n">points_out</span> <span class="o">*=</span> <span class="n">factor</span><span class="p">[:,</span> <span class="n">num</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span>
 
     <span class="k">return</span> <span class="n">points_out</span>
@@ -439,7 +439,7 @@
         <span class="n">points_out</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">points</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">BeachballError</span><span class="p">(</span>
-            <span class="s">&#39;invalid argument for projection: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">projection</span><span class="p">)</span>
+            <span class="s">&#39;invalid argument for projection: %s&#39;</span> <span class="o">%</span> <span class="n">projection</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">points_out</span>
 
@@ -465,7 +465,7 @@
             <span class="n">axes</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">dpi_scale_trans</span><span class="p">,</span>
             <span class="n">position</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">size</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">size</span> <span class="ow">is</span> <span class="k">None</span><span class="p">:</span>
             <span class="n">size</span> <span class="o">=</span> <span class="mf">12.</span>
 
         <span class="n">size</span> <span class="o">=</span> <span class="n">size</span> <span class="o">*</span> <span class="mf">0.5</span> <span class="o">/</span> <span class="mf">72.</span>
@@ -474,25 +474,65 @@
     <span class="k">elif</span> <span class="n">size_units</span> <span class="o">==</span> <span class="s">&#39;data&#39;</span><span class="p">:</span>
         <span class="n">transform</span> <span class="o">=</span> <span class="n">axes</span><span class="o">.</span><span class="n">transData</span>
 
-        <span class="k">if</span> <span class="n">size</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">size</span> <span class="ow">is</span> <span class="k">None</span><span class="p">:</span>
             <span class="n">size</span> <span class="o">=</span> <span class="mf">1.0</span>
 
         <span class="n">size</span> <span class="o">=</span> <span class="n">size</span> <span class="o">*</span> <span class="mf">0.5</span>
 
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">BeachballError</span><span class="p">(</span>
-            <span class="s">&#39;invalid argument for size_units: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">size_units</span><span class="p">)</span>
+            <span class="s">&#39;invalid argument for size_units: %s&#39;</span> <span class="o">%</span> <span class="n">size_units</span><span class="p">)</span>
 
     <span class="n">position</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">position</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">num</span><span class="o">.</span><span class="n">float</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">transform</span><span class="p">,</span> <span class="n">position</span><span class="p">,</span> <span class="n">size</span>
 
 
-<div class="viewcode-block" id="plot_beachball_mpl"><a class="viewcode-back" href="../../beachball.html#pyrocko.beachball.plot_beachball_mpl">[docs]</a><span class="k">def</span> <span class="nf">plot_beachball_mpl</span><span class="p">(</span>
+<span class="k">def</span> <span class="nf">mt2beachball</span><span class="p">(</span>
+        <span class="n">mt</span><span class="p">,</span>
+        <span class="n">beachball_type</span><span class="o">=</span><span class="s">&#39;deviatoric&#39;</span><span class="p">,</span>
+        <span class="n">position</span><span class="o">=</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">),</span>
+        <span class="n">size</span><span class="o">=</span><span class="k">None</span><span class="p">,</span>
+        <span class="n">color_t</span><span class="o">=</span><span class="s">&#39;red&#39;</span><span class="p">,</span>
+        <span class="n">color_p</span><span class="o">=</span><span class="s">&#39;white&#39;</span><span class="p">,</span>
+        <span class="n">edgecolor</span><span class="o">=</span><span class="s">&#39;black&#39;</span><span class="p">,</span>
+        <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="n">projection</span><span class="o">=</span><span class="s">&#39;lambert&#39;</span><span class="p">):</span>
+
+    <span class="n">position</span> <span class="o">=</span> <span class="n">num</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">position</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">num</span><span class="o">.</span><span class="n">float</span><span class="p">)</span>
+    <span class="n">size</span> <span class="o">=</span> <span class="n">size</span> <span class="ow">or</span> <span class="mi">1</span>
+    <span class="n">mt</span> <span class="o">=</span> <span class="n">deco_part</span><span class="p">(</span><span class="n">mt</span><span class="p">,</span> <span class="n">beachball_type</span><span class="p">)</span>
+
+    <span class="n">eig</span> <span class="o">=</span> <span class="n">mt</span><span class="o">.</span><span class="n">eigensystem</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">eig</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mf">0.</span> <span class="ow">and</span> <span class="n">eig</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mf">0.</span> <span class="ow">and</span> <span class="n">eig</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">BeachballError</span><span class="p">(</span><span class="s">&#39;eigenvalues are zero&#39;</span><span class="p">)</span>
+
+    <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">patches</span><span class="p">,</span> <span class="n">patches_lower</span><span class="p">,</span> <span class="n">patches_upper</span><span class="p">,</span>
+            <span class="n">lines</span><span class="p">,</span> <span class="n">lines_lower</span><span class="p">,</span> <span class="n">lines_upper</span><span class="p">)</span> <span class="ow">in</span> <span class="n">eig2gx</span><span class="p">(</span><span class="n">eig</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="n">group</span> <span class="o">==</span> <span class="s">&#39;P&#39;</span><span class="p">:</span>
+            <span class="n">color</span> <span class="o">=</span> <span class="n">color_p</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">color</span> <span class="o">=</span> <span class="n">color_t</span>
+
+        <span class="k">for</span> <span class="n">poly</span> <span class="ow">in</span> <span class="n">patches_upper</span><span class="p">:</span>
+            <span class="n">verts</span> <span class="o">=</span> <span class="n">project</span><span class="p">(</span><span class="n">poly</span><span class="p">,</span> <span class="n">projection</span><span class="p">)[:,</span> <span class="p">::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">size</span> <span class="o">+</span> \
+                <span class="n">position</span><span class="p">[</span><span class="n">NA</span><span class="p">,</span> <span class="p">:]</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">verts</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">))</span>
+
+        <span class="k">for</span> <span class="n">poly</span> <span class="ow">in</span> <span class="n">lines_upper</span><span class="p">:</span>
+            <span class="n">verts</span> <span class="o">=</span> <span class="n">project</span><span class="p">(</span><span class="n">poly</span><span class="p">,</span> <span class="n">projection</span><span class="p">)[:,</span> <span class="p">::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">size</span> <span class="o">+</span> \
+                <span class="n">position</span><span class="p">[</span><span class="n">NA</span><span class="p">,</span> <span class="p">:]</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">verts</span><span class="p">,</span> <span class="s">&#39;none&#39;</span><span class="p">,</span> <span class="n">edgecolor</span><span class="p">,</span> <span class="n">linewidth</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">data</span>
+
+
+<div class="viewcode-block" id="plot_beachball_mpl"><a class="viewcode-back" href="../../reference_beachball.html#pyrocko.beachball.plot_beachball_mpl">[docs]</a><span class="k">def</span> <span class="nf">plot_beachball_mpl</span><span class="p">(</span>
         <span class="n">mt</span><span class="p">,</span> <span class="n">axes</span><span class="p">,</span>
         <span class="n">beachball_type</span><span class="o">=</span><span class="s">&#39;deviatoric&#39;</span><span class="p">,</span>
         <span class="n">position</span><span class="o">=</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">),</span>
-        <span class="n">size</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+        <span class="n">size</span><span class="o">=</span><span class="k">None</span><span class="p">,</span>
         <span class="n">zorder</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
         <span class="n">color_t</span><span class="o">=</span><span class="s">&#39;red&#39;</span><span class="p">,</span>
         <span class="n">color_p</span><span class="o">=</span><span class="s">&#39;white&#39;</span><span class="p">,</span>
@@ -510,7 +550,7 @@
 <span class="sd">    :param beachball_type: ``&#39;deviatoric&#39;`` (default), ``&#39;full&#39;``, or ``&#39;dc&#39;``</span>
 <span class="sd">    :param position: position of the beachball in data coordinates</span>
 <span class="sd">    :param size: diameter of the beachball either in points or in data</span>
-<span class="sd">        coordinates, depending on the *size_units* setting</span>
+<span class="sd">        coordinates, depending on the ``size_units`` setting</span>
 <span class="sd">    :param zorder: (passed through to matplotlib drawing functions)</span>
 <span class="sd">    :param color_t: color for compressional quadrants (default: ``&#39;red&#39;``)</span>
 <span class="sd">    :param color_p: color for extensive quadrants (default: ``&#39;white&#39;``)</span>
@@ -549,7 +589,7 @@
         <span class="k">for</span> <span class="n">poly</span> <span class="ow">in</span> <span class="n">patches_upper</span><span class="p">:</span>
             <span class="n">verts</span> <span class="o">=</span> <span class="n">project</span><span class="p">(</span><span class="n">poly</span><span class="p">,</span> <span class="n">projection</span><span class="p">)[:,</span> <span class="p">::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">size</span> <span class="o">+</span> <span class="n">position</span><span class="p">[</span><span class="n">NA</span><span class="p">,</span> <span class="p">:]</span>
             <span class="k">if</span> <span class="n">alpha</span> <span class="o">==</span> <span class="mf">1.0</span><span class="p">:</span>
-                <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">Path</span><span class="p">(</span><span class="n">verts</span><span class="p">),</span> <span class="n">color</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">))</span>
+                <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">Path</span><span class="p">(</span><span class="n">verts</span><span class="p">),</span> <span class="n">color</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="n">linewidth</span><span class="p">))</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">Path</span><span class="p">(</span><span class="n">verts</span><span class="p">),</span> <span class="n">color</span><span class="p">,</span> <span class="s">&#39;none&#39;</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">))</span>
 
@@ -567,9 +607,9 @@
         <span class="n">zorder</span><span class="o">=</span><span class="n">zorder</span><span class="p">,</span>
         <span class="n">transform</span><span class="o">=</span><span class="n">transform</span><span class="p">)</span>
 
-    <span class="n">axes</span><span class="o">.</span><span class="n">add_artist</span><span class="p">(</span><span class="n">path_collection</span><span class="p">)</span>
+    <span class="n">axes</span><span class="o">.</span><span class="n">add_artist</span><span class="p">(</span><span class="n">path_collection</span><span class="p">)</span></div>
 
-</div>
+
 <span class="k">def</span> <span class="nf">plot_beachball_mpl_construction</span><span class="p">(</span>
         <span class="n">mt</span><span class="p">,</span> <span class="n">axes</span><span class="p">,</span>
         <span class="n">show</span><span class="o">=</span><span class="s">&#39;patches&#39;</span><span class="p">,</span>
@@ -603,7 +643,7 @@
         <span class="n">mt</span><span class="p">,</span> <span class="n">axes</span><span class="p">,</span>
         <span class="n">beachball_type</span><span class="o">=</span><span class="s">&#39;deviatoric&#39;</span><span class="p">,</span>
         <span class="n">position</span><span class="o">=</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">),</span>
-        <span class="n">size</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+        <span class="n">size</span><span class="o">=</span><span class="k">None</span><span class="p">,</span>
         <span class="n">zorder</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
         <span class="n">color_t</span><span class="o">=</span><span class="s">&#39;red&#39;</span><span class="p">,</span>
         <span class="n">color_p</span><span class="o">=</span><span class="s">&#39;white&#39;</span><span class="p">,</span>
@@ -681,15 +721,16 @@
         <span class="n">zorder</span><span class="o">=</span><span class="n">zorder</span><span class="p">,</span>
         <span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">)</span>
 
+
 <span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
     <span class="kn">import</span> <span class="nn">sys</span>
-    <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+    <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 
     <span class="n">vals</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
 
     <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
     <span class="n">axes</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">aspect</span><span class="o">=</span><span class="mf">1.</span><span class="p">)</span>
-    <span class="n">axes</span><span class="o">.</span><span class="n">axison</span> <span class="o">=</span> <span class="bp">False</span>
+    <span class="n">axes</span><span class="o">.</span><span class="n">axison</span> <span class="o">=</span> <span class="k">False</span>
     <span class="n">axes</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="o">-</span><span class="mf">1.05</span><span class="p">,</span> <span class="mf">1.05</span><span class="p">)</span>
     <span class="n">axes</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="o">-</span><span class="mf">1.05</span><span class="p">,</span> <span class="mf">1.05</span><span class="p">)</span>
     <span class="n">plot_beachball_mpl</span><span class="p">(</span><span class="n">vals</span><span class="p">,</span> <span class="n">axes</span><span class="p">,</span> <span class="n">size_units</span><span class="o">=</span><span class="s">&#39;data&#39;</span><span class="p">)</span>
@@ -701,20 +742,20 @@
       <div class="clearer"></div>
     </div>
     <div class="related">
+    &nbsp;
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
           <a href="../../genindex.html" title="General Index"
-             >index</a></li>
+             accesskey="I">index</a></li>
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">Pyrocko v0.3 Manual</a> &raquo;</li>
-          <li><a href="../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
-    <div class="footer">
-      &copy; Copyright 2016, The Pyrocko Developers. <img src="http://kinherd.org/pyrocko.png" width="5" height="5">
+
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, The Pyrocko Developers.
     </div>
   </body>
 </html>
