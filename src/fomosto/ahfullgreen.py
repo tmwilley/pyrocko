@@ -8,10 +8,10 @@ import signal
 
 from tempfile import mkdtemp
 
-from pyrocko.guts import Float, Int, Tuple, List, Object
+from pyrocko.guts import Float, Int, Tuple, List, Object, Bool
 from pyrocko import trace, util, cake
 from pyrocko import gf
-from pyrocko.ahfullgreen import add_seismogram, Impulse
+from pyrocko.ahfullgreen import add_seismogram, Impulse, Step
 from pyrocko.moment_tensor import MomentTensor, symmat6
 
 km = 1000.
@@ -48,6 +48,7 @@ class AhfullgreenConfig(Object):
 
     cut = Tuple.T(2, gf.Timing.T(), optional=True)
     fade = Tuple.T(4, gf.Timing.T(), optional=True)
+    relevel_with_fade_in = Bool.T(default=False)
 
     def items(self):
         return dict(self.T.inamevals(self))
@@ -58,13 +59,11 @@ class AhfullgreenConfigFull(AhfullgreenConfig):
     source_depth = Float.T(default=10.0)
     receiver_depth = Float.T(default=0.0)
     receiver_distances = List.T(Float.T())
-    nsamples = Int.T(default=256)
 
     earthmodel_1d = gf.meta.Earthmodel1D.T(optional=True)
 
     @staticmethod
     def example():
-
         conf = AhfullgreenConfigFull()
         conf.receiver_distances = [2000.]
         conf.earthmodel_1d = example_model()
@@ -100,18 +99,33 @@ class AhfullgreenRunner:
         vp, vs, density, qp, qs = (l.vp, l.vs, l.rho, l.qp, l.qs)
         f = (0., 0., 0.)
         m6 = config.source_mech.m6()
-        ns = config.nsamples
         deltat = config.deltat
-        tmin = 0.
+
+        npad = 40
+
         for i_distance, d in enumerate(config.receiver_distances):
+            d3d = math.sqrt(
+                d**2 + (config.receiver_depth - config.source_depth)**2)
+
+            tmin = (math.floor(d3d / vp / deltat) - npad) * deltat
+            tmax = (math.ceil(10*d3d / vs / deltat) + npad) * deltat
+            ns = int(round((tmax - tmin) / deltat))
+
             outx = num.zeros(ns)
             outy = num.zeros(ns)
             outz = num.zeros(ns)
-            x = (d, 0.0, config.receiver_depth-config.source_depth)
-            add_seismogram(vp, vs, density, qp, qs, x, f, m6, 'displacement',
-                           deltat, 0.0, outx, outy, outz, stf=Impulse())
 
+            x = (d, 0.0, config.receiver_depth-config.source_depth)
+
+            add_seismogram(vp, vs, density, qp, qs, x, f, m6, 'displacement',
+                           deltat, tmin+0.5*deltat, outx, outy, outz, stf=Impulse(), want_near=True)
+
+            ramp = num.linspace(0., 1., npad)
             for i_comp, o in enumerate((outx, outy, outz)):
+
+                offset_in = num.mean(o[:npad] * ramp) * 2.
+                o -= offset_in
+
                 comp = components[i_comp]
                 tr = trace.Trace('', '%04i' % i_distance, '', comp,
                                  tmin=tmin, ydata=o, deltat=deltat,
@@ -154,16 +168,6 @@ class AhfullGFBuilder(gf.builder.Builder):
         conf.earthmodel_1d = self.store.config.earthmodel_1d
         deltat = 1.0/self.store.config.sample_rate
         conf.deltat = deltat
-
-        if 'time_window_min' not in shared:
-            d = self.store.make_timing_params(
-                conf.time_region[0], conf.time_region[1])
-
-            shared['time_window_min'] = d['tlenmax_vred']
-
-        time_window_min = shared['time_window_min']
-
-        conf.nsamples = nextpow2(int(round(time_window_min / deltat)) + 1)
 
         self.ahfullgreen_config = conf
 

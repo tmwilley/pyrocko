@@ -171,8 +171,8 @@ static ahfullgreen_error_t add_seismogram(
             dfactor = iw;
         }
         if (i != 0) {
-            b2[i] = dfactor * cexp(-iw * r/vp) * exp(-w * r / (2*vp*qp));
-            b3[i] = dfactor * cexp(-iw * r/vs) * exp(-w * r / (2*vs*qs));
+            b2[i] = dfactor * cexp(-iw * r/vp); /* * exp(-w * r / (2.0*vp*qp)); */
+            b3[i] = dfactor * cexp(-iw * r/vs); /* * exp(-w * r / (2.0*vs*qs)); */
             b1[i] = (r/vp + 1.0/iw) * b2[i]/iw - (r/vs + 1.0/iw) * b3[i]/iw;
         } else {
             b2[i] = 0.0;
@@ -191,8 +191,8 @@ static ahfullgreen_error_t add_seismogram(
                     a1 = (
                         15. * gamma[n] * gamma[p] * gamma[q] -
                         3. * (gamma[n] * (p==q) -
-                        gamma[p] * (n==q) -
-                        gamma[q] * (n==p))) /
+                            gamma[p] * (n==q) -
+                            gamma[q] * (n==p))) /
                         (density4pi * r4);
                 } else {
                     a1 = 0.;

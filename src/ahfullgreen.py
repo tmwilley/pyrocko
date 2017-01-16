@@ -1,7 +1,9 @@
 import math
+import glob
 import numpy as num
-from pyrocko import trace
+from pyrocko import trace, io
 from pyrocko import ahfullgreen_ext as ext
+from subprocess import check_call
 
 
 class AhfullgreenError(Exception):
@@ -21,7 +23,8 @@ def add_seismogram(
 
     n = ns[0]
 
-    nout = out_x.size//2 + 1
+    nout = n // 2 + 1
+    print n, nout
 
     specs = []
     for out in (out_x, out_y, out_z):
@@ -35,7 +38,7 @@ def add_seismogram(
     m6 = num.asarray(m6, num.float)
 
     oc_c = {
-        'displacement': 1,  # treated externally
+        'displacement': 0,  # treated externally
         'velocity': 1,
         'acceleration': 2}[out_quantity]
 
@@ -44,7 +47,9 @@ def add_seismogram(
 
     omega = out_spec_offset + out_spec_delta * num.arange(nout)
 
-    coeffs_stf = stf(omega/(2.*math.pi))
+    coeffs_stf = stf(omega/(2.*math.pi)).astype(num.complex)
+    if out_offset != 0.0:
+        coeffs_stf *= num.exp(1.0j * omega * out_offset)
 
     r = math.sqrt(num.sum(x**2))
 
@@ -57,10 +62,11 @@ def add_seismogram(
     ts = r / vs
 
     tpad = stf.t_cutoff()
+    tpad = None
 
     if tpad is not None:
-        icut1 = max(0, int(num.floor((tp - tpad) / out_delta)))
-        icut2 = min(n, int(num.ceil((ts + tpad) / out_delta)))
+        icut1 = max(0, int(num.floor((tp - tpad - out_offset) / out_delta)))
+        icut2 = min(n, int(num.ceil((ts + tpad - out_offset) / out_delta)))
     else:
         icut1 = 0
         icut2 = n
@@ -69,12 +75,15 @@ def add_seismogram(
         if out is None:
             continue
 
-        temp = num.fft.irfft(coeffs_stf * specs[i])
+        temp = num.fft.irfft(coeffs_stf * specs[i], n)
+        temp /= out_delta
+        assert temp.size // 2 + 1 == specs[i].size
+        assert temp.size == out.size
 
         temp[:icut1] = 0.0
         temp[icut2:] = 0.0
 
-        if out_quantity == 'displacement':
+        if out_quantity == 'displacement_post':
             out[:] += num.cumsum(temp) * out_delta
         else:
             out[:] += temp
@@ -88,9 +97,21 @@ class Impulse(object):
         return None
 
     def __call__(self, f):
-        omega = num.ones(len(f))
+        return num.ones(f.size, dtype=num.complex)
 
-        return omega
+
+class Step(object):
+    def __init__(self):
+        pass
+
+    def t_cutoff(self):
+        return None
+
+    def __call__(self, f):
+        tf = num.ones(f.size, dtype=num.complex)
+        tf[0] = 0.
+        tf[1:] /= (1.0j * 2. * num.pi*f[1:])
+        return tf
 
 
 class Gauss(object):
@@ -110,10 +131,12 @@ if __name__ == '__main__':
 
     x = (1000., 0., 0.)
     f = (0., 0., 0.)
-    m6 = (0., 0., 0., 1., 0., 0.)
+    m6 = (1., 1., 1., 0., 0., 0.)
+    #m6 = (1., 1., 1., 0., 0., 0.)
 
     vp = 3600.
     vs = 2000.
+    density = 2800.
 
     tlen = x[0] / vs * 2.
 
@@ -128,12 +151,15 @@ if __name__ == '__main__':
     import pylab as lab
 
     tau = 0.01
-    t = num.arange(1000) * deltat
-    lab.plot(t, num.exp(-t**2/tau**2))
-    # lab.show()
+
+    nstf = int(round(tau * 5. / deltat))
+    t = num.arange(nstf) * deltat
+    t0 = nstf * deltat / 2.
+    stf = num.exp(-(t-t0)**2/tau**2)
+    lab.plot(t, stf)
 
     add_seismogram(
-        vp, vs, 1.0, 1.0, 1.0, x, f, m6, 'displacement', deltat, 0.0,
+        vp, vs, density, 10000.0, 10000.0, x, f, m6, 'displacement', deltat, 0.0,
         out_x, out_y, out_z, Gauss(tau))
 
     trs = []
@@ -142,4 +168,32 @@ if __name__ == '__main__':
             '', 'Naja!', '', comp, deltat=deltat, tmin=0.0, ydata=out)
         trs.append(tr)
 
-    trace.snuffle(trs)
+
+    
+    def dump(stuff, fn):
+        with open(fn, 'w') as f:
+            f.write(' '.join('%s' % x for x in stuff))
+            f.write('\n')
+
+    
+    dump((0., 0., 0., 0.) + m6 + f, 'sources.txt')
+    dump(x + (1, 1), 'receivers.txt')
+    dump((density, vp, vs), 'material.txt')
+    
+    stf = num.cumsum(stf)
+    stf /= stf[-1]
+    stf[0] = 0.0
+
+    data = num.vstack((t, stf)).T
+    num.savetxt('stf.txt', data)
+
+    check_call(['ahfull', 'sources.txt', 'receivers.txt', 'material.txt', 'stf.txt', '%g' % deltat, 'ahfull', 'mseed'])
+
+
+    fns = glob.glob('ahfull-1-*.mseed')
+
+    trs2 = []
+    for fn in fns:
+        trs2.extend(io.load(fn))
+
+    trace.snuffle(trs + trs2)
