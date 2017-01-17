@@ -253,7 +253,7 @@ def remove_if_exists(fn, force=False):
             raise CannotCreate('file %s already exists' % fn)
 
 
-class BaseStore:
+class BaseStore(object):
 
     @staticmethod
     def index_fn_(store_dir):
@@ -295,6 +295,7 @@ class BaseStore:
         self._f_index = None
         self._f_data = None
         self._end_values = None
+        self.cstore = None
 
     def open(self):
         index_fn = self.index_fn()
@@ -1110,6 +1111,16 @@ class Store(BaseStore):
             if os.path.isdir(self._decimated_store_dir(decimate)):
                 self._decimated[decimate] = None
 
+    def open(self):
+        if not self._f_index:
+            BaseStore.open(self)
+            c = self.config
+
+            mscheme = 'type_' + c.short_type.lower()
+            print self.cstore, mscheme, c.mins, c.maxs, c.deltas, c.ns, c.ncomponents
+            store_ext.store_mapping_init(
+                self.cstore, mscheme, c.mins, c.maxs, c.deltas, c.ns.astype(num.uint64), c.ncomponents)
+
     def save_config(self, make_backup=False):
         config_fn = os.path.join(self.store_dir, 'config')
         if make_backup:
@@ -1711,6 +1722,25 @@ class Store(BaseStore):
         out = [None] * len(components)
         for (component, args, _, weights) in \
                 self.config.make_sum_params(source, receiver):
+
+            if component in components:
+                gval = self.sum_statics(
+                    args, weights,
+                    interpolation=interpolation,
+                    optimization=optimization)
+
+                out[components.index(component)] = gval.value
+
+        return out
+
+    def statics2(
+            self, source, multi_location, components,
+            interpolation='nearest_neighbor', optimization='enable'):
+
+        out = [None] * len(components)
+
+        for (component, args, _, weights) in \
+                self.config.make_sum_params2(source, multi_location):
 
             if component in components:
                 gval = self.sum_statics(

@@ -14,6 +14,8 @@ from pyrocko.guts_array import literal, Array
 from pyrocko import cake, orthodrome, spit, moment_tensor
 from pyrocko.config import config
 
+from pyrocko.gf import store_ext
+
 guts_prefix = 'pf'
 
 d2r = math.pi / 180.
@@ -568,6 +570,10 @@ class Location(Object):
         self._latlon = elat, elon  # unchanged
 
 
+class MultiLocation(Object):
+    coords5 = Array.T(shape=(None, 5), dtype=num.float)
+
+
 class Receiver(Location):
     codes = Tuple.T(
         3, String.T(),
@@ -732,7 +738,6 @@ class DiscretizedSource(Object):
         '''
         Compute distances to receiver for all contained points.
         '''
-
         if self.same_origin(receiver):
             return num.sqrt((self.north_shifts - receiver.north_shift)**2 +
                             (self.east_shifts - receiver.east_shift)**2)
@@ -759,6 +764,24 @@ class DiscretizedSource(Object):
             north_shift = east_shift = 0.0
 
         return lat, lon, north_shift, east_shift
+
+    def coords5(self):
+        xs = num.zeros((self.nelements, 5))
+
+        if self.lats is not None and self.lons is not None:
+            xs[:, 0] = self.lats
+            xs[:, 1] = self.lons
+        else:
+            xs[:, 0] = self.lat
+            xs[:, 1] = self.lon
+
+        if self.north_shifts is not None and self.east_shifts is not None:
+            xs[:, 2] = self.north_shifts
+            xs[:, 3] = self.east_shifts
+
+        xs[:, 4] = self.depths
+
+        return xs
 
     @property
     def nelements(self):
@@ -1085,6 +1108,7 @@ class DiscretizedMTSource(DiscretizedSource):
 
         m6s = self.m6s
         n = m6s.shape[0]
+        rep = num.repeat
 
         if scheme == 'elastic18':
             w_n = m6s.flatten()
@@ -1112,7 +1136,6 @@ class DiscretizedMTSource(DiscretizedSource):
             f5 = m6s[:, 0]*sa**2 + m6s[:, 1]*ca**2 - m6s[:, 3]*s2a
 
             cat = num.concatenate
-            rep = num.repeat
 
             if scheme == 'elastic8':
                 w_n = cat((cb*f0, cb*f1, cb*f2, -sb*f3, -sb*f4))
@@ -1490,6 +1513,17 @@ class Config(Object):
 
         return out
 
+    def make_sum_params2(self, source, multi_location):
+        out = []
+        delays = source.times
+
+        source_coords = source.coords5()
+        receiver_coords = multi_location.coords5
+
+        return store_ext.make_sum_params(
+            source.times, source_coords, receiver_coords, self.component_scheme, self.short_type)
+        
+
     def short_info(self):
         raise NotImplemented('should be implemented in subclass')
 
@@ -1692,6 +1726,8 @@ class ConfigTypeA(Config):
         return (num.tile(source.depths, nc/n),
                 num.tile(dists, nc/n),
                 icomponents)
+
+        
 
     def make_indexing_args1(self, source, receiver):
         return (source.depth, source.distance_to(receiver))
