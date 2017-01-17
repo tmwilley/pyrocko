@@ -190,8 +190,8 @@ static ahfullgreen_error_t add_seismogram(
                 if (want_near) {
                     a1 = (
                         15. * gamma[n] * gamma[p] * gamma[q] -
-                        3. * (gamma[n] * (p==q) -
-                            gamma[p] * (n==q) -
+                        3. * (gamma[n] * (p==q) +
+                            gamma[p] * (n==q) +
                             gamma[q] * (n==p))) /
                         (density4pi * r4);
                 } else {

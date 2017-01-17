@@ -83,7 +83,7 @@ def add_seismogram(
         temp[:icut1] = 0.0
         temp[icut2:] = 0.0
 
-        if out_quantity == 'displacement_post':
+        if out_quantity == 'displacement_extern':
             out[:] += num.cumsum(temp) * out_delta
         else:
             out[:] += temp
@@ -131,14 +131,16 @@ if __name__ == '__main__':
 
     x = (1000., 0., 0.)
     f = (0., 0., 0.)
-    m6 = (1., 1., 1., 0., 0., 0.)
+    m6 = (1., 0., 0., 0., 0., 0.)
     #m6 = (1., 1., 1., 0., 0., 0.)
 
     vp = 3600.
     vs = 2000.
     density = 2800.
 
-    tlen = x[0] / vs * 2.
+    d3d = math.sqrt(x[0]**2 + x[1]**2 + x[2]**2)
+
+    tlen = d3d / vs * 5.
 
     deltat = 0.001
 
@@ -155,29 +157,32 @@ if __name__ == '__main__':
     nstf = int(round(tau * 5. / deltat))
     t = num.arange(nstf) * deltat
     t0 = nstf * deltat / 2.
-    stf = num.exp(-(t-t0)**2/tau**2)
+    stf = num.exp(-(t-t0)**2/(tau/math.sqrt(2.))**2)
     lab.plot(t, stf)
+
+    nf = True
 
     add_seismogram(
         vp, vs, density, 10000.0, 10000.0, x, f, m6, 'displacement', deltat, 0.0,
-        out_x, out_y, out_z, Gauss(tau))
+        out_x, out_y, out_z, Gauss(tau), want_far=True, want_near=nf, want_intermediate=nf)
 
     trs = []
     for out, comp in zip([out_x, out_y, out_z], 'NED'):
         tr = trace.Trace(
-            '', 'Naja!', '', comp, deltat=deltat, tmin=0.0, ydata=out)
+            '', '1', 'P', comp, deltat=deltat, tmin=0.0, ydata=out)
+        tmin = d3d / vp - t0 * 2.
+        tmax = d3d / vp - t0 
+        tr2 = tr.chop(tmin, tmax, inplace=False)
+        tr.ydata -= num.mean(tr2.ydata)
         trs.append(tr)
-
-
     
     def dump(stuff, fn):
         with open(fn, 'w') as f:
             f.write(' '.join('%s' % x for x in stuff))
             f.write('\n')
-
     
     dump((0., 0., 0., 0.) + m6 + f, 'sources.txt')
-    dump(x + (1, 1), 'receivers.txt')
+    dump(x + (int(nf), 1), 'receivers.txt')
     dump((density, vp, vs), 'material.txt')
     
     stf = num.cumsum(stf)
@@ -195,5 +200,10 @@ if __name__ == '__main__':
     trs2 = []
     for fn in fns:
         trs2.extend(io.load(fn))
+
+    for tr in trs2:
+        tr.set_codes(
+            channel={'x': 'N', 'y': 'E', 'z': 'D'}[tr.channel])
+        tr.shift(-t0)
 
     trace.snuffle(trs + trs2)
