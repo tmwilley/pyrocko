@@ -171,8 +171,8 @@ static ahfullgreen_error_t add_seismogram(
             dfactor = iw;
         }
         if (i != 0) {
-            b2[i] = dfactor * cexp(-iw * r/vp); /* * exp(-w * r / (2.0*vp*qp)); */
-            b3[i] = dfactor * cexp(-iw * r/vs); /* * exp(-w * r / (2.0*vs*qs)); */
+            b2[i] = dfactor * cexp(-iw * r/vp) * exp(-w * r / (2.0*vp*qp));
+            b3[i] = dfactor * cexp(-iw * r/vs) * exp(-w * r / (2.0*vs*qs));
             b1[i] = (r/vp + 1.0/iw) * b2[i]/iw - (r/vs + 1.0/iw) * b3[i]/iw;
         } else {
             b2[i] = 0.0;

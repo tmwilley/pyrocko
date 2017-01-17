@@ -14,7 +14,6 @@ km = 1000.
 
 r2d = 180. / math.pi
 d2r = 1.0 / r2d
-km = 1000.
 
 
 def rand(mi, ma):
