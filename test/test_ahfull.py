@@ -1,4 +1,3 @@
-
 import random
 import math
 import unittest
@@ -10,6 +9,9 @@ from subprocess import check_call
 import numpy as num
 
 from pyrocko import util, ahfullgreen, trace, io
+from pyrocko.guts import Object, Float, Tuple, List, load
+
+import common
 
 
 logger = logging.getLogger('test_gf_ahfull')
@@ -19,6 +21,27 @@ km = 1000.
 
 def rand(mi, ma):
     return mi + random.random() * (ma-mi)
+
+
+def g(trs, sta, cha):
+    for tr in trs:
+        if tr.station == sta and tr.channel == cha:
+            return tr
+
+
+class AhfullKiwiTestSetupEntry(Object):
+    vp = Float.T()
+    vs = Float.T()
+    density = Float.T()
+    x = Tuple.T(3, Float.T())
+    f = Tuple.T(3, Float.T())
+    m6 = Tuple.T(6, Float.T())
+    tau = Float.T()
+    deltat = Float.T()
+
+
+class AhfullKiwiTestSetup(Object):
+    setups = List.T(AhfullKiwiTestSetupEntry.T())
 
 
 class AhfullTestCase(unittest.TestCase):
@@ -33,92 +56,131 @@ class AhfullTestCase(unittest.TestCase):
         for d in self.tempdirs:
             shutil.rmtree(d)
 
+    def make_test_ahfull_kiwi_data(self):
+        trs_all = []
+        setups = []
+        for i in xrange(100):
+            s = AhfullKiwiTestSetupEntry(
+                vp=3600.,
+                vs=2000.,
+                density=2800.,
+                x=(rand(100., 1000.), rand(100., 1000.), rand(100., 1000.)),
+                f=(rand(-1., 1.), rand(-1., 1.), rand(-1., 1.)),
+                m6=tuple(rand(-1., 1.) for _ in xrange(6)),
+                tau=0.005,
+                deltat=0.001)
+
+            def dump(stuff, fn):
+                with open(fn, 'w') as f:
+                    f.write(' '.join('%s' % x for x in stuff))
+                    f.write('\n')
+
+            dn = mkdtemp(prefix='test-ahfull-')
+            fn_sources = op.join(dn, 'sources.txt')
+            fn_receivers = op.join(dn, 'receivers.txt')
+            fn_material = op.join(dn, 'material.txt')
+            fn_stf = op.join(dn, 'stf.txt')
+
+            dump((0., 0., 0., 0.) + s.m6 + s.f, fn_sources)
+            dump(s.x + (1, 1), fn_receivers)
+            dump((s.density, s.vp, s.vs), fn_material)
+
+            nstf = int(round(s.tau * 5. / s.deltat))
+            t = num.arange(nstf) * s.deltat
+            t0 = nstf * s.deltat / 2.
+            stf = num.exp(-(t-t0)**2/(s.tau/math.sqrt(2.))**2)
+
+            stf = num.cumsum(stf)
+            stf /= stf[-1]
+            stf[0] = 0.0
+
+            data = num.vstack((t, stf)).T
+            num.savetxt(fn_stf, data)
+
+            check_call(
+                ['ahfull', fn_sources, fn_receivers, fn_material, fn_stf,
+                 '%g' % s.deltat, op.join(dn, 'ahfull'), 'mseed', '0'],
+                stdout=open('/dev/null', 'w'))
+
+            fns = [op.join(dn, 'ahfull-1-%s-1.mseed' % c) for c in 'xyz']
+
+            trs = []
+            for fn in fns:
+                trs.extend(io.load(fn))
+
+            for tr in trs:
+                tr.set_codes(
+                    station='S%03i' % i,
+                    channel={'x': 'N', 'y': 'E', 'z': 'D'}[tr.channel])
+                tr.shift(-round(t0/tr.deltat)*tr.deltat)
+
+            trs_all.extend(trs)
+            setups.append(s)
+
+        setup = AhfullKiwiTestSetup(setups=setups)
+
+        setup.dump(filename=common.test_data_file_no_download(
+            'test_ahfull_kiwi_setup.yaml'))
+        io.save(trs_all, common.test_data_file_no_download(
+            'test_ahfull_kiwi_traces.mseed'))
+
     def test_ahfull_kiwi(self):
-        x = (rand(100., 1000.), rand(100., 1000.), rand(100., 1000.))
-        f = (rand(-1., 1.), rand(-1., 1.), rand(-1., 1.))
-        m6 = tuple(rand(-1., 1.) for _ in xrange(6))
+        setup = load(filename=common.test_data_file(
+            'test_ahfull_kiwi_setup.yaml'))
+        trs_ref = io.load(common.test_data_file(
+            'test_ahfull_kiwi_traces.mseed'))
 
-        vp = 3600.
-        vs = 2000.
-        density = 2800.
+        for i, s in enumerate(setup.setups):
+            d3d = math.sqrt(s.x[0]**2 + s.x[1]**2 + s.x[2]**2)
 
-        d3d = math.sqrt(x[0]**2 + x[1]**2 + x[2]**2)
+            tlen = d3d / s.vs * 2
 
-        tlen = d3d / vs * 5.
+            n = int(num.round(tlen / s.deltat))
 
-        deltat = 0.001
+            out_x = num.zeros(n)
+            out_y = num.zeros(n)
+            out_z = num.zeros(n)
 
-        n = int(num.round(tlen / deltat))
+            ahfullgreen.add_seismogram(
+                s.vp, s.vs, s.density, 1000000.0, 1000000.0, s.x, s.f, s.m6,
+                'displacement',
+                s.deltat, 0.,
+                out_x, out_y, out_z,
+                ahfullgreen.Gauss(s.tau))
 
-        out_x = num.zeros(n)
-        out_y = num.zeros(n)
-        out_z = num.zeros(n)
+            trs = []
+            for out, comp in zip([out_x, out_y, out_z], 'NED'):
+                tr = trace.Trace(
+                    '', 'S%03i' % i, 'P', comp,
+                    deltat=s.deltat, tmin=0.0, ydata=out)
 
-        tau = 0.005
+                trs.append(tr)
 
-        nstf = int(round(tau * 5. / deltat))
-        t = num.arange(nstf) * deltat
-        t0 = nstf * deltat / 2.
-        stf = num.exp(-(t-t0)**2/(tau/math.sqrt(2.))**2)
+            trs2 = []
 
-        nf = True
+            for cha in 'NED':
 
-        ahfullgreen.add_seismogram(
-            vp, vs, density, 1000000.0, 1000000.0, x, f, m6, 'displacement',
-            deltat, 0.,
-            out_x, out_y, out_z,
-            ahfullgreen.Gauss(tau),
-            want_far=True, want_near=nf, want_intermediate=nf)
+                t1 = g(trs, 'S%03i' % i, cha)
+                t2 = g(trs_ref, 'S%03i' % i, cha)
 
-        trs = []
-        for out, comp in zip([out_x, out_y, out_z], 'NED'):
-            tr = trace.Trace(
-                '', '1', 'P', comp, deltat=deltat, tmin=0.0, ydata=out)
-            tmin = d3d / vp - t0 * 2.
-            tmax = d3d / vp - t0
-            tr2 = tr.chop(tmin, tmax, inplace=False)
-            tr.ydata -= num.mean(tr2.ydata)
-            trs.append(tr)
+                tmin = max(t1.tmin, t2.tmin)
+                tmax = min(t1.tmax, t2.tmax)
 
-        def dump(stuff, fn):
-            with open(fn, 'w') as f:
-                f.write(' '.join('%s' % x for x in stuff))
-                f.write('\n')
+                t1 = t1.chop(tmin, tmax, inplace=False)
+                t2 = t2.chop(tmin, tmax, inplace=False)
 
-        dn = mkdtemp(prefix='test-ahfull-')
-        fn_sources = op.join(dn, 'sources.txt')
-        fn_receivers = op.join(dn, 'receivers.txt')
-        fn_material = op.join(dn, 'material.txt')
-        fn_stf = op.join(dn, 'stf.txt')
+                trs2.append(t2)
 
-        dump((0., 0., 0., 0.) + m6 + f, fn_sources)
-        dump(x + (int(nf), 1), fn_receivers)
-        dump((density, vp, vs), fn_material)
+                d = 2.0 * num.sum((t1.ydata - t2.ydata)**2) / \
+                    (num.sum(t1.ydata**2) + num.sum(t2.ydata**2))
 
-        stf = num.cumsum(stf)
-        stf /= stf[-1]
-        stf[0] = 0.0
+                if d >= 0.02:
+                    print d
+                    # trace.snuffle([t1, t2])
 
-        data = num.vstack((t, stf)).T
-        num.savetxt(fn_stf, data)
+                assert d < 0.02
 
-        check_call(
-            ['ahfull', fn_sources, fn_receivers, fn_material, fn_stf,
-             '%g' % deltat, op.join(dn, 'ahfull'), 'mseed', '0'],
-            stdout=open('/dev/null', 'w'))
-
-        fns = [op.join(dn, 'ahfull-1-%s-1.mseed' % c) for c in 'xyz']
-
-        trs2 = []
-        for fn in fns:
-            trs2.extend(io.load(fn))
-
-        for tr in trs2:
-            tr.set_codes(
-                channel={'x': 'N', 'y': 'E', 'z': 'D'}[tr.channel])
-            tr.shift(-t0)
-
-        trace.snuffle(trs + trs2)
+            # trace.snuffle(trs + trs2)
 
 
 if __name__ == '__main__':
