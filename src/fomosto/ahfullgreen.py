@@ -8,10 +8,10 @@ import signal
 
 from tempfile import mkdtemp
 
-from pyrocko.guts import Float, Int, Tuple, List, Object, Bool
+from pyrocko.guts import Float, Tuple, List, Object, Bool
 from pyrocko import trace, util, cake
 from pyrocko import gf
-from pyrocko.ahfullgreen import add_seismogram, Impulse, Step
+from pyrocko.ahfullgreen import add_seismogram, Impulse, Gauss
 from pyrocko.moment_tensor import MomentTensor, symmat6
 
 km = 1000.
@@ -47,8 +47,6 @@ class AhfullgreenConfig(Object):
         gf.Timing('-10'), gf.Timing('+890')))
 
     cut = Tuple.T(2, gf.Timing.T(), optional=True)
-    fade = Tuple.T(4, gf.Timing.T(), optional=True)
-    relevel_with_fade_in = Bool.T(default=False)
 
     def items(self):
         return dict(self.T.inamevals(self))
@@ -101,14 +99,14 @@ class AhfullgreenRunner:
         m6 = config.source_mech.m6()
         deltat = config.deltat
 
-        npad = 40
+        npad = 120
 
         for i_distance, d in enumerate(config.receiver_distances):
             d3d = math.sqrt(
                 d**2 + (config.receiver_depth - config.source_depth)**2)
 
             tmin = (math.floor(d3d / vp / deltat) - npad) * deltat
-            tmax = (math.ceil(10*d3d / vs / deltat) + npad) * deltat
+            tmax = (math.ceil(d3d / vs / deltat) + npad) * deltat
             ns = int(round((tmax - tmin) / deltat))
 
             outx = num.zeros(ns)
@@ -118,14 +116,10 @@ class AhfullgreenRunner:
             x = (d, 0.0, config.receiver_depth-config.source_depth)
 
             add_seismogram(vp, vs, density, qp, qs, x, f, m6, 'displacement',
-                           deltat, tmin+0.5*deltat, outx, outy, outz, stf=Impulse(), want_near=True)
+                           deltat, tmin, outx, outy, outz,
+                           stf=Gauss(deltat))
 
-            ramp = num.linspace(0., 1., npad)
             for i_comp, o in enumerate((outx, outy, outz)):
-
-                offset_in = num.mean(o[:npad] * ramp) * 2.
-                o -= offset_in
-
                 comp = components[i_comp]
                 tr = trace.Trace('', '%04i' % i_distance, '', comp,
                                  tmin=tmin, ydata=o, deltat=deltat,
@@ -253,6 +247,7 @@ class AhfullGFBuilder(gf.builder.Builder):
                         args = (sz, x, ig)
                     else:
                         args = (rz, sz, x, ig)
+
                     if conf.cut:
                         tmin = self.store.t(conf.cut[0], args[:-1])
                         tmin = math.floor(tmin/conf.deltat)*conf.deltat
@@ -264,44 +259,6 @@ class AhfullGFBuilder(gf.builder.Builder):
 
                     tr = tr.snap()
 
-                    if conf.fade:
-                        ta, tb, tc, td = [
-                            self.store.t(v, args[:-1]) for v in conf.fade]
-
-                        if None in (ta, tb, tc, td):
-                            continue
-
-                        if not (ta <= tb and tb <= tc and tc <= td):
-                            raise AhfullgreenError(
-                                'invalid fade configuration')
-
-                        t = tr.get_xdata()
-                        fin = num.interp(t, [ta, tb], [0., 1.])
-                        fout = num.interp(t, [tc, td], [1., 0.])
-                        anti_fin = 1. - fin
-                        anti_fout = 1. - fout
-
-                        y = tr.ydata
-
-                        sum_anti_fin = num.sum(anti_fin)
-                        sum_anti_fout = num.sum(anti_fout)
-
-                        if sum_anti_fin != 0.0:
-                            yin = num.sum(anti_fin*y) / sum_anti_fin
-                        else:
-                            yin = 0.0
-
-                        if sum_anti_fout != 0.0:
-                            yout = num.sum(anti_fout*y) / sum_anti_fout
-                        else:
-                            yout = 0.0
-
-                        y2 = anti_fin*yin + fin*fout*y + anti_fout*yout
-
-                        if conf.relevel_with_fade_in:
-                            y2 -= yin
-
-                        tr.set_ydata(y2)
                     gf_tr = gf.store.GFTrace.from_trace(tr)
                     gf_tr.data *= factor
 

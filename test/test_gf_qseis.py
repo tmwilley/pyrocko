@@ -297,14 +297,6 @@ mantle
         #    gf.meta.Timing('{vel:%g}-%g' % (vp/km, textra)),
         #    gf.meta.Timing('{vel:%g}+%g' % (vs/km, textra)))
 
-        #ahfullconf.relevel_with_fade_in = True
-
-        #ahfullconf.fade = (
-        #    gf.meta.Timing('{vel:%g}-%g' % (vp/km, textra)),
-        #    gf.meta.Timing('{vel:%g}-%g' % (vp/km, 0.)),
-        #    gf.meta.Timing('{vel:%g}+%g' % (vs/km, 0.)),
-        #    gf.meta.Timing('{vel:%g}+%g' % (vs/km, textra)))
-
         config = gf.meta.ConfigTypeA(
             id=store_id_ahfull,
             ncomponents=10,
@@ -312,7 +304,7 @@ mantle
             receiver_depth=0.*km,
             source_depth_min=1.*km,
             source_depth_max=19*km,
-            source_depth_delta=9.*km,
+            source_depth_delta=6.*km,
             distance_min=2.*km,
             distance_max=20*km,
             distance_delta=2*km,

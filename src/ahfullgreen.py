@@ -14,7 +14,7 @@ def add_seismogram(
         out_x, out_y, out_z, stf,
         want_far=1, want_intermediate=1, want_near=1):
 
-    npad_levelling = 20
+    npad_levelling = 40
     ns = [out.size for out in (out_x, out_y, out_z) if out is not None]
 
     if not all(n == ns[0] for n in ns):
@@ -79,8 +79,12 @@ def add_seismogram(
         temp /= out_delta
         assert temp.size // 2 + 1 == specs[i].size
 
-        temp -= 2.0 * num.mean(
-            temp[:npad_levelling] * num.linspace(1., 0., npad_levelling))
+        m1 = num.mean(temp[:npad_levelling] * num.linspace(1., 0., npad_levelling))
+        m2 = num.mean(temp[-npad_levelling:] * num.linspace(0., 1., npad_levelling))
+
+        print m1, m2
+
+        temp -= m1 * 2.
 
         if out_quantity == 'displacement':
             temp = num.cumsum(temp) * out_delta
