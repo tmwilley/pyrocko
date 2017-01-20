@@ -8,10 +8,10 @@ import signal
 
 from tempfile import mkdtemp
 
-from pyrocko.guts import Float, Tuple, List, Object, Bool
+from pyrocko.guts import Float, Tuple, List, Object
 from pyrocko import trace, util, cake
 from pyrocko import gf
-from pyrocko.ahfullgreen import add_seismogram, Impulse, Gauss
+from pyrocko.ahfullgreen import add_seismogram, Impulse
 from pyrocko.moment_tensor import MomentTensor, symmat6
 
 km = 1000.
@@ -117,7 +117,7 @@ class AhfullgreenRunner:
 
             add_seismogram(vp, vs, density, qp, qs, x, f, m6, 'displacement',
                            deltat, tmin, outx, outy, outz,
-                           stf=Gauss(deltat))
+                           stf=Impulse())
 
             for i_comp, o in enumerate((outx, outy, outz)):
                 comp = components[i_comp]

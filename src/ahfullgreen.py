@@ -36,8 +36,6 @@ def add_seismogram(
 
     tpad = stf.t_cutoff() or out_delta * 10.
 
-    tpad *= 10.
-
     tstart = tp - tpad - npad_levelling * out_delta
     tstart = out_offset + round((tstart - out_offset) / out_delta) * out_delta
 
@@ -62,9 +60,16 @@ def add_seismogram(
     out_spec_offset = 0.0
 
     omega = out_spec_offset + out_spec_delta * num.arange(nspec)
-
     coeffs_stf = stf(omega/(2.*math.pi)).astype(num.complex)
     coeffs_stf *= num.exp(1.0j * omega * tstart)
+
+    omega_max = 2.0 * math.pi * 0.5 / out_delta
+    omega_cut = omega_max * 0.75
+    icut = int(num.ceil((omega_cut - out_spec_offset) / out_spec_delta))
+
+    coeffs_stf[icut:] *= 0.5 + 0.5 * num.cos(
+            math.pi * num.minimum(
+                1.0, (omega[icut:] - omega_cut) / (omega_max - omega_cut)))
 
     ext.add_seismogram(
         float(vp), float(vs), float(density), float(qp), float(qs),
@@ -79,10 +84,10 @@ def add_seismogram(
         temp /= out_delta
         assert temp.size // 2 + 1 == specs[i].size
 
-        m1 = num.mean(temp[:npad_levelling] * num.linspace(1., 0., npad_levelling))
-        m2 = num.mean(temp[-npad_levelling:] * num.linspace(0., 1., npad_levelling))
-
-        print m1, m2
+        m1 = num.mean(
+            temp[:npad_levelling] * num.linspace(1., 0., npad_levelling))
+        # m2 = num.mean(
+        #     temp[-npad_levelling:] * num.linspace(0., 1., npad_levelling))
 
         temp -= m1 * 2.
 

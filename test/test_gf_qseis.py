@@ -293,9 +293,9 @@ mantle
             gf.meta.Timing('{vel:%g}-%g' % (vp/km, textra)),
             gf.meta.Timing('{vel:%g}+%g' % (vs/km, textra)))
 
-        #ahfullconf.cut = (
-        #    gf.meta.Timing('{vel:%g}-%g' % (vp/km, textra)),
-        #    gf.meta.Timing('{vel:%g}+%g' % (vs/km, textra)))
+        # ahfullconf.cut = (
+        #     gf.meta.Timing('{vel:%g}-%g' % (vp/km, textra)),
+        #     gf.meta.Timing('{vel:%g}+%g' % (vs/km, textra)))
 
         config = gf.meta.ConfigTypeA(
             id=store_id_ahfull,
@@ -346,7 +346,7 @@ mantle
 
         source.m6 = tuple(rand(-1., 1.) for x in xrange(6))
 
-        for ii in xrange(1):
+        for ii in xrange(10):
             azi = random.random()*365.
             dist = rand(config.distance_min, config.distance_max)
             dist = round(dist / config.distance_delta) * config.distance_delta
@@ -422,8 +422,8 @@ mantle
             trs = runner.get_traces()
             for tr in trs:
                 pass
-                #tr.lowpass(4, config.sample_rate / 8., demean=False)
-                #tr.highpass(4, config.sample_rate / 80.)
+                tr.lowpass(4, config.sample_rate / 8., demean=False)
+                tr.highpass(4, config.sample_rate / 80.)
 
             engine = gf.LocalEngine(store_dirs=[
                 store_dir_ahfull, store_dir_qseis])
@@ -431,10 +431,10 @@ mantle
             trs2 = engine.process(source, targets).pyrocko_traces()
             for tr in trs2:
                 tr.shift(config.deltat)
-                #tr.lowpass(4, config.sample_rate / 8., demean=False)
-                #tr.highpass(4, config.sample_rate / 80.)
+                tr.lowpass(4, config.sample_rate / 8., demean=False)
+                tr.highpass(4, config.sample_rate / 80.)
 
-            trace.snuffle(trs+trs2)
+            # trace.snuffle(trs+trs2)
 
             for cha in 'rtz':
                 tmin = store.t(
@@ -442,19 +442,15 @@ mantle
                 tmax = store.t(
                     '{vel:%g}' % (vs/km), source, target) + textra*0.2
 
-
                 t1 = g(trs, cha)
                 t2 = g(trs2, cha)
-
-                print t1.tmin, t2.tmin
-                print num.max(num.abs(t1.ydata)) / num.max(num.abs(t2.ydata))
 
                 t1.chop(tmin, tmax)
                 t2.chop(tmin, tmax)
                 d = 2.0 * num.sum((t1.ydata - t2.ydata)**2) / \
                     (num.sum(t1.ydata**2) + num.sum(t2.ydata**2))
 
-                # assert d < 0.05
+                assert d < 0.05
 
 
 if __name__ == '__main__':
